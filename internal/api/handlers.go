@@ -3,12 +3,11 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/go-go-golems/rag-evaluation-system/internal/chunking"
 	"github.com/go-go-golems/rag-evaluation-system/internal/db"
 	"github.com/go-go-golems/rag-evaluation-system/internal/ingest"
+	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
 )
 
 // RegisterHandlers wires all API routes into the given mux
@@ -215,61 +214,20 @@ func (h *handler) handleChunkDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	strategyID := fmt.Sprintf("%s-%d-%d", req.Strategy, req.ChunkSize, req.Overlap)
-	configJSON, _ := json.Marshal(map[string]interface{}{
-		"type":       req.Strategy,
-		"chunk_size": req.ChunkSize,
-		"overlap":    req.Overlap,
+	service := chunkservice.NewService(h.queries)
+	result, err := service.Apply(r.Context(), chunkservice.ApplyRequest{
+		DocumentID:  docID,
+		Strategy:    req.Strategy,
+		ChunkSize:   req.ChunkSize,
+		Overlap:     req.Overlap,
+		Description: "HTTP-created chunking strategy",
 	})
-	if err := h.queries.InsertChunkingStrategy(
-		strategyID,
-		strategyID,
-		req.Strategy,
-		string(configJSON),
-		fmt.Sprintf("HTTP-created: %s with chunk_size=%d, overlap=%d", req.Strategy, req.ChunkSize, req.Overlap),
-	); err != nil {
-		writeError(w, http.StatusInternalServerError, "strategy_insert_failed", err.Error())
-		return
-	}
-
-	if err := h.queries.DeleteChunksForDocumentStrategy(docID, strategyID); err != nil {
-		writeError(w, http.StatusInternalServerError, "delete_existing_chunks_failed", err.Error())
-		return
-	}
-
-	chunker, err := chunking.NewChunkerFromType(req.Strategy, req.ChunkSize, req.Overlap, strategyID)
-	if err != nil {
-		writeError(w, http.StatusBadRequest, "invalid_strategy", err.Error())
-		return
-	}
-
-	chunks, err := chunker.Chunk(docID, content)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "chunk_failed", err.Error())
 		return
 	}
 
-	// Store chunks
-	for _, ch := range chunks {
-		boundariesJSON, _ := json.Marshal(map[string]interface{}{"strategy_id": strategyID})
-		if err := h.queries.InsertChunk(ch.ID, ch.DocumentID, strategyID, ch.ChunkIndex, ch.Text,
-			ch.TokenCount, ch.StartOffset, ch.EndOffset, string(boundariesJSON)); err != nil {
-			writeError(w, http.StatusInternalServerError, "insert_chunk_failed", err.Error())
-			return
-		}
-	}
-
-	if err := h.queries.UpdateDocumentStatus(docID, "chunked"); err != nil {
-		writeError(w, http.StatusInternalServerError, "update_document_failed", err.Error())
-		return
-	}
-
-	writeJSON(w, http.StatusOK, map[string]interface{}{
-		"document_id": docID,
-		"strategy":    strategyID,
-		"chunk_count": len(chunks),
-		"chunks":      chunks,
-	})
+	writeJSON(w, http.StatusOK, result)
 }
 
 func (h *handler) handleListChunkingStrategies(w http.ResponseWriter, r *http.Request) {

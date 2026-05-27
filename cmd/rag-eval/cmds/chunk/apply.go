@@ -2,7 +2,6 @@ package chunk
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/go-go-golems/glazed/pkg/cli"
@@ -14,7 +13,7 @@ import (
 	"github.com/go-go-golems/glazed/pkg/settings"
 	"github.com/go-go-golems/glazed/pkg/types"
 	cmds2 "github.com/go-go-golems/rag-evaluation-system/cmd/rag-eval/cmds"
-	"github.com/go-go-golems/rag-evaluation-system/internal/chunking"
+	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
 	"github.com/spf13/cobra"
 )
 
@@ -135,83 +134,22 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 	}
 	defer queries.Close()
 
-	// Get document content
-	content, err := queries.GetDocumentContent(s.DocID)
-	if err != nil {
-		return err
-	}
-	if content == "" {
-		return fmt.Errorf("document %s has no content", s.DocID)
-	}
-
-	// Generate strategy ID
-	strategyID := s.StrategyName
-	if strategyID == "" {
-		strategyID = fmt.Sprintf("%s-%d-%d", s.Strategy, s.ChunkSize, s.Overlap)
-	}
-
-	// Register the chunking strategy
-	configMap := map[string]interface{}{
-		"type":       s.Strategy,
-		"chunk_size": s.ChunkSize,
-		"overlap":    s.Overlap,
-	}
-	configJSON, _ := json.Marshal(configMap)
-
-	err = queries.InsertChunkingStrategy(
-		strategyID,
-		strategyID,
-		s.Strategy,
-		string(configJSON),
-		fmt.Sprintf("Auto-created: %s with chunk_size=%d, overlap=%d", s.Strategy, s.ChunkSize, s.Overlap),
-	)
+	service := chunkservice.NewService(queries)
+	result, err := service.Apply(ctx, chunkservice.ApplyRequest{
+		DocumentID:   s.DocID,
+		Strategy:     s.Strategy,
+		ChunkSize:    s.ChunkSize,
+		Overlap:      s.Overlap,
+		StrategyName: s.StrategyName,
+	})
 	if err != nil {
 		return err
 	}
 
-	// Make chunk application retry-safe by rebuilding the derived chunk set for
-	// this exact document/strategy pair before inserting fresh spans.
-	if err := queries.DeleteChunksForDocumentStrategy(s.DocID, strategyID); err != nil {
-		return err
-	}
-
-	// Create chunker
-	chunker, err := chunking.NewChunkerFromType(s.Strategy, s.ChunkSize, s.Overlap, strategyID)
-	if err != nil {
-		return err
-	}
-
-	// Chunk the document
-	chunks, err := chunker.Chunk(s.DocID, content)
-	if err != nil {
-		return err
-	}
-
-	// Store chunks in the database
-	for _, ch := range chunks {
-		boundariesJSON, _ := json.Marshal(map[string]interface{}{
-			"strategy_id": strategyID,
-		})
-
-		err = queries.InsertChunk(
-			ch.ID,
-			ch.DocumentID,
-			strategyID,
-			ch.ChunkIndex,
-			ch.Text,
-			ch.TokenCount,
-			ch.StartOffset,
-			ch.EndOffset,
-			string(boundariesJSON),
-		)
-		if err != nil {
-			return err
-		}
-
-		// Emit row
+	for _, ch := range result.Chunks {
 		row := types.NewRow(
 			types.MRP("id", ch.ID),
-			types.MRP("strategy_id", strategyID),
+			types.MRP("strategy_id", result.StrategyID),
 			types.MRP("chunk_index", ch.ChunkIndex),
 			types.MRP("token_count", ch.TokenCount),
 			types.MRP("start_offset", ch.StartOffset),
@@ -223,21 +161,14 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 		}
 	}
 
-	// Update document status
-	err = queries.UpdateDocumentStatus(s.DocID, "chunked")
-	if err != nil {
-		return err
-	}
-
-	// Summary row
 	summaryRow := types.NewRow(
 		types.MRP("id", "_summary"),
-		types.MRP("strategy_id", strategyID),
-		types.MRP("chunk_index", len(chunks)),
+		types.MRP("strategy_id", result.StrategyID),
+		types.MRP("chunk_index", result.ChunkCount),
 		types.MRP("token_count", 0),
 		types.MRP("start_offset", 0),
 		types.MRP("end_offset", 0),
-		types.MRP("text_preview", fmt.Sprintf("chunked into %d chunks using %s", len(chunks), strategyID)),
+		types.MRP("text_preview", fmt.Sprintf("chunked into %d chunks using %s", result.ChunkCount, result.StrategyID)),
 	)
 	return gp.AddRow(ctx, summaryRow)
 }
