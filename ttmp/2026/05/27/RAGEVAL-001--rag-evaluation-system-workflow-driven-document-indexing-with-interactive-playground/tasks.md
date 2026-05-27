@@ -4,7 +4,7 @@
 
 - [x] Add tasks here
 
-- [ ] Project scaffolding: Go server + React SPA skeleton (Phase 0)
+- [x] Project scaffolding: Go server + React SPA skeleton (Phase 0)
 - [ ] SQLite schema and document ingestion (Phase 1)
 - [ ] Chunking implementation (Phase 2)
 - [ ] Embedding computation via Geppetto (Phase 3)
@@ -12,10 +12,10 @@
 - [ ] Reranking service (Phase 5)
 - [ ] Scraper workflow integration (Phase 6)
 - [ ] Evaluation dashboard and metrics (Phase 7)
-- [ ] Phase 0.1: Initialize Go module and cmd/rag-eval/main.go with minimal HTTP server
-- [ ] Phase 0.2: Create web/ React + Vite + Tailwind + RTK Query + Storybook skeleton
-- [ ] Phase 0.3: Implement go:embed SPA serving and /api/v1/health endpoint
-- [ ] Phase 0.4: Create MacWindow, MacMenuBar, MacButton retro UI components with stories
+- [x] Phase 0.1: Initialize Go module and cmd/rag-eval/main.go with minimal HTTP server
+- [x] Phase 0.2: Create web/ React + Vite + Tailwind + RTK Query + Storybook skeleton
+- [x] Phase 0.3: Implement go:embed SPA serving and /api/v1/health endpoint
+- [x] Phase 0.4: Create MacWindow, MacMenuBar, MacButton retro UI components with stories
 - [ ] Phase 0.5: Add devctl.yaml for local dev (server + web + worker)
 - [ ] Phase 1.1: Implement SQLite schema: sources, documents tables with migrations
 - [ ] Phase 1.2: Add GET /api/v1/sources, POST /api/v1/sources, GET /api/v1/documents

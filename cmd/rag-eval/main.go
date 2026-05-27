@@ -1,94 +1,33 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
-
-	"github.com/go-go-golems/rag-evaluation-system/internal/api"
-	"github.com/go-go-golems/rag-evaluation-system/internal/config"
-	"github.com/go-go-golems/rag-evaluation-system/internal/db"
-	"github.com/go-go-golems/rag-evaluation-system/internal/web"
-	"github.com/rs/zerolog"
-	zerolog_log "github.com/rs/zerolog/log"
+	"github.com/go-go-golems/glazed/pkg/cmds/logging"
+	"github.com/go-go-golems/rag-evaluation-system/cmd/rag-eval/cmds/document"
+	"github.com/go-go-golems/rag-evaluation-system/cmd/rag-eval/cmds/serve"
+	"github.com/go-go-golems/rag-evaluation-system/cmd/rag-eval/cmds/source"
+	"github.com/spf13/cobra"
 )
 
+var version = "dev"
+
 func main() {
-	cfg, err := config.Load()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to load config: %v\n", err)
-		os.Exit(1)
+	rootCmd := &cobra.Command{
+		Use:     "rag-eval",
+		Short:   "RAG Evaluation System — workflow-driven document indexing with interactive playground",
+		Version: version,
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			return logging.InitLoggerFromCobra(cmd)
+		},
 	}
 
-	// Configure logging
-	zerolog.SetGlobalLevel(parseLogLevel(cfg.LogLevel))
-	zerolog_log.Logger = zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
-
-	// Open SQLite database
-	database, err := db.OpenDB(cfg.DBPath)
-	if err != nil {
-		zerolog_log.Fatal().Err(err).Str("path", cfg.DBPath).Msg("failed to open database")
-	}
-	defer database.Close()
-
-	// Run migrations
-	if err := db.Migrate(database); err != nil {
-		zerolog_log.Fatal().Err(err).Msg("failed to run migrations")
+	if err := logging.AddLoggingSectionToRootCommand(rootCmd, "rag-eval"); err != nil {
+		cobra.CheckErr(err)
 	}
 
-	// Wire HTTP handlers
-	mux := http.NewServeMux()
+	// Add command groups
+	rootCmd.AddCommand(source.NewCommand())
+	rootCmd.AddCommand(document.NewCommand())
+	rootCmd.AddCommand(serve.NewCommand())
 
-	// API routes
-	api.RegisterHandlers(mux, database)
-
-	// Serve embedded SPA
-	mux.Handle("/", web.SPAHandler())
-
-	// Start server
-	server := &http.Server{
-		Addr:         cfg.Address,
-		Handler:      mux,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 60 * time.Second,
-		IdleTimeout:  120 * time.Second,
-	}
-
-	go func() {
-		zerolog_log.Info().Str("addr", cfg.Address).Msg("starting RAG evaluation server")
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			zerolog_log.Fatal().Err(err).Msg("server failed")
-		}
-	}()
-
-	// Graceful shutdown
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-
-	zerolog_log.Info().Msg("shutting down server")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	if err := server.Shutdown(ctx); err != nil {
-		zerolog_log.Error().Err(err).Msg("server shutdown failed")
-	}
-}
-
-func parseLogLevel(level string) zerolog.Level {
-	switch level {
-	case "debug":
-		return zerolog.DebugLevel
-	case "info":
-		return zerolog.InfoLevel
-	case "warn":
-		return zerolog.WarnLevel
-	case "error":
-		return zerolog.ErrorLevel
-	default:
-		return zerolog.InfoLevel
-	}
+	cobra.CheckErr(rootCmd.Execute())
 }

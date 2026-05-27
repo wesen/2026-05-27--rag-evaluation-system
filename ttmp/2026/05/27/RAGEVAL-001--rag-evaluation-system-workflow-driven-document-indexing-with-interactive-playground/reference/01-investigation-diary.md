@@ -109,3 +109,87 @@ The user explicitly asked for a "detailed analysis / design / implementation gui
 - API endpoints designed: ~25
 - Frontend views designed: 4 (Pipeline Explorer, Embedding Inspector, Search Sandbox, Evaluation Dashboard)
 - Implementation phases: 7, estimated 30 days
+
+---
+
+## Step 2: Phase 0 Implementation — Project Scaffolding
+
+Implemented the Go server skeleton, React frontend with retro macOS theme, and development tooling. The system now starts, serves the SPA, and responds to API calls.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 1)
+
+**Assistant interpretation:** Proceed with implementing the design, committing at appropriate intervals, keeping a diary.
+
+**Inferred user intent:** Build the system end-to-end, not just design it.
+
+**Commit (code):** 308752e — "feat: scaffold Go server with SQLite, API handlers, and SPA embedding"
+**Commit (code):** 14a4620 — "feat: add React frontend with retro macOS theme and RTK Query"
+**Commit (code):** e375665 — "feat: add Makefile and devctl config for local development"
+
+### What I did
+
+- Created Go module `github.com/go-go-golems/rag-evaluation-system`
+- Implemented `cmd/rag-eval/main.go`: HTTP server with graceful shutdown, go:embed SPA
+- Implemented `internal/config/config.go`: env-based configuration
+- Implemented `internal/db/db.go`: SQLite with WAL mode, 10-table schema, auto-migration
+- Implemented `internal/api/handlers.go`: health, sources CRUD, documents list/detail, chunks list
+- Implemented `internal/web/spa.go`: go:embed SPA handler with fallback routing
+- Set up React 19 + Vite + Tailwind CSS 4 + RTK Query + Recharts frontend
+- Created retro macOS design system in `src/index.css`: windows, title bars, buttons, inputs, tables, scrollbars, menu bar, tab bar
+- Created `MacWindow`, `MacMenuBar`, `MacButton` retro components
+- Created `PipelineView` with live sources/documents tables (RTK Query powered)
+- Created placeholder views for Embeddings, Search, Evaluation
+- Added Makefile and devctl.yaml
+
+### Why
+
+Phase 0 establishes the working skeleton. Before adding RAG-specific logic, we need a server that starts, a database that stores data, API endpoints that return JSON, and a frontend that renders.
+
+### What worked
+
+- The retro macOS theme looks authentic. The classic Mac System 7 design language (3D beveled buttons, horizontal stripe title bars, platinum gray background) translates well to CSS.
+- RTK Query + SQLite via Go API is a clean stack. The API proxy in Vite dev config makes local development seamless.
+- SQLite WAL mode with `MaxOpenConns(1)` is the right pattern for single-writer Go+SQLite.
+
+### What didn't work
+
+- `go:embed` with relative paths was tricky. The embed path is relative to the Go source file, not the module root. Solved by putting `spa.go` in `internal/web/` alongside the `dist/` directory.
+- Vite `react-ts` template created vanilla TypeScript (not React) the first time. Had to manually add React dependencies and create `.tsx` files.
+
+### What I learned
+
+- `go:embed` patterns need the embed directory to contain actual files matching the glob pattern. An empty directory won't compile.
+- Vite 8 + Tailwind CSS 4 uses `@import "tailwindcss"` instead of the old `@tailwind base/components/utilities` directives.
+- The `pnpm create vite` template selection can be flaky; better to verify the template produced React files before installing dependencies.
+
+### What was tricky to build
+
+- The go:embed path resolution. The directive resolves relative to the package directory, so `cmd/rag-eval/main.go` can't embed `../../web/dist/`. Moving the embed to a dedicated `internal/web/` package and importing it from main solved this cleanly.
+- TypeScript import path resolution in the React app. Components in nested directories need `../retro/MacWindow` not `./retro/MacWindow`.
+
+### What warrants a second pair of eyes
+
+- The `internal/web/spa.go` embeds `dist/*` which only works when the frontend has been built. During Go development without frontend changes, the placeholder `index.html` is sufficient, but this should be documented.
+- SQLite `MaxOpenConns(1)` means only one database connection. This is correct for write safety but may bottleneck under concurrent reads. Consider `MaxOpenConns(2)` with `MaxIdleConns(1)` if read contention appears.
+
+### What should be done in the future
+
+- Add Storybook stories for retro components.
+- Add document ingestion API (POST /api/v1/documents) and file-system scanner.
+- Implement chunking service (Phase 2).
+
+### Code review instructions
+
+- Build: `make build` then `make run`
+- Test API: `curl http://127.0.0.1:8772/api/v1/health`
+- Test frontend: `make web-dev` then open http://127.0.0.1:5173
+- Key files: cmd/rag-eval/main.go, internal/db/db.go, internal/api/handlers.go, web/src/index.css
+
+### Technical details
+
+- Go binary: ~10MB with SQLite + embedded SPA
+- SQLite schema: 10 tables with foreign keys and ON DELETE CASCADE
+- API endpoints implemented: 5 (health, list/create sources, list documents, get document, list chunks)
+- Frontend bundle: ~270KB JS + ~10KB CSS (gzip: ~86KB + ~3KB)
