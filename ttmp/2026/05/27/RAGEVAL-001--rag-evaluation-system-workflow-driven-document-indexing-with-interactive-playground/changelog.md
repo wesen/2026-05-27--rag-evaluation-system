@@ -34,3 +34,14 @@ Phase 0.1: Go server scaffolding with SQLite schema, API handlers, SPA embedding
 
 Phase 0 complete: Go server + React frontend + retro macOS theme + devctl + Makefile (commits 308752e, 14a4620, e375665)
 
+
+## 2026-05-27
+
+Audit recovery: fixed fixed-size chunker runaway overlap loop, added regression tests, committed cbae145, and wrote implementation audit/recovery report.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/chunking/chunker.go — Corrected overlap validation and tail termination
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/chunking/chunker_test.go — Regression coverage for the memory incident
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/analysis/01-implementation-audit-and-recovery-plan.md — Full assessment and recovery plan
+

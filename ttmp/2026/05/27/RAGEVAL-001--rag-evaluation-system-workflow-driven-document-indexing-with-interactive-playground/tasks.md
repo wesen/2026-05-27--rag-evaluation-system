@@ -16,14 +16,14 @@
 - [x] Phase 0.2: Create web/ React + Vite + Tailwind + RTK Query + Storybook skeleton
 - [x] Phase 0.3: Implement go:embed SPA serving and /api/v1/health endpoint
 - [x] Phase 0.4: Create MacWindow, MacMenuBar, MacButton retro UI components with stories
-- [ ] Phase 0.5: Add devctl.yaml for local dev (server + web + worker)
-- [ ] Phase 1.1: Implement SQLite schema: sources, documents tables with migrations
-- [ ] Phase 1.2: Add GET /api/v1/sources, POST /api/v1/sources, GET /api/v1/documents
-- [ ] Phase 1.3: Implement file-based document ingestion (scan directory, store in SQLite)
+- [x] Phase 0.5: Add devctl.yaml for local dev (server + web + worker)
+- [x] Phase 1.1: Implement SQLite schema: sources, documents tables with migrations
+- [x] Phase 1.2: Add GET /api/v1/sources, POST /api/v1/sources, GET /api/v1/documents
+- [x] Phase 1.3: Implement file-based document ingestion (scan directory, store in SQLite)
 - [ ] Phase 1.4: Pipeline Explorer view: SourceList, DocumentTable, WorkflowSubmitForm
-- [ ] Phase 2.1: Add chunks and chunking_strategies tables with migrations
-- [ ] Phase 2.2: Implement fixed-size chunking (256, 512, 1024 tokens with overlap)
-- [ ] Phase 2.3: Implement sentence-based chunking
+- [x] Phase 2.1: Add chunks and chunking_strategies tables with migrations
+- [x] Phase 2.2: Implement fixed-size chunking (256, 512, 1024 tokens with overlap)
+- [x] Phase 2.3: Implement sentence-based chunking
 - [ ] Phase 2.4: Add GET /api/v1/documents/{id}/chunks and chunk detail view
 - [ ] Phase 3.1: Add geppetto as Go dependency, implement profile bootstrap
 - [ ] Phase 3.2: Add chunk_embeddings table, implement embedding service wrapping Geppetto
@@ -46,3 +46,7 @@
 - [ ] Phase 7.2: Implement Recall@K, MRR, nDCG@K computation
 - [ ] Phase 7.3: Create default 15-20 query benchmark set
 - [ ] Phase 7.4: Add eval API endpoints and Evaluation Dashboard view
+- [ ] Stabilization P0: add strategy_id to chunks and repair uniqueness to support multi-strategy comparison
+- [ ] Stabilization P0: extract source/document/chunking service layer shared by Glazed CLI, HTTP API, and future scraper workflow ops
+- [ ] Stabilization P0: make source scan and chunk apply idempotent under workflow retries
+- [ ] Stabilization P0: add bounded output modes for chunking/embedding/search commands and HTTP responses

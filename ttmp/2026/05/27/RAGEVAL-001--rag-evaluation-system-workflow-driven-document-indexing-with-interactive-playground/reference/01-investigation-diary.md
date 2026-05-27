@@ -193,3 +193,93 @@ Phase 0 establishes the working skeleton. Before adding RAG-specific logic, we n
 - SQLite schema: 10 tables with foreign keys and ON DELETE CASCADE
 - API endpoints implemented: 5 (health, list/create sources, list documents, get document, list chunks)
 - Frontend bundle: ~270KB JS + ~10KB CSS (gzip: ~86KB + ~3KB)
+
+---
+
+## Step 3: Glazed CLI Pivot, Chunking Incident, and Audit Recovery
+
+The implementation moved beyond Phase 0 into Glazed CLI commands, ingestion, and chunking. During validation, a fixed-size chunking bug caused unbounded chunk generation near the end of a document, which likely caused the observed memory spike and killed process.
+
+I corrected the chunker termination and validation behavior, added regression tests, committed the fix, and wrote a recovery report so the next engineer can continue from a factual state instead of continuing the sprint momentum blindly.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Ok, we're taking over for your little brother who has lost the saucce. Assess, correct, go over the whole plan actually, and make a full report describing what is good, what is bad, what they didn't know, what they should have done, what to do next time, and what to do now.
+
+Save in the ticket, and upload to remarkable."
+
+**Assistant interpretation:** Stop feature expansion, diagnose the implementation quality and memory incident, fix the immediate dangerous bug, write a candid recovery report in the ticket, and publish it to reMarkable.
+
+**Inferred user intent:** Regain control of a runaway implementation session, preserve useful work, identify incorrect assumptions, and establish a safe next plan.
+
+**Commit (code):** cbae145 — "feat: add chunking commands and guard overlap loops"
+
+### What I did
+
+- Inspected the uncommitted chunking implementation and current ticket state.
+- Confirmed that fixed-size chunking could loop at the tail when overlap was enabled.
+- Added overlap validation and explicit termination when `end >= totalRunes`.
+- Added regression tests in `internal/chunking/chunker_test.go`.
+- Fixed SQLite DB parent directory creation formatting and behavior in `internal/db/db.go`.
+- Validated with constrained commands:
+  - `GOMAXPROCS=2 GOMEMLIMIT=768MiB go test ./internal/chunking ./internal/db ./internal/ingest -count=1 -timeout 20s`
+  - `GOMAXPROCS=2 GOMEMLIMIT=768MiB go build ./cmd/rag-eval`
+- Smoke-tested CLI source creation, scan, and chunk apply against `/tmp/rag-eval-audit.db`.
+- Created `analysis/01-implementation-audit-and-recovery-plan.md`.
+
+### Why
+
+The memory incident made it unsafe to continue adding embeddings or search. The right response was to isolate the immediate correctness bug, add tests, document the deeper architectural gaps, and give the next implementation pass a stabilization plan.
+
+### What worked
+
+- The stack trace pointed directly at `generateChunkID` inside `FixedSizeChunker.Chunk`, with an absurd chunk index for a small document.
+- A small unit test reproduced the infinite-loop shape without needing a large corpus.
+- After the fix, the chunker test suite passes quickly and CLI chunking completes successfully on a scanned source file.
+
+### What didn't work
+
+- An initial attempt to constrain the process with `ulimit -v 1048576` caused `runtime/cgo: pthread_create failed: Resource temporarily unavailable`; that was too aggressive for this Go+cgo+SQLite binary and produced a runtime abort unrelated to the original application bug.
+- The current schema cannot support multiple chunking strategies per document because `chunks` lacks a real `strategy_id` column and has `UNIQUE(document_id, chunk_index)`.
+- The CLI and HTTP chunking code still duplicate behavior instead of sharing a service layer.
+
+### What I learned
+
+- Fixed-size chunking with overlap must treat `end == total_length` as a terminal condition; otherwise the tail can be emitted forever.
+- Workflow-oriented RAG operations must be idempotent from the start because retries are part of the intended runtime model.
+- Glazed CLI lockstep is valuable, but it must share domain services with HTTP handlers to avoid behavior drift.
+
+### What was tricky to build
+
+The tricky part was distinguishing a resource-limit failure from the real memory incident. The `ulimit` experiment failed because the Go runtime could not create enough threads under the artificial virtual-memory cap. The real bug was found by reading the stack trace and seeing repeated chunk ID generation at high indexes for a small document, then reasoning through the overlap tail case.
+
+The fix required both a terminal condition (`end >= totalRunes`) and invalid parameter rejection (`overlap >= chunk_size`). Without both, one class of runaway could remain.
+
+### What warrants a second pair of eyes
+
+- `internal/db/db.go` chunk schema: `chunks` should include `strategy_id` and unique `(document_id, strategy_id, chunk_index)` before embeddings are implemented.
+- `cmd/rag-eval/cmds/chunk/apply.go` should move persistence behavior into an `internal/services/chunking` service shared by CLI and HTTP.
+- `internal/api/handlers.go` should not duplicate chunk application logic.
+- Write semantics for source scan and chunk apply need idempotency decisions before scraper workflow integration.
+
+### What should be done in the future
+
+- Freeze Phase 2 expansion until chunk identity and service-layer sharing are fixed.
+- Reconcile tasks so completed checkboxes do not overclaim Storybook/UI work.
+- Add retry/idempotency notes to every future workflow operation.
+- Add bounded output modes for chunking, embeddings, and search commands.
+
+### Code review instructions
+
+- Start with `internal/chunking/chunker.go`, especially fixed-size termination and overlap validation.
+- Review `internal/chunking/chunker_test.go` to confirm the memory incident now has a regression test.
+- Review `analysis/01-implementation-audit-and-recovery-plan.md` for the full recovery plan.
+- Validate with:
+  - `GOMAXPROCS=2 GOMEMLIMIT=768MiB go test ./internal/chunking ./internal/db ./internal/ingest -count=1 -timeout 20s`
+  - `GOMAXPROCS=2 GOMEMLIMIT=768MiB go build ./cmd/rag-eval`
+
+### Technical details
+
+- Corrected commit: `cbae145`.
+- New report: `ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/analysis/01-implementation-audit-and-recovery-plan.md`.
+- Core bug pattern: after a final capped chunk reaches `totalRunes`, subtracting overlap can produce another start whose next end is still `totalRunes`, repeating forever.
