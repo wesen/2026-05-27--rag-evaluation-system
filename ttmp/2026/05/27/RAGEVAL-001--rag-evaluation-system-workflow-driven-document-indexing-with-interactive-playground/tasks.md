@@ -46,7 +46,7 @@
 - [ ] Phase 7.2: Implement Recall@K, MRR, nDCG@K computation
 - [ ] Phase 7.3: Create default 15-20 query benchmark set
 - [ ] Phase 7.4: Add eval API endpoints and Evaluation Dashboard view
-- [ ] Stabilization P0: add strategy_id to chunks and repair uniqueness to support multi-strategy comparison
-- [ ] Stabilization P0: extract source/document/chunking service layer shared by Glazed CLI, HTTP API, and future scraper workflow ops
-- [ ] Stabilization P0: make source scan and chunk apply idempotent under workflow retries
+- [x] Stabilization P0: add strategy_id to chunks and repair uniqueness to support multi-strategy comparison
+- [x] Stabilization P0: extract source/document/chunking service layer shared by Glazed CLI, HTTP API, and future scraper workflow ops
+- [x] Stabilization P0: make source scan and chunk apply idempotent under workflow retries
 - [ ] Stabilization P0: add bounded output modes for chunking/embedding/search commands and HTTP responses

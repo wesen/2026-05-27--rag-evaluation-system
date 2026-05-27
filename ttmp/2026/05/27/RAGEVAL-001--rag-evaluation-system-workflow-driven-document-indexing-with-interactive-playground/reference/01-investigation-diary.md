@@ -283,3 +283,98 @@ The fix required both a terminal condition (`end >= totalRunes`) and invalid par
 - Corrected commit: `cbae145`.
 - New report: `ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/analysis/01-implementation-audit-and-recovery-plan.md`.
 - Core bug pattern: after a final capped chunk reaches `totalRunes`, subtracting overlap can produce another start whose next end is still `totalRunes`, repeating forever.
+
+---
+
+## Step 4: P0 Stabilization — Strategy-Aware Chunks and Shared Services
+
+After the audit, I continued with the highest-priority recovery items instead of moving to embeddings. The goal was to make ingestion/chunking safe enough for future workflow retries and to stop CLI and HTTP from carrying separate copies of domain behavior.
+
+This step changed chunk identity, made chunk application rerun-safe, made source/document ingestion idempotent, bounded chunk output by default, and introduced source/document/chunking services that both Glazed CLI commands and HTTP handlers use.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue. commit at appropriate intervals"
+
+**Assistant interpretation:** Continue implementing the recovery/stabilization plan, making focused commits after each validated unit.
+
+**Inferred user intent:** Keep momentum, but avoid another uncontrolled implementation burst by committing coherent, validated changes.
+
+**Commit (code):** 3846818 — "fix: make chunks strategy-aware and rerun-safe"
+**Commit (code):** 5f4e8a2 — "refactor: share chunk application service across CLI and HTTP"
+**Commit (code):** 9b366ef — "fix: make source and document ingestion idempotent"
+**Commit (code):** 320bb2e — "feat: bound chunk output for CLI and HTTP"
+**Commit (code):** a82dc57 — "refactor: share source service across CLI and HTTP"
+**Commit (code):** 2278179 — "refactor: share document service across CLI and HTTP"
+
+### What I did
+
+- Added first-class `strategy_id` to the `chunks` schema.
+- Added `internal/db/migrations.go` to upgrade older development DBs whose chunks table lacked `strategy_id`.
+- Changed chunk IDs to include `(document_id, strategy_id, chunk_index)`.
+- Added `DeleteChunksForDocumentStrategy` so chunk application rebuilds derived state for one document/strategy pair.
+- Changed `InsertChunkingStrategy`, `InsertSource`, and `InsertDocument` to upsert.
+- Changed scanner document IDs to use stable relative paths and store that path as `external_id`.
+- Added `internal/services/chunking.Service` and routed CLI/HTTP chunk application through it.
+- Added `internal/services/source.Service` and routed CLI/HTTP source create/scan through it.
+- Added `internal/services/document.Service` and routed CLI/HTTP document list/get/chunks through it.
+- Added bounded chunk output controls:
+  - `rag-eval chunk apply --emit preview|full|none --limit N --preview-runes N`
+  - `rag-eval document chunks --emit preview|full|none --limit N --preview-runes N`
+  - HTTP chunk endpoint now defaults to summary output and only returns chunks when requested.
+
+### Why
+
+Embeddings depend on stable chunk identity. If the same document can be chunked with several strategies, `strategy_id` must be part of the relational identity, not buried inside JSON. Future scraper workflow retries also require idempotent writes; plain inserts would fail or duplicate work on retry.
+
+### What worked
+
+- CLI chunk application can now be rerun for the same `(document_id, strategy_id)` without duplicate/primary-key failures.
+- Source scans can be rerun without duplicating documents.
+- CLI and HTTP chunking behavior now shares `internal/services/chunking.Service`.
+- The HTTP chunk endpoint no longer returns full chunk text by default.
+
+### What didn't work
+
+- The schema still uses hand-rolled migration helpers rather than a real migration framework/version table. This is acceptable for the current dev ticket but should be improved before long-lived deployments.
+- Existing old DBs with chunk embeddings were not deeply tested through the table-rebuild migration; the current migration is intended for development DB recovery.
+
+### What I learned
+
+- The earlier design invariant (`strategy_id` as first-class identity) had to be enforced before embeddings; otherwise embeddings would be attached to ambiguous chunks.
+- Output bounding belongs in the first implementation of any command that can emit content-bearing rows.
+- Service extraction is easiest immediately after behavior exists but before frontend/workflow layers depend on it.
+
+### What was tricky to build
+
+The tricky part was changing `chunks` identity after the first schema already existed. New DBs can use the corrected schema directly, but old dev DBs need repair. I added an `ensureChunksStrategyID` helper that detects missing `strategy_id`, creates a legacy strategy, rebuilds the table, and preserves existing rows.
+
+Another tricky detail was making chunk IDs strategy-aware. Without including `strategy_id` in the hash, two different chunking strategies for the same document would produce colliding chunk IDs for chunk index `0`.
+
+### What warrants a second pair of eyes
+
+- `internal/db/migrations.go`: table rebuild strategy and foreign-key handling should be reviewed before treating it as production migration infrastructure.
+- `internal/services/chunking/service.go`: chunk application deletes and rebuilds derived chunks for the strategy; this is good for retries but must be considered when embeddings/enrichments exist.
+- HTTP error mapping is still coarse. Service errors should eventually map to typed API errors (404 vs 400 vs 500).
+
+### What should be done in the future
+
+- Add a migration version table or migrate package before schemas become more complex.
+- Add tests for service-layer behavior with temporary SQLite databases.
+- Decide whether rechunking should cascade-delete embeddings/enrichments or refuse when downstream derived state exists.
+- Extend bounded output patterns to embeddings/search when those commands are implemented.
+
+### Code review instructions
+
+- Start with `internal/db/db.go` and `internal/db/migrations.go` for chunk schema identity.
+- Review `internal/services/chunking/service.go` for the canonical chunk application path.
+- Review `cmd/rag-eval/cmds/chunk/apply.go` and `internal/api/handlers.go` to confirm they are now adapters.
+- Validate with:
+  - `GOMAXPROCS=2 GOMEMLIMIT=768MiB go test ./internal/chunking ./internal/db ./internal/ingest ./internal/services/chunking ./internal/services/source ./internal/services/document -count=1 -timeout 20s`
+  - `GOMAXPROCS=2 GOMEMLIMIT=768MiB go build ./cmd/rag-eval`
+
+### Technical details
+
+- Completed stabilization task IDs: 44, 45, 46.
+- Partial bounded-output task: chunking outputs are bounded; embeddings/search outputs remain future work because those features are not implemented yet.
+- Smoke tests used temporary databases under `/tmp` and constrained Go memory/CPU using `GOMAXPROCS=2 GOMEMLIMIT=768MiB`.

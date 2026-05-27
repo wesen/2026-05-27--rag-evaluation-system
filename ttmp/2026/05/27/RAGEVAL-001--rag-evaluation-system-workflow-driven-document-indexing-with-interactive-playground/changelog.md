@@ -54,3 +54,16 @@ Uploaded audit recovery bundle to reMarkable at /ai/2026/05/27/RAGEVAL-001 as RA
 
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/analysis/01-implementation-audit-and-recovery-plan.md — Uploaded report bundle source
 
+
+## 2026-05-27
+
+P0 stabilization: made chunks first-class strategy-aware derived state, added rerun-safe chunk rebuilds, made source/document ingestion idempotent, and extracted source/document/chunking services shared by CLI and HTTP (commits 3846818, 5f4e8a2, 9b366ef, 320bb2e, a82dc57, 2278179).
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/db/db.go — Chunk strategy_id schema and migration entry point
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/db/migrations.go — Development DB upgrade for old chunks schema
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/chunking/service.go — Shared chunk application service
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/document/service.go — Shared document read service
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/source/service.go — Shared source create/scan service
+
