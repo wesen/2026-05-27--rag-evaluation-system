@@ -251,6 +251,69 @@ func (q *Queries) ListChunks(documentID string) ([]Chunk, error) {
 	return chunks, rows.Err()
 }
 
+// ListChunksForStrategy returns chunks for one chunking strategy across documents.
+func (q *Queries) ListChunksForStrategy(strategyID string, limit int) ([]Chunk, error) {
+	query := `
+		SELECT id, document_id, strategy_id, chunk_index, text, token_count,
+		       COALESCE(start_offset, 0), COALESCE(end_offset, 0), created_at
+		FROM chunks WHERE strategy_id = ? ORDER BY document_id, chunk_index
+	`
+	args := []interface{}{strategyID}
+	if limit > 0 {
+		query += ` LIMIT ?`
+		args = append(args, limit)
+	}
+
+	rows, err := q.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var chunks []Chunk
+	for rows.Next() {
+		var c Chunk
+		if err := rows.Scan(&c.ID, &c.DocumentID, &c.StrategyID, &c.ChunkIndex, &c.Text,
+			&c.TokenCount, &c.StartOffset, &c.EndOffset, &c.CreatedAt); err != nil {
+			return nil, err
+		}
+		chunks = append(chunks, c)
+	}
+	return chunks, rows.Err()
+}
+
+// GetChunkEmbeddingTextHash returns the stored text hash for an embedding identity.
+func (q *Queries) GetChunkEmbeddingTextHash(chunkID, strategyID, provider, model string, dimensions int) (string, bool, error) {
+	var textHash string
+	err := q.db.QueryRow(`
+		SELECT text_hash FROM chunk_embeddings
+		WHERE chunk_id = ? AND strategy_id = ? AND provider = ? AND model = ? AND dimensions = ?
+	`, chunkID, strategyID, provider, model, dimensions).Scan(&textHash)
+	if err == sql.ErrNoRows {
+		return "", false, nil
+	}
+	if err != nil {
+		return "", false, err
+	}
+	return textHash, true, nil
+}
+
+// UpsertChunkEmbedding stores an embedding vector blob for a chunk identity.
+func (q *Queries) UpsertChunkEmbedding(chunkID, strategyID, provider, model string, dimensions int, textHash string, embedding []byte) error {
+	_, err := q.db.Exec(`
+		INSERT INTO chunk_embeddings (chunk_id, strategy_id, provider, model, dimensions, text_hash, embedding)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(chunk_id, strategy_id, provider, model, dimensions) DO UPDATE SET
+		    text_hash = excluded.text_hash,
+		    embedding = excluded.embedding,
+		    updated_at = datetime('now')
+	`, chunkID, strategyID, provider, model, dimensions, textHash, embedding)
+	if err != nil {
+		return fmt.Errorf("upsert chunk embedding: %w", err)
+	}
+	return nil
+}
+
 // Source is a data source record
 type Source struct {
 	ID         string `json:"id"`
