@@ -45,3 +45,12 @@ Audit recovery: fixed fixed-size chunker runaway overlap loop, added regression 
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/chunking/chunker_test.go — Regression coverage for the memory incident
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/analysis/01-implementation-audit-and-recovery-plan.md — Full assessment and recovery plan
 
+
+## 2026-05-27
+
+Uploaded audit recovery bundle to reMarkable at /ai/2026/05/27/RAGEVAL-001 as RAGEVAL-001 Audit Recovery Plan.pdf
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/analysis/01-implementation-audit-and-recovery-plan.md — Uploaded report bundle source
+
