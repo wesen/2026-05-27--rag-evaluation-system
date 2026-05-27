@@ -50,3 +50,12 @@
 - [x] Stabilization P0: extract source/document/chunking service layer shared by Glazed CLI, HTTP API, and future scraper workflow ops
 - [x] Stabilization P0: make source scan and chunk apply idempotent under workflow retries
 - [ ] Stabilization P0: add bounded output modes for chunking/embedding/search commands and HTTP responses
+- [ ] Phase 2.5: Add temporary-SQLite service tests for source create/scan idempotency
+- [ ] Phase 2.6: Add temporary-SQLite service tests for chunk apply idempotency and strategy-aware chunk identity
+- [ ] Phase 2.7: Add temporary-SQLite service tests for document list/get/chunks defaults and validation
+- [ ] Phase 2.8: Add migration test for upgrading legacy chunks table without strategy_id
+- [ ] Phase 3.0: Research current Geppetto embedding/profile APIs and write a small integration plan before coding
+- [ ] Phase 3.1a: Implement embedding provider factory using Geppetto plus Pinocchio/profile configuration
+- [ ] Phase 3.1b: Implement embedding service with batching, text_hash staleness checks, and bounded memory
+- [ ] Phase 3.1c: Add Glazed embedding commands in lockstep with HTTP endpoints
+- [ ] Phase 3.1d: Add embedding API endpoints and frontend Embedding Inspector first functional slice

@@ -67,3 +67,12 @@ P0 stabilization: made chunks first-class strategy-aware derived state, added re
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/document/service.go — Shared document read service
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/source/service.go — Shared source create/scan service
 
+
+## 2026-05-27
+
+Added detailed next tasks for service-layer tests, legacy chunk migration coverage, and Phase 3 embedding work breakdown.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/tasks.md — Detailed continuation tasks added
+
