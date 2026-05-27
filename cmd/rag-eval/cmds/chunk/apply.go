@@ -30,6 +30,9 @@ type ApplySettings struct {
 	ChunkSize    int    `glazed:"chunk-size"`
 	Overlap      int    `glazed:"overlap"`
 	StrategyName string `glazed:"strategy-name"`
+	Emit         string `glazed:"emit"`
+	PreviewRunes int    `glazed:"preview-runes"`
+	Limit        int    `glazed:"limit"`
 }
 
 func newApplyCommand() *cobra.Command {
@@ -70,7 +73,7 @@ Available strategies:
 Examples:
   rag-eval chunk apply --doc-id doc-abc --strategy fixed --chunk-size 500 --overlap 50
   rag-eval chunk apply --doc-id doc-abc --strategy sentence --chunk-size 1000
-  rag-eval chunk apply --doc-id doc-abc --strategy markdown-heading --output json
+  rag-eval chunk apply --doc-id doc-abc --strategy markdown-heading --emit none --output json
 `),
 			cmds.WithFlags(
 				fields.New(
@@ -107,6 +110,24 @@ Examples:
 					fields.TypeString,
 					fields.WithDefault(""),
 					fields.WithHelp("Human-readable name for this strategy config (auto-generated if empty)"),
+				),
+				fields.New(
+					"emit",
+					fields.TypeString,
+					fields.WithDefault("preview"),
+					fields.WithHelp("Chunk text output mode: preview, full, or none"),
+				),
+				fields.New(
+					"preview-runes",
+					fields.TypeInteger,
+					fields.WithDefault(80),
+					fields.WithHelp("Number of runes to include when --emit preview"),
+				),
+				fields.New(
+					"limit",
+					fields.TypeInteger,
+					fields.WithDefault(50),
+					fields.WithHelp("Maximum number of chunk rows to emit; 0 means no limit"),
 				),
 			),
 			cmds.WithSections(glazedSection),
@@ -146,7 +167,12 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 		return err
 	}
 
+	emitted := 0
 	for _, ch := range result.Chunks {
+		if s.Limit > 0 && emitted >= s.Limit {
+			break
+		}
+
 		row := types.NewRow(
 			types.MRP("id", ch.ID),
 			types.MRP("strategy_id", result.StrategyID),
@@ -154,11 +180,22 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 			types.MRP("token_count", ch.TokenCount),
 			types.MRP("start_offset", ch.StartOffset),
 			types.MRP("end_offset", ch.EndOffset),
-			types.MRP("text_preview", truncate(ch.Text, 80)),
 		)
+		switch s.Emit {
+		case "full":
+			row.Set("text", ch.Text)
+		case "preview", "":
+			row.Set("text_preview", truncate(ch.Text, s.PreviewRunes))
+		case "none":
+			// omit text
+		default:
+			return fmt.Errorf("invalid --emit value %q (expected preview, full, or none)", s.Emit)
+		}
+
 		if err := gp.AddRow(ctx, row); err != nil {
 			return err
 		}
+		emitted++
 	}
 
 	summaryRow := types.NewRow(
@@ -168,12 +205,15 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 		types.MRP("token_count", 0),
 		types.MRP("start_offset", 0),
 		types.MRP("end_offset", 0),
-		types.MRP("text_preview", fmt.Sprintf("chunked into %d chunks using %s", result.ChunkCount, result.StrategyID)),
+		types.MRP("text_preview", fmt.Sprintf("chunked into %d chunks using %s; emitted %d chunk rows", result.ChunkCount, result.StrategyID, emitted)),
 	)
 	return gp.AddRow(ctx, summaryRow)
 }
 
 func truncate(s string, maxRunes int) string {
+	if maxRunes <= 0 {
+		return ""
+	}
 	runes := []rune(s)
 	if len(runes) <= maxRunes {
 		return s

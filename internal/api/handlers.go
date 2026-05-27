@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	chunkcore "github.com/go-go-golems/rag-evaluation-system/internal/chunking"
 	"github.com/go-go-golems/rag-evaluation-system/internal/db"
 	"github.com/go-go-golems/rag-evaluation-system/internal/ingest"
 	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
@@ -189,9 +190,12 @@ func (h *handler) handleChunkDocument(w http.ResponseWriter, r *http.Request) {
 	docID := r.PathValue("id")
 
 	var req struct {
-		Strategy  string `json:"strategy"`
-		ChunkSize int    `json:"chunk_size"`
-		Overlap   int    `json:"overlap"`
+		Strategy     string `json:"strategy"`
+		ChunkSize    int    `json:"chunk_size"`
+		Overlap      int    `json:"overlap"`
+		Emit         string `json:"emit"`
+		PreviewRunes int    `json:"preview_runes"`
+		Limit        int    `json:"limit"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid_json", err.Error())
@@ -227,7 +231,42 @@ func (h *handler) handleChunkDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, http.StatusOK, result)
+	if req.Emit == "" {
+		req.Emit = "summary"
+	}
+	if req.PreviewRunes == 0 {
+		req.PreviewRunes = 120
+	}
+	if req.Limit == 0 {
+		req.Limit = 50
+	}
+
+	response := map[string]interface{}{
+		"document_id": result.DocumentID,
+		"strategy_id": result.StrategyID,
+		"chunk_count": result.ChunkCount,
+	}
+
+	switch req.Emit {
+	case "summary", "none":
+		// no chunk text in response
+	case "preview":
+		response["chunks"] = previewChunks(result.Chunks, req.PreviewRunes, req.Limit)
+		response["emitted_count"] = minInt(len(result.Chunks), req.Limit)
+	case "full":
+		if req.Limit > 0 && len(result.Chunks) > req.Limit {
+			response["chunks"] = result.Chunks[:req.Limit]
+			response["emitted_count"] = req.Limit
+		} else {
+			response["chunks"] = result.Chunks
+			response["emitted_count"] = len(result.Chunks)
+		}
+	default:
+		writeError(w, http.StatusBadRequest, "invalid_emit", "emit must be summary, preview, full, or none")
+		return
+	}
+
+	writeJSON(w, http.StatusOK, response)
 }
 
 func (h *handler) handleListChunkingStrategies(w http.ResponseWriter, r *http.Request) {
@@ -265,6 +304,55 @@ func (h *handler) handleListChunkingStrategies(w http.ResponseWriter, r *http.Re
 }
 
 // --- Helpers ---
+
+type chunkPreview struct {
+	ID          string `json:"id"`
+	DocumentID  string `json:"document_id"`
+	StrategyID  string `json:"strategy_id"`
+	ChunkIndex  int    `json:"chunk_index"`
+	TextPreview string `json:"text_preview"`
+	TokenCount  int    `json:"token_count"`
+	StartOffset int    `json:"start_offset"`
+	EndOffset   int    `json:"end_offset"`
+}
+
+func previewChunks(chunks []chunkcore.Chunk, previewRunes, limit int) []chunkPreview {
+	if limit > 0 && len(chunks) > limit {
+		chunks = chunks[:limit]
+	}
+	previews := make([]chunkPreview, 0, len(chunks))
+	for _, ch := range chunks {
+		previews = append(previews, chunkPreview{
+			ID:          ch.ID,
+			DocumentID:  ch.DocumentID,
+			StrategyID:  ch.StrategyID,
+			ChunkIndex:  ch.ChunkIndex,
+			TextPreview: truncateRunes(ch.Text, previewRunes),
+			TokenCount:  ch.TokenCount,
+			StartOffset: ch.StartOffset,
+			EndOffset:   ch.EndOffset,
+		})
+	}
+	return previews
+}
+
+func truncateRunes(s string, maxRunes int) string {
+	if maxRunes <= 0 {
+		return ""
+	}
+	runes := []rune(s)
+	if len(runes) <= maxRunes {
+		return s
+	}
+	return string(runes[:maxRunes]) + "..."
+}
+
+func minInt(a, b int) int {
+	if b <= 0 || a < b {
+		return a
+	}
+	return b
+}
 
 func writeJSON(w http.ResponseWriter, status int, v interface{}) {
 	w.Header().Set("Content-Type", "application/json")
