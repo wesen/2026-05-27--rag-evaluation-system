@@ -9,6 +9,7 @@ import (
 	"github.com/go-go-golems/rag-evaluation-system/internal/db"
 	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
 	documentservice "github.com/go-go-golems/rag-evaluation-system/internal/services/document"
+	embeddingservice "github.com/go-go-golems/rag-evaluation-system/internal/services/embedding"
 	sourceservice "github.com/go-go-golems/rag-evaluation-system/internal/services/source"
 )
 
@@ -35,6 +36,9 @@ func RegisterHandlers(mux *http.ServeMux, database *sql.DB) {
 	// Chunking
 	mux.HandleFunc("POST /api/v1/documents/{id}/chunk", h.handleChunkDocument)
 	mux.HandleFunc("GET /api/v1/chunking-strategies", h.handleListChunkingStrategies)
+
+	// Embeddings
+	mux.HandleFunc("POST /api/v1/embeddings/compute", h.handleComputeEmbeddings)
 }
 
 type handler struct {
@@ -260,6 +264,93 @@ func (h *handler) handleChunkDocument(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusOK, response)
 }
+
+// --- Embeddings ---
+
+func (h *handler) handleComputeEmbeddings(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		StrategyID        string   `json:"strategy_id"`
+		ProfileRegistries []string `json:"profile_registries"`
+		Profile           string   `json:"profile"`
+		BaseProfile       string   `json:"base_profile"`
+		EmbeddingType     string   `json:"embeddings_type"`
+		EmbeddingEngine   string   `json:"embeddings_engine"`
+		Dimensions        int      `json:"embeddings_dimensions"`
+		APIKey            string   `json:"api_key"`
+		BaseURL           string   `json:"base_url"`
+		CacheType         string   `json:"cache_type"`
+		CacheDirectory    string   `json:"cache_directory"`
+		BatchSize         int      `json:"batch_size"`
+		Limit             int      `json:"limit"`
+		Force             bool     `json:"force"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid_json", err.Error())
+		return
+	}
+	if req.EmbeddingType == "" {
+		req.EmbeddingType = "ollama"
+	}
+	if req.EmbeddingEngine == "" {
+		req.EmbeddingEngine = "nomic-embed-text"
+	}
+	if req.Dimensions == 0 {
+		req.Dimensions = 768
+	}
+	if req.CacheType == "" {
+		req.CacheType = "none"
+	}
+	if req.CacheDirectory == "" {
+		req.CacheDirectory = "state/embedding-cache"
+	}
+
+	resolved, err := embeddingservice.ResolveProvider(r.Context(), embeddingservice.ProviderConfig{
+		ProfileRegistries: req.ProfileRegistries,
+		Profile:           req.Profile,
+		BaseProfile:       req.BaseProfile,
+		Type:              req.EmbeddingType,
+		Engine:            req.EmbeddingEngine,
+		Dimensions:        req.Dimensions,
+		APIKey:            req.APIKey,
+		BaseURL:           req.BaseURL,
+		CacheType:         req.CacheType,
+		CacheDirectory:    req.CacheDirectory,
+	})
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "provider_failed", err.Error())
+		return
+	}
+	if resolved.Close != nil {
+		defer func() { _ = resolved.Close() }()
+	}
+
+	service := embeddingservice.NewService(h.queries)
+	result, err := service.Compute(r.Context(), embeddingservice.ComputeRequest{
+		StrategyID:   req.StrategyID,
+		Provider:     resolved.Provider,
+		ProviderType: resolved.ProviderType,
+		BatchSize:    req.BatchSize,
+		Limit:        req.Limit,
+		Force:        req.Force,
+	})
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "compute_failed", err.Error())
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"strategy_id":       result.StrategyID,
+		"provider_type":     result.ProviderType,
+		"model":             result.Model,
+		"dimensions":        result.Dimensions,
+		"effective_profile": resolved.EffectiveProfile,
+		"considered":        result.Considered,
+		"computed":          result.Computed,
+		"skipped_fresh":     result.SkippedFresh,
+	})
+}
+
+// --- Chunking strategies ---
 
 func (h *handler) handleListChunkingStrategies(w http.ResponseWriter, r *http.Request) {
 	rows, err := h.queries.DB().QueryContext(r.Context(), `
