@@ -13,7 +13,7 @@ import (
 	"github.com/go-go-golems/glazed/pkg/settings"
 	"github.com/go-go-golems/glazed/pkg/types"
 	cmds2 "github.com/go-go-golems/rag-evaluation-system/cmd/rag-eval/cmds"
-	"github.com/go-go-golems/rag-evaluation-system/internal/ingest"
+	sourceservice "github.com/go-go-golems/rag-evaluation-system/internal/services/source"
 	"github.com/spf13/cobra"
 )
 
@@ -115,13 +115,13 @@ func (c *ScanCommand) RunIntoGlazeProcessor(
 	}
 	defer queries.Close()
 
-	scanner := ingest.NewScanner(queries)
-	docIDs, err := scanner.ScanDir(s.SourceID, s.Dir)
+	service := sourceservice.NewService(queries)
+	result, err := service.Scan(ctx, sourceservice.ScanRequest{SourceID: s.SourceID, Dir: s.Dir})
 	if err != nil {
 		return err
 	}
 
-	for _, id := range docIDs {
+	for _, id := range result.Documents {
 		row := types.NewRow(
 			types.MRP("id", id),
 			types.MRP("source_id", s.SourceID),
@@ -135,7 +135,7 @@ func (c *ScanCommand) RunIntoGlazeProcessor(
 	summaryRow := types.NewRow(
 		types.MRP("id", "_summary"),
 		types.MRP("source_id", s.SourceID),
-		types.MRP("status", fmt.Sprintf("scanned %d documents", len(docIDs))),
+		types.MRP("status", fmt.Sprintf("scanned %d documents", result.DocumentCount)),
 	)
 	return gp.AddRow(ctx, summaryRow)
 }

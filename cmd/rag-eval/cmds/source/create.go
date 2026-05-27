@@ -13,6 +13,7 @@ import (
 	"github.com/go-go-golems/glazed/pkg/settings"
 	"github.com/go-go-golems/glazed/pkg/types"
 	cmds2 "github.com/go-go-golems/rag-evaluation-system/cmd/rag-eval/cmds"
+	sourceservice "github.com/go-go-golems/rag-evaluation-system/internal/services/source"
 	"github.com/spf13/cobra"
 )
 
@@ -23,11 +24,11 @@ type CreateCommand struct {
 var _ cmds.GlazeCommand = (*CreateCommand)(nil)
 
 type CreateSettings struct {
-	DB       string `glazed:"db"`
-	ID       string `glazed:"id"`
-	Name     string `glazed:"name"`
-	Type     string `glazed:"type"`
-	Config   string `glazed:"config"`
+	DB     string `glazed:"db"`
+	ID     string `glazed:"id"`
+	Name   string `glazed:"name"`
+	Type   string `glazed:"type"`
+	Config string `glazed:"config"`
 }
 
 func newCreateCommand() *cobra.Command {
@@ -121,15 +122,22 @@ func (c *CreateCommand) RunIntoGlazeProcessor(
 	}
 	defer queries.Close()
 
-	if err := queries.InsertSource(s.ID, s.Name, s.Type, s.Config); err != nil {
+	service := sourceservice.NewService(queries)
+	result, err := service.Create(ctx, sourceservice.CreateRequest{
+		ID:     s.ID,
+		Name:   s.Name,
+		Type:   s.Type,
+		Config: configMap,
+	})
+	if err != nil {
 		return err
 	}
 
 	row := types.NewRow(
-		types.MRP("id", s.ID),
-		types.MRP("name", s.Name),
-		types.MRP("type", s.Type),
-		types.MRP("status", "created"),
+		types.MRP("id", result.ID),
+		types.MRP("name", result.Name),
+		types.MRP("type", result.Type),
+		types.MRP("status", result.Status),
 	)
 	return gp.AddRow(ctx, row)
 }

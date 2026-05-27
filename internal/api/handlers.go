@@ -7,8 +7,8 @@ import (
 
 	chunkcore "github.com/go-go-golems/rag-evaluation-system/internal/chunking"
 	"github.com/go-go-golems/rag-evaluation-system/internal/db"
-	"github.com/go-go-golems/rag-evaluation-system/internal/ingest"
 	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
+	sourceservice "github.com/go-go-golems/rag-evaluation-system/internal/services/source"
 )
 
 // RegisterHandlers wires all API routes into the given mux
@@ -73,22 +73,19 @@ func (h *handler) handleCreateSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.ID == "" || req.Name == "" || req.Type == "" {
-		writeError(w, http.StatusBadRequest, "missing_fields", "id, name, and type are required")
-		return
-	}
-
-	configJSON, _ := json.Marshal(req.Config)
-
-	if err := h.queries.InsertSource(req.ID, req.Name, req.Type, string(configJSON)); err != nil {
-		writeError(w, http.StatusInternalServerError, "insert_failed", err.Error())
-		return
-	}
-
-	writeJSON(w, http.StatusCreated, map[string]interface{}{
-		"id":   req.ID,
-		"name": req.Name,
+	service := sourceservice.NewService(h.queries)
+	result, err := service.Create(r.Context(), sourceservice.CreateRequest{
+		ID:     req.ID,
+		Name:   req.Name,
+		Type:   req.Type,
+		Config: req.Config,
 	})
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "create_failed", err.Error())
+		return
+	}
+
+	writeJSON(w, http.StatusCreated, result)
 }
 
 func (h *handler) handleScanSource(w http.ResponseWriter, r *http.Request) {
@@ -101,23 +98,14 @@ func (h *handler) handleScanSource(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "invalid_json", err.Error())
 		return
 	}
-	if req.Dir == "" {
-		writeError(w, http.StatusBadRequest, "missing_dir", "dir is required")
-		return
-	}
-
-	scanner := ingest.NewScanner(h.queries)
-	docIDs, err := scanner.ScanDir(sourceID, req.Dir)
+	service := sourceservice.NewService(h.queries)
+	result, err := service.Scan(r.Context(), sourceservice.ScanRequest{SourceID: sourceID, Dir: req.Dir})
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "scan_failed", err.Error())
 		return
 	}
 
-	writeJSON(w, http.StatusOK, map[string]interface{}{
-		"source_id":      sourceID,
-		"documents":      docIDs,
-		"document_count": len(docIDs),
-	})
+	writeJSON(w, http.StatusOK, result)
 }
 
 // --- Documents ---
