@@ -88,3 +88,12 @@ Added temporary-SQLite tests covering source idempotency, chunk strategy identit
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/document/service_test.go — Document service list/get/chunks tests
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/source/service_test.go — Source create/scan idempotency tests
 
+
+## 2026-05-27
+
+Completed Phase 3.0 research plan for Geppetto/Pinocchio embedding integration before coding provider/service layers.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/analysis/02-phase-3-embedding-integration-plan.md — Phase 3 embedding integration plan
+
