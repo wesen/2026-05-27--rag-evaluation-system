@@ -107,6 +107,7 @@ func (c *ChunksCommand) RunIntoGlazeProcessor(
 	for _, ch := range chunks {
 		row := types.NewRow(
 			types.MRP("id", ch.ID),
+			types.MRP("strategy_id", ch.StrategyID),
 			types.MRP("chunk_index", ch.ChunkIndex),
 			types.MRP("text", ch.Text),
 			types.MRP("token_count", ch.TokenCount),

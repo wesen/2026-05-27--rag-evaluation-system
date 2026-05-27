@@ -216,6 +216,26 @@ func (h *handler) handleChunkDocument(w http.ResponseWriter, r *http.Request) {
 	}
 
 	strategyID := fmt.Sprintf("%s-%d-%d", req.Strategy, req.ChunkSize, req.Overlap)
+	configJSON, _ := json.Marshal(map[string]interface{}{
+		"type":       req.Strategy,
+		"chunk_size": req.ChunkSize,
+		"overlap":    req.Overlap,
+	})
+	if err := h.queries.InsertChunkingStrategy(
+		strategyID,
+		strategyID,
+		req.Strategy,
+		string(configJSON),
+		fmt.Sprintf("HTTP-created: %s with chunk_size=%d, overlap=%d", req.Strategy, req.ChunkSize, req.Overlap),
+	); err != nil {
+		writeError(w, http.StatusInternalServerError, "strategy_insert_failed", err.Error())
+		return
+	}
+
+	if err := h.queries.DeleteChunksForDocumentStrategy(docID, strategyID); err != nil {
+		writeError(w, http.StatusInternalServerError, "delete_existing_chunks_failed", err.Error())
+		return
+	}
 
 	chunker, err := chunking.NewChunkerFromType(req.Strategy, req.ChunkSize, req.Overlap, strategyID)
 	if err != nil {
@@ -232,11 +252,17 @@ func (h *handler) handleChunkDocument(w http.ResponseWriter, r *http.Request) {
 	// Store chunks
 	for _, ch := range chunks {
 		boundariesJSON, _ := json.Marshal(map[string]interface{}{"strategy_id": strategyID})
-		h.queries.InsertChunk(ch.ID, ch.DocumentID, ch.ChunkIndex, ch.Text,
-			ch.TokenCount, ch.StartOffset, ch.EndOffset, string(boundariesJSON))
+		if err := h.queries.InsertChunk(ch.ID, ch.DocumentID, strategyID, ch.ChunkIndex, ch.Text,
+			ch.TokenCount, ch.StartOffset, ch.EndOffset, string(boundariesJSON)); err != nil {
+			writeError(w, http.StatusInternalServerError, "insert_chunk_failed", err.Error())
+			return
+		}
 	}
 
-	h.queries.UpdateDocumentStatus(docID, "chunked")
+	if err := h.queries.UpdateDocumentStatus(docID, "chunked"); err != nil {
+		writeError(w, http.StatusInternalServerError, "update_document_failed", err.Error())
+		return
+	}
 
 	writeJSON(w, http.StatusOK, map[string]interface{}{
 		"document_id": docID,

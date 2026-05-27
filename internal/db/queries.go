@@ -45,19 +45,30 @@ func (q *Queries) InsertDocument(
 	return nil
 }
 
-// InsertChunk inserts a new chunk
+// InsertChunk inserts a new chunk for a document/strategy pair.
 func (q *Queries) InsertChunk(
-	id, documentID string, chunkIndex int, text string,
+	id, documentID, strategyID string, chunkIndex int, text string,
 	tokenCount, startOffset, endOffset int, boundariesJSON string,
 ) error {
 	_, err := q.db.Exec(`
-		INSERT INTO chunks (id, document_id, chunk_index, text, token_count,
+		INSERT INTO chunks (id, document_id, strategy_id, chunk_index, text, token_count,
 		    start_offset, end_offset, boundaries_json)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-	`, id, documentID, chunkIndex, text, tokenCount,
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`, id, documentID, strategyID, chunkIndex, text, tokenCount,
 		startOffset, endOffset, boundariesJSON)
 	if err != nil {
 		return fmt.Errorf("insert chunk: %w", err)
+	}
+	return nil
+}
+
+// DeleteChunksForDocumentStrategy deletes derived chunks for a strategy so chunking is rerun-safe.
+func (q *Queries) DeleteChunksForDocumentStrategy(documentID, strategyID string) error {
+	_, err := q.db.Exec(`
+		DELETE FROM chunks WHERE document_id = ? AND strategy_id = ?
+	`, documentID, strategyID)
+	if err != nil {
+		return fmt.Errorf("delete chunks for document strategy: %w", err)
 	}
 	return nil
 }
@@ -73,11 +84,16 @@ func (q *Queries) UpdateDocumentStatus(id, status string) error {
 	return nil
 }
 
-// InsertChunkingStrategy inserts a new chunking strategy
+// InsertChunkingStrategy inserts or updates a chunking strategy.
 func (q *Queries) InsertChunkingStrategy(id, name, strategyType, configJSON, description string) error {
 	_, err := q.db.Exec(`
 		INSERT INTO chunking_strategies (id, name, type, config_json, description)
 		VALUES (?, ?, ?, ?, ?)
+		ON CONFLICT(id) DO UPDATE SET
+		    name = excluded.name,
+		    type = excluded.type,
+		    config_json = excluded.config_json,
+		    description = excluded.description
 	`, id, name, strategyType, configJSON, description)
 	if err != nil {
 		return fmt.Errorf("insert chunking strategy: %w", err)
@@ -191,12 +207,12 @@ func (q *Queries) GetDocument(id string) (*Document, error) {
 	return &d, nil
 }
 
-// ListChunks returns all chunks for a document
+// ListChunks returns all chunks for a document, across all strategies.
 func (q *Queries) ListChunks(documentID string) ([]Chunk, error) {
 	rows, err := q.db.Query(`
-		SELECT id, document_id, chunk_index, text, token_count,
+		SELECT id, document_id, strategy_id, chunk_index, text, token_count,
 		       COALESCE(start_offset, 0), COALESCE(end_offset, 0), created_at
-		FROM chunks WHERE document_id = ? ORDER BY chunk_index
+		FROM chunks WHERE document_id = ? ORDER BY strategy_id, chunk_index
 	`, documentID)
 	if err != nil {
 		return nil, err
@@ -206,7 +222,7 @@ func (q *Queries) ListChunks(documentID string) ([]Chunk, error) {
 	var chunks []Chunk
 	for rows.Next() {
 		var c Chunk
-		if err := rows.Scan(&c.ID, &c.DocumentID, &c.ChunkIndex, &c.Text,
+		if err := rows.Scan(&c.ID, &c.DocumentID, &c.StrategyID, &c.ChunkIndex, &c.Text,
 			&c.TokenCount, &c.StartOffset, &c.EndOffset, &c.CreatedAt); err != nil {
 			return nil, err
 		}
@@ -245,6 +261,7 @@ type Document struct {
 type Chunk struct {
 	ID          string `json:"id"`
 	DocumentID  string `json:"document_id"`
+	StrategyID  string `json:"strategy_id"`
 	ChunkIndex  int    `json:"chunk_index"`
 	Text        string `json:"text"`
 	TokenCount  int    `json:"token_count"`

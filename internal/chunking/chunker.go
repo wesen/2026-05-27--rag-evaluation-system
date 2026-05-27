@@ -12,6 +12,7 @@ import (
 type Chunk struct {
 	ID          string `json:"id"`
 	DocumentID  string `json:"document_id"`
+	StrategyID  string `json:"strategy_id"`
 	ChunkIndex  int    `json:"chunk_index"`
 	Text        string `json:"text"`
 	TokenCount  int    `json:"token_count"`
@@ -70,11 +71,12 @@ func (c *FixedSizeChunker) Chunk(documentID, text string) ([]Chunk, error) {
 		}
 
 		chunkText := string(runes[start:end])
-		chunkID := generateChunkID(documentID, index)
+		chunkID := generateChunkID(documentID, c.StrategyID, index)
 
 		chunks = append(chunks, Chunk{
 			ID:          chunkID,
 			DocumentID:  documentID,
+			StrategyID:  c.StrategyID,
 			ChunkIndex:  index,
 			Text:        chunkText,
 			TokenCount:  estimateTokens(chunkText),
@@ -146,10 +148,11 @@ func (c *SentenceChunker) Chunk(documentID, text string) ([]Chunk, error) {
 	for _, sent := range sentences {
 		if utf8.RuneCountInString(currentText)+utf8.RuneCountInString(sent) > c.ChunkSize && currentText != "" {
 			// Emit current chunk
-			chunkID := generateChunkID(documentID, index)
+			chunkID := generateChunkID(documentID, c.StrategyID, index)
 			chunks = append(chunks, Chunk{
 				ID:          chunkID,
 				DocumentID:  documentID,
+				StrategyID:  c.StrategyID,
 				ChunkIndex:  index,
 				Text:        strings.TrimSpace(currentText),
 				TokenCount:  estimateTokens(currentText),
@@ -178,10 +181,11 @@ func (c *SentenceChunker) Chunk(documentID, text string) ([]Chunk, error) {
 
 	// Emit last chunk
 	if currentText != "" {
-		chunkID := generateChunkID(documentID, index)
+		chunkID := generateChunkID(documentID, c.StrategyID, index)
 		chunks = append(chunks, Chunk{
 			ID:          chunkID,
 			DocumentID:  documentID,
+			StrategyID:  c.StrategyID,
 			ChunkIndex:  index,
 			Text:        strings.TrimSpace(currentText),
 			TokenCount:  estimateTokens(currentText),
@@ -232,17 +236,19 @@ func (c *MarkdownHeadingChunker) Chunk(documentID, text string) ([]Chunk, error)
 			}
 			for i := range subChunks {
 				subChunks[i].ChunkIndex = index
-				subChunks[i].ID = generateChunkID(documentID, index)
+				subChunks[i].ID = generateChunkID(documentID, c.StrategyID, index)
+				subChunks[i].StrategyID = c.StrategyID
 				subChunks[i].StartOffset += offset
 				subChunks[i].EndOffset += offset
 				chunks = append(chunks, subChunks[i])
 				index++
 			}
 		} else {
-			chunkID := generateChunkID(documentID, index)
+			chunkID := generateChunkID(documentID, c.StrategyID, index)
 			chunks = append(chunks, Chunk{
 				ID:          chunkID,
 				DocumentID:  documentID,
+				StrategyID:  c.StrategyID,
 				ChunkIndex:  index,
 				Text:        strings.TrimSpace(section),
 				TokenCount:  estimateTokens(section),
@@ -273,8 +279,8 @@ func NewChunkerFromType(strategyType string, chunkSize, overlap int, strategyID 
 
 // --- Helpers ---
 
-func generateChunkID(documentID string, index int) string {
-	h := sha256.Sum256([]byte(fmt.Sprintf("%s:%d", documentID, index)))
+func generateChunkID(documentID, strategyID string, index int) string {
+	h := sha256.Sum256([]byte(fmt.Sprintf("%s:%s:%d", documentID, strategyID, index)))
 	return "chk-" + hex.EncodeToString(h[:])[:16]
 }
 

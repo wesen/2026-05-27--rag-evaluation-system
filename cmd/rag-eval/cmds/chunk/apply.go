@@ -166,7 +166,13 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 		fmt.Sprintf("Auto-created: %s with chunk_size=%d, overlap=%d", s.Strategy, s.ChunkSize, s.Overlap),
 	)
 	if err != nil {
-		// Might already exist, that's fine
+		return err
+	}
+
+	// Make chunk application retry-safe by rebuilding the derived chunk set for
+	// this exact document/strategy pair before inserting fresh spans.
+	if err := queries.DeleteChunksForDocumentStrategy(s.DocID, strategyID); err != nil {
+		return err
 	}
 
 	// Create chunker
@@ -190,6 +196,7 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 		err = queries.InsertChunk(
 			ch.ID,
 			ch.DocumentID,
+			strategyID,
 			ch.ChunkIndex,
 			ch.Text,
 			ch.TokenCount,
@@ -204,6 +211,7 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 		// Emit row
 		row := types.NewRow(
 			types.MRP("id", ch.ID),
+			types.MRP("strategy_id", strategyID),
 			types.MRP("chunk_index", ch.ChunkIndex),
 			types.MRP("token_count", ch.TokenCount),
 			types.MRP("start_offset", ch.StartOffset),
@@ -224,6 +232,7 @@ func (c *ApplyCommand) RunIntoGlazeProcessor(
 	// Summary row
 	summaryRow := types.NewRow(
 		types.MRP("id", "_summary"),
+		types.MRP("strategy_id", strategyID),
 		types.MRP("chunk_index", len(chunks)),
 		types.MRP("token_count", 0),
 		types.MRP("start_offset", 0),

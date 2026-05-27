@@ -55,6 +55,10 @@ func Migrate(db *sql.DB) error {
 		}
 	}
 
+	if err := ensureChunksStrategyID(db); err != nil {
+		return fmt.Errorf("ensure chunks strategy_id: %w", err)
+	}
+
 	return nil
 }
 
@@ -94,6 +98,7 @@ const migrationV1Chunks = `
 CREATE TABLE IF NOT EXISTS chunks (
     id TEXT PRIMARY KEY,
     document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+    strategy_id TEXT NOT NULL REFERENCES chunking_strategies(id),
     chunk_index INTEGER NOT NULL,
     text TEXT NOT NULL,
     token_count INTEGER NOT NULL DEFAULT 0,
@@ -102,7 +107,7 @@ CREATE TABLE IF NOT EXISTS chunks (
     boundaries_json TEXT DEFAULT '{}',
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at TEXT NOT NULL DEFAULT (datetime('now')),
-    UNIQUE(document_id, chunk_index)
+    UNIQUE(document_id, strategy_id, chunk_index)
 );
 `
 
