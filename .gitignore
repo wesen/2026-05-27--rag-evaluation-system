@@ -1,0 +1,24 @@
+# Binaries
+/rag-eval
+/tmp/
+
+# Data
+data/
+*.db
+*.bleve/
+
+# Web build artifacts
+web/dist/
+web/node_modules/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local

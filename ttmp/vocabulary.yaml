@@ -5,6 +5,18 @@ topics:
       description: Backend services
     - slug: websocket
       description: WebSocket lifecycle & events
+    - slug: embeddings
+      description: Vector embedding computation and similarity
+    - slug: evaluation
+      description: Retrieval evaluation metrics and benchmarking
+    - slug: playground
+      description: Interactive web playground for exploring system behavior
+    - slug: rag
+      description: Retrieval-Augmented Generation
+    - slug: search
+      description: Full-text and vector search
+    - slug: workflow
+      description: Durable workflow orchestration
 docTypes:
     - slug: design-doc
       description: Structured rationale and architecture notes
