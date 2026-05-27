@@ -15,12 +15,19 @@ RelatedFiles:
       Note: Stored embedding similarity service added in Step 8
     - Path: internal/services/embedding/similarity_test.go
       Note: Temporary-SQLite similarity regression tests added in Step 8
+    - Path: web/src/components/embeddings/EmbeddingsView.tsx
+      Note: Embedding Inspector first functional slice recorded in Step 9
+    - Path: web/src/index.css
+      Note: Retro form styles for the inspector recorded in Step 9
+    - Path: web/src/services/api.ts
+      Note: RTK Query embedding endpoint bindings recorded in Step 9
 ExternalSources: []
 Summary: ""
 LastUpdated: 0001-01-01T00:00:00Z
 WhatFor: ""
 WhenToUse: ""
 ---
+
 
 
 # Diary
@@ -763,3 +770,94 @@ Dimension validation also has two layers: the SQL query filters by the requested
 - HTTP shape:
   - `POST /api/v1/embeddings/similarity`
   - body fields: `strategy_id`, `provider_type`, `model`, `dimensions`, `chunk_id_a`, optional `chunk_id_b`, `limit`, `candidate_limit`, `preview_runes`.
+
+---
+
+## Step 9: Embedding Inspector First Functional Slice
+
+After the stored similarity backend was available, I added the first frontend slice that can drive it. The Embedding Inspector is no longer a placeholder: it can load chunking strategies, display a coverage snapshot, trigger bounded embedding compute calls, select chunks from a document, and call the stored similarity endpoint.
+
+This is intentionally still a thin inspector. It does not implement heatmaps or model-comparison dashboards yet. It gives the user a practical testing surface for the backend embedding contract while keeping large-scale visualization work for a later phase.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 8)
+
+**Assistant interpretation:** Continue from backend similarity into the first testable frontend path, while keeping validation and workflow records current.
+
+**Inferred user intent:** Make the project testable from both operator tooling and the web UI, not just through unit tests.
+
+**Commit (code):** 39c4d5af162b81f48bbacddd070163e46b76084c — "feat: add embedding inspector first slice"
+
+### What I did
+
+- Extended `web/src/services/api.ts` with RTK Query types and endpoints for:
+  - `GET /api/v1/chunking-strategies`
+  - `POST /api/v1/embeddings/compute`
+  - `POST /api/v1/embeddings/similarity`
+- Replaced the placeholder `web/src/components/embeddings/EmbeddingsView.tsx` with a functional inspector UI.
+- Added strategy selection, provider/model/dimension controls, bounded compute settings, and force recompute control.
+- Added document selection and strategy-filtered chunk selection for pairwise similarity.
+- Added display tables for compute summaries and similarity matches.
+- Added retro macOS form/fieldset/stat/error styles in `web/src/index.css`.
+- Marked task 56 complete.
+
+### Why
+
+The user asked to know when testing can start. A backend-only testing path already exists through the CLI, but the project goal includes an interactive playground. The Embedding Inspector now gives the web UI a first working path through the embedding compute and similarity endpoints.
+
+### What worked
+
+- `npm run build` in `web/` passed:
+  - TypeScript compilation succeeded.
+  - Vite built the frontend bundle successfully.
+- The inspector compiles against the RTK Query endpoint types.
+- The UI remains bounded by default: compute defaults to a small chunk limit, similarity defaults to a limited result set, and similarity candidate scans are capped.
+
+### What didn't work
+
+- The first frontend build failed because strict TypeScript treated array indexing as possibly undefined:
+  - `src/components/embeddings/EmbeddingsView.tsx(42,21): error TS2532: Object is possibly 'undefined'.`
+  - `src/components/embeddings/EmbeddingsView.tsx(48,21): error TS2532: Object is possibly 'undefined'.`
+  - `src/components/embeddings/EmbeddingsView.tsx(62,19): error TS2532: Object is possibly 'undefined'.`
+  - `src/components/embeddings/EmbeddingsView.tsx(65,19): error TS2532: Object is possibly 'undefined'.`
+- I fixed this by assigning `strategies[0]`, `documents[0]`, and default chunks to local variables and checking them before reading `.id`.
+- `npm run build` updated ignored dist asset filenames and the tracked `internal/web/dist/index.html`. I reverted the tracked `index.html` change to avoid committing a build artifact that points at ignored asset files.
+
+### What I learned
+
+- The frontend can now serve as a manual contract tester for the embedding backend, but only after the operator creates sources, scans documents, chunks them, and computes embeddings.
+- The current API still lacks a durable embedding coverage endpoint. The UI can show session-local compute results and visible chunk counts, but it cannot yet show full stored embedding coverage per strategy/model without adding a backend query.
+
+### What was tricky to build
+
+The UI has to connect several identities that are easy to confuse: selected strategy, selected document, chunks filtered by strategy, provider type, model, and dimensions. The similarity endpoint requires all of those vector identity fields to match stored embeddings. The UI therefore keeps provider/model/dimension fields explicit rather than hiding them behind a profile selector.
+
+The other tricky part was avoiding a false sense of completeness. This is a functional inspector slice, not the final Embedding Inspector promised by the original design. It intentionally does not implement heatmaps, model comparison, or nearest-neighbor indexing.
+
+### What warrants a second pair of eyes
+
+- `web/src/components/embeddings/EmbeddingsView.tsx`: review whether the provider/model/dimension controls should be centralized into a reusable component before adding search/reranking views.
+- `web/src/services/api.ts`: response types should be kept in sync with backend structs as endpoints stabilize.
+- The UI currently derives visible chunks from one selected document. A future inspector should support strategy-wide embedding coverage across all documents.
+
+### What should be done in the future
+
+- Add a backend embedding coverage endpoint that reports stored/fresh/missing counts for `(strategy_id, provider, model, dimensions)`.
+- Add a documented manual test script that walks through source creation, scan, chunk apply, compute, and similarity.
+- Add heatmap/model-comparison components after the coverage endpoint exists.
+- Add Playwright/browser smoke tests once the frontend testing harness is in place.
+
+### Code review instructions
+
+- Start with `web/src/services/api.ts` to understand the API contract exposed to the UI.
+- Then review `web/src/components/embeddings/EmbeddingsView.tsx` for state flow and bounded defaults.
+- Validate with:
+  - `cd web && npm run build`
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval`
+- Manual UI testing can start now after backend data exists: open the Embeddings view, choose a strategy, use a small compute limit, then compare two chunks that have stored embeddings.
+
+### Technical details
+
+- Completed task ID: 56.
+- The frontend still leaves task 26 open because the full Embedding Inspector feature set includes heatmap, pairwise compare, and model comparison. This step only implements the first functional pairwise/compute slice.

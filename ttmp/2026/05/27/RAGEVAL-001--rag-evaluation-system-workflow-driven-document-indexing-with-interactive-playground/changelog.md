@@ -140,3 +140,14 @@ Phase 3.1c/3.3: added stored embedding similarity retrieval, cosine service test
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/api/handlers.go — HTTP embedding similarity endpoint
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/embedding/similarity.go — Embedding similarity service and cosine similarity implementation
 
+
+## 2026-05-27
+
+Phase 3.1d: added the first functional Embedding Inspector slice with strategy/provider controls, bounded compute trigger, chunk selection, and stored similarity results.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/components/embeddings/EmbeddingsView.tsx — Functional Embedding Inspector UI
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/index.css — Retro form
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/services/api.ts — RTK Query embedding compute and similarity endpoints
+

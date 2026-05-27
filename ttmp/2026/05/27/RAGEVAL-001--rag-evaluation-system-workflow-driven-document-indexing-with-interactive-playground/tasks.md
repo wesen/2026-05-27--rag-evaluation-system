@@ -58,6 +58,6 @@
 - [x] Phase 3.1a: Implement embedding provider factory using Geppetto plus Pinocchio/profile configuration
 - [x] Phase 3.1b: Implement embedding service with batching, text_hash staleness checks, and bounded memory
 - [x] Phase 3.1c: Add Glazed embedding commands in lockstep with HTTP endpoints
-- [ ] Phase 3.1d: Add embedding API endpoints and frontend Embedding Inspector first functional slice
+- [x] Phase 3.1d: Add embedding API endpoints and frontend Embedding Inspector first functional slice
 - [x] Phase 3.1c.1: Add Glazed embedding compute command backed by embedding service
 - [x] Phase 3.1d.1: Add HTTP embedding compute endpoint backed by embedding service
