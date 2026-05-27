@@ -378,3 +378,89 @@ Another tricky detail was making chunk IDs strategy-aware. Without including `st
 - Completed stabilization task IDs: 44, 45, 46.
 - Partial bounded-output task: chunking outputs are bounded; embeddings/search outputs remain future work because those features are not implemented yet.
 - Smoke tests used temporary databases under `/tmp` and constrained Go memory/CPU using `GOMAXPROCS=2 GOMEMLIMIT=768MiB`.
+
+---
+
+## Step 5: Service-Layer Test Coverage and Detailed Continuation Tasks
+
+I added a more detailed continuation task list before coding so the ticket now has explicit near-term work for service tests, migration tests, and Phase 3 embedding slices. Then I implemented the test coverage that should have existed before moving from chunking into embeddings.
+
+The tests use temporary SQLite databases, not mocks, because the highest-risk behavior here is relational identity, idempotent upserts, and migration behavior. This catches the real failure modes we care about before wiring more workflow or embedding layers on top.
+
+### Prompt Context
+
+**User prompt (verbatim):** "add tasks and phases to the ticket, if necessary, detailed task list, then work on them step by step, committing at appropriate intervals, keeping a detailed diary as you work"
+
+**Assistant interpretation:** Reconcile and extend the ticket task list, then continue implementation one validated task group at a time with focused commits and diary updates.
+
+**Inferred user intent:** Keep implementation disciplined and auditable after the recovery pass, with enough task granularity for handoff and review.
+
+**Commit (docs):** 632f601 — "docs: add detailed continuation tasks"
+**Commit (code):** 978f680 — "test: cover service idempotency and chunk migrations"
+
+### What I did
+
+- Added detailed tasks for:
+  - source service idempotency tests,
+  - chunk service strategy/idempotency tests,
+  - document service tests,
+  - legacy chunk migration tests,
+  - Phase 3 embedding research and implementation slices.
+- Added `internal/services/source/service_test.go`.
+- Added `internal/services/chunking/service_test.go`.
+- Added `internal/services/document/service_test.go`.
+- Added `internal/db/migrations_test.go`.
+- Marked tasks 48, 49, 50, and 51 complete.
+
+### Why
+
+The previous sprint had enough behavior to be useful, but not enough service-layer tests to safely start embeddings. Embeddings will depend on stable document/chunk identity and rerun-safe derived state, so these tests are the safety rail for Phase 3.
+
+### What worked
+
+- Temporary SQLite tests are fast enough and exercise the real schema.
+- Source create and scan idempotency are covered with real filesystem files.
+- Chunk application is covered for rerunning the same strategy and keeping different strategies separate.
+- Document service tests confirm list/get/chunks behavior over real stored data.
+- The migration test confirms a legacy `chunks` table without `strategy_id` is upgraded and preserves strategy metadata from `boundaries_json`.
+
+### What didn't work
+
+- No major blockers. The only tradeoff is some duplicated test setup helpers across service packages. That is acceptable for now because it keeps tests local and avoids introducing a production test utility package.
+
+### What I learned
+
+- The service boundary is now testable enough to support the embedding phase.
+- The migration helper is adequate for development DB recovery, but it still should not be mistaken for a full production migration framework.
+- Testing against SQLite directly is worth the small overhead because schema mistakes were the primary risk.
+
+### What was tricky to build
+
+The migration test required constructing a partial legacy database by hand, then running the current `Migrate()` path against it. This matters because `CREATE TABLE IF NOT EXISTS` alone would not alter an old table; the explicit `ensureChunksStrategyID` path is the behavior under test.
+
+### What warrants a second pair of eyes
+
+- `internal/db/migrations_test.go` should be reviewed alongside `internal/db/migrations.go` to confirm the legacy upgrade path is good enough for development DBs.
+- The duplicated `openTestQueries` helpers may be worth consolidating later if more services are added.
+
+### What should be done in the future
+
+- Start Phase 3.0 by rereading current Geppetto embedding/profile APIs and Pinocchio profile wiring before implementing the embedding provider factory.
+- Keep embedding service tests temporary-SQLite-backed as well.
+- Add CLI/HTTP smoke tests for embeddings only after service-level tests exist.
+
+### Code review instructions
+
+- Review tests first:
+  - `internal/services/source/service_test.go`
+  - `internal/services/chunking/service_test.go`
+  - `internal/services/document/service_test.go`
+  - `internal/db/migrations_test.go`
+- Validate with:
+  - `GOMAXPROCS=2 GOMEMLIMIT=768MiB go test ./internal/db ./internal/ingest ./internal/chunking ./internal/services/source ./internal/services/chunking ./internal/services/document -count=1 -timeout 30s`
+  - `GOMAXPROCS=2 GOMEMLIMIT=768MiB go build ./cmd/rag-eval`
+
+### Technical details
+
+- Completed task IDs: 48, 49, 50, 51.
+- Added Phase 3 continuation task IDs: 52-56.

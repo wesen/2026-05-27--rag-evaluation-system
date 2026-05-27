@@ -76,3 +76,15 @@ Added detailed next tasks for service-layer tests, legacy chunk migration covera
 
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/tasks.md — Detailed continuation tasks added
 
+
+## 2026-05-27
+
+Added temporary-SQLite tests covering source idempotency, chunk strategy identity/idempotency, document service behavior, and legacy chunk migration (commit 978f680).
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/db/migrations_test.go — Legacy chunks strategy_id migration test
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/chunking/service_test.go — Chunk apply rerun-safety and strategy isolation tests
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/document/service_test.go — Document service list/get/chunks tests
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/source/service_test.go — Source create/scan idempotency tests
+
