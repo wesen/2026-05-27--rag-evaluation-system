@@ -22,3 +22,6 @@ Thumbs.db
 # Env
 .env
 .env.local
+internal/web/dist/assets/
+internal/web/dist/favicon.svg
+internal/web/dist/icons.svg
