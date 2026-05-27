@@ -55,21 +55,26 @@ func (s *Scanner) ScanDir(sourceID, dirPath string) ([]string, error) {
 		}
 
 		// Generate stable ID from path hash
-		docID := "doc-" + hashString(sourceID+":"+path)[:16]
+		relPath, err := filepath.Rel(dirPath, path)
+		if err != nil {
+			relPath = path
+		}
+
+		docID := "doc-" + hashString(sourceID + ":" + relPath)[:16]
 		title := extractTitle(content, d.Name())
 		wordCount := countWords(string(content))
 
 		err = s.db.InsertDocument(
 			docID,
 			sourceID,
-			"",  // external_id
+			relPath,
 			title,
-			"",  // author
-			"",  // url
+			"", // author
+			"", // url
 			detectContentType(ext),
 			string(content),
 			string(content),
-			"",  // content_html
+			"", // content_html
 			wordCount,
 			"en",
 			"extracted",

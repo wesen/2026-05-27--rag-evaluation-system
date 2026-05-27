@@ -36,6 +36,20 @@ func (q *Queries) InsertDocument(
 		    content_type, raw_content, content_text, content_html,
 		    word_count, language, status)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(id) DO UPDATE SET
+		    source_id = excluded.source_id,
+		    external_id = excluded.external_id,
+		    title = excluded.title,
+		    author = excluded.author,
+		    url = excluded.url,
+		    content_type = excluded.content_type,
+		    raw_content = excluded.raw_content,
+		    content_text = excluded.content_text,
+		    content_html = excluded.content_html,
+		    word_count = excluded.word_count,
+		    language = excluded.language,
+		    status = excluded.status,
+		    updated_at = datetime('now')
 	`, id, sourceID, externalID, title, author, url,
 		contentType, rawContent, contentText, contentHTML,
 		wordCount, language, status)
@@ -128,10 +142,16 @@ func (q *Queries) CountDocumentChunks(documentID string) (int, error) {
 	return count, nil
 }
 
-// InsertSource inserts a new source
+// InsertSource inserts or updates a source.
 func (q *Queries) InsertSource(id, name, sourceType, configJSON string) error {
 	_, err := q.db.Exec(`
-		INSERT INTO sources (id, name, type, config_json) VALUES (?, ?, ?, ?)
+		INSERT INTO sources (id, name, type, config_json)
+		VALUES (?, ?, ?, ?)
+		ON CONFLICT(id) DO UPDATE SET
+		    name = excluded.name,
+		    type = excluded.type,
+		    config_json = excluded.config_json,
+		    updated_at = datetime('now')
 	`, id, name, sourceType, configJSON)
 	if err != nil {
 		return fmt.Errorf("insert source: %w", err)
