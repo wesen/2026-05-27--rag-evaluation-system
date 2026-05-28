@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	chunkcore "github.com/go-go-golems/rag-evaluation-system/internal/chunking"
 	"github.com/go-go-golems/rag-evaluation-system/internal/db"
 	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
+	corpuservice "github.com/go-go-golems/rag-evaluation-system/internal/services/corpus"
 	documentservice "github.com/go-go-golems/rag-evaluation-system/internal/services/document"
 	embeddingservice "github.com/go-go-golems/rag-evaluation-system/internal/services/embedding"
 	sourceservice "github.com/go-go-golems/rag-evaluation-system/internal/services/source"
@@ -41,6 +43,11 @@ func RegisterHandlers(mux *http.ServeMux, database *sql.DB) {
 	mux.HandleFunc("POST /api/v1/embeddings/compute", h.handleComputeEmbeddings)
 	mux.HandleFunc("POST /api/v1/embeddings/coverage", h.handleEmbeddingCoverage)
 	mux.HandleFunc("POST /api/v1/embeddings/similarity", h.handleEmbeddingSimilarity)
+
+	// Corpus Explorer (read-only)
+	mux.HandleFunc("GET /api/v1/corpus/sources", h.handleCorpusSources)
+	mux.HandleFunc("GET /api/v1/corpus/documents", h.handleCorpusDocuments)
+	mux.HandleFunc("GET /api/v1/corpus/documents/{id}", h.handleCorpusDocumentDetail)
 }
 
 type handler struct {
@@ -464,6 +471,62 @@ func (h *handler) handleListChunkingStrategies(w http.ResponseWriter, r *http.Re
 	})
 }
 
+// --- Corpus Explorer ---
+
+func (h *handler) handleCorpusSources(w http.ResponseWriter, r *http.Request) {
+	identity := parseEmbeddingIdentity(r)
+	svc := corpuservice.NewService(h.queries.DB())
+	result, err := svc.SourceSummaries(r.Context(), identity)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "query_failed", err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"items":              result,
+		"embedding_identity": identity,
+	})
+}
+
+func (h *handler) handleCorpusDocuments(w http.ResponseWriter, r *http.Request) {
+	sourceID := r.URL.Query().Get("source_id")
+	if sourceID == "" {
+		writeError(w, http.StatusBadRequest, "missing_param", "source_id is required")
+		return
+	}
+	identity := parseEmbeddingIdentity(r)
+	limit := intQueryDefault(r, "limit", 100)
+	offset := intQueryDefault(r, "offset", 0)
+
+	svc := corpuservice.NewService(h.queries.DB())
+	result, err := svc.DocumentBrowser(r.Context(), sourceID, identity, limit, offset)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "query_failed", err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"items": result,
+		"page":  map[string]interface{}{"limit": limit, "offset": offset},
+	})
+}
+
+func (h *handler) handleCorpusDocumentDetail(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	identity := parseEmbeddingIdentity(r)
+	includeText := r.URL.Query().Get("include_text") == "true"
+
+	svc := corpuservice.NewService(h.queries.DB())
+	result, err := svc.DocumentDetail(r.Context(), id, identity, includeText)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "query_failed", err.Error())
+		return
+	}
+	if result == nil {
+		writeError(w, http.StatusNotFound, "not_found", "document not found")
+		return
+	}
+	writeJSON(w, http.StatusOK, result)
+}
+
 // --- Helpers ---
 
 type chunkPreview struct {
@@ -528,4 +591,25 @@ func writeError(w http.ResponseWriter, status int, code, message string) {
 		"error":   code,
 		"message": message,
 	})
+}
+
+func parseEmbeddingIdentity(r *http.Request) corpuservice.EmbeddingIdentity {
+	return corpuservice.EmbeddingIdentity{
+		StrategyID:   r.URL.Query().Get("strategy_id"),
+		ProviderType: r.URL.Query().Get("provider_type"),
+		Model:        r.URL.Query().Get("model"),
+		Dimensions:   intQueryDefault(r, "dimensions", 0),
+	}
+}
+
+func intQueryDefault(r *http.Request, key string, def int) int {
+	v := r.URL.Query().Get(key)
+	if v == "" {
+		return def
+	}
+	n, err := strconv.Atoi(v)
+	if err != nil {
+		return def
+	}
+	return n
 }
