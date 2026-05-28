@@ -200,7 +200,7 @@ func (s *Service) DocumentBrowser(ctx context.Context, sourceID string, identity
 			d.word_count,
 			d.status`
 
-	args := []interface{}{sourceID}
+	args := []interface{}{}
 
 	if identity.StrategyID != "" {
 		query += `,
@@ -244,7 +244,7 @@ func (s *Service) DocumentBrowser(ctx context.Context, sourceID string, identity
 		ORDER BY d.word_count DESC, d.id
 		LIMIT ? OFFSET ?`
 
-	args = append(args, limit, offset)
+	args = append(args, sourceID, limit, offset)
 
 	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
@@ -342,7 +342,7 @@ func (s *Service) DocumentDetail(ctx context.Context, documentID string, identit
 			COALESCE(c.end_offset, 0),
 			c.token_count`
 
-	chunkArgs := []interface{}{documentID, identity.StrategyID}
+	chunkArgs := []interface{}{}
 
 	if includeText {
 		chunkQuery += `,
@@ -379,7 +379,13 @@ func (s *Service) DocumentDetail(ctx context.Context, documentID string, identit
 		WHERE c.document_id = ? AND c.strategy_id = ?
 		ORDER BY c.chunk_index`
 
+	chunkArgs = append(chunkArgs, documentID, identity.StrategyID)
+
 	rows, err := s.db.QueryContext(ctx, chunkQuery, chunkArgs...)
+	if err != nil {
+		return nil, fmt.Errorf("corpus document detail chunks: %w", err)
+	}
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("corpus document detail chunks: %w", err)
 	}
