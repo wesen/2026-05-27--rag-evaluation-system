@@ -15,6 +15,8 @@ RelatedFiles:
       Note: Stored embedding similarity service added in Step 8
     - Path: internal/services/embedding/similarity_test.go
       Note: Temporary-SQLite similarity regression tests added in Step 8
+    - Path: ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/scripts/03-download-thetreecenter.py
+      Note: Defuddle corpus downloader recorded in Step 10
     - Path: web/src/components/embeddings/EmbeddingsView.tsx
       Note: Embedding Inspector first functional slice recorded in Step 9
     - Path: web/src/index.css
@@ -27,6 +29,7 @@ LastUpdated: 0001-01-01T00:00:00Z
 WhatFor: ""
 WhenToUse: ""
 ---
+
 
 
 
@@ -861,3 +864,105 @@ The other tricky part was avoiding a false sense of completeness. This is a func
 
 - Completed task ID: 56.
 - The frontend still leaves task 26 open because the full Embedding Inspector feature set includes heatmap, pairwise compare, and model comparison. This step only implements the first functional pairwise/compute slice.
+
+---
+
+## Step 10: The Tree Center Test Corpus and Chunk Listing Check
+
+I checked the current local database first. It contained two earlier `test` source documents and no chunk rows for those documents, so I chunked both with `fixed-500-50` to confirm that chunk listing works on the current DB.
+
+Then I prepared a real external Markdown corpus from The Tree Center. I used the site's public WordPress sitemap advertised in `robots.txt`, created a rate-limited Defuddle downloader, downloaded the 19 guide pages, scanned them into the local SQLite database as `thetreecenter-guides`, and chunked them with a larger fixed strategy suitable for prose.
+
+### Prompt Context
+
+**User prompt (verbatim):** "i can list any chunks for the documents we have so far? Can we download a whole set of guides / blog posts from thetreecenter.com/ with defuddle and use that as data?"
+
+**Assistant interpretation:** Show whether chunk listing works for the current documents and prepare a Defuddle-based website corpus that can be ingested and used for RAG evaluation testing.
+
+**Inferred user intent:** Move from synthetic/code-document data to a realistic topical corpus and know exactly what can be tested next.
+
+### What I did
+
+- Listed current documents with `./rag-eval document list`.
+- Confirmed current DB had two `test` source documents: `doc-5881ea80337070d2` and `doc-8164fc4fbf444d9a`.
+- Ran `chunk apply` for both current documents with `fixed-500-50` and preview output.
+- Checked The Tree Center `robots.txt`; it allows the public paths used here and advertises `https://www.thetreecenter.com/wp-sitemap.xml`.
+- Discovered sitemap counts:
+  - 19 guide pages from `wp-sitemap-posts-ttc_guide-1.xml`.
+  - 483 blog post pages from `wp-sitemap-posts-post-1.xml`.
+- Added `scripts/03-download-thetreecenter.py` under the ticket workspace.
+- Ran the downloader for guides with Defuddle and wrote Markdown files under ignored local data path `data/corpus/thetreecenter/guides/`.
+- Created source `thetreecenter-guides`.
+- Scanned 19 downloaded guide Markdown files into SQLite.
+- Chunked the 19 guide documents with `fixed-1200-150`.
+
+### Why
+
+The current test documents were source-code files, which are useful for smoke tests but not representative of the intended RAG workflow. The Tree Center guide pages provide a coherent topical prose corpus that is better for testing chunking, embedding similarity, and later search/evaluation behavior.
+
+The downloader is scripted rather than one-off shell because the blog corpus is much larger. A script gives us rate limiting, resumability, a manifest, and a safe way to run guide-only, post-only, or all-page downloads.
+
+### What worked
+
+- `defuddle parse <url> --md` worked on The Tree Center guide pages.
+- The guide sitemap produced 19 stable URLs.
+- All 19 guide pages downloaded successfully.
+- `source scan` ingested all 19 guide Markdown files into source `thetreecenter-guides`.
+- Chunking produced 226 chunks across 19 guide documents under strategy `fixed-1200-150`.
+
+### What didn't work
+
+- I did not download all 483 blog posts yet. That is supported by the script, but I did not run the full post corpus automatically because it is a larger external crawl and should be done deliberately with rate limiting.
+- The downloaded corpus and SQLite database live under `data/`, which is ignored by Git. This is intentional for local test data, but it means another machine must rerun the downloader/scan commands.
+
+### What I learned
+
+- The Tree Center exposes WordPress sitemap partitions that cleanly separate regular posts from `ttc_guide` pages.
+- The guide set is a good first data fixture: small enough to download quickly, large enough to produce hundreds of chunks.
+- For prose guides, `fixed-1200-150` gives a manageable initial chunk count for manual embedding tests.
+
+### What was tricky to build
+
+The main constraint was avoiding an uncontrolled site crawl. The script only reads URLs from public sitemaps, supports `--types guides|posts|all`, has a `--max` limiter, and sleeps between pages. It also writes a JSONL manifest so interrupted runs can be inspected.
+
+Another subtle point is that the downloader should not be coupled to the RAG database. It produces Markdown files first. The normal `source scan` path then ingests those files, which keeps the corpus acquisition step separate from the application ingestion step.
+
+### What warrants a second pair of eyes
+
+- Review `scripts/03-download-thetreecenter.py` before running the full 483-post corpus.
+- Confirm desired corpus size before embedding all chunks; a full post corpus will produce many more chunks and provider calls.
+- Check whether The Tree Center pages' terms of use impose additional constraints beyond `robots.txt` before using this beyond local testing.
+
+### What should be done in the future
+
+- Add a small `docs/testing-corpus.md` or ticket reference with exact commands for reproducing the guide corpus.
+- Run `--types posts --max 25` as a second sample before downloading all 483 posts.
+- Add a source-level filter or CLI option so `document list` can filter by `source_id` without relying on `jq`.
+- Add an embedding coverage endpoint before scaling the corpus.
+
+### Code review instructions
+
+- Review the downloader:
+  - `ttmp/.../scripts/03-download-thetreecenter.py`
+- Reproduce URL discovery without downloading:
+  - `scripts/03-download-thetreecenter.py --types guides --dry-run`
+  - `scripts/03-download-thetreecenter.py --types posts --max 10 --dry-run`
+- Validate local corpus state:
+  - `find data/corpus/thetreecenter/guides -type f | wc -l`
+  - `./rag-eval document list --output json --glazed-limit 100 | jq -r '.[] | select(.source_id=="thetreecenter-guides") | [.id,.title,.word_count,.status] | @tsv'`
+  - `sqlite3 data/rag-eval.db "SELECT c.strategy_id, COUNT(*) chunks, COUNT(DISTINCT c.document_id) docs FROM chunks c JOIN documents d ON d.id=c.document_id WHERE d.source_id='thetreecenter-guides' GROUP BY c.strategy_id;"`
+
+### Technical details
+
+- Local guide corpus path:
+  - `data/corpus/thetreecenter/guides/`
+- Local source ID:
+  - `thetreecenter-guides`
+- Local guide document count:
+  - 19
+- Local guide chunk strategy:
+  - `fixed-1200-150`
+- Local guide chunk count:
+  - 226 chunks across 19 documents
+- Full post corpus command, not yet run:
+  - `ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/scripts/03-download-thetreecenter.py --types posts --delay 1.0`

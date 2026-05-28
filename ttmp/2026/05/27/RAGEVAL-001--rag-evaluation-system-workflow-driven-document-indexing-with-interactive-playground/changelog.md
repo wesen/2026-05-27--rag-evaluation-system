@@ -151,3 +151,12 @@ Phase 3.1d: added the first functional Embedding Inspector slice with strategy/p
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/index.css — Retro form
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/services/api.ts — RTK Query embedding compute and similarity endpoints
 
+
+## 2026-05-28
+
+Testing corpus: added a rate-limited Defuddle downloader for The Tree Center guides/blog posts; downloaded 19 guide pages locally, scanned them into source thetreecenter-guides, and chunked them with fixed-1200-150 for testing.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/scripts/03-download-thetreecenter.py — Rate-limited Defuddle corpus downloader
+
