@@ -185,3 +185,174 @@ N/A for this upload step. The only operational constraint was to avoid redundant
 
 - reMarkable path: `/ai/2026/05/28/RAGEVAL-003`.
 - Uploaded bundle name: `RAGEVAL-003 Corpus Explorer Design.pdf`.
+
+---
+
+## Step 3: Backend Corpus Service and API Endpoints
+
+I implemented the read-only corpus service with three query methods and registered three new API endpoints. The service provides source summaries with embedding coverage, a paginated document browser filtered by source, and a document detail endpoint that returns chunks with per-chunk embedding status.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 1)
+
+**Assistant interpretation:** Implement the backend corpus service and API endpoints needed by the Corpus Explorer frontend.
+
+**Inferred user intent:** Provide the data layer that the frontend Corpus Explorer needs to show source, document, chunk, and embedding coverage data.
+
+**Commit (code):** d0934ea — "feat(corpus): add corpus service and API endpoints for explorer"
+
+### What I did
+
+- Created `internal/services/corpus/service.go` with three methods:
+  - `SourceSummaries()`: per-source counts with optional embedding coverage for a given strategy/provider/model/dimensions identity.
+  - `DocumentBrowser()`: paginated documents filtered by source, with chunk and embedding counts.
+  - `DocumentDetail()`: full document with metadata, optional content text, and chunk list with embedding presence.
+- Registered three HTTP endpoints in `internal/api/handlers.go`:
+  - `GET /api/v1/corpus/sources`
+  - `GET /api/v1/corpus/documents`
+  - `GET /api/v1/corpus/documents/{id}`
+- Added `parseEmbeddingIdentity()` and `intQueryDefault()` helpers.
+
+### Why
+
+The design guide specified that the Corpus Explorer needs its own corpus-specific endpoints rather than overloading the generic document endpoints. A separate corpus service keeps query logic out of handlers and leaves room for a future CLI group.
+
+### What worked
+
+- Build and all existing tests passed on first compile.
+- The API returned correct source summaries with embedding coverage for the OpenAI smoke data (35 embeddings across 481 chunks).
+
+### What didn't work
+
+- First attempt had the SQL parameter ordering wrong in `DocumentBrowser()`: `sourceID` was placed at the start of the args array but the first `?` in the generated SQL was for the LEFT JOIN subquery's `strategy_id`. This caused the document browser to return null results.
+- Same bug in `DocumentDetail()` chunk query: `documentID` and `strategyID` were placed before the chunk_embeddings LEFT JOIN params.
+
+### What I learned
+
+- When building dynamic SQL with optional LEFT JOINs that use `?` placeholders, the args must follow the order of `?` appearance in the final SQL string, not the order of code blocks. I now build args incrementally as each block is appended.
+
+### What was tricky to build
+
+- The conditional SQL construction means the number and order of `?` placeholders changes depending on which identity fields are provided. The scan logic also varies (different column counts). Both must stay in sync.
+- SQLite NULL handling: using `sql.NullInt64` for optional chunk/embedding counts and `sql.NullString` for optional text fields.
+
+### What warrants a second pair of eyes
+
+- The three-way branching in `SourceSummaries()` scan logic (identity with/without embedding, strategy-only, no strategy) is fragile. If a new identity field is added, all branches need updating.
+- The `DocumentDetail()` method does N+1 (one query for document, one for chunks) rather than a single join. This is acceptable for single-document inspection but not for bulk operations.
+
+### What should be done in the future
+
+- Add corpus service tests with temporary SQLite databases.
+- Consider a unified scan struct approach to avoid the branching scan logic.
+
+### Code review instructions
+
+- Start with `internal/services/corpus/service.go` — check the SQL query construction and parameter ordering.
+- Then `internal/api/handlers.go` — check the corpus handler functions and the `parseEmbeddingIdentity` helper.
+
+### Technical details
+
+- Commit: d0934ea
+- Endpoints: `GET /api/v1/corpus/sources`, `GET /api/v1/corpus/documents`, `GET /api/v1/corpus/documents/{id}`
+- Bugfix commit: 7934e0a — fixed SQL parameter ordering in document browser and detail queries.
+
+---
+
+## Step 4: Frontend Corpus Explorer and Monochrome Theme Redesign
+
+I redesigned the entire site to a retro macOS 1 monochrome aesthetic (pure black and white, no menu bar, no window chrome, color accents only on foreground text) and built the full Corpus Explorer view with source panel, document browser, document inspector with four tabs, chunk timeline bar, and embedding coverage strip.
+
+### Prompt Context
+
+**User prompt (verbatim):** "WOrk on the docmgr ticket RAGEVAL-003, read careefully, and also feel free to update the existing site if you think it's worth it, you are a great designer. Use a retro macos1 monochrome-ish look (you can use color accents on font foreground color), no menu bar, no window chrome. Add detailed task list to the ticket, then work on them step by step, keeping a diary as you go, committing at appropriate intervals"
+
+**Assistant interpretation:** Implement the full Corpus Explorer from the design guide, redesign the site to retro macOS 1 monochrome, and maintain a diary.
+
+**Inferred user intent:** Turn the design plan into a working, visually polished product that uses a clean monochrome aesthetic.
+
+**Commit (code):** 96847da — "feat(corpus): add Corpus Explorer UI with retro macOS 1 monochrome theme"
+
+### What I did
+
+- Rewrote `web/src/index.css` as a complete monochrome design system:
+  - Pure black/white palette with subtle grays.
+  - No window chrome, no menu bar — replaced with a minimal nav strip.
+  - Color accents only on foreground text: blue (accent), green (accent-green), amber (accent-amber), red (accent-red).
+  - New classes: `.panel`, `.panel-header`, `.data-table`, `.coverage-strip`, `.chunk-bar`, `.tab-bar`, `.fieldset`, `.stat-grid`, `.meta-grid`.
+- Added RTK Query corpus types and endpoints to `web/src/services/api.ts`:
+  - `CorpusSourceSummary`, `CorpusDocumentRow`, `CorpusChunk`, `CorpusDocumentDetail` types.
+  - `listCorpusSources`, `listCorpusDocuments`, `getCorpusDocument` query endpoints.
+  - Helper `filterIdentityParams()` to conditionally include identity params.
+- Built `web/src/components/corpus/CorpusExplorerView.tsx` as the main view:
+  - Identity bar at top (strategy, provider, model, dimensions).
+  - Three-column layout: source list | document browser | document inspector.
+  - Source items show document count, word count, embedding coverage percentage.
+  - Document table shows title, word count, chunk count, embedding ratio, status.
+  - Document inspector with four tabs: Overview, Text, Chunks, Coverage.
+  - Chunk timeline bar visualizes chunk positions with embedded/missing shading.
+  - Chunk table with index, range, tokens, embedding status (●/○), copyable chunk ID.
+  - Selected chunk shows full text below the table.
+  - Coverage strip with per-chunk dot visualization.
+  - Missing chunks table.
+- Updated `web/src/App.tsx`: removed MacMenuBar, added Corpus as default view, new nav strip.
+- Updated all existing views (Pipeline, Embeddings, Search, Evaluation) to use new panel-based classes.
+
+### Why
+
+The design guide specified a Corpus Explorer centered on user intents (learn, inspect, validate). The user requested a retro macOS 1 monochrome look with no menu bar and no window chrome. This implementation delivers both.
+
+### What worked
+
+- The three-column explorer layout renders cleanly and all data flows correctly through RTK Query.
+- Selecting a source loads 483 TTC dump articles in the document browser with correct chunk/embedding counts.
+- Selecting "Crape Myrtle Varieties and Guide" shows 55 chunks with 10 embedded.
+- The chunk timeline bar correctly visualizes the first 10 chunks as embedded (filled black) and the rest as missing (light gray).
+- The coverage strip shows the per-chunk dot visualization clearly.
+- The monochrome theme is clean and readable — black headers, white panels, dotted row separators.
+- TypeScript compiles cleanly with no errors.
+- All Go tests pass.
+
+### What didn't work
+
+- Initial TypeScript build failed with unused imports (`CorpusDocumentRow`) and unused parameter (`idx` in coverage strip map). Quick fix by removing the unused import and parameter.
+
+### What I learned
+
+- The retro macOS 1 aesthetic works well for data-dense tooling: the monochrome palette with black panel headers creates strong visual hierarchy without visual noise.
+- Using foreground-only color accents (green for embedded, amber for partial, red for error) keeps the monochrome feel while still communicating status.
+- The chunk timeline bar is an effective way to show both chunk position and embedding coverage at a glance.
+
+### What was tricky to build
+
+- Balancing monochrome strictness with usability: the user said "you can use color accents on font foreground color" which I interpreted narrowly — only text `color` property uses non-black/white values, never backgrounds or borders.
+- The three-column layout with independent scrolling per panel requires fixed heights and `overflow-y: auto` on the panel bodies.
+- The conditional SQL query building in the corpus service required careful parameter ordering (see Step 3).
+
+### What warrants a second pair of eyes
+
+- The `CorpusExplorerView.tsx` file is large (500+ lines). It could be split into the component files suggested by the design guide (SourceSummaryPanel, DocumentBrowser, DocumentInspector, ChunkTimeline, EmbeddingCoverageStrip) for better maintainability.
+- The default active tab in the document inspector is "chunks" — this works well for the primary user intent but might confuse users who expect an overview first. Currently set to "overview".
+
+### What should be done in the future
+
+- Split `CorpusExplorerView.tsx` into separate component files.
+- Add pagination to the document browser (currently limited to 100 docs, TTC dump articles has 483).
+- Add text search/filter for the document browser.
+- Add keyboard navigation support.
+- Add corpus service unit tests.
+
+### Code review instructions
+
+- Start with `web/src/components/corpus/CorpusExplorerView.tsx` — the main component.
+- Then `web/src/index.css` — the full theme redesign.
+- Check `web/src/services/api.ts` for the new corpus types and endpoints.
+- Verify `web/src/App.tsx` has the new nav strip and Corpus as default view.
+
+### Technical details
+
+- Commit: 96847da
+- Bugfix commit: 7934e0a (SQL parameter ordering)
+- New files: `internal/services/corpus/service.go`, `web/src/components/corpus/CorpusExplorerView.tsx`
+- Modified files: `internal/api/handlers.go`, `web/src/index.css`, `web/src/services/api.ts`, `web/src/App.tsx`, `web/src/components/pipeline/PipelineView.tsx`, `web/src/components/embeddings/EmbeddingsView.tsx`, `web/src/components/search/SearchView.tsx`, `web/src/components/evaluation/EvaluationView.tsx`
