@@ -2,10 +2,26 @@
 Title: Implementation Diary
 Ticket: RAGEVAL-002
 Status: active
-Topics: [rag, ingestion, database, corpus]
+Topics:
+    - rag
+    - ingestion
+    - database
+    - corpus
 DocType: reference
 Intent: long-term
+Owners: []
+RelatedFiles:
+    - Path: ttmp/2026/05/28/RAGEVAL-002--extract-the-tree-center-content-dump-into-ordered-sqlite-corpus/scripts/04-import-corpus-into-rageval.py
+      Note: Corpus-to-app bridge added in Step 3
+    - Path: ttmp/2026/05/28/RAGEVAL-002--extract-the-tree-center-content-dump-into-ordered-sqlite-corpus/scripts/05-chunk-ttc-sample.sh
+      Note: Bounded sample chunking workflow added in Step 3
+ExternalSources: []
+Summary: ""
+LastUpdated: 0001-01-01T00:00:00Z
+WhatFor: ""
+WhenToUse: ""
 ---
+
 
 # Diary
 
@@ -206,3 +222,106 @@ Another issue was preserving enough product metadata without turning the first e
 - MySQL container: `rageval-ttc-mysql`.
 - Compose file: `scripts/02-docker-compose.mysql.yml`.
 - Exported total primary items: 3,096.
+
+---
+
+## Step 3: Import SQLite Corpus into Rag-Eval and Chunk a Bounded Sample
+
+I added the bridge from the normalized TTC corpus database into the rag-eval app database, then imported the full corpus as app `sources` and `documents`. This makes the database-derived TTC content visible to the existing CLI, HTTP API, and frontend document/chunk flows.
+
+After import, I chunked a deliberately small representative sample: three guides, three articles, and three products. This gives us enough mixed content to run embedding/search experiments without immediately chunking or embedding the entire product-heavy corpus.
+
+### Prompt Context
+
+**User prompt (verbatim):** "go ahead."
+
+**Assistant interpretation:** Execute the next planned step: bridge the exported corpus into the app DB and create a bounded chunk sample for testing.
+
+**Inferred user intent:** Move from a standalone corpus artifact to data that the RAG evaluation app can operate on directly.
+
+### What I did
+
+- Added `scripts/04-import-corpus-into-rageval.py`.
+- Added `scripts/05-chunk-ttc-sample.sh`.
+- Validated the new scripts with Python compilation / Bash syntax checks.
+- Rebuilt `./cmd/rag-eval`.
+- Imported all `content_items` from `data/corpus/ttc-dump/ttc-corpus.sqlite` into `data/rag-eval.db`.
+- Created three app sources:
+  - `ttc-dump-articles`
+  - `ttc-dump-guides`
+  - `ttc-dump-products`
+- Imported app documents:
+  - 483 articles
+  - 19 guides
+  - 2,594 products
+- Chunked a bounded sample with `fixed-1200-150`:
+  - 3 guide documents
+  - 3 article documents
+  - 3 product documents
+- Fixed `scripts/05-chunk-ttc-sample.sh` after noticing the CLI JSON output did not expose summary fields in the shape the script expected.
+- Marked tasks 5, 6, 7, and 8 complete.
+
+### Why
+
+The normalized corpus database is useful, but the RAG evaluation app operates over `sources`, `documents`, `chunks`, and embeddings in `data/rag-eval.db`. The bridge makes dump-derived content usable by the existing app without changing the app schema.
+
+The bounded chunk sample is intentionally small because the full corpus contains 3,096 documents and products dominate word count. We need a mixed sample before large embedding jobs.
+
+### What worked
+
+- Full corpus import into rag-eval succeeded:
+  - `ttc-dump-articles`: 483 documents, 605,850 words.
+  - `ttc-dump-guides`: 19 documents, 37,594 words.
+  - `ttc-dump-products`: 2,594 documents, 2,208,648 words.
+- Bounded chunk sample succeeded:
+  - `ttc-dump-articles`: 162 chunks across 3 documents.
+  - `ttc-dump-guides`: 42 chunks across 3 documents.
+  - `ttc-dump-products`: 51 chunks across 3 documents.
+- Re-running the chunk script is safe because chunk apply deletes/rebuilds by document/strategy.
+
+### What didn't work
+
+- The first version of `scripts/05-chunk-ttc-sample.sh` assumed `rag-eval chunk apply --output json` returned `document_id` and `chunk_count` summary fields. The actual JSON output emitted chunk rows, so the script printed `null` summary values.
+- I fixed the script to suppress chunk row output and query SQLite for per-document chunk counts after each apply.
+
+### What I learned
+
+- The current `chunk apply --emit none --output json` still emits chunk row data, not a pure summary. This is worth revisiting for bounded-output consistency.
+- The corpus bridge can use stable corpus IDs directly as document IDs, e.g. `ttc-guide-418603` and `ttc-product-3708`, which keeps app records traceable back to WordPress IDs.
+- The longest content items create many chunks with `fixed-1200-150`, so bounded sample workflows are necessary before embedding.
+
+### What was tricky to build
+
+The bridge has to preserve corpus provenance while fitting the current app schema. It stores `source_id` by kind, keeps `external_id` equal to the corpus item ID, and writes WordPress/corpus metadata into `metadata_json`. This keeps the app schema unchanged while preserving enough information to trace a document back to the dump.
+
+The chunk sample script also needed to avoid noisy output. It now redirects chunk apply JSON to `/dev/null` and emits compact JSON summaries from SQLite.
+
+### What warrants a second pair of eyes
+
+- Review whether app source IDs should remain split by kind or be a single `ttc-dump` source with kind only in metadata.
+- Review whether imported product documents should include structured product metadata in `content_text`, not only in `metadata_json` and the separate corpus SQLite table.
+- Review `chunk apply --emit none` behavior; the command name suggests no chunk output, but JSON rows still appear.
+
+### What should be done in the future
+
+- Add an app-native SQLite-corpus ingestion command instead of keeping the bridge as a ticket script.
+- Create a product text composer that includes botanical name, hardiness, mature size, sunlight, soil, and drought tolerance in searchable document text.
+- Run OpenAI embeddings over the 255-chunk mixed sample.
+- Add search/BM25 indexing over this corpus once Phase 4 starts.
+
+### Code review instructions
+
+- Review:
+  - `scripts/04-import-corpus-into-rageval.py`
+  - `scripts/05-chunk-ttc-sample.sh`
+- Validate imported document counts:
+  - `sqlite3 data/rag-eval.db "SELECT source_id, COUNT(*), SUM(word_count) FROM documents WHERE source_id LIKE 'ttc-dump-%' GROUP BY source_id ORDER BY source_id;"`
+- Validate chunk sample counts:
+  - `sqlite3 data/rag-eval.db "SELECT d.source_id, c.strategy_id, COUNT(*), COUNT(DISTINCT c.document_id) FROM chunks c JOIN documents d ON d.id=c.document_id WHERE d.source_id LIKE 'ttc-dump-%' GROUP BY d.source_id, c.strategy_id ORDER BY d.source_id, c.strategy_id;"`
+
+### Technical details
+
+- App DB path: `data/rag-eval.db`.
+- Corpus DB path: `data/corpus/ttc-dump/ttc-corpus.sqlite`.
+- Sample chunk strategy: `fixed-1200-150`.
+- Mixed sample chunk total: 255 chunks across 9 documents.

@@ -25,3 +25,13 @@ Executed isolated MySQL import and SQLite export. Import needed filtering mysqld
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/28/RAGEVAL-002--extract-the-tree-center-content-dump-into-ordered-sqlite-corpus/scripts/02-load-dump-into-mysql.sh — Executed dump import into isolated MySQL
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/28/RAGEVAL-002--extract-the-tree-center-content-dump-into-ordered-sqlite-corpus/scripts/03-export-mysql-to-sqlite.py — Executed normalized SQLite export
 
+
+## 2026-05-28
+
+Added SQLite-corpus-to-rag-eval bridge and bounded chunking script. Imported 3096 TTC corpus items into rag-eval sources/documents, then chunked 3 guides, 3 articles, and 3 products with fixed-1200-150 for a 255-chunk test sample.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/28/RAGEVAL-002--extract-the-tree-center-content-dump-into-ordered-sqlite-corpus/scripts/04-import-corpus-into-rageval.py — Bridge from normalized TTC corpus into rag-eval app DB
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/28/RAGEVAL-002--extract-the-tree-center-content-dump-into-ordered-sqlite-corpus/scripts/05-chunk-ttc-sample.sh — Bounded sample chunking workflow
+
