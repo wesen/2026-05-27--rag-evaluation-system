@@ -62,7 +62,7 @@ def html_to_text(value: str) -> str:
 def run_mysql_json(query: str) -> list[dict[str, Any]]:
     cmd = [
         "docker", "compose", "-f", str(COMPOSE_FILE), "exec", "-T", "mysql",
-        "mysql", "-uroot", "-psomewordpress", "-N", "-B", "--default-character-set=utf8mb4", "ttc", "-e", query,
+        "mysql", "-uroot", "-psomewordpress", "-N", "-B", "--raw", "--default-character-set=utf8mb4", "ttc", "-e", query,
     ]
     result = subprocess.run(cmd, check=True, text=True, capture_output=True)
     rows: list[dict[str, Any]] = []
@@ -263,7 +263,6 @@ def export(out_path: Path) -> None:
             )
 
     for term in run_mysql_json(terms_query()):
-        kind = None
         wp_id = int(term["wp_id"])
         existing = conn.execute("SELECT id FROM content_items WHERE wp_id=?", (wp_id,)).fetchone()
         if not existing:

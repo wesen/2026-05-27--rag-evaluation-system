@@ -17,12 +17,15 @@ echo "Starting isolated MySQL container..." >&2
 docker compose -f "$COMPOSE_FILE" up -d mysql >/dev/null
 
 echo "Waiting for MySQL readiness..." >&2
-for i in $(seq 1 90); do
-  if docker compose -f "$COMPOSE_FILE" exec -T mysql mysqladmin ping -uroot -p"$ROOT_PASSWORD" --silent >/dev/null 2>&1; then
+for i in $(seq 1 120); do
+  # mysqladmin ping can succeed against MySQL's temporary initialization server
+  # before the Docker entrypoint has applied MYSQL_ROOT_PASSWORD. Require an
+  # authenticated query instead.
+  if docker compose -f "$COMPOSE_FILE" exec -T mysql mysql -uroot -p"$ROOT_PASSWORD" -e 'SELECT 1' >/dev/null 2>&1; then
     break
   fi
-  if [[ "$i" == "90" ]]; then
-    echo "MySQL did not become ready" >&2
+  if [[ "$i" == "120" ]]; then
+    echo "MySQL did not become ready for authenticated root queries" >&2
     docker compose -f "$COMPOSE_FILE" logs --tail=80 mysql >&2 || true
     exit 1
   fi
@@ -36,9 +39,22 @@ CREATE DATABASE \`$DB_NAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 SQL
 
 echo "Importing $(du -h "$DUMP_PATH" | awk '{print $1}') compressed dump. This can take several minutes..." >&2
-bzcat "$DUMP_PATH" | docker compose -f "$COMPOSE_FILE" exec -T mysql mysql \
+# The dump contains mysqldump warning text on lines 17-19, which is not SQL.
+# It also contains GTID_PURGED statements that require elevated server state
+# permissions and are irrelevant for local corpus extraction.
+python3 -c 'import bz2, sys
+path = sys.argv[1]
+with bz2.open(path, "rt", encoding="utf-8", errors="replace") as f:
+    for line in f:
+        if line.startswith("Warning: ") or line.startswith("In order to ensure"):
+            continue
+        if "GTID_PURGED" in line or "MYSQLDUMP_TEMP_LOG_BIN" in line or "SESSION.SQL_LOG_BIN" in line:
+            continue
+        sys.stdout.write(line)
+' "$DUMP_PATH" | docker compose -f "$COMPOSE_FILE" exec -T mysql mysql \
   -uroot -p"$ROOT_PASSWORD" \
   --default-character-set=utf8mb4 \
+  --binary-mode=1 \
   --max_allowed_packet=512M \
   "$DB_NAME"
 
