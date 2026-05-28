@@ -12,14 +12,23 @@ DocType: reference
 Intent: long-term
 Owners: []
 RelatedFiles:
+    - Path: internal/services/corpus/service.go
+      Note: Corpus service implemented in Step 3
     - Path: ttmp/2026/05/28/RAGEVAL-003--user-centered-corpus-explorer-and-rag-pipeline-visualization/design-doc/01-corpus-explorer-and-pipeline-visualization-implementation-guide.md
       Note: Design guide authored in Step 1
+    - Path: web/src/components/corpus/CorpusExplorerView.tsx
+      Note: Corpus Explorer UI built in Step 4
+    - Path: web/src/index.css
+      Note: Monochrome theme redesign in Step 4
 ExternalSources: []
 Summary: Chronological diary for the Corpus Explorer and pipeline visualization design ticket.
 LastUpdated: 2026-05-28T00:00:00Z
 WhatFor: Track design decisions, evidence, and validation for the website improvement planning work.
 WhenToUse: Read before implementing RAGEVAL-003 or updating the Corpus Explorer design.
 ---
+
+
+
 
 
 # Diary
