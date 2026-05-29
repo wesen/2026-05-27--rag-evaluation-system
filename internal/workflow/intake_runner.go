@@ -284,8 +284,18 @@ func (r *IntakeRunner) resolveDocumentProcessor(ctx context.Context, input Intak
 	if modelName == "" {
 		modelName = "fake-document-processor"
 	}
+	if provider == "openai-responses" {
+		profile := modelName
+		if profile == "" || profile == "fake-document-processor" {
+			profile = input.Profile
+		}
+		if profile == "" {
+			return nil, fmt.Errorf("document processing profile is required for openai-responses")
+		}
+		return documentprocessing.NewOpenAIResponsesProvider(ctx, profile, input.ProfileRegistries)
+	}
 	if provider != "fake" {
-		return nil, fmt.Errorf("unsupported document processing provider %q; only fake is available before live provider Phase 5", provider)
+		return nil, fmt.Errorf("unsupported document processing provider %q", provider)
 	}
 	return documentprocessing.FakeProvider{ProviderName: provider, ModelName: modelName}, nil
 }

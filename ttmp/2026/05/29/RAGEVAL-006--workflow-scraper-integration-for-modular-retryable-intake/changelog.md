@@ -115,3 +115,14 @@ Completed Phase 4 by adding chunk enrichment DB helpers, fake-provider service, 
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner.go — Adds enrich_chunk workflow op
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/submit.go — Adds bounded existing-chunk enrichment fan-out for submitted workflows
 
+
+## 2026-05-29
+
+Completed Phase 5 live smoke with gpt-5-nano-low profile for direct and workflow document preprocessing.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/cmd/rag-eval/cmds/document/preprocess.go — Adds live openai-responses profile flags for direct preprocessing smoke
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/documentprocessing/live_openai.go — Adds opt-in OpenAI Responses live provider for document preprocessing smoke
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner.go — Resolves live document processor providers for workflow preprocessing
+

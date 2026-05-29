@@ -19,7 +19,9 @@ RelatedFiles:
     - Path: cmd/rag-eval/cmds/chunk/enrich.go
       Note: Phase 4 direct chunk enrichment debug CLI
     - Path: cmd/rag-eval/cmds/document/preprocess.go
-      Note: Phase 3 direct preprocessing debug CLI
+      Note: |-
+        Phase 3 direct preprocessing debug CLI
+        Phase 5 direct live preprocessing CLI flags
     - Path: cmd/rag-eval/cmds/workflow/root.go
       Note: Phase 2 workflow CLI root
     - Path: cmd/rag-eval/main.go
@@ -40,6 +42,8 @@ RelatedFiles:
       Note: Phase 4 fake-provider chunk enrichment service
     - Path: internal/services/chunkenrichment/service_test.go
       Note: Phase 4 freshness validation and coverage tests
+    - Path: internal/services/documentprocessing/live_openai.go
+      Note: Phase 5 opt-in live OpenAI Responses document preprocessing provider
     - Path: internal/services/documentprocessing/service.go
       Note: Phase 3 fake-provider preprocessing service
     - Path: internal/services/documentprocessing/service_test.go
@@ -64,6 +68,7 @@ RelatedFiles:
         Completed Phase 1 runner operations for chunking embeddings and BM25
         Phase 3 preprocess_document workflow dispatch
         Phase 4 enrich_chunk workflow dispatch
+        Phase 5 live provider resolution in workflow runner
     - Path: internal/workflow/intake_runner_test.go
       Note: |-
         Phase 1 durable chunk_document workflow test
@@ -88,6 +93,7 @@ LastUpdated: 2026-05-29T18:30:00Z
 WhatFor: Track the design investigation, evidence, decisions, and delivery steps for scraper-backed modular retryable intake.
 WhenToUse: Read before implementing workflow orchestration, LLM preprocessing, chunk enrichment, or scraper runner integration in rag-eval.
 ---
+
 
 
 
@@ -919,4 +925,185 @@ New direct command:
 
 ```text
 rag-eval chunk enrich --chunk-id CHUNK --strategy-id STRATEGY --prompt-version v1 --provider fake
+```
+
+---
+
+## Step 8: Complete Phase 5 — Bounded Live-Provider Workflow Smoke
+
+I added and exercised a minimal live OpenAI Responses document-processing provider, then ran bounded live smoke tests with the user-requested `gpt-5-nano-low` Pinocchio profile. The smoke stayed intentionally small: one direct document preprocessing call and one two-document scraper workflow with live preprocessing plus chunking, but no embeddings, BM25, or chunk enrichment.
+
+This phase proves that the workflow path can execute a real provider-backed preprocessing operation through the scraper scheduler while preserving the fake-provider test seams used in earlier phases.
+
+### Prompt Context
+
+**User prompt (verbatim):** "go ahead, use model gpt-5-nano-low"
+
+**Assistant interpretation:** Proceed with Phase 5 live-provider smoke using the `gpt-5-nano-low` model/profile, with bounded cost controls.
+
+**Inferred user intent:** Validate that the workflow prototype can run at least one real LLM-backed preprocessing path, not only fake providers.
+
+### What I did
+
+- Added `internal/services/documentprocessing/live_openai.go`:
+  - resolves Pinocchio/Geppetto profile settings via existing profile resolution;
+  - supports OpenAI Responses API calls;
+  - uses the profile's chat engine and reasoning settings;
+  - returns preprocessing output into the existing artifact service contract.
+- Extended `rag-eval document preprocess`:
+  - supports `--provider openai-responses`;
+  - supports `--profile gpt-5-nano-low`;
+  - keeps `fake` as the default deterministic provider.
+- Extended workflow document processor resolution:
+  - `document_processing_provider=openai-responses` resolves a live provider;
+  - `document_processing_model=gpt-5-nano-low` is treated as the live profile slug for workflow submission.
+- Ran a direct one-document live smoke:
+
+```text
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go run ./cmd/rag-eval document preprocess \
+  --db data/rag-eval.db \
+  --document-id ttc-product-682105 \
+  --artifact-type live_smoke_clean_text \
+  --prompt-version phase5-gpt-5-nano-low-v1 \
+  --provider openai-responses \
+  --profile gpt-5-nano-low \
+  --force
+```
+
+- Submitted a two-document workflow with strict limits:
+
+```text
+mkdir -p state
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go run ./cmd/rag-eval workflow submit-intake \
+  --engine-db state/rageval006-phase5-live.db \
+  --db data/rag-eval.db \
+  --workflow-id phase5-live-gpt5nano-low-001 \
+  --name "Phase 5 live gpt-5-nano-low smoke" \
+  --document-ids ttc-product-682105,ttc-product-817621 \
+  --strategy fixed \
+  --chunk-size 32 \
+  --overlap 4 \
+  --skip-preprocessing=false \
+  --preprocess-artifact-type live_smoke_clean_text \
+  --preprocess-prompt-version phase5-gpt-5-nano-low-v1 \
+  --preprocess-provider openai-responses \
+  --preprocess-model gpt-5-nano-low \
+  --skip-embeddings \
+  --skip-bm25 \
+  --skip-chunk-enrichment
+```
+
+- Ran the workflow worker:
+
+```text
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go run ./cmd/rag-eval workflow run-worker \
+  --engine-db state/rageval006-phase5-live.db \
+  --worker-id phase5-live-worker \
+  --max-workers 2 \
+  --cycles 4
+```
+
+### Why
+
+Fake providers prove correctness of orchestration and storage, but they do not prove that real profile resolution and network provider execution work in the workflow path. Phase 5 adds that proof with a narrowly bounded live run before any UI/API visibility work begins.
+
+### What worked
+
+- Direct live preprocessing succeeded for `ttc-product-682105`.
+- The two-document workflow succeeded with 4/4 ops complete:
+  - 2 chunk ops;
+  - 2 live preprocessing ops.
+- Artifact rows were stored for both documents:
+
+```text
+ttc-product-682105|live_smoke_clean_text|phase5-gpt-5-nano-low-v1|openai-responses|gpt-5-nano|succeeded|181
+ttc-product-817621|live_smoke_clean_text|phase5-gpt-5-nano-low-v1|openai-responses|gpt-5-nano|succeeded|183
+```
+
+- Workflow result check showed:
+
+```text
+workflow_id: phase5-live-gpt5nano-low-001
+status: succeeded
+total ops: 4
+succeeded ops: 4
+failed ops: 0
+```
+
+- Result rows showed one workflow preprocessing op skipped fresh output from the direct smoke and one called the live provider:
+
+```text
+phase5-live-gpt5nano-low-001:preprocess:ttc-product-682105 | skipped_fresh=1 | provider=openai-responses | model=gpt-5-nano
+phase5-live-gpt5nano-low-001:preprocess:ttc-product-817621 | skipped_fresh=0 | provider=openai-responses | model=gpt-5-nano
+```
+
+- Validation passed after the implementation changes:
+
+```text
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/db ./internal/ingest ./internal/chunking ./internal/services/source ./internal/services/chunking ./internal/services/document ./internal/services/documentprocessing ./internal/services/chunkenrichment ./internal/services/embedding ./internal/services/search ./internal/workflow ./cmd/rag-eval/cmds/chunk ./cmd/rag-eval/cmds/document ./cmd/rag-eval/cmds/workflow -count=1 -timeout 120s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval
+```
+
+### What didn't work
+
+- First workflow submission failed because the `state/` directory did not exist:
+
+```text
+Error: ensure schema_migrations table: unable to open database file: no such file or directory
+```
+
+- I fixed the run by creating the directory first:
+
+```text
+mkdir -p state
+```
+
+- Live chunk enrichment is still not wired; only live document preprocessing is wired for Phase 5.
+- The direct live provider currently calls OpenAI Responses API directly rather than through the full Geppetto chat runtime abstraction.
+
+### What I learned
+
+- The existing Pinocchio profile resolution path is enough to bootstrap a live OpenAI Responses smoke provider.
+- Artifact freshness worked as intended: after the direct live smoke, the workflow preprocessing op for the same document skipped fresh output instead of making another provider call.
+- The workflow CLI should ensure the parent directory for `--engine-db` exists, just like the rag-eval DB helper does.
+
+### What was tricky to build
+
+The main tricky point was adding live-provider behavior without destabilizing fake-provider tests. I kept the live provider opt-in behind `--provider openai-responses` and profile selection, leaving fake as the default. This means tests stay deterministic and Phase 5 live smoke is explicit.
+
+The second tricky point was interpreting the user-provided `gpt-5-nano-low`. In this environment it is a Pinocchio profile slug whose resolved OpenAI Responses engine is `gpt-5-nano`; the workflow artifact records the provider/model as `openai-responses/gpt-5-nano` while the command records the prompt version `phase5-gpt-5-nano-low-v1`.
+
+### What warrants a second pair of eyes
+
+- Whether the live OpenAI Responses provider should move to a shared LLM provider abstraction instead of living under `documentprocessing`.
+- Whether the direct HTTP Responses call should be replaced with Geppetto's higher-level chat runtime before expanding live operations.
+- Whether `workflow submit-intake` or scraper SQLite store opening should automatically create the engine DB parent directory.
+
+### What should be done in the future
+
+- Add live chunk enrichment only after deciding whether to share the live provider abstraction.
+- Add parent-directory creation for `--engine-db` paths.
+- Add explicit `--live`/confirmation guardrails if these commands become user-facing beyond development.
+- Surface live artifact coverage in Phase 6.
+
+### Code review instructions
+
+- Review `internal/services/documentprocessing/live_openai.go` for profile resolution, request shape, and response parsing.
+- Review `cmd/rag-eval/cmds/document/preprocess.go` for live-provider CLI guardrails.
+- Review `internal/workflow/intake_runner.go` for live document processor resolution.
+- Re-run only bounded live smoke if credentials and budget are available; otherwise rely on fake-provider tests.
+
+### Technical details
+
+Live model/profile used:
+
+```text
+gpt-5-nano-low profile → gpt-5-nano OpenAI Responses engine
+```
+
+Generated live smoke state:
+
+```text
+state/rageval006-phase5-live.db
+data/rag-eval.db document_processing_artifacts rows for prompt_version phase5-gpt-5-nano-low-v1
 ```

@@ -187,6 +187,7 @@ func SubmitIntakeWorkflow(ctx context.Context, req SubmitIntakeRequest) (*Submit
 					PromptVersion:              req.PreprocessPromptVersion,
 					DocumentProcessingProvider: req.PreprocessDocumentProvider,
 					DocumentProcessingModel:    req.PreprocessDocumentModel,
+					ProfileRegistries:          req.ProfileRegistries,
 					Force:                      req.ForcePreprocessing,
 				}),
 			})

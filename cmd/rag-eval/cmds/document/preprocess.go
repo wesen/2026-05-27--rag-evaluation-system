@@ -10,13 +10,15 @@ import (
 )
 
 type preprocessOptions struct {
-	db            string
-	documentID    string
-	artifactType  string
-	promptVersion string
-	provider      string
-	model         string
-	force         bool
+	db                string
+	documentID        string
+	artifactType      string
+	promptVersion     string
+	provider          string
+	model             string
+	profile           string
+	profileRegistries []string
+	force             bool
 }
 
 func newPreprocessCommand() *cobra.Command {
@@ -34,14 +36,27 @@ Live LLM providers are reserved for the bounded live-provider smoke phase.`,
 				return err
 			}
 			defer queries.Close()
-			if opts.provider != "fake" {
-				return fmt.Errorf("unsupported document processing provider %q; only fake is available before live provider smoke", opts.provider)
+			var provider documentprocessing.Provider
+			switch opts.provider {
+			case "fake":
+				provider = documentprocessing.FakeProvider{ProviderName: opts.provider, ModelName: opts.model}
+			case "openai-responses":
+				profile := opts.profile
+				if profile == "" {
+					profile = opts.model
+				}
+				provider, err = documentprocessing.NewOpenAIResponsesProvider(cmd.Context(), profile, opts.profileRegistries)
+				if err != nil {
+					return err
+				}
+			default:
+				return fmt.Errorf("unsupported document processing provider %q", opts.provider)
 			}
 			result, err := documentprocessing.NewService(queries).Process(cmd.Context(), documentprocessing.ProcessRequest{
 				DocumentID:    opts.documentID,
 				ArtifactType:  opts.artifactType,
 				PromptVersion: opts.promptVersion,
-				Provider:      documentprocessing.FakeProvider{ProviderName: opts.provider, ModelName: opts.model},
+				Provider:      provider,
 				Force:         opts.force,
 			})
 			if err != nil {
@@ -59,8 +74,10 @@ Live LLM providers are reserved for the bounded live-provider smoke phase.`,
 	cmd.Flags().StringVar(&opts.documentID, "document-id", "", "Document ID to preprocess")
 	cmd.Flags().StringVar(&opts.artifactType, "artifact-type", "clean_text", "Artifact type to produce")
 	cmd.Flags().StringVar(&opts.promptVersion, "prompt-version", "v1", "Prompt version identity")
-	cmd.Flags().StringVar(&opts.provider, "provider", "fake", "Document processing provider; currently only fake")
-	cmd.Flags().StringVar(&opts.model, "model", "fake-document-processor", "Document processing model identity")
+	cmd.Flags().StringVar(&opts.provider, "provider", "fake", "Document processing provider: fake or openai-responses")
+	cmd.Flags().StringVar(&opts.model, "model", "fake-document-processor", "Document processing model identity, or profile slug for openai-responses when --profile is omitted")
+	cmd.Flags().StringVar(&opts.profile, "profile", "", "Pinocchio profile slug for live document processing")
+	cmd.Flags().StringSliceVar(&opts.profileRegistries, "profile-registries", nil, "Profile registry sources for live document processing")
 	cmd.Flags().BoolVar(&opts.force, "force", false, "Recompute even if an artifact is fresh")
 	_ = cmd.MarkFlagRequired("document-id")
 	return cmd

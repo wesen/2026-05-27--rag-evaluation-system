@@ -75,11 +75,11 @@ Goal: add retryable LLM postprocessing for chunk summaries, topics, entities, an
 
 Goal: prove the workflow can run real provider-backed preprocessing/enrichment safely.
 
-- [ ] Add explicit live smoke documentation and cost controls.
-- [ ] Run one document preprocessing or one chunk enrichment with a live profile only after fake-provider tests pass.
-- [ ] Run a two-document workflow with strict document/chunk/embedding limits.
-- [ ] Record exact commands, provider/model, prompt versions, counts, and failures in the diary.
-- [ ] Commit any fixes from live smoke separately from generated data.
+- [x] Add explicit live smoke documentation and cost controls.
+- [x] Run one document preprocessing or one chunk enrichment with a live profile only after fake-provider tests pass.
+- [x] Run a two-document workflow with strict document/chunk/embedding limits.
+- [x] Record exact commands, provider/model, prompt versions, counts, and failures in the diary.
+- [x] Commit any fixes from live smoke separately from generated data.
 
 ## Phase 6 — Workflow visibility in API/Corpus Explorer
 
