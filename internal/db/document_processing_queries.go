@@ -97,6 +97,30 @@ func (q *Queries) IsDocumentProcessingArtifactFresh(documentID, artifactType, pr
 	return a.Status == "succeeded" && a.InputHash == inputHash, nil
 }
 
+func (q *Queries) ListDocumentProcessingArtifacts(documentID string) ([]DocumentProcessingArtifact, error) {
+	rows, err := q.db.Query(`
+		SELECT document_id, artifact_type, prompt_version, provider, model, input_hash,
+		       COALESCE(output_text, ''), COALESCE(output_json, '{}'), status,
+		       COALESCE(error_code, ''), COALESCE(error_message, ''), created_at, updated_at
+		FROM document_processing_artifacts
+		WHERE document_id = ?
+		ORDER BY artifact_type, prompt_version, provider, model
+	`, documentID)
+	if err != nil {
+		return nil, fmt.Errorf("list document processing artifacts: %w", err)
+	}
+	defer rows.Close()
+	ret := []DocumentProcessingArtifact{}
+	for rows.Next() {
+		var a DocumentProcessingArtifact
+		if err := rows.Scan(&a.DocumentID, &a.ArtifactType, &a.PromptVersion, &a.Provider, &a.Model, &a.InputHash, &a.OutputText, &a.OutputJSON, &a.Status, &a.ErrorCode, &a.ErrorMessage, &a.CreatedAt, &a.UpdatedAt); err != nil {
+			return nil, fmt.Errorf("scan document processing artifact: %w", err)
+		}
+		ret = append(ret, a)
+	}
+	return ret, rows.Err()
+}
+
 func (q *Queries) ListDocumentProcessingCoverage(artifactType, promptVersion, provider, model string) ([]DocumentProcessingCoverage, error) {
 	rows, err := q.db.Query(`
 		SELECT d.source_id,

@@ -20,6 +20,7 @@ var _ cmds.GlazeCommand = (*ServeCommand)(nil)
 type ServeSettings struct {
 	Address  string `glazed:"address"`
 	DB       string `glazed:"db"`
+	EngineDB string `glazed:"engine-db"`
 	LogLevel string `glazed:"log-level"`
 }
 
@@ -52,7 +53,7 @@ The server provides:
 Examples:
   rag-eval serve
   rag-eval serve --address 0.0.0.0:8772
-  rag-eval serve --db /path/to/db --log-level debug
+  rag-eval serve --db /path/to/db --engine-db /path/to/workflows.db --log-level debug
 `),
 			cmds.WithFlags(
 				fields.New(
@@ -66,6 +67,12 @@ Examples:
 					fields.TypeString,
 					fields.WithDefault("data/rag-eval.db"),
 					fields.WithHelp("Path to the SQLite database"),
+				),
+				fields.New(
+					"engine-db",
+					fields.TypeString,
+					fields.WithDefault("state/rag-eval-workflows.db"),
+					fields.WithHelp("Path to the scraper workflow engine SQLite database"),
 				),
 				fields.New(
 					"log-level",
@@ -90,7 +97,8 @@ func (c *ServeCommand) RunIntoGlazeProcessor(
 func runServer(cmd *cobra.Command, args []string) error {
 	address, _ := cmd.Flags().GetString("address")
 	dbPath, _ := cmd.Flags().GetString("db")
+	engineDB, _ := cmd.Flags().GetString("engine-db")
 	logLevel, _ := cmd.Flags().GetString("log-level")
 
-	return runHTTPServer(cmd, address, dbPath, logLevel)
+	return runHTTPServer(cmd, address, dbPath, engineDB, logLevel)
 }

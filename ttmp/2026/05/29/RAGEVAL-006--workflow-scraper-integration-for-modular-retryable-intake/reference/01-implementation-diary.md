@@ -22,18 +22,30 @@ RelatedFiles:
       Note: |-
         Phase 3 direct preprocessing debug CLI
         Phase 5 direct live preprocessing CLI flags
+    - Path: cmd/rag-eval/cmds/serve/root.go
+      Note: Phase 6 engine DB serve flag
     - Path: cmd/rag-eval/cmds/workflow/root.go
       Note: Phase 2 workflow CLI root
     - Path: cmd/rag-eval/main.go
       Note: Registers workflow CLI command group
     - Path: go.mod
       Note: Phase 0 scraper and go-go-goja dependency compatibility wiring
+    - Path: internal/api/handlers.go
+      Note: Phase 6 backend route registration and engine DB options
+    - Path: internal/api/workflow_artifact_handlers.go
+      Note: Phase 6 workflow and artifact visibility handlers
+    - Path: internal/api/workflow_artifact_handlers_test.go
+      Note: Phase 6 backend endpoint smoke tests
     - Path: internal/db/chunk_enrichment_queries.go
-      Note: Phase 4 chunk enrichment DB helpers
+      Note: |-
+        Phase 4 chunk enrichment DB helpers
+        Phase 6 chunk enrichment list helper
     - Path: internal/db/db.go
       Note: Phase 3 document preprocessing artifact schema
     - Path: internal/db/document_processing_queries.go
-      Note: Phase 3 artifact DB helpers
+      Note: |-
+        Phase 3 artifact DB helpers
+        Phase 6 document artifact list helper
     - Path: internal/db/queries.go
       Note: Supports document-scoped chunk selection for workflow embeddings
     - Path: internal/db/search_queries.go
@@ -93,6 +105,7 @@ LastUpdated: 2026-05-29T18:30:00Z
 WhatFor: Track the design investigation, evidence, decisions, and delivery steps for scraper-backed modular retryable intake.
 WhenToUse: Read before implementing workflow orchestration, LLM preprocessing, chunk enrichment, or scraper runner integration in rag-eval.
 ---
+
 
 
 
@@ -1106,4 +1119,107 @@ Generated live smoke state:
 ```text
 state/rageval006-phase5-live.db
 data/rag-eval.db document_processing_artifacts rows for prompt_version phase5-gpt-5-nano-low-v1
+```
+
+---
+
+## Step 9: Phase 6 Backend Visibility Endpoints
+
+I implemented the backend-only part of Phase 6. The HTTP API now exposes read-only workflow, document preprocessing, and chunk enrichment visibility endpoints that the Corpus Explorer UI can consume in a later frontend slice.
+
+This step deliberately avoids frontend changes. It establishes stable API contracts first: workflow summaries and ops come from scraper's `engineview` read service, while artifact coverage/details come from the rag-eval database helpers added in Phases 3 and 4.
+
+### Prompt Context
+
+**User prompt (verbatim):** "do the backend part of phase 6."
+
+**Assistant interpretation:** Implement only the read-only backend/API portion of Phase 6, leaving UI wiring for a later step.
+
+**Inferred user intent:** Prepare the server endpoints needed by Corpus Explorer before investing in frontend views.
+
+### What I did
+
+- Added API server options:
+  - `api.Options{EngineDB: ...}`;
+  - `RegisterHandlersWithOptions` while preserving existing `RegisterHandlers` compatibility.
+- Added `rag-eval serve --engine-db` so the HTTP server can locate the scraper workflow engine DB.
+- Added workflow read endpoints:
+  - `GET /api/v1/workflows`
+  - `GET /api/v1/workflows/{id}`
+  - `GET /api/v1/workflows/{id}/ops`
+- Added artifact coverage endpoints:
+  - `GET /api/v1/artifacts/document-processing/coverage`
+  - `GET /api/v1/artifacts/chunk-enrichment/coverage`
+- Added detail endpoints:
+  - `GET /api/v1/documents/{id}/processing-artifacts`
+  - `GET /api/v1/chunks/{id}/enrichments`
+- Added DB list helpers:
+  - `ListDocumentProcessingArtifacts(documentID)`;
+  - `ListChunkEnrichments(chunkID, strategyID, promptVersion)`.
+- Added `internal/api/workflow_artifact_handlers_test.go` to smoke all new endpoints against temporary rag-eval and scraper engine DBs.
+
+### Why
+
+The UI should not read SQLite directly or duplicate scraper workflow SQL. These endpoints centralize read-side contracts and let the frontend focus on display: workflow status, op state, preprocessing coverage, enrichment coverage, and per-document/chunk artifact inspection.
+
+### What worked
+
+- New endpoints compile and pass an HTTP smoke test.
+- The workflow endpoints reuse scraper `engineview` instead of duplicating engine read SQL.
+- Existing `api.RegisterHandlers` callers remain compatible.
+- Validation passed:
+
+```text
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/api -count=1 -timeout 120s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/db ./internal/api ./internal/ingest ./internal/chunking ./internal/services/source ./internal/services/chunking ./internal/services/document ./internal/services/documentprocessing ./internal/services/chunkenrichment ./internal/services/embedding ./internal/services/search ./internal/workflow ./cmd/rag-eval/cmds/serve -count=1 -timeout 120s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval
+```
+
+### What didn't work
+
+- No frontend wiring was done in this backend-only slice.
+- The coverage endpoints currently require exact identity parameters and return broad grouped coverage; they do not yet provide UI-optimized defaults or discovery of available prompt/provider/model identities.
+
+### What I learned
+
+- The scraper `engineview` service is reusable from the rag-eval HTTP layer with only an engine DB path.
+- The previous artifact query helpers needed small list/detail helpers for UI consumption, but the schema was already sufficient.
+
+### What was tricky to build
+
+The main tricky point was preserving compatibility. Existing callers use `api.RegisterHandlers(mux, database)`, so I added `RegisterHandlersWithOptions` rather than changing that signature directly. The server command now passes the engine DB path explicitly, but tests and older code can still use defaults.
+
+### What warrants a second pair of eyes
+
+- Endpoint shapes before frontend adoption, especially whether `items` wrappers and coverage response shapes are what the UI wants.
+- Whether workflow endpoints should expose scraper's Go struct field casing as-is or normalize to snake_case DTOs.
+- Whether artifact coverage should support optional source filters now rather than later.
+
+### What should be done in the future
+
+- Wire Corpus Explorer UI to these endpoints.
+- Add endpoint discovery for available artifact identities.
+- Normalize workflow response JSON if frontend ergonomics require it.
+- Add browser/manual validation once the UI consumes the endpoints.
+
+### Code review instructions
+
+- Review `internal/api/handlers.go` for routing and engine DB option wiring.
+- Review `internal/api/workflow_artifact_handlers.go` for endpoint behavior.
+- Review `internal/db/document_processing_queries.go` and `internal/db/chunk_enrichment_queries.go` for list/detail helper semantics.
+- Review `cmd/rag-eval/cmds/serve/*` for `--engine-db` flag plumbing.
+- Validate with the commands listed above.
+
+### Technical details
+
+Backend endpoints added:
+
+```text
+GET /api/v1/workflows
+GET /api/v1/workflows/{id}
+GET /api/v1/workflows/{id}/ops
+GET /api/v1/artifacts/document-processing/coverage
+GET /api/v1/artifacts/chunk-enrichment/coverage
+GET /api/v1/documents/{id}/processing-artifacts
+GET /api/v1/chunks/{id}/enrichments
 ```

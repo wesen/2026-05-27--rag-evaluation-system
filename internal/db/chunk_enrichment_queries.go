@@ -172,6 +172,43 @@ func (q *Queries) IsChunkEnrichmentFresh(chunkID, strategyID, promptVersion, tex
 	return e.TextHash == textHash, nil
 }
 
+func (q *Queries) ListChunkEnrichments(chunkID, strategyID, promptVersion string) ([]ChunkEnrichment, error) {
+	query := `
+		SELECT e.chunk_id, c.document_id, e.strategy_id, e.prompt_version, e.provider, e.model,
+		       COALESCE(e.short_summary, ''), COALESCE(e.long_summary, ''),
+		       COALESCE(e.key_topics_json, '[]'), COALESCE(e.entities_json, '[]'),
+		       COALESCE(e.hypothetical_questions_json, '[]'), COALESCE(e.quality_score, 0),
+		       e.text_hash, e.created_at, e.updated_at
+		FROM chunk_enrichments e
+		JOIN chunks c ON c.id = e.chunk_id AND c.strategy_id = e.strategy_id
+		WHERE e.chunk_id = ?
+	`
+	args := []any{chunkID}
+	if strategyID != "" {
+		query += ` AND e.strategy_id = ?`
+		args = append(args, strategyID)
+	}
+	if promptVersion != "" {
+		query += ` AND e.prompt_version = ?`
+		args = append(args, promptVersion)
+	}
+	query += ` ORDER BY e.strategy_id, e.prompt_version, e.provider, e.model`
+	rows, err := q.db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("list chunk enrichments: %w", err)
+	}
+	defer rows.Close()
+	ret := []ChunkEnrichment{}
+	for rows.Next() {
+		var e ChunkEnrichment
+		if err := rows.Scan(&e.ChunkID, &e.DocumentID, &e.StrategyID, &e.PromptVersion, &e.Provider, &e.Model, &e.ShortSummary, &e.LongSummary, &e.KeyTopicsJSON, &e.EntitiesJSON, &e.HypotheticalQuestionsJSON, &e.QualityScore, &e.TextHash, &e.CreatedAt, &e.UpdatedAt); err != nil {
+			return nil, fmt.Errorf("scan chunk enrichment: %w", err)
+		}
+		ret = append(ret, e)
+	}
+	return ret, rows.Err()
+}
+
 func (q *Queries) ListChunkEnrichmentCoverage(strategyID, promptVersion string) ([]ChunkEnrichmentCoverage, error) {
 	rows, err := q.db.Query(`
 		SELECT d.source_id,

@@ -17,10 +17,22 @@ import (
 	sourceservice "github.com/go-go-golems/rag-evaluation-system/internal/services/source"
 )
 
-// RegisterHandlers wires all API routes into the given mux
+type Options struct {
+	EngineDB string
+}
+
+// RegisterHandlers wires all API routes into the given mux.
 func RegisterHandlers(mux *http.ServeMux, database *sql.DB) {
+	RegisterHandlersWithOptions(mux, database, Options{})
+}
+
+// RegisterHandlersWithOptions wires API routes with optional workflow engine settings.
+func RegisterHandlersWithOptions(mux *http.ServeMux, database *sql.DB, opts Options) {
 	queries := db.NewQueries(database)
-	h := &handler{queries: queries}
+	if opts.EngineDB == "" {
+		opts.EngineDB = "state/rag-eval-workflows.db"
+	}
+	h := &handler{queries: queries, engineDB: opts.EngineDB}
 
 	// Health check
 	mux.HandleFunc("GET /api/v1/health", h.handleHealth)
@@ -33,6 +45,7 @@ func RegisterHandlers(mux *http.ServeMux, database *sql.DB) {
 	mux.HandleFunc("GET /api/v1/documents", h.handleListDocuments)
 	mux.HandleFunc("GET /api/v1/documents/{id}", h.handleGetDocument)
 	mux.HandleFunc("GET /api/v1/documents/{id}/chunks", h.handleListChunks)
+	mux.HandleFunc("GET /api/v1/documents/{id}/processing-artifacts", h.handleDocumentProcessingArtifacts)
 
 	// Source scan (ingest files from a directory)
 	mux.HandleFunc("POST /api/v1/sources/{id}/scan", h.handleScanSource)
@@ -52,6 +65,14 @@ func RegisterHandlers(mux *http.ServeMux, database *sql.DB) {
 	mux.HandleFunc("POST /api/v1/search/vector", h.handleSearchVector)
 	mux.HandleFunc("POST /api/v1/search/hybrid", h.handleSearchHybrid)
 
+	// Workflow and derived artifact visibility (read-only)
+	mux.HandleFunc("GET /api/v1/workflows", h.handleListWorkflows)
+	mux.HandleFunc("GET /api/v1/workflows/{id}", h.handleGetWorkflow)
+	mux.HandleFunc("GET /api/v1/workflows/{id}/ops", h.handleWorkflowOps)
+	mux.HandleFunc("GET /api/v1/artifacts/document-processing/coverage", h.handleDocumentProcessingCoverage)
+	mux.HandleFunc("GET /api/v1/artifacts/chunk-enrichment/coverage", h.handleChunkEnrichmentCoverage)
+	mux.HandleFunc("GET /api/v1/chunks/{id}/enrichments", h.handleChunkEnrichments)
+
 	// Corpus Explorer (read-only)
 	mux.HandleFunc("GET /api/v1/corpus/sources", h.handleCorpusSources)
 	mux.HandleFunc("GET /api/v1/corpus/documents", h.handleCorpusDocuments)
@@ -59,7 +80,8 @@ func RegisterHandlers(mux *http.ServeMux, database *sql.DB) {
 }
 
 type handler struct {
-	queries *db.Queries
+	queries  *db.Queries
+	engineDB string
 }
 
 func (h *handler) handleHealth(w http.ResponseWriter, r *http.Request) {

@@ -126,3 +126,15 @@ Completed Phase 5 live smoke with gpt-5-nano-low profile for direct and workflow
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/documentprocessing/live_openai.go — Adds opt-in OpenAI Responses live provider for document preprocessing smoke
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner.go — Resolves live document processor providers for workflow preprocessing
 
+
+## 2026-05-29
+
+Added Phase 6 backend visibility endpoints for workflows, document processing artifacts, and chunk enrichments.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/cmd/rag-eval/cmds/serve/root.go — Adds engine-db server flag for workflow visibility
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/api/handlers.go — Adds API options and read-only workflow/artifact routes
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/api/workflow_artifact_handlers.go — Implements workflow and artifact visibility handlers
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/api/workflow_artifact_handlers_test.go — Smoke-tests new backend visibility endpoints
+

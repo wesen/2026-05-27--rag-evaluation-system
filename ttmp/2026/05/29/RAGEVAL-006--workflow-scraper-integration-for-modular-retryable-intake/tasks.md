@@ -85,9 +85,9 @@ Goal: prove the workflow can run real provider-backed preprocessing/enrichment s
 
 Goal: make workflow-produced artifacts visible enough for users to understand intake state.
 
-- [ ] Add read-only API endpoints for workflow summaries or adapt scraper engineview services.
-- [ ] Add document preprocessing artifact coverage by source and prompt version.
-- [ ] Add chunk enrichment coverage by strategy and prompt version.
+- [x] Add read-only API endpoints for workflow summaries or adapt scraper engineview services.
+- [x] Add document preprocessing artifact coverage by source and prompt version.
+- [x] Add chunk enrichment coverage by strategy and prompt version.
 - [ ] Link Corpus Explorer document/chunk views to preprocessing/enrichment status.
 - [ ] Add UI smoke tests or manual browser validation notes.
 - [ ] Commit Phase 6 as the first workflow visibility slice.
