@@ -88,9 +88,9 @@ Goal: make workflow-produced artifacts visible enough for users to understand in
 - [x] Add read-only API endpoints for workflow summaries or adapt scraper engineview services.
 - [x] Add document preprocessing artifact coverage by source and prompt version.
 - [x] Add chunk enrichment coverage by strategy and prompt version.
-- [ ] Link Corpus Explorer document/chunk views to preprocessing/enrichment status.
-- [ ] Add UI smoke tests or manual browser validation notes.
-- [ ] Commit Phase 6 as the first workflow visibility slice.
+- [x] Link Corpus Explorer document/chunk views to preprocessing/enrichment status.
+- [x] Add UI smoke tests or manual browser validation notes.
+- [x] Commit Phase 6 as the first workflow visibility slice.
 
 ## Phase 7 — Retrospective and expansion decision
 
@@ -101,3 +101,8 @@ Goal: decide whether to expand scraper workflows beyond the prototype.
 - [ ] Decide whether to migrate more intake commands, keep workflow optional, or redesign the runner boundary.
 - [ ] Update the design guide with observed outcomes.
 - [ ] Upload an updated RAGEVAL-006 bundle to reMarkable if the implementation materially changes the design.
+- [x] Add RTK Query types and endpoints for 4 artifact APIs (doc-processing coverage, doc processing artifacts, chunk-enrichment coverage, chunk enrichments)
+- [x] Add preprocessing/enrichment coverage counters to SourcePanel alongside embedding coverage
+- [x] Add 'Artifacts' tab to DocumentInspector showing per-document preprocessing artifacts
+- [x] Add enrichment status indicator to chunk rows in DocumentInspector chunks tab
+- [x] Add reverse cross-link from Corpus Explorer to Workflows tab (document → workflow that produced its artifacts)

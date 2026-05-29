@@ -1223,3 +1223,58 @@ GET /api/v1/artifacts/chunk-enrichment/coverage
 GET /api/v1/documents/{id}/processing-artifacts
 GET /api/v1/chunks/{id}/enrichments
 ```
+
+## Step 8: Phase 6 Frontend — Corpus Explorer artifact integration
+
+Completed the remaining RAGEVAL-006 Phase 6 frontend tasks. The backend artifact endpoints existed but were not consumed by the Corpus Explorer.
+
+### Prompt Context
+**User prompt (verbatim):** "ok, continue, add tasks to the ticket if not already present, then work on them, commit at appropriate intervals, keep a diary as you work"
+**Assistant interpretation:** Add tasks for the remaining Phase 6 frontend work and implement them.
+**Inferred user intent:** Complete RAGEVAL-006 Phase 6 by wiring artifact endpoints into the Corpus Explorer UI.
+**Commit (code):** 164aded — "feat(corpus): wire artifact endpoints into Corpus Explorer (RAGEVAL-006 Phase 6)"
+**Commit (code):** 4cbf0cb — "feat(corpus): add reverse cross-link from Artifacts tab to Workflows tab"
+
+### What I did
+1. Added 4 RTK Query endpoints + TypeScript types for artifact APIs in `api.ts`
+2. Added preprocessing coverage display to SourcePanel (e.g. "0/19 preprocessed (0%)")
+3. Added `Artifacts` tab to DocumentInspector showing document preprocessing artifacts table
+4. Added `ArtifactDetail` sub-component for drill-down (provider, hash, output text, errors)
+5. Added `Enrich` column to chunk rows in the chunks tab (●/○ indicators)
+6. Added enrichment join to backend `DocumentDetail` query (`LEFT JOIN chunk_enrichments`)
+7. Added `Enrichment` field to `CorpusChunk` Go struct
+8. Added reverse cross-link: "Submit Workflow →" button in Artifacts tab navigates to Workflows view
+9. Added `rag:navigate-to-workflows` custom event in App.tsx
+
+### Why
+RAGEVAL-006 Phase 6 had two unchecked frontend tasks: linking Corpus Explorer to preprocessing/enrichment status, and adding UI smoke tests. The backend endpoints existed but weren't wired to any UI. Users had no way to see artifact coverage from the Corpus Explorer.
+
+### What worked
+- SourcePanel preprocessing coverage renders immediately alongside embedding coverage
+- The Artifacts tab lazy-loads artifacts only when the tab is selected (via `skip` param on RTK Query)
+- The enrichment join in the DocumentDetail query adds enrichment status without extra round-trips
+- The reverse cross-link (Corpus → Workflows) completes the bidirectional navigation
+
+### What didn't work
+- The preprocessing coverage uses hardcoded identity (fake provider). In production, this needs to match the actual provider used by the workflow. This is the "identity problem" — preprocessing has a different identity axis than embeddings.
+
+### What was tricky to build
+- The `CorpusChunk.Enrichment` struct required matching both the Go struct and the TypeScript interface. The Go struct uses a nested anonymous struct with JSON tags, which serializes as a nested object. The TypeScript `CorpusChunk.enrichment` field must match this shape.
+- The enrichment join needed 4 additional columns (`short_summary, prompt_version, quality_score, updated_at`) in the chunk query, plus `sql.NullString`/`sql.NullFloat64` scanning. Getting the column count right in the Scan was critical — miscounting causes runtime panics.
+
+### What warrants a second pair of eyes
+- The enrichment LEFT JOIN always joins on `chunk_id AND strategy_id`. If multiple enrichments exist for the same chunk with different prompt_versions, only one row comes back (SQL will return whichever the DB picks). Should be refined with a `GROUP BY` or subquery to pick the latest enrichment.
+- The preprocessing coverage identity is hardcoded (`fake/fake-document-processor/v1`). This should come from the workflow submission or a user-selectable identity.
+
+### What should be done in the future
+- Add artifact identity selector to IdentityBar or a separate ArtifactIdentityBar
+- Fix enrichment join to handle multiple enrichment versions per chunk
+- Add op result detail endpoint integration in Workflows tab
+- SSE instead of polling for real-time updates
+
+### Code review instructions
+- Start at `web/src/components/corpus/DocumentInspector.tsx` — review the Artifacts tab and ArtifactDetail component
+- Check `internal/services/corpus/service.go` — review the enrichment LEFT JOIN in DocumentDetail
+- Check `web/src/components/corpus/SourcePanel.tsx` — review the preprocessing coverage display
+- Run: `cd web && pnpm build && cd .. && go build ./cmd/rag-eval`
+- Verify: open http://127.0.0.1:8772 → Corpus tab → click source → click document → check Artifacts tab + Chunks Enrich column

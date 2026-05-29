@@ -138,3 +138,24 @@ Added Phase 6 backend visibility endpoints for workflows, document processing ar
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/api/workflow_artifact_handlers.go — Implements workflow and artifact visibility handlers
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/api/workflow_artifact_handlers_test.go — Smoke-tests new backend visibility endpoints
 
+
+## 2026-05-29
+
+Phase 6 frontend: wired 4 artifact backend endpoints into Corpus Explorer. SourcePanel shows preprocessing coverage, DocumentInspector has Artifacts tab and Enrich column on chunks. Backend: added enrichment join to DocumentDetail query. Commit 164aded.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/corpus/service.go — Enrichment join + CorpusChunk.Enrichment field
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentInspector.tsx — Artifacts tab + Enrich column
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/SourcePanel.tsx — Preprocessing coverage display
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/services/api.ts — 4 artifact RTK Query endpoints + types
+
+
+## 2026-05-29
+
+Step 8: Phase 6 frontend complete — SourcePanel preprocessing coverage, DocumentInspector Artifacts tab + Enrich column, enrichment join in DocumentDetail query, reverse cross-link Corpus→Workflows. Commits 164aded, 4cbf0cb.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentInspector.tsx — Artifacts tab
+
