@@ -361,7 +361,6 @@ const WorkflowDetail: React.FC<WorkflowDetailProps> = ({ workflowId, onBack, onN
   const [retryOp, { isLoading: retrying }] = useRetryOpMutation();
   const [cancelWorkflow] = useCancelWorkflowMutation();
   const [inspectedGroup, setInspectedGroup] = useState<string | null>(null);
-  const inspectedSampleRef = React.useRef<WorkflowOpGroup['sample'] | null>(null);
 
   if (summaryLoading || opsLoading) return <div className="text-dim text-mono">Loading workflow…</div>;
 
@@ -386,7 +385,6 @@ const WorkflowDetail: React.FC<WorkflowDetailProps> = ({ workflowId, onBack, onN
   // Find selected group sample
   const selectedGroup = inspectedGroup ? groups.find(g => g.operation + '|' + g.status === inspectedGroup) : null;
   const inspectedSample = selectedGroup?.sample ?? null;
-  inspectedSampleRef.current = inspectedSample;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -491,9 +489,10 @@ const WorkflowDetail: React.FC<WorkflowDetailProps> = ({ workflowId, onBack, onN
                   Attempt {inspectedSample.op.RetryState.Attempt}/{inspectedSample.op.Retry.MaxAttempts}
                 </div>
                 <button className="btn" style={{ marginTop: 4 }} onClick={async () => {
-                  const sample = inspectedSampleRef.current ?? inspectedSample;
-                  if (!sample) return;
-                  try { await retryOp({ workflowId, opId: sample.op.ID }).unwrap(); } catch (e) { console.error('retry failed', e); }
+                  // Look up the sample from current polled data using the stable key
+                  const g = groups.find(gr => gr.operation + '|' + gr.status === inspectedGroup);
+                  if (!g?.sample) return;
+                  try { await retryOp({ workflowId, opId: g.sample.op.ID }).unwrap(); } catch (e) { console.error('retry failed', e); }
                 }} disabled={retrying}>
                   {retrying ? 'Retrying…' : 'Retry Now'}
                 </button>
