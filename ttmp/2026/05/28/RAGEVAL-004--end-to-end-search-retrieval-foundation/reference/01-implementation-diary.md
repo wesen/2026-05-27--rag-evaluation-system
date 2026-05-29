@@ -337,7 +337,7 @@ This keeps the project invariant intact: CLI and HTTP are adapters over shared s
 
 **Inferred user intent:** Build the retrieval foundation in small validated pieces while keeping CLI/API parity.
 
-**Commit (code):** pending — HTTP endpoint implementation will be committed after this diary/changelog update.
+**Commit (code):** 314f4ed — "feat: add BM25 search HTTP endpoints"
 
 ### What I did
 
