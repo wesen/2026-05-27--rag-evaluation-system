@@ -35,3 +35,12 @@ Implemented Phase 1 BM25 search service and CLI, built a TTC guides/articles ind
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/cmd/rag-eval/cmds/search/query.go — Query CLI
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/search/bm25.go — BM25 build/query implementation
 
+
+## 2026-05-28
+
+Added BM25 HTTP endpoints for search index builds and lexical query execution, validated with a live curl smoke query.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/api/handlers.go — Search HTTP route registration and handlers
+

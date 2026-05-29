@@ -15,6 +15,8 @@ RelatedFiles:
       Note: Glazed CLI command for BM25 index builds
     - Path: cmd/rag-eval/cmds/search/query.go
       Note: Glazed CLI command for BM25 queries
+    - Path: internal/api/handlers.go
+      Note: BM25 search HTTP endpoints added in Step 4
     - Path: internal/db/search_queries.go
       Note: DB helpers for chunk/document context and search index metadata
     - Path: internal/services/search/bm25.go
@@ -29,6 +31,7 @@ LastUpdated: 2026-05-28T00:00:00Z
 WhatFor: Track why RAGEVAL-004 focuses on base retrieval functionality before benchmark design.
 WhenToUse: Read before implementing BM25, vector search, hybrid retrieval, or smoke-query checks.
 ---
+
 
 
 
@@ -317,3 +320,92 @@ Another minor sharp edge was Bleve field extraction. Search results need stored 
   - `data/indexes/bm25/bm25-ttc-guides-articles-fixed-1200-150`
 - The derived index is intentionally under ignored `data/` and should not be committed.
 - Current result rows include rank, retriever, index ID, query, score, chunk ID, document ID, source ID, title, chunk index, URL, and preview.
+
+---
+
+## Step 4: BM25 HTTP Search Endpoints
+
+I added HTTP adapters for the BM25 retrieval service. The API now exposes one endpoint for building a BM25 index and one endpoint for running lexical search queries, both backed by the same `internal/services/search` service used by the CLI.
+
+This keeps the project invariant intact: CLI and HTTP are adapters over shared services. The next frontend search surface can call `/api/v1/search/query` without duplicating retrieval logic.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 3)
+
+**Assistant interpretation:** Continue RAGEVAL-004 task-by-task and commit each coherent implementation slice.
+
+**Inferred user intent:** Build the retrieval foundation in small validated pieces while keeping CLI/API parity.
+
+**Commit (code):** pending — HTTP endpoint implementation will be committed after this diary/changelog update.
+
+### What I did
+
+- Added routes in `internal/api/handlers.go`:
+  - `POST /api/v1/search/indexes`
+  - `POST /api/v1/search/query`
+- Added handler methods:
+  - `handleSearchBuildIndex`
+  - `handleSearchQuery`
+- Both handlers instantiate `searchservice.NewService(h.queries, req.IndexRoot)` and call the shared BM25 service.
+- Ran API validation by starting `./rag-eval serve --address 127.0.0.1:18080` and querying:
+  - `POST /api/v1/search/query`
+  - query: `crape myrtle varieties`
+  - result count: `3`
+  - top result: `Crape Myrtle Varieties and Guide`, chunk `chk-d7da1954af40483f`.
+
+### Why
+
+Search must be available to both CLI workflows and the web app. Adding HTTP endpoints after the CLI/service slice proves that the same retrieval behavior is reusable from API clients.
+
+### What worked
+
+- Targeted tests/build passed:
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/services/search ./internal/db ./internal/api -count=1 -timeout 60s`
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval`
+- HTTP smoke query returned the same plausible Crape Myrtle result as the CLI query path.
+
+### What didn't work
+
+- No HTTP-specific tests were added yet; validation was manual with `curl`.
+- Only BM25 endpoints exist. Vector and hybrid HTTP endpoints remain future tasks.
+
+### What I learned
+
+- The search service boundary is clean enough for both CLI and HTTP adapters.
+- The existing `internal/api/handlers.go` route structure remains manageable for this slice, though future search/vector/hybrid endpoints may warrant splitting handlers into files.
+
+### What was tricky to build
+
+The API needs to pass an optional `index_root` for testability and non-default deployments, but typical users should not need it. The handler keeps it optional and lets the service default to `data/indexes`.
+
+### What warrants a second pair of eyes
+
+- Review whether index building should be exposed as a POST endpoint immediately, or whether write-like operations should be gated before the public UI uses them.
+- Review whether `index_root` should be accepted over HTTP or only configured server-side.
+
+### What should be done in the future
+
+- Add vector query HTTP endpoint after vector service exists.
+- Add hybrid HTTP endpoint after hybrid service exists.
+- Add frontend search UI only after the CLI/API retrieval behavior is validated with more real queries.
+
+### Code review instructions
+
+- Review `internal/api/handlers.go`, especially route registration and `handleSearchBuildIndex` / `handleSearchQuery`.
+- Validate with:
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/services/search ./internal/db ./internal/api -count=1 -timeout 60s`
+  - start server and POST to `/api/v1/search/query`.
+
+### Technical details
+
+Example smoke request:
+
+```json
+{
+  "index_id": "bm25-ttc-guides-articles-fixed-1200-150",
+  "query": "crape myrtle varieties",
+  "limit": 3,
+  "preview_runes": 100
+}
+```

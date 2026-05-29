@@ -12,6 +12,7 @@ import (
 	corpuservice "github.com/go-go-golems/rag-evaluation-system/internal/services/corpus"
 	documentservice "github.com/go-go-golems/rag-evaluation-system/internal/services/document"
 	embeddingservice "github.com/go-go-golems/rag-evaluation-system/internal/services/embedding"
+	searchservice "github.com/go-go-golems/rag-evaluation-system/internal/services/search"
 	sourceservice "github.com/go-go-golems/rag-evaluation-system/internal/services/source"
 )
 
@@ -43,6 +44,10 @@ func RegisterHandlers(mux *http.ServeMux, database *sql.DB) {
 	mux.HandleFunc("POST /api/v1/embeddings/compute", h.handleComputeEmbeddings)
 	mux.HandleFunc("POST /api/v1/embeddings/coverage", h.handleEmbeddingCoverage)
 	mux.HandleFunc("POST /api/v1/embeddings/similarity", h.handleEmbeddingSimilarity)
+
+	// Search retrieval
+	mux.HandleFunc("POST /api/v1/search/indexes", h.handleSearchBuildIndex)
+	mux.HandleFunc("POST /api/v1/search/query", h.handleSearchQuery)
 
 	// Corpus Explorer (read-only)
 	mux.HandleFunc("GET /api/v1/corpus/sources", h.handleCorpusSources)
@@ -469,6 +474,64 @@ func (h *handler) handleListChunkingStrategies(w http.ResponseWriter, r *http.Re
 	writeJSON(w, http.StatusOK, map[string]interface{}{
 		"items": strategies,
 	})
+}
+
+// --- Search retrieval ---
+
+func (h *handler) handleSearchBuildIndex(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		IndexID    string   `json:"index_id"`
+		IndexRoot  string   `json:"index_root"`
+		StrategyID string   `json:"strategy_id"`
+		SourceIDs  []string `json:"source_ids"`
+		Force      bool     `json:"force"`
+		Limit      int      `json:"limit"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid_json", err.Error())
+		return
+	}
+
+	service := searchservice.NewService(h.queries, req.IndexRoot)
+	result, err := service.BuildBM25(r.Context(), searchservice.BuildIndexRequest{
+		IndexID:    req.IndexID,
+		StrategyID: req.StrategyID,
+		SourceIDs:  req.SourceIDs,
+		Force:      req.Force,
+		Limit:      req.Limit,
+	})
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "index_build_failed", err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, result)
+}
+
+func (h *handler) handleSearchQuery(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		IndexID      string `json:"index_id"`
+		IndexRoot    string `json:"index_root"`
+		Query        string `json:"query"`
+		Limit        int    `json:"limit"`
+		PreviewRunes int    `json:"preview_runes"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid_json", err.Error())
+		return
+	}
+
+	service := searchservice.NewService(h.queries, req.IndexRoot)
+	result, err := service.QueryBM25(r.Context(), searchservice.QueryRequest{
+		IndexID:      req.IndexID,
+		Query:        req.Query,
+		Limit:        req.Limit,
+		PreviewRunes: req.PreviewRunes,
+	})
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "search_failed", err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, result)
 }
 
 // --- Corpus Explorer ---
