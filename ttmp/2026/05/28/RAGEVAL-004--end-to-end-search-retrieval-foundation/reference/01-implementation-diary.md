@@ -219,7 +219,7 @@ I also ran real TTC corpus queries against a bounded articles+guides index. The 
 
 **Inferred user intent:** Move from design into working retrieval functionality while keeping implementation progress reviewable and recoverable.
 
-**Commit (code):** 7efba55 — "feat: add BM25 search service and CLI"
+**Commit (code):** c24d8a5 — "feat: add BM25 search service and CLI"
 
 ### What I did
 
