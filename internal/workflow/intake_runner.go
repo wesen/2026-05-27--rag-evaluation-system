@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/go-go-golems/rag-evaluation-system/internal/db"
+	chunkenrichment "github.com/go-go-golems/rag-evaluation-system/internal/services/chunkenrichment"
 	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
 	documentprocessing "github.com/go-go-golems/rag-evaluation-system/internal/services/documentprocessing"
 	embeddingservice "github.com/go-go-golems/rag-evaluation-system/internal/services/embedding"
@@ -16,11 +17,13 @@ import (
 
 type ProviderResolver func(ctx context.Context, input IntakeOpInput) (*embeddingservice.ResolvedProvider, error)
 type DocumentProcessorResolver func(ctx context.Context, input IntakeOpInput) (documentprocessing.Provider, error)
+type ChunkEnricherResolver func(ctx context.Context, input IntakeOpInput) (chunkenrichment.Provider, error)
 
 // IntakeRunner dispatches durable scraper ops into rag-eval intake services.
 type IntakeRunner struct {
 	ResolveProvider          ProviderResolver
 	ResolveDocumentProcessor DocumentProcessorResolver
+	ResolveChunkEnricher     ChunkEnricherResolver
 	IndexRoot                string
 }
 
@@ -50,6 +53,8 @@ func (r *IntakeRunner) Run(ctx context.Context, runCtx runner.RunContext) (*mode
 		return r.runChunkDocument(ctx, runCtx, input)
 	case OperationPreprocessDocument:
 		return r.runPreprocessDocument(ctx, runCtx, input)
+	case OperationEnrichChunk:
+		return r.runEnrichChunk(ctx, runCtx, input)
 	case OperationComputeEmbeddings:
 		return r.runComputeEmbeddings(ctx, runCtx, input)
 	case OperationBuildBM25:
@@ -119,6 +124,44 @@ func (r *IntakeRunner) runPreprocessDocument(ctx context.Context, runCtx runner.
 		InputHash:     result.InputHash,
 		Status:        result.Status,
 		SkippedFresh:  result.SkippedFresh,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &model.OpResult{OpID: runCtx.Op.ID, Data: data}, nil
+}
+
+func (r *IntakeRunner) runEnrichChunk(ctx context.Context, runCtx runner.RunContext, input IntakeOpInput) (*model.OpResult, error) {
+	queries, opErr := openOpQueries(runCtx.Op.ID, input.DBPath)
+	if opErr != nil {
+		return opErr, nil
+	}
+	defer queries.Close()
+
+	provider, err := r.resolveChunkEnricher(ctx, input)
+	if err != nil {
+		return opErrorResult(runCtx.Op.ID, "resolve_chunk_enricher_failed", err.Error(), false, nil), nil
+	}
+	result, err := chunkenrichment.NewService(queries).Enrich(ctx, chunkenrichment.EnrichRequest{
+		ChunkID:       input.ChunkID,
+		StrategyID:    input.StrategyID,
+		PromptVersion: input.PromptVersion,
+		Provider:      provider,
+		Force:         input.Force,
+	})
+	if err != nil {
+		return opErrorResult(runCtx.Op.ID, "enrich_chunk_failed", err.Error(), true, map[string]any{"chunk_id": input.ChunkID, "strategy_id": input.StrategyID}), nil
+	}
+	data, err := json.Marshal(EnrichChunkOutput{
+		ChunkID:       result.ChunkID,
+		DocumentID:    result.DocumentID,
+		StrategyID:    result.StrategyID,
+		PromptVersion: result.PromptVersion,
+		Provider:      result.Provider,
+		Model:         result.Model,
+		TextHash:      result.TextHash,
+		SkippedFresh:  result.SkippedFresh,
+		QualityScore:  result.QualityScore,
 	})
 	if err != nil {
 		return nil, err
@@ -245,6 +288,24 @@ func (r *IntakeRunner) resolveDocumentProcessor(ctx context.Context, input Intak
 		return nil, fmt.Errorf("unsupported document processing provider %q; only fake is available before live provider Phase 5", provider)
 	}
 	return documentprocessing.FakeProvider{ProviderName: provider, ModelName: modelName}, nil
+}
+
+func (r *IntakeRunner) resolveChunkEnricher(ctx context.Context, input IntakeOpInput) (chunkenrichment.Provider, error) {
+	if r.ResolveChunkEnricher != nil {
+		return r.ResolveChunkEnricher(ctx, input)
+	}
+	provider := input.ChunkEnrichmentProvider
+	if provider == "" {
+		provider = "fake"
+	}
+	modelName := input.ChunkEnrichmentModel
+	if modelName == "" {
+		modelName = "fake-chunk-enricher"
+	}
+	if provider != "fake" {
+		return nil, fmt.Errorf("unsupported chunk enrichment provider %q; only fake is available before live provider Phase 5", provider)
+	}
+	return chunkenrichment.FakeProvider{ProviderName: provider, ModelName: modelName}, nil
 }
 
 func openOpQueries(opID model.OpID, path string) (*db.Queries, *model.OpResult) {

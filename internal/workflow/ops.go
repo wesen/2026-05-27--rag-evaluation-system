@@ -6,6 +6,7 @@ const (
 	OperationComputeEmbeddings  = "compute_embeddings"
 	OperationBuildBM25          = "build_bm25"
 	OperationPreprocessDocument = "preprocess_document"
+	OperationEnrichChunk        = "enrich_chunk"
 )
 
 type IntakeOpInput struct {
@@ -15,10 +16,13 @@ type IntakeOpInput struct {
 	Payload map[string]any `json:"payload,omitempty"`
 
 	DocumentID                 string `json:"document_id,omitempty"`
+	ChunkID                    string `json:"chunk_id,omitempty"`
 	ArtifactType               string `json:"artifact_type,omitempty"`
 	PromptVersion              string `json:"prompt_version,omitempty"`
 	DocumentProcessingProvider string `json:"document_processing_provider,omitempty"`
 	DocumentProcessingModel    string `json:"document_processing_model,omitempty"`
+	ChunkEnrichmentProvider    string `json:"chunk_enrichment_provider,omitempty"`
+	ChunkEnrichmentModel       string `json:"chunk_enrichment_model,omitempty"`
 	Strategy                   string `json:"strategy,omitempty"`
 	StrategyID                 string `json:"strategy_id,omitempty"`
 	ChunkSize                  int    `json:"chunk_size,omitempty"`
@@ -62,6 +66,18 @@ type PreprocessDocumentOutput struct {
 	InputHash     string `json:"input_hash"`
 	Status        string `json:"status"`
 	SkippedFresh  bool   `json:"skipped_fresh"`
+}
+
+type EnrichChunkOutput struct {
+	ChunkID       string  `json:"chunk_id"`
+	DocumentID    string  `json:"document_id"`
+	StrategyID    string  `json:"strategy_id"`
+	PromptVersion string  `json:"prompt_version"`
+	Provider      string  `json:"provider"`
+	Model         string  `json:"model"`
+	TextHash      string  `json:"text_hash"`
+	SkippedFresh  bool    `json:"skipped_fresh"`
+	QualityScore  float64 `json:"quality_score,omitempty"`
 }
 
 type ComputeEmbeddingsOutput struct {

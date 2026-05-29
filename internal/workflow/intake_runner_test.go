@@ -9,6 +9,7 @@ import (
 
 	geppettoembeddings "github.com/go-go-golems/geppetto/pkg/embeddings"
 	"github.com/go-go-golems/rag-evaluation-system/internal/db"
+	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
 	embeddingservice "github.com/go-go-golems/rag-evaluation-system/internal/services/embedding"
 	"github.com/go-go-golems/scraper/pkg/engine/model"
 	"github.com/go-go-golems/scraper/pkg/engine/runner"
@@ -136,6 +137,68 @@ func TestIntakeRunnerPreprocessDocumentWorkflow(t *testing.T) {
 	}
 	if content == artifact.OutputText {
 		t.Fatalf("preprocessing artifact overwrote canonical document content")
+	}
+	assertWorkflowStatus(t, ctx, engineStore, workflow.ID, model.WorkflowStatusSucceeded)
+}
+
+func TestIntakeRunnerEnrichChunkWorkflow(t *testing.T) {
+	ctx := context.Background()
+	appDB := seedWorkflowTestDocument(t)
+	queries := openAppQueries(t, appDB)
+	if _, err := chunkservice.NewService(queries).Apply(ctx, chunkservice.ApplyRequest{DocumentID: "doc-1", Strategy: "fixed", ChunkSize: 20, Overlap: 5}); err != nil {
+		queries.Close()
+		t.Fatalf("seed chunks: %v", err)
+	}
+	chunks, err := queries.ListChunks("doc-1")
+	queries.Close()
+	if err != nil {
+		t.Fatalf("list chunks: %v", err)
+	}
+	if len(chunks) == 0 {
+		t.Fatalf("expected seeded chunks")
+	}
+
+	engineStore, sched := newWorkflowScheduler(t, &IntakeRunner{})
+	workflow := model.WorkflowRun{ID: "wf-enrich", Site: "rag-eval", Name: "Enrich chunk", Status: model.WorkflowStatusPending, Input: json.RawMessage(`{}`)}
+	op := model.OpSpec{
+		ID:         "wf-enrich:chunk-0",
+		WorkflowID: workflow.ID,
+		Site:       workflow.Site,
+		Kind:       IntakeRunnerKind,
+		Queue:      QueueLLM,
+		DedupKey:   "enrich:" + chunks[0].ID + ":v1:fake",
+		Input: mustJSON(t, IntakeOpInput{
+			Operation:               OperationEnrichChunk,
+			DBPath:                  appDB,
+			ChunkID:                 chunks[0].ID,
+			StrategyID:              "fixed-20-5",
+			PromptVersion:           "v1",
+			ChunkEnrichmentProvider: "fake",
+			ChunkEnrichmentModel:    "fake-chunk-enricher",
+		}),
+	}
+	if err := sched.CreateWorkflow(ctx, storecontract.CreateWorkflowParams{Workflow: workflow, Initial: []model.OpSpec{op}}); err != nil {
+		t.Fatalf("create workflow: %v", err)
+	}
+	if _, err := sched.RunOnce(ctx); err != nil {
+		t.Fatalf("run enrich cycle: %v", err)
+	}
+	result := successfulResult(t, ctx, engineStore, workflow.ID, op.ID)
+	var output EnrichChunkOutput
+	if err := json.Unmarshal(result.Data, &output); err != nil {
+		t.Fatalf("decode output: %v", err)
+	}
+	if output.ChunkID != chunks[0].ID || output.Provider != "fake" || output.TextHash == "" {
+		t.Fatalf("unexpected output: %+v", output)
+	}
+	queries = openAppQueries(t, appDB)
+	defer queries.Close()
+	enrichment, ok, err := queries.GetChunkEnrichment(chunks[0].ID, "fixed-20-5", "v1")
+	if err != nil {
+		t.Fatalf("get enrichment: %v", err)
+	}
+	if !ok || enrichment.ShortSummary == "" || enrichment.TextHash != output.TextHash {
+		t.Fatalf("unexpected enrichment ok=%v enrichment=%+v", ok, enrichment)
 	}
 	assertWorkflowStatus(t, ctx, engineStore, workflow.ID, model.WorkflowStatusSucceeded)
 }

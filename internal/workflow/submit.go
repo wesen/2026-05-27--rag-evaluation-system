@@ -56,6 +56,13 @@ type SubmitIntakeRequest struct {
 	PreprocessPromptVersion    string
 	SkipPreprocessing          bool
 	ForcePreprocessing         bool
+
+	SkipChunkEnrichment       bool
+	ChunkEnrichmentProvider   string
+	ChunkEnrichmentModel      string
+	ChunkEnrichmentPrompt     string
+	ChunksPerDocumentToEnrich int
+	ForceChunkEnrichment      bool
 }
 
 type SubmitIntakeResult struct {
@@ -106,6 +113,18 @@ func SubmitIntakeWorkflow(ctx context.Context, req SubmitIntakeRequest) (*Submit
 	}
 	if req.PreprocessDocumentModel == "" {
 		req.PreprocessDocumentModel = "fake-document-processor"
+	}
+	if req.ChunkEnrichmentProvider == "" {
+		req.ChunkEnrichmentProvider = "fake"
+	}
+	if req.ChunkEnrichmentModel == "" {
+		req.ChunkEnrichmentModel = "fake-chunk-enricher"
+	}
+	if req.ChunkEnrichmentPrompt == "" {
+		req.ChunkEnrichmentPrompt = "v1"
+	}
+	if req.ChunksPerDocumentToEnrich <= 0 {
+		req.ChunksPerDocumentToEnrich = 1
 	}
 
 	documentIDs := normalizeList(req.DocumentIDs)
@@ -192,6 +211,34 @@ func SubmitIntakeWorkflow(ctx context.Context, req SubmitIntakeRequest) (*Submit
 		chunkDeps = append(chunkDeps, model.Dependency{OpID: opID, Required: true})
 	}
 
+	if !req.SkipChunkEnrichment {
+		enrichmentChunks, err := selectChunksForDocuments(ctx, req.DBPath, strategyID, documentIDs, req.ChunksPerDocumentToEnrich)
+		if err != nil {
+			return nil, err
+		}
+		for _, chunk := range enrichmentChunks {
+			ops = append(ops, model.OpSpec{
+				ID:         model.OpID(fmt.Sprintf("%s:enrich:%s", req.WorkflowID, chunk.ID)),
+				WorkflowID: workflowID,
+				Site:       workflow.Site,
+				Kind:       IntakeRunnerKind,
+				Queue:      QueueLLM,
+				DedupKey:   fmt.Sprintf("enrich:%s:%s:%s:%s", chunk.ID, req.ChunkEnrichmentPrompt, req.ChunkEnrichmentProvider, req.ChunkEnrichmentModel),
+				DependsOn:  chunkDeps,
+				Input: mustRawJSON(IntakeOpInput{
+					Operation:               OperationEnrichChunk,
+					DBPath:                  req.DBPath,
+					ChunkID:                 chunk.ID,
+					StrategyID:              strategyID,
+					PromptVersion:           req.ChunkEnrichmentPrompt,
+					ChunkEnrichmentProvider: req.ChunkEnrichmentProvider,
+					ChunkEnrichmentModel:    req.ChunkEnrichmentModel,
+					Force:                   req.ForceChunkEnrichment,
+				}),
+			})
+		}
+	}
+
 	if !req.SkipEmbeddings {
 		embedOpID := model.OpID(req.WorkflowID + ":embed")
 		ops = append(ops, model.OpSpec{
@@ -270,6 +317,18 @@ func SubmitIntakeWorkflow(ctx context.Context, req SubmitIntakeRequest) (*Submit
 		opIDs[i] = string(op.ID)
 	}
 	return &SubmitIntakeResult{WorkflowID: string(workflowID), EngineDB: req.EngineDB, DBPath: req.DBPath, DocumentIDs: documentIDs, StrategyID: strategyID, OpIDs: opIDs}, nil
+}
+
+func selectChunksForDocuments(ctx context.Context, dbPath, strategyID string, documentIDs []string, perDocumentLimit int) ([]db.Chunk, error) {
+	database, err := db.OpenDB(dbPath)
+	if err != nil {
+		return nil, err
+	}
+	defer database.Close()
+	if err := db.Migrate(database); err != nil {
+		return nil, err
+	}
+	return db.NewQueries(database).ListChunksForDocuments(strategyID, documentIDs, perDocumentLimit)
 }
 
 func selectDocumentIDs(ctx context.Context, dbPath string, sourceIDs []string, limit int) ([]string, error) {

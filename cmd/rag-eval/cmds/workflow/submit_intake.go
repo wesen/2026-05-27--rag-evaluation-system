@@ -71,5 +71,11 @@ available for debugging the same work outside workflow orchestration.`,
 	cmd.Flags().StringVar(&opts.req.PreprocessDocumentProvider, "preprocess-provider", "fake", "Document preprocessing provider; currently only fake")
 	cmd.Flags().StringVar(&opts.req.PreprocessDocumentModel, "preprocess-model", "fake-document-processor", "Document preprocessing model identity")
 	cmd.Flags().BoolVar(&opts.req.ForcePreprocessing, "force-preprocessing", false, "Recompute document preprocessing artifacts even when fresh")
+	cmd.Flags().BoolVar(&opts.req.SkipChunkEnrichment, "skip-chunk-enrichment", true, "Skip chunk enrichment ops; set false to enrich existing first chunks per selected document")
+	cmd.Flags().IntVar(&opts.req.ChunksPerDocumentToEnrich, "chunks-per-document-to-enrich", 1, "Maximum existing chunks per selected document to enrich")
+	cmd.Flags().StringVar(&opts.req.ChunkEnrichmentPrompt, "chunk-enrichment-prompt", "v1", "Chunk enrichment prompt version")
+	cmd.Flags().StringVar(&opts.req.ChunkEnrichmentProvider, "chunk-enrichment-provider", "fake", "Chunk enrichment provider; currently only fake")
+	cmd.Flags().StringVar(&opts.req.ChunkEnrichmentModel, "chunk-enrichment-model", "fake-chunk-enricher", "Chunk enrichment model identity")
+	cmd.Flags().BoolVar(&opts.req.ForceChunkEnrichment, "force-chunk-enrichment", false, "Recompute chunk enrichments even when fresh")
 	return cmd
 }

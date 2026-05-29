@@ -17,6 +17,7 @@ type WorkerConfig struct {
 	LeaseDuration            time.Duration
 	ResolveProvider          ProviderResolver
 	ResolveDocumentProcessor DocumentProcessorResolver
+	ResolveChunkEnricher     ChunkEnricherResolver
 	IndexRoot                string
 }
 
@@ -46,7 +47,7 @@ func NewIntakeScheduler(ctx context.Context, cfg WorkerConfig) (*sqlitestore.Sto
 		return nil, nil, err
 	}
 	registry := runner.NewRegistry()
-	if err := registry.Register(&IntakeRunner{ResolveProvider: cfg.ResolveProvider, ResolveDocumentProcessor: cfg.ResolveDocumentProcessor, IndexRoot: cfg.IndexRoot}); err != nil {
+	if err := registry.Register(&IntakeRunner{ResolveProvider: cfg.ResolveProvider, ResolveDocumentProcessor: cfg.ResolveDocumentProcessor, ResolveChunkEnricher: cfg.ResolveChunkEnricher, IndexRoot: cfg.IndexRoot}); err != nil {
 		_ = store.Close()
 		return nil, nil, err
 	}

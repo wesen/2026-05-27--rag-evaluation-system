@@ -16,6 +16,8 @@ RelatedFiles:
       Note: Queue policy reference used for LLM and embedding op pacing recommendations
     - Path: ../../../../../../../scraper/pkg/doc/topics/scraper-runtime-model.md
       Note: Scraper runtime reference used to distinguish submit verbs and execution ops
+    - Path: cmd/rag-eval/cmds/chunk/enrich.go
+      Note: Phase 4 direct chunk enrichment debug CLI
     - Path: cmd/rag-eval/cmds/document/preprocess.go
       Note: Phase 3 direct preprocessing debug CLI
     - Path: cmd/rag-eval/cmds/workflow/root.go
@@ -24,6 +26,8 @@ RelatedFiles:
       Note: Registers workflow CLI command group
     - Path: go.mod
       Note: Phase 0 scraper and go-go-goja dependency compatibility wiring
+    - Path: internal/db/chunk_enrichment_queries.go
+      Note: Phase 4 chunk enrichment DB helpers
     - Path: internal/db/db.go
       Note: Phase 3 document preprocessing artifact schema
     - Path: internal/db/document_processing_queries.go
@@ -32,6 +36,10 @@ RelatedFiles:
       Note: Supports document-scoped chunk selection for workflow embeddings
     - Path: internal/db/search_queries.go
       Note: Supports document-scoped chunk selection for workflow BM25
+    - Path: internal/services/chunkenrichment/service.go
+      Note: Phase 4 fake-provider chunk enrichment service
+    - Path: internal/services/chunkenrichment/service_test.go
+      Note: Phase 4 freshness validation and coverage tests
     - Path: internal/services/documentprocessing/service.go
       Note: Phase 3 fake-provider preprocessing service
     - Path: internal/services/documentprocessing/service_test.go
@@ -55,17 +63,21 @@ RelatedFiles:
         Phase 1 Go-native intake runner and chunk_document dispatch
         Completed Phase 1 runner operations for chunking embeddings and BM25
         Phase 3 preprocess_document workflow dispatch
+        Phase 4 enrich_chunk workflow dispatch
     - Path: internal/workflow/intake_runner_test.go
       Note: |-
         Phase 1 durable chunk_document workflow test
         Completed Phase 1 dependency-chain workflow tests
         Phase 3 preprocess workflow smoke test
+        Phase 4 enrich_chunk scheduler smoke test
     - Path: internal/workflow/ops.go
       Note: |-
         Phase 1 typed intake op contracts
         Completed Phase 1 op contracts for chunking embeddings and BM25
     - Path: internal/workflow/submit.go
-      Note: Phase 2 workflow submission service
+      Note: |-
+        Phase 2 workflow submission service
+        Phase 4 bounded existing-chunk enrichment fan-out
     - Path: internal/workflow/submit_test.go
       Note: Phase 2 fake-provider smoke workflow test
     - Path: ttmp/2026/05/29/RAGEVAL-006--workflow-scraper-integration-for-modular-retryable-intake/design-doc/01-workflow-scraper-intake-integration-design-and-implementation-guide.md
@@ -76,6 +88,7 @@ LastUpdated: 2026-05-29T18:30:00Z
 WhatFor: Track the design investigation, evidence, decisions, and delivery steps for scraper-backed modular retryable intake.
 WhenToUse: Read before implementing workflow orchestration, LLM preprocessing, chunk enrichment, or scraper runner integration in rag-eval.
 ---
+
 
 
 
@@ -789,4 +802,121 @@ Important invariant:
 
 ```text
 documents.content_text is read as input but never overwritten by Phase 3 preprocessing.
+```
+
+---
+
+## Step 7: Complete Phase 4 — Chunk Enrichment Artifacts
+
+I added the first chunk-level enrichment layer over the existing `chunk_enrichments` table. The implementation stores summaries, topics, entities, hypothetical questions, quality score, provider/model identity, prompt version, and a text hash for freshness. As with document preprocessing, the first provider is deterministic and fake so the workflow behavior can be tested without live LLM cost or credentials.
+
+This phase makes chunk postprocessing retryable and inspectable while preserving canonical chunk text. Chunk enrichment can now run through the service layer, a direct debug CLI, or a scraper workflow operation.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue the phased RAGEVAL-006 implementation by completing the next unchecked phase, Phase 4 chunk enrichment.
+
+**Inferred user intent:** Add retryable chunk-level postprocessing support before moving on to live-provider smoke tests.
+
+### What I did
+
+- Added `internal/db/chunk_enrichment_queries.go` with helpers for:
+  - chunk lookup by chunk/strategy;
+  - first-N chunks per selected document;
+  - enrichment upsert;
+  - enrichment lookup;
+  - freshness check by `text_hash`;
+  - coverage grouped by source.
+- Added `internal/services/chunkenrichment`:
+  - provider interface;
+  - deterministic fake provider;
+  - strict provider output validation;
+  - `Service.Enrich`;
+  - `Service.Coverage`.
+- Added service tests proving:
+  - enrichments are stored;
+  - fresh enrichments are skipped;
+  - invalid provider output is rejected;
+  - coverage reports fresh/missing counts.
+- Added workflow op `enrich_chunk` to the `rag-eval/intake` runner.
+- Added workflow scheduler test for `enrich_chunk` over a pre-chunked test document.
+- Added direct debug CLI:
+  - `rag-eval chunk enrich --chunk-id ... --strategy-id ...`
+- Extended `workflow submit-intake` with bounded existing-chunk fan-out:
+  - `--skip-chunk-enrichment=false`;
+  - `--chunks-per-document-to-enrich N`;
+  - fake provider/model/prompt flags.
+
+### Why
+
+Chunk-level enrichments are the natural place for summaries, topics, entities, and hypothetical questions. Storing them separately from chunks keeps derived LLM state experimental and repeatable: prompt changes, provider changes, and model changes can be represented by identity fields instead of mutating canonical chunk text.
+
+### What worked
+
+- Fake-provider chunk enrichment service tests pass.
+- Workflow op `enrich_chunk` writes an enrichment through scraper scheduler execution.
+- Direct CLI help works for `rag-eval chunk enrich`.
+- Validation passed:
+
+```text
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/db ./internal/services/chunkenrichment ./internal/workflow ./cmd/rag-eval/cmds/chunk ./cmd/rag-eval/cmds/workflow -count=1 -timeout 120s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/db ./internal/ingest ./internal/chunking ./internal/services/source ./internal/services/chunking ./internal/services/document ./internal/services/documentprocessing ./internal/services/chunkenrichment ./internal/services/embedding ./internal/services/search ./internal/workflow ./cmd/rag-eval/cmds/chunk ./cmd/rag-eval/cmds/document ./cmd/rag-eval/cmds/workflow -count=1 -timeout 120s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval
+go run ./cmd/rag-eval chunk enrich --help
+```
+
+### What didn't work
+
+- Live LLM chunk enrichment is intentionally not wired yet; that belongs to Phase 5.
+- `workflow submit-intake` can fan out enrichment ops only for chunks that already exist at submission time. This is safe for bounded smoke over pre-chunked documents, but it is not yet a dynamic fan-out stage that creates enrich ops after chunking completes.
+- The existing `chunk_enrichments` primary key is `(chunk_id, strategy_id, prompt_version)`, so provider/model are attributes rather than part of the uniqueness identity. This matches the current schema but limits side-by-side provider/model comparison for the same prompt version.
+
+### What I learned
+
+- Strict fake-provider validation is useful: it catches malformed summaries/topics/questions before storage and gives future live-provider adapters a concrete contract.
+- Freshness by chunk text hash is enough to skip reruns when chunk text is unchanged.
+- Dynamic workflow fan-out would be useful in a later phase if we want submit-time chunking and post-chunk enrichment in one fully dynamic workflow.
+
+### What was tricky to build
+
+The subtle part was bounded fan-out. The first implementation avoids dynamic workflow mutation and instead selects existing chunks for each selected document at submit time. That keeps Phase 4 simple and debuggable, but it means chunk enrichment fan-out works best for documents that have already been chunked or for workflows submitted after a chunking pass.
+
+Another tricky point is schema identity. The current `chunk_enrichments` table stores provider and model but does not include them in the primary key. I kept the implementation aligned with the existing schema rather than introducing a destructive table rebuild in this phase.
+
+### What warrants a second pair of eyes
+
+- Whether `chunk_enrichments` should be migrated to include provider/model in the primary key before live experiments.
+- Whether workflow dynamic fan-out should be added before Phase 5, or whether bounded pre-existing chunk fan-out is enough for smoke testing.
+- Whether failed enrichment attempts should be represented in a separate status/error table, since the existing table has no status/error columns.
+
+### What should be done in the future
+
+- Add live provider adapters and cost controls in Phase 5.
+- Consider schema migration for provider/model-keyed enrichment variants.
+- Add dynamic fan-out or a follow-up command that submits enrichment ops after chunking completes.
+- Surface chunk enrichment coverage in API/Corpus Explorer during Phase 6.
+
+### Code review instructions
+
+- Start with `internal/db/chunk_enrichment_queries.go` for query and freshness semantics.
+- Review `internal/services/chunkenrichment/service.go` and tests for provider contract validation.
+- Review `internal/workflow/intake_runner.go` and `internal/workflow/intake_runner_test.go` for workflow op dispatch.
+- Review `cmd/rag-eval/cmds/chunk/enrich.go` for direct debugging behavior.
+- Review `internal/workflow/submit.go` for bounded existing-chunk fan-out.
+- Validate with the commands listed above.
+
+### Technical details
+
+New operation:
+
+```text
+enrich_chunk
+```
+
+New direct command:
+
+```text
+rag-eval chunk enrich --chunk-id CHUNK --strategy-id STRATEGY --prompt-version v1 --provider fake
 ```

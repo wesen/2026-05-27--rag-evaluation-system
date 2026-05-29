@@ -64,12 +64,12 @@ Goal: add non-destructive document-level LLM preprocessing as derived state.
 
 Goal: add retryable LLM postprocessing for chunk summaries, topics, entities, and hypothetical questions.
 
-- [ ] Add DB helpers for `chunk_enrichments` lookup/upsert/freshness/coverage.
-- [ ] Add `internal/services/chunkenrichment` with strict output validation and fake-provider tests.
-- [ ] Add workflow op `enrich_chunk` that skips fresh enrichments by `text_hash`.
-- [ ] Add bounded fan-out from selected documents to first N chunks per document.
-- [ ] Add direct debugging command or test harness for one chunk enrichment.
-- [ ] Commit Phase 4 as the chunk enrichment slice.
+- [x] Add DB helpers for `chunk_enrichments` lookup/upsert/freshness/coverage.
+- [x] Add `internal/services/chunkenrichment` with strict output validation and fake-provider tests.
+- [x] Add workflow op `enrich_chunk` that skips fresh enrichments by `text_hash`.
+- [x] Add bounded fan-out from selected documents to first N chunks per document.
+- [x] Add direct debugging command or test harness for one chunk enrichment.
+- [x] Commit Phase 4 as the chunk enrichment slice.
 
 ## Phase 5 — Bounded live-provider workflow smoke
 

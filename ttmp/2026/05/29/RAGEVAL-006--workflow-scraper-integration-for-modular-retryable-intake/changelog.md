@@ -102,3 +102,16 @@ Completed Phase 3 by adding document preprocessing artifact schema, fake-provide
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/documentprocessing/service.go — Adds fake-provider document preprocessing service
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner.go — Adds preprocess_document workflow op
 
+
+## 2026-05-29
+
+Completed Phase 4 by adding chunk enrichment DB helpers, fake-provider service, workflow op, direct CLI, and bounded existing-chunk fan-out.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/cmd/rag-eval/cmds/chunk/enrich.go — Adds direct chunk enrichment debug command
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/db/chunk_enrichment_queries.go — Adds chunk enrichment lookup upsert freshness coverage and bounded chunk selection helpers
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/chunkenrichment/service.go — Adds strict fake-provider chunk enrichment service
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner.go — Adds enrich_chunk workflow op
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/submit.go — Adds bounded existing-chunk enrichment fan-out for submitted workflows
+
