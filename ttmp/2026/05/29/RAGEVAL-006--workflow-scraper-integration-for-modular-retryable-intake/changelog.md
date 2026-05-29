@@ -24,3 +24,12 @@ Validated RAGEVAL-006 docs with docmgr doctor and uploaded design bundle to reMa
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/29/RAGEVAL-006--workflow-scraper-integration-for-modular-retryable-intake/design-doc/01-workflow-scraper-intake-integration-design-and-implementation-guide.md — Uploaded in bundle
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/29/RAGEVAL-006--workflow-scraper-integration-for-modular-retryable-intake/reference/01-implementation-diary.md — Uploaded in bundle
 
+
+## 2026-05-29
+
+Expanded RAGEVAL-006 into detailed implementation phases and task breakdowns before starting Phase 0.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/29/RAGEVAL-006--workflow-scraper-integration-for-modular-retryable-intake/tasks.md — Detailed phase/task breakdown
+
