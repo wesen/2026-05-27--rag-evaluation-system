@@ -66,3 +66,12 @@ Implemented hybrid BM25+vector retrieval and a lightweight BM25 smoke query runn
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/eval/ttc-smoke.yaml — Seed smoke query set
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/search/hybrid.go — Hybrid retrieval service
 
+
+## 2026-05-28
+
+Ran final retrieval-foundation validation: internal package tests, CLI build, and docmgr doctor all pass.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/28/RAGEVAL-004--end-to-end-search-retrieval-foundation/reference/01-implementation-diary.md — Final validation notes
+

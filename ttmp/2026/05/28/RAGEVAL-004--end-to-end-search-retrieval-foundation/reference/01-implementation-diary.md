@@ -652,3 +652,76 @@ GOMAXPROCS=2 GOMEMLIMIT=1024MiB ./rag-eval search hybrid \
   --preview-runes 120 \
   --output table
 ```
+
+---
+
+## Step 7: Final Validation for Retrieval Foundation Slice
+
+I ran the broader internal test/build validation after the BM25, vector, hybrid, and smoke-query slices were committed. The retrieval foundation now has tested service code, CLI commands, HTTP handlers, and real TTC smoke output.
+
+This does not mean retrieval quality is solved. It means the base retrieval machinery is now working end to end and is ready for iterative corpus/query inspection before formal benchmark design.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 3)
+
+**Assistant interpretation:** Validate the completed task sequence and leave a clear continuation point.
+
+**Inferred user intent:** Ensure the implementation is stable enough to continue with real search experiments.
+
+### What I did
+
+- Ran broader internal package tests.
+- Rebuilt the CLI binary.
+- Ran `docmgr doctor` for RAGEVAL-004.
+- Confirmed only unrelated pre-existing working-tree files remain unstaged.
+
+### Why
+
+The retrieval path touches DB helpers, services, CLI commands, HTTP handlers, and provider-backed vector behavior. A broader validation pass reduces the chance that one slice broke another.
+
+### What worked
+
+Validation passed:
+
+```bash
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/db ./internal/ingest ./internal/chunking ./internal/services/source ./internal/services/chunking ./internal/services/document ./internal/services/embedding ./internal/services/corpus ./internal/services/search ./internal/api -count=1 -timeout 60s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval
+docmgr doctor --ticket RAGEVAL-004 --stale-after 30
+```
+
+### What didn't work
+
+- N/A for validation. Known retrieval caveats remain documented in earlier steps.
+
+### What I learned
+
+- The implementation is stable enough to run more real TTC query experiments.
+- The next useful work is not more infrastructure; it is inspecting retrieval results, broadening indexes/embeddings where needed, and fixing corpus text composition problems exposed by queries.
+
+### What was tricky to build
+
+N/A for this validation step.
+
+### What warrants a second pair of eyes
+
+- Review the retrieval outputs from the real smoke queries, especially permissive smoke passes where only one expected term matched.
+- Review product text composition before using product search behavior as benchmark evidence.
+
+### What should be done in the future
+
+- Build a product-inclusive BM25 index and run the same smoke queries.
+- Compute more source-balanced embeddings before judging vector search quality.
+- Promote smoke query observations into benchmark candidates only after manual review.
+
+### Code review instructions
+
+- Review commits:
+  - `c24d8a5` BM25 search service and CLI
+  - `314f4ed` BM25 HTTP endpoints
+  - `952b4ab` vector query search
+  - `5fd061a` hybrid retrieval and smoke checks
+
+### Technical details
+
+Current uncommitted working-tree items are unrelated pre-existing frontend build/screenshot artifacts and were intentionally left untouched.
