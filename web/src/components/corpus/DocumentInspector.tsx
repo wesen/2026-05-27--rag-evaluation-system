@@ -303,7 +303,13 @@ export const DocumentInspector: React.FC<DocumentInspectorProps> = ({ detail, ch
             {artifactsLoading ? (
               <span className="text-dim text-mono">Loading...</span>
             ) : artifacts.length === 0 ? (
-              <span className="text-dim text-mono">No preprocessing artifacts for this document.</span>
+              <div className="text-dim text-mono">
+                No preprocessing artifacts for this document.
+                <button className="btn" style={{ marginLeft: 8, fontSize: 11 }}
+                  onClick={() => window.dispatchEvent(new CustomEvent('rag:navigate-to-workflows'))}>
+                  Submit Workflow →
+                </button>
+              </div>
             ) : (
               <table className="data-table">
                 <thead>

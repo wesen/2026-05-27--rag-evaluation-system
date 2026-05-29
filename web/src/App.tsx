@@ -32,10 +32,19 @@ export const App: React.FC = () => {
     setActiveView('corpus');
   }, []);
 
+  // Listen for navigation from Corpus Explorer to Workflows
+  const handleNavigateToWorkflows = useCallback((_e: Event) => {
+    setActiveView('workflows');
+  }, []);
+
   useEffect(() => {
     window.addEventListener('rag:navigate-to-chunk', handleNavigateToChunk);
-    return () => window.removeEventListener('rag:navigate-to-chunk', handleNavigateToChunk);
-  }, [handleNavigateToChunk]);
+    window.addEventListener('rag:navigate-to-workflows', handleNavigateToWorkflows);
+    return () => {
+      window.removeEventListener('rag:navigate-to-chunk', handleNavigateToChunk);
+      window.removeEventListener('rag:navigate-to-workflows', handleNavigateToWorkflows);
+    };
+  }, [handleNavigateToChunk, handleNavigateToWorkflows]);
 
   // Clear target once consumed
   const handleChunkTargetConsumed = useCallback(() => {
