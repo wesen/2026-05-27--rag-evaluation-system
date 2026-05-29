@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"net/http"
@@ -49,6 +50,7 @@ func RegisterHandlers(mux *http.ServeMux, database *sql.DB) {
 	mux.HandleFunc("POST /api/v1/search/indexes", h.handleSearchBuildIndex)
 	mux.HandleFunc("POST /api/v1/search/query", h.handleSearchQuery)
 	mux.HandleFunc("POST /api/v1/search/vector", h.handleSearchVector)
+	mux.HandleFunc("POST /api/v1/search/hybrid", h.handleSearchHybrid)
 
 	// Corpus Explorer (read-only)
 	mux.HandleFunc("GET /api/v1/corpus/sources", h.handleCorpusSources)
@@ -536,56 +538,12 @@ func (h *handler) handleSearchQuery(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) handleSearchVector(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		StrategyID        string   `json:"strategy_id"`
-		SourceIDs         []string `json:"source_ids"`
-		Query             string   `json:"query"`
-		ProfileRegistries []string `json:"profile_registries"`
-		Profile           string   `json:"profile"`
-		BaseProfile       string   `json:"base_profile"`
-		EmbeddingType     string   `json:"embeddings_type"`
-		EmbeddingEngine   string   `json:"embeddings_engine"`
-		Dimensions        int      `json:"embeddings_dimensions"`
-		APIKey            string   `json:"api_key"`
-		BaseURL           string   `json:"base_url"`
-		CacheType         string   `json:"cache_type"`
-		CacheDirectory    string   `json:"cache_directory"`
-		Limit             int      `json:"limit"`
-		CandidateLimit    int      `json:"candidate_limit"`
-		PreviewRunes      int      `json:"preview_runes"`
-	}
+	var req searchProviderRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid_json", err.Error())
 		return
 	}
-	if req.EmbeddingType == "" {
-		req.EmbeddingType = "ollama"
-	}
-	if req.EmbeddingEngine == "" {
-		req.EmbeddingEngine = "nomic-embed-text"
-	}
-	if req.Dimensions == 0 {
-		req.Dimensions = 768
-	}
-	if req.CacheType == "" {
-		req.CacheType = "none"
-	}
-	if req.CacheDirectory == "" {
-		req.CacheDirectory = "state/embedding-cache"
-	}
-
-	resolved, err := embeddingservice.ResolveProvider(r.Context(), embeddingservice.ProviderConfig{
-		ProfileRegistries: req.ProfileRegistries,
-		Profile:           req.Profile,
-		BaseProfile:       req.BaseProfile,
-		Type:              req.EmbeddingType,
-		Engine:            req.EmbeddingEngine,
-		Dimensions:        req.Dimensions,
-		APIKey:            req.APIKey,
-		BaseURL:           req.BaseURL,
-		CacheType:         req.CacheType,
-		CacheDirectory:    req.CacheDirectory,
-	})
+	resolved, err := resolveSearchProvider(r.Context(), &req)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "provider_resolution_failed", err.Error())
 		return
@@ -607,6 +565,51 @@ func (h *handler) handleSearchVector(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "vector_search_failed", err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, result)
+}
+
+func (h *handler) handleSearchHybrid(w http.ResponseWriter, r *http.Request) {
+	var req searchProviderRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid_json", err.Error())
+		return
+	}
+	resolved, err := resolveSearchProvider(r.Context(), &req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "provider_resolution_failed", err.Error())
+		return
+	}
+	if resolved.Close != nil {
+		defer func() { _ = resolved.Close() }()
+	}
+
+	service := searchservice.NewService(h.queries, req.IndexRoot)
+	result, err := service.QueryHybrid(r.Context(), searchservice.HybridQueryRequest{
+		BM25: searchservice.QueryRequest{
+			IndexID:      req.IndexID,
+			Query:        req.Query,
+			Limit:        req.BM25Limit,
+			PreviewRunes: req.PreviewRunes,
+		},
+		Vector: searchservice.VectorQueryRequest{
+			Query:          req.Query,
+			StrategyID:     req.StrategyID,
+			SourceIDs:      req.SourceIDs,
+			Provider:       resolved.Provider,
+			ProviderType:   resolved.ProviderType,
+			Limit:          req.VectorLimit,
+			CandidateLimit: req.CandidateLimit,
+			PreviewRunes:   req.PreviewRunes,
+		},
+		Limit:       req.Limit,
+		RRFK:        req.RRFK,
+		BM25Limit:   req.BM25Limit,
+		VectorLimit: req.VectorLimit,
+	})
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "hybrid_search_failed", err.Error())
 		return
 	}
 	writeJSON(w, http.StatusOK, result)
@@ -669,6 +672,60 @@ func (h *handler) handleCorpusDocumentDetail(w http.ResponseWriter, r *http.Requ
 }
 
 // --- Helpers ---
+
+type searchProviderRequest struct {
+	IndexID           string   `json:"index_id"`
+	IndexRoot         string   `json:"index_root"`
+	StrategyID        string   `json:"strategy_id"`
+	SourceIDs         []string `json:"source_ids"`
+	Query             string   `json:"query"`
+	ProfileRegistries []string `json:"profile_registries"`
+	Profile           string   `json:"profile"`
+	BaseProfile       string   `json:"base_profile"`
+	EmbeddingType     string   `json:"embeddings_type"`
+	EmbeddingEngine   string   `json:"embeddings_engine"`
+	Dimensions        int      `json:"embeddings_dimensions"`
+	APIKey            string   `json:"api_key"`
+	BaseURL           string   `json:"base_url"`
+	CacheType         string   `json:"cache_type"`
+	CacheDirectory    string   `json:"cache_directory"`
+	Limit             int      `json:"limit"`
+	BM25Limit         int      `json:"bm25_limit"`
+	VectorLimit       int      `json:"vector_limit"`
+	CandidateLimit    int      `json:"candidate_limit"`
+	PreviewRunes      int      `json:"preview_runes"`
+	RRFK              int      `json:"rrf_k"`
+}
+
+func resolveSearchProvider(ctx context.Context, req *searchProviderRequest) (*embeddingservice.ResolvedProvider, error) {
+	if req.EmbeddingType == "" {
+		req.EmbeddingType = "ollama"
+	}
+	if req.EmbeddingEngine == "" {
+		req.EmbeddingEngine = "nomic-embed-text"
+	}
+	if req.Dimensions == 0 {
+		req.Dimensions = 768
+	}
+	if req.CacheType == "" {
+		req.CacheType = "none"
+	}
+	if req.CacheDirectory == "" {
+		req.CacheDirectory = "state/embedding-cache"
+	}
+	return embeddingservice.ResolveProvider(ctx, embeddingservice.ProviderConfig{
+		ProfileRegistries: req.ProfileRegistries,
+		Profile:           req.Profile,
+		BaseProfile:       req.BaseProfile,
+		Type:              req.EmbeddingType,
+		Engine:            req.EmbeddingEngine,
+		Dimensions:        req.Dimensions,
+		APIKey:            req.APIKey,
+		BaseURL:           req.BaseURL,
+		CacheType:         req.CacheType,
+		CacheDirectory:    req.CacheDirectory,
+	})
+}
 
 type chunkPreview struct {
 	ID          string `json:"id"`

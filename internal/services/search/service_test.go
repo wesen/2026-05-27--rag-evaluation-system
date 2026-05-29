@@ -200,6 +200,49 @@ func TestQueryVectorSourceFilter(t *testing.T) {
 	}
 }
 
+func TestQueryHybridMergesBM25AndVector(t *testing.T) {
+	_, queries := setupSearchTestDB(t)
+	must := func(err error) {
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	must(queries.UpsertChunkEmbedding("chk-arb-1", "fixed-100-20", "fake", "fake-2d", 2, "h1", embeddingservice.EncodeFloat32Vector([]float32{1, 0})))
+	must(queries.UpsertChunkEmbedding("chk-hyd-1", "fixed-100-20", "fake", "fake-2d", 2, "h2", embeddingservice.EncodeFloat32Vector([]float32{0, 1})))
+
+	svc := NewService(queries, t.TempDir())
+	if _, err := svc.BuildBM25(context.Background(), BuildIndexRequest{IndexID: "hybrid-index", StrategyID: "fixed-100-20", Force: true}); err != nil {
+		t.Fatalf("BuildBM25: %v", err)
+	}
+	result, err := svc.QueryHybrid(context.Background(), HybridQueryRequest{
+		BM25: QueryRequest{IndexID: "hybrid-index", Query: "plant arborvitae", Limit: 5},
+		Vector: VectorQueryRequest{
+			Query:          "plant arborvitae",
+			StrategyID:     "fixed-100-20",
+			Provider:       fakeProvider{model: embeddings.EmbeddingModel{Name: "fake-2d", Dimensions: 2}},
+			ProviderType:   "fake",
+			CandidateLimit: 10,
+			Limit:          5,
+		},
+		Limit: 5,
+	})
+	if err != nil {
+		t.Fatalf("QueryHybrid: %v", err)
+	}
+	if len(result.Items) == 0 {
+		t.Fatal("expected hybrid results")
+	}
+	if result.Items[0].Retriever != "hybrid" {
+		t.Fatalf("expected hybrid retriever, got %#v", result.Items[0])
+	}
+	if _, ok := result.Items[0].Components["bm25"]; !ok {
+		t.Fatalf("expected bm25 component, got %#v", result.Items[0].Components)
+	}
+	if _, ok := result.Items[0].Components["vector"]; !ok {
+		t.Fatalf("expected vector component, got %#v", result.Items[0].Components)
+	}
+}
+
 type fakeProvider struct {
 	model embeddings.EmbeddingModel
 }

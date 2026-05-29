@@ -11,18 +11,26 @@ DocType: reference
 Intent: long-term
 Owners: []
 RelatedFiles:
+    - Path: cmd/rag-eval/cmds/search/hybrid.go
+      Note: Glazed CLI command for hybrid retrieval
     - Path: cmd/rag-eval/cmds/search/index.go
       Note: Glazed CLI command for BM25 index builds
     - Path: cmd/rag-eval/cmds/search/query.go
       Note: Glazed CLI command for BM25 queries
+    - Path: cmd/rag-eval/cmds/search/smoke.go
+      Note: Lightweight BM25 smoke query runner
     - Path: cmd/rag-eval/cmds/search/vector.go
       Note: Glazed CLI command for vector query search
+    - Path: eval/ttc-smoke.yaml
+      Note: Initial TTC retrieval smoke query set
     - Path: internal/api/handlers.go
       Note: BM25 search HTTP endpoints added in Step 4
     - Path: internal/db/search_queries.go
       Note: DB helpers for chunk/document context and search index metadata
     - Path: internal/services/search/bm25.go
       Note: Phase 1 BM25 build/query implementation
+    - Path: internal/services/search/hybrid.go
+      Note: Hybrid RRF retrieval implementation
     - Path: internal/services/search/service.go
       Note: Shared search service types and defaults
     - Path: internal/services/search/vector.go
@@ -35,6 +43,7 @@ LastUpdated: 2026-05-28T00:00:00Z
 WhatFor: Track why RAGEVAL-004 focuses on base retrieval functionality before benchmark design.
 WhenToUse: Read before implementing BM25, vector search, hybrid retrieval, or smoke-query checks.
 ---
+
 
 
 
@@ -520,5 +529,126 @@ GOMAXPROCS=2 GOMEMLIMIT=1024MiB ./rag-eval search vector \
   --limit 5 \
   --candidate-limit 80 \
   --preview-runes 140 \
+  --output table
+```
+
+---
+
+## Step 6: Hybrid Retrieval and BM25 Smoke Query Runner
+
+I implemented the first hybrid retriever and a lightweight smoke-query runner. Hybrid retrieval now runs BM25 and vector search independently, then merges their ranked lists with reciprocal-rank fusion. The smoke runner executes a small YAML query suite against BM25 and reports pass/warn/fail rows based on simple expected-term/source checks.
+
+This completes the first end-to-end retrieval foundation: lexical search, vector search, hybrid search, API adapters, and a non-benchmark smoke loop that catches broken plumbing.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 3)
+
+**Assistant interpretation:** Continue the RAGEVAL-004 implementation plan through hybrid retrieval and smoke checks.
+
+**Inferred user intent:** Make the system ready for real retrieval validation before formal benchmark design.
+
+**Commit (code):** pending — hybrid/smoke implementation will be committed after this diary/changelog update.
+
+### What I did
+
+- Added hybrid service:
+  - `internal/services/search/hybrid.go`
+  - `HybridQueryRequest`
+  - `QueryHybrid`
+  - reciprocal-rank fusion with `DefaultRRFK = 60`
+- Extended retrieval results with component evidence:
+  - `components.bm25.rank/score`
+  - `components.vector.rank/score`
+- Added hybrid unit test that verifies BM25/vector duplicate evidence is merged.
+- Added CLI command:
+  - `rag-eval search hybrid`
+- Added HTTP endpoint:
+  - `POST /api/v1/search/hybrid`
+- Added smoke query runner:
+  - `rag-eval search smoke`
+- Added seed smoke file:
+  - `eval/ttc-smoke.yaml`
+- Ran live hybrid smoke query with OpenAI query embedding and existing stored vectors.
+- Ran BM25 smoke suite against `bm25-ttc-guides-articles-fixed-1200-150`.
+
+### Why
+
+Hybrid search should not be a black box. It needs visible component evidence so a developer can tell whether a result came from BM25, vector search, or both. The smoke runner gives us a lightweight way to detect broken retrieval before designing formal benchmark metrics.
+
+### What worked
+
+- Tests/build passed:
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/services/search ./internal/db ./internal/api -count=1 -timeout 60s`
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval`
+- Hybrid live smoke query for `which trees make a good privacy screen` returned a useful mix:
+  - vector result: `Leyland Cypress` product chunks;
+  - BM25 result: `How To Plant a Privacy Screen` guide chunks.
+- BM25 smoke suite produced meaningful statuses:
+  - `crape-myrtle-varieties`: pass;
+  - `arborvitae-planting`: pass, but top result was Japanese maples because only `plant` matched strongly;
+  - `emerald-green-spacing`: pass with Thuja Green Giant material;
+  - `hydrangea-pruning`: warn because expected terms were absent from top results;
+  - `privacy-screen-trees`: pass.
+
+### What didn't work
+
+- The smoke runner currently supports BM25 only. It intentionally remains lightweight and should not become a benchmark framework yet.
+- Hybrid RRF can produce equal scores when a result appears as rank 1 in one retriever only. This is expected for simple RRF and can be tuned later if needed.
+- Hydrangea query weakness remains a corpus coverage/indexing issue in the bounded sample.
+
+### What I learned
+
+- Hybrid retrieval already demonstrates complementary behavior: vector search finds embedded product chunks, while BM25 finds exact guide text.
+- Smoke checks are valuable even when imperfect because they flag queries that need either broader corpus coverage or improved text composition.
+- The next benchmark design should build on these smoke observations rather than start from abstract metrics.
+
+### What was tricky to build
+
+The main design edge was preserving explainability in hybrid output. I added per-retriever components directly to `RetrievalResult` so JSON consumers can see component ranks/scores, while the CLI prints `bm25_rank`, `bm25_score`, `vector_rank`, and `vector_score` as table columns.
+
+The smoke runner needed to stay intentionally simple. It checks for any expected term and expected source in top-K results. That makes it a plumbing check, not a relevance judgment.
+
+### What warrants a second pair of eyes
+
+- Review the RRF implementation and whether `k=60` is appropriate for early testing.
+- Review whether the smoke pass criteria are too permissive, especially for `arborvitae-planting` where only `plant` matched.
+- Review whether HTTP hybrid should allow provider credentials/options directly or should only allow named profiles.
+
+### What should be done in the future
+
+- Run broader BM25 indexes, especially including products, after product text composition is reviewed.
+- Add vector/hybrid modes to the smoke runner once we want smoke comparisons across retrievers.
+- Start RAGEVAL-005 or a follow-up benchmark ticket only after enough real queries have been inspected.
+
+### Code review instructions
+
+- Start with:
+  - `internal/services/search/hybrid.go`
+  - `cmd/rag-eval/cmds/search/hybrid.go`
+  - `cmd/rag-eval/cmds/search/smoke.go`
+  - `eval/ttc-smoke.yaml`
+- Validate with:
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/services/search ./internal/db ./internal/api -count=1 -timeout 60s`
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval`
+  - `./rag-eval search smoke --file eval/ttc-smoke.yaml --index-id bm25-ttc-guides-articles-fixed-1200-150 --limit 5 --output table`
+
+### Technical details
+
+Hybrid smoke command used:
+
+```bash
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB ./rag-eval search hybrid \
+  --query "which trees make a good privacy screen" \
+  --index-id bm25-ttc-guides-articles-fixed-1200-150 \
+  --strategy-id fixed-1200-150 \
+  --source-ids ttc-dump-articles,ttc-dump-guides,ttc-dump-products,thetreecenter-guides \
+  --profile openai-embedding-small \
+  --profile-registries ~/.config/pinocchio/profiles.yaml \
+  --limit 5 \
+  --bm25-limit 20 \
+  --vector-limit 20 \
+  --candidate-limit 80 \
+  --preview-runes 120 \
   --output table
 ```

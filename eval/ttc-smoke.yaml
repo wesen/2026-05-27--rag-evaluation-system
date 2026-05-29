@@ -1,0 +1,35 @@
+queries:
+  - id: crape-myrtle-varieties
+    text: crape myrtle varieties
+    intent: article-discovery
+    expected_terms: [crape, myrtle]
+    expected_source_ids: [ttc-dump-articles, thetreecenter-guides]
+    notes: Should retrieve guide/article material about crape myrtles.
+
+  - id: arborvitae-planting
+    text: how to plant arborvitae
+    intent: care-guide
+    expected_terms: [plant, arborvitae]
+    expected_source_ids: [ttc-dump-guides, ttc-dump-articles]
+    notes: Should retrieve planting or privacy-screen guide material from the currently chunked guide subset.
+
+  - id: emerald-green-spacing
+    text: emerald green arborvitae spacing
+    intent: product-or-care-fact
+    expected_terms: [emerald, green, arborvitae, spacing]
+    expected_source_ids: [ttc-dump-products, ttc-dump-articles, ttc-dump-guides]
+    notes: May require product metadata/text composition for strong product results.
+
+  - id: hydrangea-pruning
+    text: hydrangea pruning
+    intent: care-guide
+    expected_terms: [hydrangea, pruning]
+    expected_source_ids: [ttc-dump-guides, ttc-dump-articles]
+    notes: Expected to warn if the bounded indexed sample lacks hydrangea content.
+
+  - id: privacy-screen-trees
+    text: fast growing trees for privacy screen
+    intent: product-discovery
+    expected_terms: [privacy, screen, fast, growing]
+    expected_source_ids: [ttc-dump-products, ttc-dump-guides, ttc-dump-articles]
+    notes: Should retrieve privacy-screen guide/product/article chunks when those chunks are indexed.

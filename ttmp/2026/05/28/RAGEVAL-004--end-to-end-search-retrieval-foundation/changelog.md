@@ -55,3 +55,14 @@ Implemented query-vector search over stored embeddings with CLI/API adapters, fa
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/db/search_queries.go — Embedding-with-context query helper
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/search/vector.go — Vector retrieval service
 
+
+## 2026-05-28
+
+Implemented hybrid BM25+vector retrieval and a lightweight BM25 smoke query runner, then validated with real TTC privacy-screen and smoke-suite queries.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/cmd/rag-eval/cmds/search/smoke.go — Smoke query CLI
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/eval/ttc-smoke.yaml — Seed smoke query set
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/search/hybrid.go — Hybrid retrieval service
+

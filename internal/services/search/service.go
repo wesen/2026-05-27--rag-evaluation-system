@@ -59,17 +59,23 @@ type QueryRequest struct {
 }
 
 type RetrievalResult struct {
-	Rank       int     `json:"rank"`
-	ChunkID    string  `json:"chunk_id"`
-	DocumentID string  `json:"document_id"`
-	SourceID   string  `json:"source_id"`
-	Title      string  `json:"title"`
-	URL        string  `json:"url,omitempty"`
-	StrategyID string  `json:"strategy_id"`
-	ChunkIndex int     `json:"chunk_index"`
-	Score      float64 `json:"score"`
-	Retriever  string  `json:"retriever"`
-	Preview    string  `json:"preview"`
+	Rank       int                           `json:"rank"`
+	ChunkID    string                        `json:"chunk_id"`
+	DocumentID string                        `json:"document_id"`
+	SourceID   string                        `json:"source_id"`
+	Title      string                        `json:"title"`
+	URL        string                        `json:"url,omitempty"`
+	StrategyID string                        `json:"strategy_id"`
+	ChunkIndex int                           `json:"chunk_index"`
+	Score      float64                       `json:"score"`
+	Retriever  string                        `json:"retriever"`
+	Preview    string                        `json:"preview"`
+	Components map[string]RetrievalComponent `json:"components,omitempty"`
+}
+
+type RetrievalComponent struct {
+	Rank  int     `json:"rank"`
+	Score float64 `json:"score"`
 }
 
 type QueryResult struct {
