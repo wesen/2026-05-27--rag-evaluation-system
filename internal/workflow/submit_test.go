@@ -35,7 +35,7 @@ func TestSubmitIntakeWorkflowAndRunWorkerWithFakeProvider(t *testing.T) {
 	if err != nil {
 		t.Fatalf("submit workflow: %v", err)
 	}
-	if result.WorkflowID != "wf-submit-intake" || len(result.OpIDs) != 3 || result.StrategyID != "fixed-20-5" {
+	if result.WorkflowID != "wf-submit-intake" || len(result.OpIDs) != 4 || result.StrategyID != "fixed-20-5" {
 		t.Fatalf("unexpected submit result: %+v", result)
 	}
 

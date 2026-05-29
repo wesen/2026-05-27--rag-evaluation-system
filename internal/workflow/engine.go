@@ -10,13 +10,14 @@ import (
 )
 
 type WorkerConfig struct {
-	EngineDB        string
-	WorkerID        string
-	MaxWorkers      int
-	PollInterval    time.Duration
-	LeaseDuration   time.Duration
-	ResolveProvider ProviderResolver
-	IndexRoot       string
+	EngineDB                 string
+	WorkerID                 string
+	MaxWorkers               int
+	PollInterval             time.Duration
+	LeaseDuration            time.Duration
+	ResolveProvider          ProviderResolver
+	ResolveDocumentProcessor DocumentProcessorResolver
+	IndexRoot                string
 }
 
 type WorkerCycle struct {
@@ -45,7 +46,7 @@ func NewIntakeScheduler(ctx context.Context, cfg WorkerConfig) (*sqlitestore.Sto
 		return nil, nil, err
 	}
 	registry := runner.NewRegistry()
-	if err := registry.Register(&IntakeRunner{ResolveProvider: cfg.ResolveProvider, IndexRoot: cfg.IndexRoot}); err != nil {
+	if err := registry.Register(&IntakeRunner{ResolveProvider: cfg.ResolveProvider, ResolveDocumentProcessor: cfg.ResolveDocumentProcessor, IndexRoot: cfg.IndexRoot}); err != nil {
 		_ = store.Close()
 		return nil, nil, err
 	}

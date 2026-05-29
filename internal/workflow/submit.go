@@ -49,6 +49,13 @@ type SubmitIntakeRequest struct {
 	IndexLimit int
 	ForceIndex bool
 	SkipBM25   bool
+
+	PreprocessDocumentProvider string
+	PreprocessDocumentModel    string
+	PreprocessArtifactType     string
+	PreprocessPromptVersion    string
+	SkipPreprocessing          bool
+	ForcePreprocessing         bool
 }
 
 type SubmitIntakeResult struct {
@@ -88,6 +95,18 @@ func SubmitIntakeWorkflow(ctx context.Context, req SubmitIntakeRequest) (*Submit
 	if req.IndexID == "" {
 		req.IndexID = "bm25-" + req.WorkflowID
 	}
+	if req.PreprocessArtifactType == "" {
+		req.PreprocessArtifactType = "clean_text"
+	}
+	if req.PreprocessPromptVersion == "" {
+		req.PreprocessPromptVersion = "v1"
+	}
+	if req.PreprocessDocumentProvider == "" {
+		req.PreprocessDocumentProvider = "fake"
+	}
+	if req.PreprocessDocumentModel == "" {
+		req.PreprocessDocumentModel = "fake-document-processor"
+	}
 
 	documentIDs := normalizeList(req.DocumentIDs)
 	if len(documentIDs) == 0 {
@@ -125,9 +144,34 @@ func SubmitIntakeWorkflow(ctx context.Context, req SubmitIntakeRequest) (*Submit
 		},
 	}
 
-	ops := make([]model.OpSpec, 0, len(documentIDs)+2)
+	initialCapacity := len(documentIDs) + 2
+	if !req.SkipPreprocessing {
+		initialCapacity += len(documentIDs)
+	}
+	ops := make([]model.OpSpec, 0, initialCapacity)
 	chunkDeps := make([]model.Dependency, 0, len(documentIDs))
 	for _, documentID := range documentIDs {
+		if !req.SkipPreprocessing {
+			preprocessOpID := model.OpID(fmt.Sprintf("%s:preprocess:%s", req.WorkflowID, documentID))
+			ops = append(ops, model.OpSpec{
+				ID:         preprocessOpID,
+				WorkflowID: workflowID,
+				Site:       workflow.Site,
+				Kind:       IntakeRunnerKind,
+				Queue:      QueueLLM,
+				DedupKey:   fmt.Sprintf("preprocess:%s:%s:%s:%s:%s", documentID, req.PreprocessArtifactType, req.PreprocessPromptVersion, req.PreprocessDocumentProvider, req.PreprocessDocumentModel),
+				Input: mustRawJSON(IntakeOpInput{
+					Operation:                  OperationPreprocessDocument,
+					DBPath:                     req.DBPath,
+					DocumentID:                 documentID,
+					ArtifactType:               req.PreprocessArtifactType,
+					PromptVersion:              req.PreprocessPromptVersion,
+					DocumentProcessingProvider: req.PreprocessDocumentProvider,
+					DocumentProcessingModel:    req.PreprocessDocumentModel,
+					Force:                      req.ForcePreprocessing,
+				}),
+			})
+		}
 		opID := model.OpID(fmt.Sprintf("%s:chunk:%s", req.WorkflowID, documentID))
 		ops = append(ops, model.OpSpec{
 			ID:         opID,

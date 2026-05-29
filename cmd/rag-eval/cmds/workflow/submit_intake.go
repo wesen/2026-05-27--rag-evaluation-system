@@ -65,5 +65,11 @@ available for debugging the same work outside workflow orchestration.`,
 	cmd.Flags().IntVar(&opts.req.IndexLimit, "index-limit", 0, "Maximum chunks to index")
 	cmd.Flags().BoolVar(&opts.req.ForceIndex, "force-index", false, "Replace an existing BM25 index")
 	cmd.Flags().BoolVar(&opts.req.SkipBM25, "skip-bm25", false, "Submit only chunking/embedding ops without BM25 op")
+	cmd.Flags().BoolVar(&opts.req.SkipPreprocessing, "skip-preprocessing", true, "Skip document preprocessing artifact ops; set false to include fake preprocessing ops")
+	cmd.Flags().StringVar(&opts.req.PreprocessArtifactType, "preprocess-artifact-type", "clean_text", "Document preprocessing artifact type")
+	cmd.Flags().StringVar(&opts.req.PreprocessPromptVersion, "preprocess-prompt-version", "v1", "Document preprocessing prompt version")
+	cmd.Flags().StringVar(&opts.req.PreprocessDocumentProvider, "preprocess-provider", "fake", "Document preprocessing provider; currently only fake")
+	cmd.Flags().StringVar(&opts.req.PreprocessDocumentModel, "preprocess-model", "fake-document-processor", "Document preprocessing model identity")
+	cmd.Flags().BoolVar(&opts.req.ForcePreprocessing, "force-preprocessing", false, "Recompute document preprocessing artifacts even when fresh")
 	return cmd
 }

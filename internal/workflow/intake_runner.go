@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-go-golems/rag-evaluation-system/internal/db"
 	chunkservice "github.com/go-go-golems/rag-evaluation-system/internal/services/chunking"
+	documentprocessing "github.com/go-go-golems/rag-evaluation-system/internal/services/documentprocessing"
 	embeddingservice "github.com/go-go-golems/rag-evaluation-system/internal/services/embedding"
 	searchservice "github.com/go-go-golems/rag-evaluation-system/internal/services/search"
 	"github.com/go-go-golems/scraper/pkg/engine/model"
@@ -14,11 +15,13 @@ import (
 )
 
 type ProviderResolver func(ctx context.Context, input IntakeOpInput) (*embeddingservice.ResolvedProvider, error)
+type DocumentProcessorResolver func(ctx context.Context, input IntakeOpInput) (documentprocessing.Provider, error)
 
 // IntakeRunner dispatches durable scraper ops into rag-eval intake services.
 type IntakeRunner struct {
-	ResolveProvider ProviderResolver
-	IndexRoot       string
+	ResolveProvider          ProviderResolver
+	ResolveDocumentProcessor DocumentProcessorResolver
+	IndexRoot                string
 }
 
 func (r *IntakeRunner) Kind() string { return IntakeRunnerKind }
@@ -45,6 +48,8 @@ func (r *IntakeRunner) Run(ctx context.Context, runCtx runner.RunContext) (*mode
 		return &model.OpResult{OpID: runCtx.Op.ID, Data: data}, nil
 	case OperationChunkDocument:
 		return r.runChunkDocument(ctx, runCtx, input)
+	case OperationPreprocessDocument:
+		return r.runPreprocessDocument(ctx, runCtx, input)
 	case OperationComputeEmbeddings:
 		return r.runComputeEmbeddings(ctx, runCtx, input)
 	case OperationBuildBM25:
@@ -77,6 +82,43 @@ func (r *IntakeRunner) runChunkDocument(ctx context.Context, runCtx runner.RunCo
 		DocumentID: result.DocumentID,
 		StrategyID: result.StrategyID,
 		ChunkCount: result.ChunkCount,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &model.OpResult{OpID: runCtx.Op.ID, Data: data}, nil
+}
+
+func (r *IntakeRunner) runPreprocessDocument(ctx context.Context, runCtx runner.RunContext, input IntakeOpInput) (*model.OpResult, error) {
+	queries, opErr := openOpQueries(runCtx.Op.ID, input.DBPath)
+	if opErr != nil {
+		return opErr, nil
+	}
+	defer queries.Close()
+
+	provider, err := r.resolveDocumentProcessor(ctx, input)
+	if err != nil {
+		return opErrorResult(runCtx.Op.ID, "resolve_document_processor_failed", err.Error(), false, nil), nil
+	}
+	result, err := documentprocessing.NewService(queries).Process(ctx, documentprocessing.ProcessRequest{
+		DocumentID:    input.DocumentID,
+		ArtifactType:  input.ArtifactType,
+		PromptVersion: input.PromptVersion,
+		Provider:      provider,
+		Force:         input.Force,
+	})
+	if err != nil {
+		return opErrorResult(runCtx.Op.ID, "preprocess_document_failed", err.Error(), true, map[string]any{"document_id": input.DocumentID, "artifact_type": input.ArtifactType}), nil
+	}
+	data, err := json.Marshal(PreprocessDocumentOutput{
+		DocumentID:    result.DocumentID,
+		ArtifactType:  result.ArtifactType,
+		PromptVersion: result.PromptVersion,
+		Provider:      result.Provider,
+		Model:         result.Model,
+		InputHash:     result.InputHash,
+		Status:        result.Status,
+		SkippedFresh:  result.SkippedFresh,
 	})
 	if err != nil {
 		return nil, err
@@ -185,6 +227,24 @@ func (r *IntakeRunner) resolveProvider(ctx context.Context, input IntakeOpInput)
 		CacheType:         input.CacheType,
 		CacheDirectory:    input.CacheDirectory,
 	})
+}
+
+func (r *IntakeRunner) resolveDocumentProcessor(ctx context.Context, input IntakeOpInput) (documentprocessing.Provider, error) {
+	if r.ResolveDocumentProcessor != nil {
+		return r.ResolveDocumentProcessor(ctx, input)
+	}
+	provider := input.DocumentProcessingProvider
+	if provider == "" {
+		provider = "fake"
+	}
+	modelName := input.DocumentProcessingModel
+	if modelName == "" {
+		modelName = "fake-document-processor"
+	}
+	if provider != "fake" {
+		return nil, fmt.Errorf("unsupported document processing provider %q; only fake is available before live provider Phase 5", provider)
+	}
+	return documentprocessing.FakeProvider{ProviderName: provider, ModelName: modelName}, nil
 }
 
 func openOpQueries(opID model.OpID, path string) (*db.Queries, *model.OpResult) {

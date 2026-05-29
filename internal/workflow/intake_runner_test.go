@@ -85,6 +85,61 @@ func TestIntakeRunnerChunkDocumentWorkflow(t *testing.T) {
 	assertWorkflowStatus(t, ctx, engineStore, workflow.ID, model.WorkflowStatusSucceeded)
 }
 
+func TestIntakeRunnerPreprocessDocumentWorkflow(t *testing.T) {
+	ctx := context.Background()
+	appDB := seedWorkflowTestDocument(t)
+	engineStore, sched := newWorkflowScheduler(t, &IntakeRunner{})
+	workflow := model.WorkflowRun{ID: "wf-preprocess", Site: "rag-eval", Name: "Preprocess document", Status: model.WorkflowStatusPending, Input: json.RawMessage(`{}`)}
+	op := model.OpSpec{
+		ID:         "wf-preprocess:preprocess:doc-1",
+		WorkflowID: workflow.ID,
+		Site:       workflow.Site,
+		Kind:       IntakeRunnerKind,
+		Queue:      QueueLLM,
+		DedupKey:   "preprocess:doc-1:clean_text:v1:fake",
+		Input: mustJSON(t, IntakeOpInput{
+			Operation:                  OperationPreprocessDocument,
+			DBPath:                     appDB,
+			DocumentID:                 "doc-1",
+			ArtifactType:               "clean_text",
+			PromptVersion:              "v1",
+			DocumentProcessingProvider: "fake",
+			DocumentProcessingModel:    "fake-document-processor",
+		}),
+	}
+	if err := sched.CreateWorkflow(ctx, storecontract.CreateWorkflowParams{Workflow: workflow, Initial: []model.OpSpec{op}}); err != nil {
+		t.Fatalf("create workflow: %v", err)
+	}
+	if _, err := sched.RunOnce(ctx); err != nil {
+		t.Fatalf("run preprocess cycle: %v", err)
+	}
+	result := successfulResult(t, ctx, engineStore, workflow.ID, op.ID)
+	var output PreprocessDocumentOutput
+	if err := json.Unmarshal(result.Data, &output); err != nil {
+		t.Fatalf("decode output: %v", err)
+	}
+	if output.DocumentID != "doc-1" || output.ArtifactType != "clean_text" || output.Provider != "fake" || output.InputHash == "" {
+		t.Fatalf("unexpected output: %+v", output)
+	}
+	queries := openAppQueries(t, appDB)
+	defer queries.Close()
+	artifact, ok, err := queries.GetDocumentProcessingArtifact("doc-1", "clean_text", "v1", "fake", "fake-document-processor")
+	if err != nil {
+		t.Fatalf("get artifact: %v", err)
+	}
+	if !ok || artifact.OutputText == "" || artifact.InputHash != output.InputHash {
+		t.Fatalf("unexpected artifact ok=%v artifact=%+v", ok, artifact)
+	}
+	content, err := queries.GetDocumentContent("doc-1")
+	if err != nil {
+		t.Fatalf("get document content: %v", err)
+	}
+	if content == artifact.OutputText {
+		t.Fatalf("preprocessing artifact overwrote canonical document content")
+	}
+	assertWorkflowStatus(t, ctx, engineStore, workflow.ID, model.WorkflowStatusSucceeded)
+}
+
 func TestIntakeRunnerChunkToEmbeddingWorkflow(t *testing.T) {
 	ctx := context.Background()
 	appDB := seedWorkflowTestDocument(t)

@@ -15,6 +15,7 @@ func NewCommand() *cobra.Command {
 	cmd.AddCommand(newListCommand())
 	cmd.AddCommand(newGetCommand())
 	cmd.AddCommand(newChunksCommand())
+	cmd.AddCommand(newPreprocessCommand())
 
 	return cmd
 }

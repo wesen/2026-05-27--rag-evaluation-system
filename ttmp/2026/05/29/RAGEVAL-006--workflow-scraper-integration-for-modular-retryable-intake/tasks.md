@@ -52,13 +52,13 @@ Goal: give operators a rag-eval-native way to submit and run bounded intake work
 
 Goal: add non-destructive document-level LLM preprocessing as derived state.
 
-- [ ] Add `document_processing_artifacts` schema with document, artifact type, prompt version, provider, model, input hash, output text/JSON, status, and error metadata.
-- [ ] Add DB query helpers for upsert, lookup, freshness, and coverage counts.
-- [ ] Add `internal/services/documentprocessing` with fake-provider tests.
-- [ ] Add workflow op `preprocess_document` with prompt version and provider identity.
-- [ ] Add a direct CLI or test harness path so preprocessing can be debugged outside workflow.
-- [ ] Validate that preprocessing never overwrites `documents.content_text` in the first implementation.
-- [ ] Commit Phase 3 as the document preprocessing artifact slice.
+- [x] Add `document_processing_artifacts` schema with document, artifact type, prompt version, provider, model, input hash, output text/JSON, status, and error metadata.
+- [x] Add DB query helpers for upsert, lookup, freshness, and coverage counts.
+- [x] Add `internal/services/documentprocessing` with fake-provider tests.
+- [x] Add workflow op `preprocess_document` with prompt version and provider identity.
+- [x] Add a direct CLI or test harness path so preprocessing can be debugged outside workflow.
+- [x] Validate that preprocessing never overwrites `documents.content_text` in the first implementation.
+- [x] Commit Phase 3 as the document preprocessing artifact slice.
 
 ## Phase 4 — Chunk enrichment over `chunk_enrichments`
 

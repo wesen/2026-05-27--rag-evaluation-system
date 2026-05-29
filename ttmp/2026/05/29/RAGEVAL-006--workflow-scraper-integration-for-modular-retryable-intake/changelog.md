@@ -89,3 +89,16 @@ Tightened Phase 2 downstream scoping by propagating document ID filters through 
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/embedding/service.go — Accepts document IDs in embedding compute requests
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/search/bm25.go — Passes document IDs into BM25 chunk selection
 
+
+## 2026-05-29
+
+Completed Phase 3 by adding document preprocessing artifact schema, fake-provider service, workflow op, and direct debug CLI.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/cmd/rag-eval/cmds/document/preprocess.go — Adds direct document preprocessing debug command
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/db/db.go — Adds document_processing_artifacts schema
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/db/document_processing_queries.go — Adds artifact lookup freshness upsert and coverage helpers
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/services/documentprocessing/service.go — Adds fake-provider document preprocessing service
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner.go — Adds preprocess_document workflow op
+

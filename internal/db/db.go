@@ -43,6 +43,7 @@ func Migrate(db *sql.DB) error {
 		migrationV1ChunkingStrategies,
 		migrationV1ChunkEmbeddings,
 		migrationV1ChunkEnrichments,
+		migrationV1DocumentProcessingArtifacts,
 		migrationV1SearchIndexes,
 		migrationV1EvalQueries,
 		migrationV1EvalRuns,
@@ -155,6 +156,28 @@ CREATE TABLE IF NOT EXISTS chunk_enrichments (
     updated_at TEXT NOT NULL DEFAULT (datetime('now')),
     PRIMARY KEY (chunk_id, strategy_id, prompt_version)
 );
+`
+
+const migrationV1DocumentProcessingArtifacts = `
+CREATE TABLE IF NOT EXISTS document_processing_artifacts (
+    document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+    artifact_type TEXT NOT NULL,
+    prompt_version TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    model TEXT NOT NULL,
+    input_hash TEXT NOT NULL,
+    output_text TEXT,
+    output_json TEXT DEFAULT '{}',
+    status TEXT NOT NULL DEFAULT 'succeeded',
+    error_code TEXT DEFAULT '',
+    error_message TEXT DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (document_id, artifact_type, prompt_version, provider, model)
+);
+
+CREATE INDEX IF NOT EXISTS idx_document_processing_artifacts_type
+    ON document_processing_artifacts(artifact_type, prompt_version, provider, model, status);
 `
 
 const migrationV1SearchIndexes = `

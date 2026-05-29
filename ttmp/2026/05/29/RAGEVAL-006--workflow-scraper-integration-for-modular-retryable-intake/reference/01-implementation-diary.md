@@ -16,16 +16,26 @@ RelatedFiles:
       Note: Queue policy reference used for LLM and embedding op pacing recommendations
     - Path: ../../../../../../../scraper/pkg/doc/topics/scraper-runtime-model.md
       Note: Scraper runtime reference used to distinguish submit verbs and execution ops
+    - Path: cmd/rag-eval/cmds/document/preprocess.go
+      Note: Phase 3 direct preprocessing debug CLI
     - Path: cmd/rag-eval/cmds/workflow/root.go
       Note: Phase 2 workflow CLI root
     - Path: cmd/rag-eval/main.go
       Note: Registers workflow CLI command group
     - Path: go.mod
       Note: Phase 0 scraper and go-go-goja dependency compatibility wiring
+    - Path: internal/db/db.go
+      Note: Phase 3 document preprocessing artifact schema
+    - Path: internal/db/document_processing_queries.go
+      Note: Phase 3 artifact DB helpers
     - Path: internal/db/queries.go
       Note: Supports document-scoped chunk selection for workflow embeddings
     - Path: internal/db/search_queries.go
       Note: Supports document-scoped chunk selection for workflow BM25
+    - Path: internal/services/documentprocessing/service.go
+      Note: Phase 3 fake-provider preprocessing service
+    - Path: internal/services/documentprocessing/service_test.go
+      Note: Phase 3 artifact freshness coverage and non-destructive tests
     - Path: internal/services/embedding/service.go
       Note: Propagates document IDs in compute requests
     - Path: internal/services/search/bm25.go
@@ -44,10 +54,12 @@ RelatedFiles:
       Note: |-
         Phase 1 Go-native intake runner and chunk_document dispatch
         Completed Phase 1 runner operations for chunking embeddings and BM25
+        Phase 3 preprocess_document workflow dispatch
     - Path: internal/workflow/intake_runner_test.go
       Note: |-
         Phase 1 durable chunk_document workflow test
         Completed Phase 1 dependency-chain workflow tests
+        Phase 3 preprocess workflow smoke test
     - Path: internal/workflow/ops.go
       Note: |-
         Phase 1 typed intake op contracts
@@ -64,6 +76,7 @@ LastUpdated: 2026-05-29T18:30:00Z
 WhatFor: Track the design investigation, evidence, decisions, and delivery steps for scraper-backed modular retryable intake.
 WhenToUse: Read before implementing workflow orchestration, LLM preprocessing, chunk enrichment, or scraper runner integration in rag-eval.
 ---
+
 
 
 
@@ -644,3 +657,136 @@ The submit command maps to existing direct-debug paths:
 - `chunk_document` ↔ `rag-eval chunk apply`
 - `compute_embeddings` ↔ `rag-eval embedding compute`
 - `build_bm25` ↔ `rag-eval search index bm25`
+
+---
+
+## Step 6: Complete Phase 3 — Document Preprocessing Artifacts
+
+I added the first document-level preprocessing layer as non-destructive derived state. The implementation stores preprocessing outputs in a new `document_processing_artifacts` table keyed by document, artifact type, prompt version, provider, and model. It never rewrites `documents.content_text`.
+
+This phase intentionally uses a deterministic fake document processor first. That gives us schema, freshness, coverage, direct debugging, and workflow execution semantics without making live LLM calls or introducing credential/cost risk before the bounded live-provider smoke phase.
+
+### Prompt Context
+
+**User prompt (verbatim):** "phase 3"
+
+**Assistant interpretation:** Implement Phase 3 completely: schema, DB helpers, service with fake-provider tests, workflow op, direct debug path, validation, diary/task updates, and a focused commit.
+
+**Inferred user intent:** Add the first LLM-preprocessing-ready artifact layer while preserving canonical document content and keeping tests deterministic.
+
+### What I did
+
+- Added `document_processing_artifacts` schema in `internal/db/db.go` with:
+  - document ID;
+  - artifact type;
+  - prompt version;
+  - provider/model identity;
+  - input hash;
+  - output text and JSON;
+  - status and error metadata;
+  - timestamps;
+  - primary key over `(document_id, artifact_type, prompt_version, provider, model)`.
+- Added DB helpers in `internal/db/document_processing_queries.go`:
+  - upsert artifact;
+  - lookup artifact;
+  - freshness check;
+  - coverage grouped by source.
+- Added `internal/services/documentprocessing`:
+  - provider interface;
+  - deterministic fake provider;
+  - `Service.Process`;
+  - `Service.Coverage`;
+  - SHA-256 input hashing over canonical document content.
+- Added service tests proving:
+  - artifacts are stored;
+  - fresh artifacts are skipped;
+  - coverage reports fresh/missing counts;
+  - `documents.content_text` is not overwritten.
+- Added workflow op `preprocess_document` to `internal/workflow`:
+  - dispatches through `IntakeRunner`;
+  - resolves fake document processor by default;
+  - stores compact workflow output;
+  - writes canonical output only to `document_processing_artifacts`.
+- Added workflow integration test for `preprocess_document` with scraper scheduler and temporary DBs.
+- Added direct debug CLI:
+  - `rag-eval document preprocess --document-id ...`
+- Extended `workflow submit-intake` with optional preprocessing ops:
+  - `--skip-preprocessing=false` enables fake preprocessing per selected document.
+
+### Why
+
+The system needs LLM document preprocessing, but preprocessing must be experiment-safe. If preprocessing rewrites `documents.content_text`, different prompt/provider/model versions become destructive and hard to compare. Storing outputs as artifacts keeps canonical corpus text stable while allowing future chunking/indexing experiments to choose which artifact to consume.
+
+### What worked
+
+- Fake-provider service tests pass.
+- Workflow op test writes a document processing artifact and leaves canonical content unchanged.
+- The broader workflow submit smoke now includes a preprocessing op when not skipped.
+- Direct CLI help works for `rag-eval document preprocess`.
+- Validation passed:
+
+```text
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/db ./internal/services/documentprocessing ./internal/workflow ./cmd/rag-eval/cmds/document ./cmd/rag-eval/cmds/workflow -count=1 -timeout 120s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/db ./internal/ingest ./internal/chunking ./internal/services/source ./internal/services/chunking ./internal/services/document ./internal/services/documentprocessing ./internal/services/embedding ./internal/services/search ./internal/workflow ./cmd/rag-eval/cmds/document ./cmd/rag-eval/cmds/workflow -count=1 -timeout 120s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval
+go run ./cmd/rag-eval document preprocess --help
+```
+
+### What didn't work
+
+- No live LLM provider was wired in this phase by design. Live provider work remains Phase 5.
+- The direct CLI emits JSON only and supports only the fake provider for now.
+- Workflow submission can include preprocessing ops, but chunking still uses canonical `documents.content_text`; artifact-driven chunking is intentionally deferred.
+
+### What I learned
+
+- The artifact identity needs to include prompt version and provider/model. Without those fields in the key, repeated experiments would overwrite each other.
+- Freshness should be based on an input hash over canonical document content, not timestamps.
+- A fake provider is enough to validate non-destructive behavior, workflow storage, coverage, and skip semantics.
+
+### What was tricky to build
+
+The tricky invariant was making preprocessing useful without changing downstream semantics prematurely. The phase adds artifact storage and workflow execution, but it does not teach chunking to consume preprocessing artifacts yet. That keeps Phase 3 safe: preprocessing can be run, inspected, skipped when fresh, and compared, while the established chunk/embedding/BM25 pipeline remains unchanged.
+
+A second tricky point was failure handling. The service stores failed provider attempts with status and error metadata before returning the provider error. That gives future operator views something concrete to inspect instead of losing all failure context to logs.
+
+### What warrants a second pair of eyes
+
+- The artifact primary key does not include `input_hash`; instead a changed hash updates the same artifact identity. This preserves one latest artifact per prompt/provider/model identity, but historical artifact versions would require an additional history table.
+- Failed artifacts are upserted under the same identity. Review whether failed attempts should preserve previous successful output or replace status immediately.
+- `workflow submit-intake --skip-preprocessing=false` creates preprocessing ops in parallel with chunk ops. Since chunking does not consume artifacts yet, this is safe, but future artifact-driven chunking will need explicit dependencies.
+
+### What should be done in the future
+
+- Add live LLM provider adapters after fake-provider semantics are stable.
+- Add artifact-driven chunking options only after the user-facing experiment model is clear.
+- Add Glazed/table output and coverage commands for preprocessing artifacts.
+- Expose preprocessing coverage in API/Corpus Explorer during Phase 6.
+
+### Code review instructions
+
+- Start with `internal/db/db.go` and `internal/db/document_processing_queries.go` for schema and DB semantics.
+- Review `internal/services/documentprocessing/service.go` and tests for non-destructive behavior and freshness rules.
+- Review `internal/workflow/intake_runner.go` and `internal/workflow/intake_runner_test.go` for workflow op dispatch.
+- Review `cmd/rag-eval/cmds/document/preprocess.go` for direct debugging behavior.
+- Validate with the commands listed above.
+
+### Technical details
+
+New operation:
+
+```text
+preprocess_document
+```
+
+New direct command:
+
+```text
+rag-eval document preprocess --document-id DOC --artifact-type clean_text --prompt-version v1 --provider fake
+```
+
+Important invariant:
+
+```text
+documents.content_text is read as input but never overwritten by Phase 3 preprocessing.
+```

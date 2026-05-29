@@ -1,10 +1,11 @@
 package workflow
 
 const (
-	OperationEcho              = "echo"
-	OperationChunkDocument     = "chunk_document"
-	OperationComputeEmbeddings = "compute_embeddings"
-	OperationBuildBM25         = "build_bm25"
+	OperationEcho               = "echo"
+	OperationChunkDocument      = "chunk_document"
+	OperationComputeEmbeddings  = "compute_embeddings"
+	OperationBuildBM25          = "build_bm25"
+	OperationPreprocessDocument = "preprocess_document"
 )
 
 type IntakeOpInput struct {
@@ -13,13 +14,17 @@ type IntakeOpInput struct {
 
 	Payload map[string]any `json:"payload,omitempty"`
 
-	DocumentID   string `json:"document_id,omitempty"`
-	Strategy     string `json:"strategy,omitempty"`
-	StrategyID   string `json:"strategy_id,omitempty"`
-	ChunkSize    int    `json:"chunk_size,omitempty"`
-	Overlap      int    `json:"overlap,omitempty"`
-	StrategyName string `json:"strategy_name,omitempty"`
-	Description  string `json:"description,omitempty"`
+	DocumentID                 string `json:"document_id,omitempty"`
+	ArtifactType               string `json:"artifact_type,omitempty"`
+	PromptVersion              string `json:"prompt_version,omitempty"`
+	DocumentProcessingProvider string `json:"document_processing_provider,omitempty"`
+	DocumentProcessingModel    string `json:"document_processing_model,omitempty"`
+	Strategy                   string `json:"strategy,omitempty"`
+	StrategyID                 string `json:"strategy_id,omitempty"`
+	ChunkSize                  int    `json:"chunk_size,omitempty"`
+	Overlap                    int    `json:"overlap,omitempty"`
+	StrategyName               string `json:"strategy_name,omitempty"`
+	Description                string `json:"description,omitempty"`
 
 	SourceIDs   []string `json:"source_ids,omitempty"`
 	DocumentIDs []string `json:"document_ids,omitempty"`
@@ -46,6 +51,17 @@ type ChunkDocumentOutput struct {
 	DocumentID string `json:"document_id"`
 	StrategyID string `json:"strategy_id"`
 	ChunkCount int    `json:"chunk_count"`
+}
+
+type PreprocessDocumentOutput struct {
+	DocumentID    string `json:"document_id"`
+	ArtifactType  string `json:"artifact_type"`
+	PromptVersion string `json:"prompt_version"`
+	Provider      string `json:"provider"`
+	Model         string `json:"model"`
+	InputHash     string `json:"input_hash"`
+	Status        string `json:"status"`
+	SkippedFresh  bool   `json:"skipped_fresh"`
 }
 
 type ComputeEmbeddingsOutput struct {
