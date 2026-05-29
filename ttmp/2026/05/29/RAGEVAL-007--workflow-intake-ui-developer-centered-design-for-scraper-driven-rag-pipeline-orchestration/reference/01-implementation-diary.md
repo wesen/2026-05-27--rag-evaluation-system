@@ -150,3 +150,57 @@ Ran `docmgr doctor`, fixed vocabulary warnings by adding `design`, `intake`, `sc
 Uploaded bundle to reMarkable at `/ai/2026/05/29/RAGEVAL-007` — confirmed with `remarquee cloud ls`.
 
 No code was implemented. The deliverable is the design document only.
+
+## Step 5: Phase 7 Polish
+
+Polished the Workflows UI with proper retro Mac CSS design system classes and fixed a critical React crash.
+
+### Prompt Context
+**User prompt (verbatim):** (see Step 1)
+**Assistant interpretation:** Continue implementation — Phase 7 polish.
+**Inferred user intent:** Make the UI look production-quality with consistent styling.
+**Commit (code):** 1851167 — "feat(ui): Phase 7 polish — progress bar, proper CSS classes, styled modal, op inspector fix"
+
+### What I did
+- Added CSS classes: `status-running`, `status-error`, `status-canceled` (were referenced but never defined)
+- Added `progress-bar` / `progress-fill` CSS with done/running/failed color bands and centered label
+- Added `op-graph`, `op-node`, `op-arrow`, `op-fan-out` classes for the DAG visualization
+- Added `modal-overlay`, `modal-panel`, `form-row`, `form-section` classes for the submit modal
+- Rewrote `WorkflowsView.tsx` to use all `.btn`, `.input`, `.select`, `.form-section`, `.form-row` classes
+- Added `ProgressBar` component in workflow detail header
+- Added `OpGraph` component as a standalone sub-component with proper fan-out/fan-in layout
+- Added selectable row highlighting (`.selectable` → `.selected` on click)
+- Added error display in submit modal
+- Added available source names in modal
+- Fixed React #310 crash caused by `inspectedSample` in `useCallback` dependency array
+
+### Why
+The raw HTML elements (bare `<button>`, `<input>`, `<fieldset>`) didn't match the retro Mac design system. Missing CSS classes caused unstyled or broken status colors. The progress bar gives an at-a-glance view of how far a workflow has progressed.
+
+### What worked
+- Progress bar with done/running/failed bands is immediately readable
+- The `.form-row` pattern (label right-aligned + input) is much cleaner than stacked labels
+- Using `.selectable` rows with hover highlight makes the table interactive
+- Source names list in modal helps discoverability
+
+### What didn't work
+- **React #310 crash**: `inspectedSample` (derived from polled `groups` array) was in `useCallback` deps, causing a new function on every poll (every 2s). Each new function triggered a re-render, which changed `inspectedSample` reference, which created another new function → infinite loop. Fixed by using a `useRef` to hold the current sample and removing it from deps.
+- Variable ordering error: had `selectedGroup`/`inspectedSample` before `groups` was declared, causing TypeScript block-scoped variable errors.
+
+### What was tricky to build
+- The React #310 debug cycle: minified React errors give no component name or line reference. Had to reason about the dependency chain: `useCallback([inspectedSample])` → `inspectedSample` from `groups.find(...)` → `groups` from `useGetWorkflowOpsQuery` polling → new `groups` array every 2s → new `inspectedSample` → new `handleRetry` → re-render. The fix was to break the dependency by using `useRef`.
+
+### What warrants a second pair of eyes
+- The `inspectedSampleRef` pattern: assigning to `.current` during render is technically a side effect. It works because it's idempotent (same value), but a `useEffect` would be more correct. Low priority since it's just a cache.
+
+### What should be done in the future
+- Replace polling with SSE for real-time updates
+- Add per-group drill-down (click a group → paginated list of individual ops)
+- Add op result detail endpoint integration
+- Workflow templates
+
+### Code review instructions
+- Start at `web/src/components/workflows/WorkflowsView.tsx` — review the `inspectedSampleRef` pattern and `ProgressBar` component
+- Check `web/src/index.css` for the new CSS additions under `/* ===== Progress Bar ===== */` and `/* ===== Op Graph ===== */`
+- Run: `cd web && pnpm build && cd .. && go build ./cmd/rag-eval`
+- Verify: open http://127.0.0.1:8772 → Workflows tab → click workflow → check progress bar + op graph + inspector

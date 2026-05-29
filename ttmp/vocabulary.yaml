@@ -23,6 +23,14 @@ topics:
       description: Database schemas, migrations, imports, and exports
     - slug: corpus
       description: Text corpus acquisition, normalization, and evaluation datasets
+    - slug: design
+      description: UI/UX design and screen specifications
+    - slug: intake
+      description: Document intake pipeline operations
+    - slug: scraper
+      description: Scraper workflow engine library
+    - slug: ui
+      description: Frontend user interface
 docTypes:
     - slug: design-doc
       description: Structured rationale and architecture notes

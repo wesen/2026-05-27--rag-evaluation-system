@@ -29,3 +29,13 @@ Steps 3-4: Implemented backend API (5 new endpoints) and frontend Workflows UI (
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — Main workflow UI component
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/services/api.ts — RTK Query workflow endpoints and types
 
+
+## 2026-05-29
+
+Step 5: Phase 7 polish — progress bar, proper CSS design system classes, styled modal/form, op inspector with selectable rows, fixed React #310 crash from polling useCallback deps (commit 1851167)
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — ProgressBar
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/index.css — status-running/error/canceled
+
