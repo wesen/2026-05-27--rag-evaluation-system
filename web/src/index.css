@@ -181,6 +181,9 @@ body {
 .status-done   { color: var(--mac-green); }
 .status-partial { color: var(--mac-amber); }
 .status-pending { color: var(--mac-text-dim); }
+.status-running { color: var(--mac-accent); }
+.status-error  { color: var(--mac-accent-2); }
+.status-canceled { color: var(--mac-text-dim); text-decoration: line-through; }
 .status-failed { color: var(--mac-accent-2); }
 
 /* ===== Accent Colors (foreground only) ===== */
@@ -482,6 +485,131 @@ body {
 
 .no-select {
   user-select: none;
+}
+
+/* ===== Progress Bar ===== */
+.progress-bar {
+  border: 1px solid var(--mac-border);
+  background: var(--mac-surface);
+  height: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--mac-bg-dark);
+  transition: width 0.3s ease;
+}
+
+.progress-fill.status-running {
+  background: var(--mac-accent);
+}
+
+.progress-fill.status-error {
+  background: var(--mac-accent-2);
+}
+
+.progress-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  z-index: 1;
+}
+
+/* ===== Op Graph ===== */
+.op-graph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+}
+
+.op-node {
+  padding: 3px 8px;
+  border: 1px solid var(--mac-border);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.op-arrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--mac-text-dim);
+}
+
+.op-fan-out {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ===== Modal Overlay ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-panel {
+  width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* ===== Form Layout ===== */
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.form-row label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  min-width: 80px;
+  text-align: right;
+  color: var(--mac-text-dim);
+}
+
+.form-row input,
+.form-row select {
+  flex: 1;
+}
+
+.form-section {
+  border: 1px solid var(--mac-border);
+  padding: 6px 8px;
+  margin-bottom: 6px;
+}
+
+.form-section legend {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 4px;
+  color: var(--mac-text-dim);
 }
 
 /* ===== Checkbox ===== */
