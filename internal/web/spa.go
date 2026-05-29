@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-//go:embed dist/*
+//go:embed all:dist
 var distFS embed.FS
 
 // SPAHandler returns an HTTP handler that serves the embedded SPA.
