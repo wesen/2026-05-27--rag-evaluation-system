@@ -25,11 +25,17 @@ RelatedFiles:
     - Path: internal/workflow/echo_runner_test.go
       Note: Phase 0 scheduler/store integration tests
     - Path: internal/workflow/intake_runner.go
-      Note: Phase 1 Go-native intake runner and chunk_document dispatch
+      Note: |-
+        Phase 1 Go-native intake runner and chunk_document dispatch
+        Completed Phase 1 runner operations for chunking embeddings and BM25
     - Path: internal/workflow/intake_runner_test.go
-      Note: Phase 1 durable chunk_document workflow test
+      Note: |-
+        Phase 1 durable chunk_document workflow test
+        Completed Phase 1 dependency-chain workflow tests
     - Path: internal/workflow/ops.go
-      Note: Phase 1 typed intake op contracts
+      Note: |-
+        Phase 1 typed intake op contracts
+        Completed Phase 1 op contracts for chunking embeddings and BM25
     - Path: ttmp/2026/05/29/RAGEVAL-006--workflow-scraper-integration-for-modular-retryable-intake/design-doc/01-workflow-scraper-intake-integration-design-and-implementation-guide.md
       Note: Primary design guide produced in Step 1
 ExternalSources: []
@@ -38,6 +44,7 @@ LastUpdated: 2026-05-29T18:30:00Z
 WhatFor: Track the design investigation, evidence, decisions, and delivery steps for scraper-backed modular retryable intake.
 WhenToUse: Read before implementing workflow orchestration, LLM preprocessing, chunk enrichment, or scraper runner integration in rag-eval.
 ---
+
 
 
 
@@ -390,3 +397,110 @@ The subtle issue was scraper result error decoding. Successful op completion sto
 - New real operation: `chunk_document`.
 - Output shape: `{document_id, strategy_id, chunk_count}`.
 - DB behavior: per-op open + migrate using `internal/db.OpenDB` and `internal/db.Migrate`.
+
+---
+
+## Step 4: Complete Phase 1 — Embedding and BM25 Workflow Operations
+
+I completed the rest of Phase 1 by extending the Go-native intake runner beyond chunking. The workflow runner can now compute embeddings through the existing embedding service and build BM25 indexes through the existing search service. Both operations keep workflow results compact and write canonical artifacts to the rag-eval database or index directory.
+
+This finishes the first real workflow runner slice. The runner still does not expose operator CLI commands; that is Phase 2. At this point, tests can create scraper workflows programmatically with dependencies such as chunking before embedding or chunking before BM25 indexing.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue. do the full next phase"
+
+**Assistant interpretation:** Finish the remaining Phase 1 tasks after the initial `chunk_document` slice: add embedding and BM25 workflow operations, dependency-chain tests, diary updates, and a focused commit.
+
+**Inferred user intent:** Get the complete service-backed runner phase done before moving to workflow CLI/user-facing submission commands.
+
+### What I did
+
+- Extended `IntakeOpInput` in `internal/workflow/ops.go` with fields for:
+  - strategy IDs and source filters;
+  - embedding provider/profile settings;
+  - batch size, limit, force;
+  - BM25 index root and index ID.
+- Added operation constants:
+  - `compute_embeddings`
+  - `build_bm25`
+- Added compact output structs:
+  - `ComputeEmbeddingsOutput`
+  - `BuildBM25Output`
+- Extended `internal/workflow/intake_runner.go`:
+  - added `ProviderResolver` seam for tests and real provider resolution;
+  - implemented `compute_embeddings` over `embedding.Service.Compute`;
+  - implemented `build_bm25` over `search.Service.BuildBM25`;
+  - added default provider resolution through `embedding.ResolveProvider`;
+  - added `openOpQueries` to normalize per-op DB open/migration errors.
+- Extended `internal/workflow/intake_runner_test.go`:
+  - added fake embedding provider and resolver;
+  - added `chunk_document -> compute_embeddings -> compute_embeddings` dependency-chain test;
+  - verifies the second embedding op skips fresh vectors instead of recomputing;
+  - added `chunk_document -> build_bm25` dependency-chain test;
+  - verifies `search_indexes` metadata is written.
+- Updated Phase 1 tasks to complete.
+
+### Why
+
+The workflow integration needs to wrap the existing services that already define the intake pipeline. Completing `compute_embeddings` and `build_bm25` proves that the runner can handle both provider-backed operations and derived filesystem index operations. The dependency-chain tests prove scraper dependencies can order these steps correctly.
+
+### What worked
+
+- `compute_embeddings` works with an injected fake provider, so tests do not call live providers.
+- The repeated embedding workflow op correctly reports `computed=0` and skips fresh rows after the first embedding op writes vectors.
+- `build_bm25` works against a temporary index root and writes `search_indexes` metadata.
+- Validation passed:
+
+```text
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/workflow -count=1 -timeout 60s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/db ./internal/ingest ./internal/chunking ./internal/services/source ./internal/services/chunking ./internal/services/document ./internal/services/embedding ./internal/services/search ./internal/workflow -count=1 -timeout 120s
+GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval
+```
+
+### What didn't work
+
+- No new blockers in this step.
+- The earlier scraper result error decoding caveat still exists in the tests: success checks ignore a non-nil `OpError` when its code is empty.
+- Live provider-backed workflow execution is not tested yet. That belongs after the CLI submission path and explicit smoke controls exist.
+
+### What I learned
+
+- The existing service boundaries are strong enough for workflow orchestration.
+- Embedding provider injection is essential for workflow tests; otherwise every workflow test would depend on OpenAI/Ollama credentials.
+- Search indexing as a workflow op fits the same derived-state model as chunking and embeddings.
+
+### What was tricky to build
+
+The main subtlety was preserving compact workflow results. The embedding service returns enough data to report considered/computed/skipped counts without storing vectors in the scraper engine database. The BM25 service returns enough data to locate the derived index without copying index contents into workflow artifacts. This keeps scraper workflow state as orchestration metadata and leaves canonical artifacts in rag-eval DB/index directories.
+
+### What warrants a second pair of eyes
+
+- `compute_embeddings_failed` is currently marked retryable. This is right for transient provider failures but too broad for configuration errors that reach the service layer. Phase 2 or 3 should add finer error classification.
+- `build_bm25_failed` is currently non-retryable. Filesystem/transient errors may deserve retry in future.
+- Provider resolution errors are non-retryable. This is correct for missing API keys and bad profiles, but not necessarily for registry IO errors.
+
+### What should be done in the future
+
+- Start Phase 2 by adding operator-facing workflow CLI commands.
+- Add workflow status/ops inspection so users do not need test helpers to inspect scraper engine state.
+- Consider adding a dry-run or planning mode before live provider workflow runs.
+
+### Code review instructions
+
+- Review:
+  - `internal/workflow/ops.go`
+  - `internal/workflow/intake_runner.go`
+  - `internal/workflow/intake_runner_test.go`
+- Pay special attention to provider resolver injection and compact result output.
+- Validate with the commands listed above.
+
+### Technical details
+
+- Completed Phase 1 operations:
+  - `chunk_document`
+  - `compute_embeddings`
+  - `build_bm25`
+- Dependency-chain tests:
+  - chunk → embed → fresh-check embed;
+  - chunk → BM25 index.

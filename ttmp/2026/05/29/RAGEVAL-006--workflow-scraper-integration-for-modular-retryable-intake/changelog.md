@@ -55,3 +55,14 @@ Phase 1 first slice: added typed intake runner dispatch and durable chunk_docume
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner_test.go — Workflow integration tests for chunk_document
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/ops.go — Typed op input/output structs for first workflow operation
 
+
+## 2026-05-29
+
+Completed Phase 1 by adding compute_embeddings and build_bm25 workflow operations with dependency-chain tests.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner.go — Added compute_embeddings and build_bm25 service-backed operations
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/intake_runner_test.go — Added workflow dependency-chain tests for embedding freshness and BM25 metadata
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/internal/workflow/ops.go — Expanded workflow op contracts for embeddings and BM25
+
