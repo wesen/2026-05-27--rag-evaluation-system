@@ -11,6 +11,16 @@ DocType: reference
 Intent: long-term
 Owners: []
 RelatedFiles:
+    - Path: cmd/rag-eval/cmds/search/index.go
+      Note: Glazed CLI command for BM25 index builds
+    - Path: cmd/rag-eval/cmds/search/query.go
+      Note: Glazed CLI command for BM25 queries
+    - Path: internal/db/search_queries.go
+      Note: DB helpers for chunk/document context and search index metadata
+    - Path: internal/services/search/bm25.go
+      Note: Phase 1 BM25 build/query implementation
+    - Path: internal/services/search/service.go
+      Note: Shared search service types and defaults
     - Path: ttmp/2026/05/28/RAGEVAL-004--end-to-end-search-retrieval-foundation/design-doc/01-end-to-end-search-retrieval-implementation-guide.md
       Note: Design guide authored in Step 1
 ExternalSources: []
@@ -19,6 +29,7 @@ LastUpdated: 2026-05-28T00:00:00Z
 WhatFor: Track why RAGEVAL-004 focuses on base retrieval functionality before benchmark design.
 WhenToUse: Read before implementing BM25, vector search, hybrid retrieval, or smoke-query checks.
 ---
+
 
 
 # Diary
@@ -191,3 +202,118 @@ N/A for this upload step. I followed the minimal non-interactive reMarkable uplo
 
 - reMarkable path: `/ai/2026/05/28/RAGEVAL-004`.
 - Uploaded bundle name: `RAGEVAL-004 Search Retrieval Foundation.pdf`.
+
+---
+
+## Step 3: Phase 1 BM25 Search Service and CLI
+
+I implemented the first retrieval layer: a disposable Bleve/BM25 index built from canonical SQLite chunks and queried through a new `rag-eval search` CLI group. This gives the project its first end-to-end lexical retrieval path from persisted chunks to ranked chunk previews.
+
+I also ran real TTC corpus queries against a bounded articles+guides index. The results showed that the plumbing works and that BM25 can find obvious exact-match material like `Crape Myrtle Varieties and Guide`; they also surfaced corpus coverage issues, such as `hydrangea pruning` returning weak results because the bounded indexed sample does not appear to contain focused hydrangea material.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Go ahead, task by task, commit at appropriate intervals, keep a diary as you go."
+
+**Assistant interpretation:** Start implementing RAGEVAL-004 incrementally, commit focused milestones, and maintain the ticket diary/changelog while working.
+
+**Inferred user intent:** Move from design into working retrieval functionality while keeping implementation progress reviewable and recoverable.
+
+**Commit (code):** 7efba55 — "feat: add BM25 search service and CLI"
+
+### What I did
+
+- Added Bleve dependency with:
+  - `go get github.com/blevesearch/bleve/v2@latest`
+- Added DB search helpers:
+  - `internal/db/search_queries.go`
+  - `ListChunksWithDocumentContext`
+  - `UpsertSearchIndex`
+  - `GetSearchIndex`
+- Added BM25 search service:
+  - `internal/services/search/service.go`
+  - `internal/services/search/bm25.go`
+  - `internal/services/search/service_test.go`
+- Added Glazed/Cobra CLI command group:
+  - `cmd/rag-eval/cmds/search/root.go`
+  - `cmd/rag-eval/cmds/search/index.go`
+  - `cmd/rag-eval/cmds/search/query.go`
+- Registered `search.NewCommand()` in `cmd/rag-eval/main.go`.
+- Built a real BM25 index:
+  - `bm25-ttc-guides-articles-fixed-1200-150`
+  - sources: `ttc-dump-guides,ttc-dump-articles`
+  - chunks indexed: `204`
+  - documents indexed: `6`
+- Ran real queries:
+  - `crape myrtle varieties`
+  - `how to plant arborvitae`
+  - `hydrangea pruning`
+
+### Why
+
+BM25 is the cheapest and most explainable retrieval baseline. It proves that chunks can be indexed and retrieved before adding query embeddings, hybrid ranking, or benchmark machinery.
+
+### What worked
+
+- Unit tests passed:
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/services/search ./internal/db -count=1 -timeout 60s`
+- CLI binary built:
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval`
+- Real index build succeeded:
+  - `chunk_count=204`
+  - `document_count=6`
+- `crape myrtle varieties` returned chunks from `ttc-article-6737` / `Crape Myrtle Varieties and Guide` as expected.
+- `how to plant arborvitae` returned planting/privacy-screen guide material, which is plausible given the bounded sample.
+
+### What didn't work
+
+- `hydrangea pruning` returned weak results from Japanese maple and crape myrtle chunks. This appears to be a corpus/index coverage issue rather than a BM25 plumbing failure: the bounded indexed chunk set likely does not include a focused hydrangea pruning document.
+- The implementation currently covers only BM25 service + CLI. HTTP endpoints, vector query search, hybrid search, and smoke query files are still open.
+
+### What I learned
+
+- The first real queries are already useful because they expose whether the indexed corpus subset contains the evidence needed for a query.
+- The current TTC sample indexed for articles/guides is small: 204 chunks across 6 documents. This is enough for plumbing validation, but not enough to draw broad retrieval-quality conclusions.
+- Exact-match article queries are a good first sanity check; broader care/product queries need richer source coverage and likely product text composition improvements.
+
+### What was tricky to build
+
+The main sharp edge was keeping the search index disposable while preserving enough metadata to query it later. The service now writes the Bleve index under `data/indexes/bm25/{index_id}` and records index metadata in `search_indexes`. Querying first consults SQLite metadata and falls back to the deterministic index-root path.
+
+Another minor sharp edge was Bleve field extraction. Search results need stored fields for IDs, titles, source IDs, chunk indexes, and preview text. The first implementation indexes a small `indexedChunk` struct and requests those fields explicitly in the search request.
+
+### What warrants a second pair of eyes
+
+- Review whether the default Bleve mapping is sufficient or whether we should define explicit field mappings and analyzers before indexing larger corpora.
+- Review index ID/path derivation and whether the CLI should require explicit `--index-id` for reproducibility.
+- Review the BM25 query shape: current implementation uses a disjunction over `text` and boosted `title`; ranking can be tuned after more real query inspection.
+
+### What should be done in the future
+
+- Add BM25 HTTP endpoints for index build and query.
+- Add query-vector search using existing Geppetto/Pinocchio provider resolution.
+- Build broader indexes, including products, after deciding whether product `content_text` needs metadata composition improvements.
+- Create a small retrieval smoke query file after BM25 and vector search both exist.
+
+### Code review instructions
+
+- Start with:
+  - `internal/services/search/bm25.go`
+  - `internal/services/search/service.go`
+  - `internal/db/search_queries.go`
+- Then inspect CLI wiring:
+  - `cmd/rag-eval/cmds/search/index.go`
+  - `cmd/rag-eval/cmds/search/query.go`
+  - `cmd/rag-eval/main.go`
+- Validate with:
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go test ./internal/services/search ./internal/db -count=1 -timeout 60s`
+  - `GOMAXPROCS=2 GOMEMLIMIT=1024MiB go build ./cmd/rag-eval`
+  - `./rag-eval search index --strategy-id fixed-1200-150 --source-ids ttc-dump-guides,ttc-dump-articles --index-id bm25-ttc-guides-articles-fixed-1200-150 --force --output table`
+  - `./rag-eval search query --index-id bm25-ttc-guides-articles-fixed-1200-150 --query "crape myrtle varieties" --limit 5 --output table`
+
+### Technical details
+
+- BM25 index path used during validation:
+  - `data/indexes/bm25/bm25-ttc-guides-articles-fixed-1200-150`
+- The derived index is intentionally under ignored `data/` and should not be committed.
+- Current result rows include rank, retriever, index ID, query, score, chunk ID, document ID, source ID, title, chunk index, URL, and preview.
