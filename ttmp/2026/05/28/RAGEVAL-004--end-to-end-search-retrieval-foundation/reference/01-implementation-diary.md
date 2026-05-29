@@ -431,7 +431,7 @@ This is the second standalone retrieval path. BM25 can now be tested independent
 
 **Inferred user intent:** Add the next retrieval building block while keeping provider calls explicit and bounded.
 
-**Commit (code):** pending — vector search implementation will be committed after this diary/changelog update.
+**Commit (code):** 952b4ab — "feat: add vector query search"
 
 ### What I did
 
