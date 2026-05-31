@@ -209,6 +209,36 @@ func (q *Queries) ListChunkEnrichments(chunkID, strategyID, promptVersion string
 	return ret, rows.Err()
 }
 
+type ChunkEnrichmentIdentity struct {
+	StrategyID    string `json:"strategy_id"`
+	PromptVersion string `json:"prompt_version"`
+	Provider      string `json:"provider"`
+	Model         string `json:"model"`
+	EnrichedCount int    `json:"enriched_count"`
+}
+
+func (q *Queries) ListChunkEnrichmentIdentities() ([]ChunkEnrichmentIdentity, error) {
+	rows, err := q.db.Query(`
+		SELECT strategy_id, prompt_version, provider, model, COUNT(*)
+		FROM chunk_enrichments
+		GROUP BY strategy_id, prompt_version, provider, model
+		ORDER BY strategy_id, prompt_version, provider, model
+	`)
+	if err != nil {
+		return nil, fmt.Errorf("list chunk enrichment identities: %w", err)
+	}
+	defer rows.Close()
+	ret := []ChunkEnrichmentIdentity{}
+	for rows.Next() {
+		var id ChunkEnrichmentIdentity
+		if err := rows.Scan(&id.StrategyID, &id.PromptVersion, &id.Provider, &id.Model, &id.EnrichedCount); err != nil {
+			return nil, fmt.Errorf("scan chunk enrichment identity: %w", err)
+		}
+		ret = append(ret, id)
+	}
+	return ret, rows.Err()
+}
+
 func (q *Queries) ListChunkEnrichmentCoverage(strategyID, promptVersion string) ([]ChunkEnrichmentCoverage, error) {
 	rows, err := q.db.Query(`
 		SELECT d.source_id,

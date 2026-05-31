@@ -4,11 +4,14 @@ import {
   useListCorpusDocumentsQuery,
   useGetCorpusDocumentQuery,
   useListChunkingStrategiesQuery,
+  useGetDocumentProcessingIdentitiesQuery,
   useGetDocumentProcessingCoverageQuery,
   CorpusIdentityArgs,
+  DocumentProcessingCoverageArgs,
   DocumentProcessingCoverageItem,
 } from '../../services/api';
 import { IdentityBar } from './IdentityBar';
+import { DocProcessingIdentityBar } from './ArtifactIdentityBar';
 import { SourcePanel } from './SourcePanel';
 import { DocumentBrowser } from './DocumentBrowser';
 import { DocumentInspector } from './DocumentInspector';
@@ -33,8 +36,16 @@ const DEFAULT_IDENTITY: CorpusIdentityArgs = {
 
 const PAGE_SIZE = 100;
 
+const DEFAULT_PREPROCESSING_IDENTITY: DocumentProcessingCoverageArgs = {
+  artifact_type: 'clean_text',
+  prompt_version: 'v1',
+  provider: 'fake',
+  model: 'fake-document-processor',
+};
+
 export const CorpusExplorerView: React.FC<CorpusExplorerViewProps> = ({ initialTarget, onTargetConsumed }) => {
   const [identity, setIdentity] = useState<CorpusIdentityArgs>(DEFAULT_IDENTITY);
+  const [artifactIdentity, setArtifactIdentity] = useState<DocumentProcessingCoverageArgs>(DEFAULT_PREPROCESSING_IDENTITY);
   const [sourceId, setSourceId] = useState('');
   const [documentId, setDocumentId] = useState('');
   const [highlightChunkId, setHighlightChunkId] = useState<string | null>(null);
@@ -61,13 +72,25 @@ export const CorpusExplorerView: React.FC<CorpusExplorerViewProps> = ({ initialT
     { skip: !documentId },
   );
 
-  // Preprocessing coverage — uses default identity (fake provider from workflow)
-  const { data: preprocessingCoverageData } = useGetDocumentProcessingCoverageQuery({
-    artifact_type: 'clean_text',
-    prompt_version: 'v1',
-    provider: 'fake',
-    model: 'fake-document-processor',
-  });
+  // Preprocessing identity selector
+  const { data: preprocessingIdentitiesData } = useGetDocumentProcessingIdentitiesQuery();
+  const preprocessingIdentities = preprocessingIdentitiesData?.items ?? [];
+
+  // When identities load, auto-select the first one if the default has no coverage
+  useEffect(() => {
+    if (preprocessingIdentities.length > 0 && artifactIdentity.provider === 'fake') {
+      const first = preprocessingIdentities[0]!;
+      setArtifactIdentity({
+        artifact_type: first.artifact_type,
+        prompt_version: first.prompt_version,
+        provider: first.provider,
+        model: first.model,
+      });
+    }
+  }, [preprocessingIdentities, artifactIdentity.provider]);
+
+  // Preprocessing coverage — uses selected artifact identity
+  const { data: preprocessingCoverageData } = useGetDocumentProcessingCoverageQuery(artifactIdentity);
   const preprocessingCoverage = useMemo(() => {
     const map: Record<string, DocumentProcessingCoverageItem> = {};
     for (const item of preprocessingCoverageData?.items ?? []) {
@@ -118,6 +141,14 @@ export const CorpusExplorerView: React.FC<CorpusExplorerViewProps> = ({ initialT
         totalChunks={totalChunks}
         totalEmbedded={totalEmbedded}
       />
+
+      {preprocessingIdentities.length > 0 && (
+        <DocProcessingIdentityBar
+          identities={preprocessingIdentities}
+          selected={artifactIdentity}
+          onChange={setArtifactIdentity}
+        />
+      )}
 
       <div style={{ display: 'flex', gap: 8, minHeight: 500 }}>
         <SourcePanel

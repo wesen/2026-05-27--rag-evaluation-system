@@ -397,6 +397,10 @@ export const ragApi = createApi({
       query: (id) => `workflows/${id}/ops`,
       providesTags: ['Workflows'],
     }),
+    getOpResult: builder.query<OpResult, { workflowId: string; opId: string }>({
+      query: ({ workflowId, opId }) => `workflows/${workflowId}/results/${encodeURIComponent(opId)}`,
+      providesTags: ['Workflows'],
+    }),
     submitIntakeWorkflow: builder.mutation<SubmitIntakeResponse, SubmitIntakeRequest>({
       query: (body) => ({ url: 'workflows/intake', method: 'POST', body }),
       invalidatesTags: ['Workflows'],
@@ -419,6 +423,15 @@ export const ragApi = createApi({
     }),
 
     // Artifact coverage endpoints (RAGEVAL-006 Phase 6)
+    getDocumentProcessingIdentities: builder.query<DocumentProcessingIdentitiesResult, void>({
+      query: () => 'artifacts/document-processing/identities',
+      providesTags: ['Artifacts'],
+    }),
+    getChunkEnrichmentIdentities: builder.query<ChunkEnrichmentIdentitiesResult, void>({
+      query: () => 'artifacts/chunk-enrichment/identities',
+      providesTags: ['Artifacts'],
+    }),
+
     getDocumentProcessingCoverage: builder.query<DocumentProcessingCoverageResult, DocumentProcessingCoverageArgs>({
       query: (args) => `artifacts/document-processing/coverage?artifact_type=${args.artifact_type}&prompt_version=${args.prompt_version}&provider=${args.provider}&model=${args.model}`,
       providesTags: ['Artifacts'],
@@ -479,6 +492,17 @@ export interface WorkflowOp {
   status: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface OpResult {
+  OpID: string;
+  Data: Record<string, unknown> | null;
+  Records: Array<{ Table: string; PK: string; Data: Record<string, unknown> }>;
+  Artifacts: Array<{ Name: string; Kind: string; ContentType: string; Body: string }>;
+  Emitted: Array<{ ID: string; Kind: string; Queue: string }>;
+  EmittedIDs: string[];
+  Error: { Code: string; Message: string; Retryable: boolean } | null;
+  CompletedAt: string;
 }
 
 export interface WorkflowOpGroup {
@@ -556,6 +580,30 @@ export interface SubmitIntakeResponse {
 }
 
 // ─── Artifact types (RAGEVAL-006 Phase 6) ─────────────────────────────────
+
+export interface DocumentProcessingIdentity {
+  artifact_type: string;
+  prompt_version: string;
+  provider: string;
+  model: string;
+  artifact_count: number;
+}
+
+export interface DocumentProcessingIdentitiesResult {
+  items: DocumentProcessingIdentity[];
+}
+
+export interface ChunkEnrichmentIdentity {
+  strategy_id: string;
+  prompt_version: string;
+  provider: string;
+  model: string;
+  enriched_count: number;
+}
+
+export interface ChunkEnrichmentIdentitiesResult {
+  items: ChunkEnrichmentIdentity[];
+}
 
 export interface DocumentProcessingCoverageArgs {
   artifact_type: string;
@@ -683,8 +731,12 @@ export const {
   useCancelWorkflowMutation,
   useListQueuesQuery,
   // Artifact endpoints (RAGEVAL-006 Phase 6)
+  useGetDocumentProcessingIdentitiesQuery,
+  useGetChunkEnrichmentIdentitiesQuery,
   useGetDocumentProcessingCoverageQuery,
   useGetChunkEnrichmentCoverageQuery,
   useGetDocumentProcessingArtifactsQuery,
   useGetChunkEnrichmentsQuery,
+  // Op result
+  useGetOpResultQuery,
 } = ragApi;

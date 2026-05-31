@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-go-golems/rag-evaluation-system/internal/db"
 	"github.com/go-go-golems/rag-evaluation-system/internal/services/chunkenrichment"
 	"github.com/go-go-golems/rag-evaluation-system/internal/services/documentprocessing"
 	"github.com/go-go-golems/rag-evaluation-system/internal/workflow"
@@ -154,6 +155,18 @@ func (h *handler) handleListQueues(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]interface{}{"queues": queues})
 }
 
+func (h *handler) handleDocumentProcessingIdentities(w http.ResponseWriter, r *http.Request) {
+	result, err := h.queries.ListDocumentProcessingIdentities()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "query_failed", err.Error())
+		return
+	}
+	if result == nil {
+		result = []db.DocumentProcessingIdentity{}
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"items": result})
+}
+
 func (h *handler) handleDocumentProcessingCoverage(w http.ResponseWriter, r *http.Request) {
 	service := documentprocessing.NewService(h.queries)
 	result, err := service.Coverage(r.Context(), documentprocessing.CoverageRequest{
@@ -167,6 +180,18 @@ func (h *handler) handleDocumentProcessingCoverage(w http.ResponseWriter, r *htt
 		return
 	}
 	writeJSON(w, http.StatusOK, result)
+}
+
+func (h *handler) handleChunkEnrichmentIdentities(w http.ResponseWriter, r *http.Request) {
+	result, err := h.queries.ListChunkEnrichmentIdentities()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "query_failed", err.Error())
+		return
+	}
+	if result == nil {
+		result = []db.ChunkEnrichmentIdentity{}
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"items": result})
 }
 
 func (h *handler) handleChunkEnrichmentCoverage(w http.ResponseWriter, r *http.Request) {

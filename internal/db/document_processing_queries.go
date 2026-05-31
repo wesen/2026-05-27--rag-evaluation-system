@@ -121,6 +121,36 @@ func (q *Queries) ListDocumentProcessingArtifacts(documentID string) ([]Document
 	return ret, rows.Err()
 }
 
+type DocumentProcessingIdentity struct {
+	ArtifactType  string `json:"artifact_type"`
+	PromptVersion string `json:"prompt_version"`
+	Provider      string `json:"provider"`
+	Model         string `json:"model"`
+	ArtifactCount int    `json:"artifact_count"`
+}
+
+func (q *Queries) ListDocumentProcessingIdentities() ([]DocumentProcessingIdentity, error) {
+	rows, err := q.db.Query(`
+		SELECT artifact_type, prompt_version, provider, model, COUNT(*)
+		FROM document_processing_artifacts
+		GROUP BY artifact_type, prompt_version, provider, model
+		ORDER BY artifact_type, prompt_version, provider, model
+	`)
+	if err != nil {
+		return nil, fmt.Errorf("list document processing identities: %w", err)
+	}
+	defer rows.Close()
+	ret := []DocumentProcessingIdentity{}
+	for rows.Next() {
+		var id DocumentProcessingIdentity
+		if err := rows.Scan(&id.ArtifactType, &id.PromptVersion, &id.Provider, &id.Model, &id.ArtifactCount); err != nil {
+			return nil, fmt.Errorf("scan document processing identity: %w", err)
+		}
+		ret = append(ret, id)
+	}
+	return ret, rows.Err()
+}
+
 func (q *Queries) ListDocumentProcessingCoverage(artifactType, promptVersion, provider, model string) ([]DocumentProcessingCoverage, error) {
 	rows, err := q.db.Query(`
 		SELECT d.source_id,

@@ -74,7 +74,9 @@ func RegisterHandlersWithOptions(mux *http.ServeMux, database *sql.DB, opts Opti
 	mux.HandleFunc("POST /api/v1/workflows/{id}/cancel", h.handleCancelWorkflow)
 	mux.HandleFunc("POST /api/v1/workflows/intake", h.handleSubmitIntake)
 	mux.HandleFunc("GET /api/v1/queues", h.handleListQueues)
+	mux.HandleFunc("GET /api/v1/artifacts/document-processing/identities", h.handleDocumentProcessingIdentities)
 	mux.HandleFunc("GET /api/v1/artifacts/document-processing/coverage", h.handleDocumentProcessingCoverage)
+	mux.HandleFunc("GET /api/v1/artifacts/chunk-enrichment/identities", h.handleChunkEnrichmentIdentities)
 	mux.HandleFunc("GET /api/v1/artifacts/chunk-enrichment/coverage", h.handleChunkEnrichmentCoverage)
 	mux.HandleFunc("GET /api/v1/chunks/{id}/enrichments", h.handleChunkEnrichments)
 
