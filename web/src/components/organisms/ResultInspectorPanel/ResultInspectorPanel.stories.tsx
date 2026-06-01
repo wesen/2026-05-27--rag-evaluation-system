@@ -96,10 +96,27 @@ export const Detail: Story = {
   ),
 };
 
+export const ChunkTab: Story = {
+  args: {
+    ...Detail.args,
+    defaultTab: 'chunk',
+  },
+  render: Detail.render,
+};
+
+export const DocumentTab: Story = {
+  args: {
+    ...Detail.args,
+    defaultTab: 'document',
+  },
+  render: Detail.render,
+};
+
 export const DocumentLoading: Story = {
   args: {
     ...Detail.args,
     docDetail: null,
+    defaultTab: 'document',
   },
   render: Detail.render,
 };

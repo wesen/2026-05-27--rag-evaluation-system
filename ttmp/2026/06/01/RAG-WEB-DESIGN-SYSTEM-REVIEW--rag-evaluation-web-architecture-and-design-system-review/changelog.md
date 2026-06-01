@@ -128,3 +128,16 @@ Expanded the reusable RAG design system with Caption, AppShell, ScrollRegion, Ta
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/DataTable/DataTable.tsx — Reusable dense data table molecule
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/MetadataGrid/MetadataGrid.tsx — Reusable key/value metadata molecule
 
+
+## 2026-06-01
+
+Adopted DataTable, MetadataGrid, TabList, and ScrollRegion inside Search Workbench result and inspector panels
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded Search Workbench reusable component adoption
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css — Inspector-specific anatomy after reusable primitive adoption
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.stories.tsx — Expanded explicit inspector tab stories
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx — Inspector now uses MetadataGrid/TabList/ScrollRegion and supports defaultTab stories
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.tsx — Retrieval results now use reusable DataTable/Panel/ScrollRegion
+

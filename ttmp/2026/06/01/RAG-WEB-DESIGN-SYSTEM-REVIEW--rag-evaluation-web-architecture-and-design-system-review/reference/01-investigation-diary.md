@@ -42,10 +42,16 @@ RelatedFiles:
       Note: Diary evidence for reusable molecule extraction
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
       Note: Phase 2 extraction diary evidence
+    - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css
+      Note: Diary evidence for remaining inspector anatomy CSS
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx
-      Note: Phase 2 inspector extraction diary evidence
+      Note: |-
+        Phase 2 inspector extraction diary evidence
+        Diary evidence for MetadataGrid/TabList adoption
     - Path: web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.tsx
-      Note: Phase 2 extraction diary evidence
+      Note: |-
+        Phase 2 extraction diary evidence
+        Diary evidence for DataTable adoption
     - Path: web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx
       Note: Phase 2 extraction diary evidence
     - Path: web/src/components/search/SearchView.module.css
@@ -66,6 +72,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -1006,5 +1013,104 @@ Validation commands that passed:
 ```bash
 cd 2026-05-27--rag-evaluation-system/web
 pnpm typecheck
+pnpm build-storybook
+```
+
+## Step 10: Adopt Reusable Molecules in the Search Workbench Panels
+
+I followed the primitive extraction with an adoption pass inside the Search Workbench. `RetrievalResultsPanel` now uses the reusable `DataTable`, and `ResultInspectorPanel` now uses `MetadataGrid`, `TabList`, and `ScrollRegion` instead of carrying all table, metadata, tab, and scroll structure locally.
+
+This step is the first proof that the newly extracted components are not just Storybook examples. They can replace real UI structure while preserving the dense retro dashboard behavior.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 9)
+
+**Assistant interpretation:** Continue the full design-system extraction by adopting the new reusable components in real Search Workbench panels.
+
+**Inferred user intent:** The user wants the reusable design-system pieces to actively reduce monolithic page/component code, not remain unused abstractions.
+
+**Commit (code):** N/A at time of writing — implementation changes pending commit.
+
+### What I did
+
+- Refactored `RetrievalResultsPanel` to use:
+  - `Panel`
+  - `ScrollRegion`
+  - `DataTable`
+  - `Caption`
+- Refactored `ResultInspectorPanel` to use:
+  - `Panel`
+  - `ScrollRegion`
+  - `TabList`
+  - `MetadataGrid`
+  - `Caption`
+  - `StatusText`
+- Added `ResultInspectorPanel.module.css` for inspector-local anatomy that is not a reusable primitive yet:
+  - section spacing,
+  - chunk/document text blocks,
+  - neighbor blocks,
+  - coverage strip dots.
+- Added `defaultTab` support to `ResultInspectorPanel` so Storybook can show explicit detail/chunk/document states.
+- Expanded `ResultInspectorPanel` stories with `ChunkTab` and `DocumentTab`.
+- Updated tasks to mark Search Workbench adoption complete for these reusable molecules/primitives.
+
+### Why
+
+- `DataTable` and `MetadataGrid` are only valuable if real views use them.
+- Search Workbench is still the safest vertical slice for adoption because its behavior is already covered by component stories and build checks.
+- Controlled/default tab support makes Storybook more useful without coupling stories to browser click interactions.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+- Storybook now includes explicit inspector tab states and the panels compile against reusable molecules.
+
+### What didn't work
+
+- `pnpm build` again rewrote `internal/web/dist/index.html`; I reverted that generated embed artifact before preparing the commit.
+- I did not yet move Corpus Explorer or Workflow views onto the new molecules. Those are the next broader adoption targets.
+
+### What I learned
+
+- `ResultInspectorPanel` still needs component-specific anatomy CSS for the coverage strip and text blocks. That is fine: not every repeated-looking pattern deserves a primitive immediately.
+- `DataTable` works for retrieval results, but broader Corpus/Workflow adoption will reveal whether it needs sorting, column width, wrapping, or empty-state APIs.
+
+### What was tricky to build
+
+- The main tricky part was preserving selected-row behavior while moving retrieval results to `DataTable`. The row selection callback still toggles the selected result exactly as before.
+- Another tricky point was making `ResultInspectorPanel` storyable without making all tab state externally controlled. `defaultTab` is a small compromise: stories can start in a specific tab, while the component remains internally interactive.
+
+### What warrants a second pair of eyes
+
+- Whether `defaultTab` is sufficient or whether `activeTab/onTabChange` should be added before more controlled stories are needed.
+- Whether `DataTable` should support semantic row labels or keyboard navigation before it is used more broadly.
+- Whether the `Panel` body/fill behavior should be tightened for full-height panel layouts.
+
+### What should be done in the future
+
+- Adopt `DataTable` and `MetadataGrid` in Corpus Explorer document/source/chunk surfaces.
+- Adopt `DataTable` and `StatusText` in Workflow list/op graph surfaces.
+- Consider extracting a reusable `CoverageStrip` only after corpus/search coverage strips repeat enough.
+
+### Code review instructions
+
+- Start with `web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.tsx` to review the `DataTable` adoption.
+- Then review `web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx` and `.module.css` for the inspector split.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
 pnpm build-storybook
 ```

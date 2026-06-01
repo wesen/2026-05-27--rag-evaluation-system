@@ -80,6 +80,8 @@ RelatedFiles:
       Note: Reusable metadata grid molecule for inspectors/details
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
       Note: Phase 2 extracted query preset molecule
+    - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css
+      Note: Inspector-specific anatomy CSS after adopting reusable primitives
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.stories.tsx
       Note: Phase 2 inspector Storybook coverage
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx
@@ -112,6 +114,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 

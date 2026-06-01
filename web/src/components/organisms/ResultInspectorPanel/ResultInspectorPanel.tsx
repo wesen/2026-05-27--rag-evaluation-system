@@ -1,18 +1,33 @@
-import { Fragment, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Caption, StatusText } from '../../foundation';
+import { Panel, ScrollRegion, TabList } from '../../layout';
+import { MetadataGrid, type MetadataGridItem } from '../../molecules';
 import type { CorpusDocumentDetail, RetrievalResult } from '../../../services/api';
+import styles from './ResultInspectorPanel.module.css';
+
+export type ResultInspectorTab = 'detail' | 'chunk' | 'document';
 
 export interface ResultInspectorPanelProps {
   result: RetrievalResult;
   docDetail: CorpusDocumentDetail | null | undefined;
   onClose: () => void;
   onOpenInCorpus: () => void;
+  defaultTab?: ResultInspectorTab;
 }
 
-export function ResultInspectorPanel({ result, docDetail, onClose, onOpenInCorpus }: ResultInspectorPanelProps) {
-  const [activeTab, setActiveTab] = useState<'detail' | 'chunk' | 'document'>('detail');
+const tabs = [
+  { id: 'detail', label: 'detail' },
+  { id: 'chunk', label: 'chunk' },
+  { id: 'document', label: 'document' },
+] satisfies { id: ResultInspectorTab; label: string }[];
 
+export function ResultInspectorPanel({ result, docDetail, onClose, onOpenInCorpus, defaultTab = 'detail' }: ResultInspectorPanelProps) {
+  const [activeTab, setActiveTab] = useState<ResultInspectorTab>(defaultTab);
 
-  // Find the current chunk in document detail
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab, result.chunk_id]);
+
   const currentChunk = docDetail?.chunks?.find(c => c.id === result.chunk_id);
   const chunkIndex = docDetail?.chunks?.findIndex(c => c.id === result.chunk_id) ?? -1;
   const prevChunk = chunkIndex > 0 ? docDetail!.chunks[chunkIndex - 1] : null;
@@ -20,146 +35,102 @@ export function ResultInspectorPanel({ result, docDetail, onClose, onOpenInCorpu
     ? docDetail!.chunks[chunkIndex + 1]
     : null;
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).catch(() => {});
-  };
+  const scoreItems: MetadataGridItem[] = [
+    { key: 'Retriever', value: <StatusText status={result.retriever === 'bm25' ? 'warning' : result.retriever === 'vector' ? 'running' : 'done'}>{result.retriever.toUpperCase()}</StatusText> },
+    { key: 'Score', value: result.score.toFixed(6) },
+    ...(result.components?.bm25 ? [{ key: 'BM25', value: <Caption tone="warning">rank #{result.components.bm25.rank}, score {result.components.bm25.score.toFixed(4)}</Caption> }] : []),
+    ...(result.components?.vector ? [{ key: 'Vector', value: <Caption tone="accent">rank #{result.components.vector.rank}, score {result.components.vector.score.toFixed(4)}</Caption> }] : []),
+  ];
+
+  const identityItems: MetadataGridItem[] = [
+    { key: 'Title', value: result.title },
+    { key: 'Chunk ID', value: result.chunk_id, copyValue: result.chunk_id },
+    { key: 'Document ID', value: result.document_id, copyValue: result.document_id },
+    { key: 'Source ID', value: result.source_id, copyValue: result.source_id },
+    ...(result.url ? [{ key: 'URL', value: <Caption tone="accent">{result.url}</Caption> }] : []),
+    { key: 'Chunk Index', value: result.chunk_index },
+    { key: 'Strategy', value: result.strategy_id },
+  ];
+
+  const documentItems: MetadataGridItem[] = docDetail ? [
+    { key: 'ID', value: docDetail.document.id, copyValue: docDetail.document.id },
+    { key: 'Title', value: docDetail.document.title },
+    { key: 'Source', value: docDetail.document.source_id },
+    ...(docDetail.document.url ? [{ key: 'URL', value: <Caption tone="accent">{docDetail.document.url}</Caption> }] : []),
+    { key: 'Words', value: docDetail.document.word_count },
+    { key: 'Chunks', value: docDetail.chunks.length },
+    { key: 'Status', value: docDetail.document.status },
+  ] : [];
+
+  const metadataItems: MetadataGridItem[] = docDetail?.document.metadata
+    ? Object.entries(docDetail.document.metadata).slice(0, 12).map(([key, value]) => ({ key, value: String(value) }))
+    : [];
 
   return (
-    <div className="panel" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div className="panel-header">
-        <span>Inspector — Rank #{result.rank}</span>
-        <div className="panel-header-controls">
-          <button className="btn" style={{ fontSize: 10 }} onClick={onOpenInCorpus}>
-            Open in Corpus
-          </button>
+    <Panel
+      fill
+      className={styles.root}
+      title={`Inspector — Rank #${result.rank}`}
+      actions={(
+        <div className={styles.actions}>
+          <button className="btn" style={{ fontSize: 10 }} onClick={onOpenInCorpus}>Open in Corpus</button>
           <button className="btn" style={{ fontSize: 10 }} onClick={onClose}>✕</button>
         </div>
-      </div>
-
-      {/* Tab bar */}
-      <div className="tab-bar">
-        {(['detail', 'chunk', 'document'] as const).map(tab => (
-          <span
-            key={tab}
-            className={`tab-item ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </span>
-        ))}
-      </div>
-
-      <div style={{ flex: 1, overflowY: 'auto', padding: 8 }}>
+      )}
+      data-rag-component="ResultInspectorPanel"
+    >
+      <TabList items={tabs} activeId={activeTab} onChange={setActiveTab} ariaLabel="Result inspector tabs" />
+      <ScrollRegion axis="y" className={styles.body}>
         {activeTab === 'detail' && (
           <>
-            {/* Scores */}
-            <div className="section-title">Scores</div>
-            <div className="meta-grid" style={{ marginBottom: 8 }}>
-              <span className="meta-key">Retriever</span>
-              <span className={`stat-value ${result.retriever === 'bm25' ? 'accent-amber' : result.retriever === 'vector' ? 'accent' : ''}`}>
-                {result.retriever.toUpperCase()}
-              </span>
-              <span className="meta-key">Score</span>
-              <span className="stat-value">{result.score.toFixed(6)}</span>
-              {result.components?.bm25 && (
-                <>
-                  <span className="meta-key">BM25</span>
-                  <span className="stat-value accent-amber">rank #{result.components.bm25.rank}, score {result.components.bm25.score.toFixed(4)}</span>
-                </>
-              )}
-              {result.components?.vector && (
-                <>
-                  <span className="meta-key">Vector</span>
-                  <span className="stat-value accent">rank #{result.components.vector.rank}, score {result.components.vector.score.toFixed(4)}</span>
-                </>
-              )}
-            </div>
-
-            {/* IDs */}
-            <div className="section-title">Identity</div>
-            <div className="meta-grid" style={{ marginBottom: 8 }}>
-              <span className="meta-key">Title</span>
-              <span className="meta-value">{result.title}</span>
-              <span className="meta-key">Chunk ID</span>
-              <span className="meta-value">
-                {result.chunk_id}
-                <button className="copy-btn" onClick={() => copyToClipboard(result.chunk_id)}>⧉</button>
-              </span>
-              <span className="meta-key">Document ID</span>
-              <span className="meta-value">
-                {result.document_id}
-                <button className="copy-btn" onClick={() => copyToClipboard(result.document_id)}>⧉</button>
-              </span>
-              <span className="meta-key">Source ID</span>
-              <span className="meta-value">
-                {result.source_id}
-                <button className="copy-btn" onClick={() => copyToClipboard(result.source_id)}>⧉</button>
-              </span>
-              {result.url && (
-                <>
-                  <span className="meta-key">URL</span>
-                  <span className="meta-value accent">{result.url}</span>
-                </>
-              )}
-              <span className="meta-key">Chunk Index</span>
-                  <span className="meta-value">{result.chunk_index}</span>
-              <span className="meta-key">Strategy</span>
-              <span className="meta-value">{result.strategy_id}</span>
-            </div>
-
-            {/* Preview */}
-            <div className="section-title">Preview</div>
-            <div className="text-content" style={{ maxHeight: 200 }}>{result.preview}</div>
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>Scores</div>
+              <MetadataGrid items={scoreItems} />
+            </section>
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>Identity</div>
+              <MetadataGrid items={identityItems} />
+            </section>
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>Preview</div>
+              <div className={styles.textBlock}>{result.preview}</div>
+            </section>
           </>
         )}
 
         {activeTab === 'chunk' && (
           <>
-            {/* Full chunk text */}
-            <div className="section-title">Chunk Text</div>
-            {currentChunk ? (
-              <>
-                <div className="meta-grid" style={{ marginBottom: 6 }}>
-                  <span className="meta-key">Offsets</span>
-                  <span className="meta-value">{currentChunk.start_offset}–{currentChunk.end_offset}</span>
-                  <span className="meta-key">Tokens</span>
-                  <span className="meta-value">{currentChunk.token_count}</span>
-                  <span className="meta-key">Embedding</span>
-                  <span className={`stat-value ${currentChunk.embedding?.present ? 'accent-green' : 'accent-red'}`}>
-                    {currentChunk.embedding?.present ? '● Present' : '○ Missing'}
-                  </span>
-                </div>
-                <div className="text-content">{currentChunk.text}</div>
-              </>
-            ) : (
-              <div className="text-dim" style={{ padding: 8 }}>Loading chunk text…</div>
-            )}
-
-            {/* Neighbors */}
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>Chunk Text</div>
+              {currentChunk ? (
+                <>
+                  <MetadataGrid items={[
+                    { key: 'Offsets', value: `${currentChunk.start_offset}–${currentChunk.end_offset}` },
+                    { key: 'Tokens', value: currentChunk.token_count },
+                    { key: 'Embedding', value: <StatusText status={currentChunk.embedding?.present ? 'done' : 'error'}>{currentChunk.embedding?.present ? '● Present' : '○ Missing'}</StatusText> },
+                  ]} />
+                  <div className={styles.textBlock}>{currentChunk.text}</div>
+                </>
+              ) : (
+                <div className={styles.empty}>Loading chunk text…</div>
+              )}
+            </section>
             {(prevChunk || nextChunk) && (
-              <>
-                <div className="section-title" style={{ marginTop: 8 }}>Neighbors</div>
+              <section className={styles.section}>
+                <div className={styles.sectionTitle}>Neighbors</div>
                 {prevChunk && (
-                  <div style={{ marginBottom: 6 }}>
-                    <div className="text-mono text-dim" style={{ marginBottom: 2 }}>
-                      Previous chunk #{prevChunk.chunk_index}
-                    </div>
-                    <div className="text-content" style={{ maxHeight: 80, fontSize: 11 }}>
-                      {prevChunk.text.slice(0, 300)}{prevChunk.text.length > 300 ? '…' : ''}
-                    </div>
+                  <div>
+                    <Caption>Previous chunk #{prevChunk.chunk_index}</Caption>
+                    <div className={styles.neighborBlock}>{prevChunk.text.slice(0, 300)}{prevChunk.text.length > 300 ? '…' : ''}</div>
                   </div>
                 )}
                 {nextChunk && (
                   <div>
-                    <div className="text-mono text-dim" style={{ marginBottom: 2 }}>
-                      Next chunk #{nextChunk.chunk_index}
-                    </div>
-                    <div className="text-content" style={{ maxHeight: 80, fontSize: 11 }}>
-                      {nextChunk.text.slice(0, 300)}{nextChunk.text.length > 300 ? '…' : ''}
-                    </div>
+                    <Caption>Next chunk #{nextChunk.chunk_index}</Caption>
+                    <div className={styles.neighborBlock}>{nextChunk.text.slice(0, 300)}{nextChunk.text.length > 300 ? '…' : ''}</div>
                   </div>
                 )}
-              </>
+              </section>
             )}
           </>
         )}
@@ -168,36 +139,14 @@ export function ResultInspectorPanel({ result, docDetail, onClose, onOpenInCorpu
           <>
             {docDetail ? (
               <>
-                <div className="section-title">Document</div>
-                <div className="meta-grid" style={{ marginBottom: 8 }}>
-                  <span className="meta-key">ID</span>
-                  <span className="meta-value">
-                    {docDetail.document.id}
-                    <button className="copy-btn" onClick={() => copyToClipboard(docDetail.document.id)}>⧉</button>
-                  </span>
-                  <span className="meta-key">Title</span>
-                  <span className="meta-value">{docDetail.document.title}</span>
-                  <span className="meta-key">Source</span>
-                  <span className="meta-value">{docDetail.document.source_id}</span>
-                  {docDetail.document.url && (
-                    <>
-                      <span className="meta-key">URL</span>
-                      <span className="meta-value accent">{docDetail.document.url}</span>
-                    </>
-                  )}
-                  <span className="meta-key">Words</span>
-                  <span className="meta-value">{docDetail.document.word_count}</span>
-                  <span className="meta-key">Chunks</span>
-                  <span className="meta-value">{docDetail.chunks.length}</span>
-                  <span className="meta-key">Status</span>
-                  <span className="meta-value">{docDetail.document.status}</span>
-                </div>
-
-                {/* Chunk coverage strip */}
+                <section className={styles.section}>
+                  <div className={styles.sectionTitle}>Document</div>
+                  <MetadataGrid items={documentItems} />
+                </section>
                 {docDetail.chunks.length > 0 && (
-                  <>
-                    <div className="section-title">Chunk Coverage</div>
-                    <div className="coverage-strip">
+                  <section className={styles.section}>
+                    <div className={styles.sectionTitle}>Chunk Coverage</div>
+                    <div className={styles.coverageStrip}>
                       {docDetail.chunks.map((ch) => {
                         const isCurrentChunk = ch.id === result.chunk_id;
                         const hasEmbedding = ch.embedding?.present;
@@ -205,48 +154,30 @@ export function ResultInspectorPanel({ result, docDetail, onClose, onOpenInCorpu
                           <span
                             key={ch.id}
                             title={`Chunk ${ch.chunk_index}${isCurrentChunk ? ' (selected)' : ''}`}
-                            style={{
-                              display: 'inline-block',
-                              width: 8,
-                              height: 8,
-                              background: isCurrentChunk ? 'var(--mac-accent)' : hasEmbedding ? 'var(--mac-bg-dark)' : 'var(--mac-surface)',
-                              border: isCurrentChunk ? '1px solid var(--mac-accent)' : hasEmbedding ? 'none' : '1px solid var(--mac-border)',
-                              outline: isCurrentChunk ? '2px solid var(--mac-accent)' : 'none',
-                              outlineOffset: '1px',
-                            }}
+                            className={[
+                              styles.coverageDot,
+                              isCurrentChunk ? styles.currentChunk : hasEmbedding ? styles.embeddedChunk : styles.missingChunk,
+                            ].filter(Boolean).join(' ')}
                           />
                         );
                       })}
                     </div>
-                    <div className="text-mono text-dim" style={{ marginTop: 2, fontSize: 10 }}>
-                      {docDetail.chunks.filter(c => c.embedding?.present).length}/{docDetail.chunks.length} embedded
-                      {' · '}
-                      <span className="accent">■</span> = current
-                    </div>
-                  </>
+                    <Caption>{docDetail.chunks.filter(c => c.embedding?.present).length}/{docDetail.chunks.length} embedded · <span className="accent">■</span> = current</Caption>
+                  </section>
                 )}
-
-                {/* Metadata */}
-                {docDetail.document.metadata && Object.keys(docDetail.document.metadata).length > 0 && (
-                  <>
-                    <div className="section-title" style={{ marginTop: 8 }}>Metadata</div>
-                    <div className="meta-grid">
-                      {Object.entries(docDetail.document.metadata).slice(0, 12).map(([k, v]) => (
-                        <Fragment key={k}>
-                          <span className="meta-key">{k}</span>
-                          <span className="meta-value truncate">{String(v)}</span>
-                        </Fragment>
-                      ))}
-                    </div>
-                  </>
+                {metadataItems.length > 0 && (
+                  <section className={styles.section}>
+                    <div className={styles.sectionTitle}>Metadata</div>
+                    <MetadataGrid items={metadataItems} />
+                  </section>
                 )}
               </>
             ) : (
-              <div className="text-dim" style={{ padding: 8 }}>Loading document…</div>
+              <div className={styles.empty}>Loading document…</div>
             )}
           </>
         )}
-      </div>
-    </div>
+      </ScrollRegion>
+    </Panel>
   );
 }
