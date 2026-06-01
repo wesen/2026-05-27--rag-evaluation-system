@@ -89,3 +89,14 @@ Started Phase 3 by adding a RAG-local dmeta-ir catalog for the Search Workbench 
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/meta-design-systems/web/lowering-rules.yaml — Interaction-to-Web lowering rules
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/meta-design-systems/web/widgets/search-workbench.yaml — Web MDS Search Workbench templates
 
+
+## 2026-06-01
+
+Added a local dmeta-ir validator and Makefile target for YAML parsing, manifest targets, required human fields, duplicate IDs, and key references
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/Makefile — Adds make dmeta-validate target
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/scripts/validate-dmeta-ir.py — Local validator for RAG DMETA IR seed catalog
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded validator implementation and initial false positives
+

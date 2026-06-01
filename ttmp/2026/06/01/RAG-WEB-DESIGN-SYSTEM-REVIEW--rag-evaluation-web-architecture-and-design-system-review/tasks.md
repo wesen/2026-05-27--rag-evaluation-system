@@ -35,5 +35,5 @@
 - [x] Phase 2 follow-up: migrate Search Workbench page shell from inline flex layout to `DashboardGrid`/`Stack` plus `SearchView.module.css`.
 - [ ] Phase 2 follow-up: expand `ResultInspectorPanel` stories with explicit chunk-tab, document-tab, and no-document states once tab state can be controlled externally or via story interactions.
 - [x] Phase 3: add initial `dmeta-ir` core/interaction/Web MDS YAML for the Search Workbench vertical slice.
-- [ ] Phase 3 follow-up: add a repository script that validates duplicate IDs, manifest references, and required human-readable YAML fields.
+- [x] Phase 3 follow-up: add a repository script that validates duplicate IDs, manifest references, required human-readable YAML fields, and key representation/action/template references.
 - [ ] Phase 3 follow-up: add generated React scaffold output and promotion metadata once RAG DMETA generation tooling exists.

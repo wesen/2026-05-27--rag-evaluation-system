@@ -12,6 +12,8 @@ DocType: reference
 Intent: long-term
 Owners: []
 RelatedFiles:
+    - Path: Makefile
+      Note: Phase 3 validator command diary evidence
     - Path: dmeta-ir/README.md
       Note: Phase 3 diary evidence for catalog boundary
     - Path: dmeta-ir/core-model/archetypes/10-search-workbench.yaml
@@ -20,6 +22,8 @@ RelatedFiles:
       Note: Phase 3 Interaction IR diary evidence
     - Path: dmeta-ir/meta-design-systems/web/widgets/search-workbench.yaml
       Note: Phase 3 Web MDS diary evidence
+    - Path: scripts/validate-dmeta-ir.py
+      Note: Phase 3 validator diary evidence
     - Path: ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/design-doc/01-rag-evaluation-web-architecture-and-design-system-review.md
       Note: Primary report produced by the investigation
     - Path: web/package.json
@@ -58,6 +62,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -737,4 +742,87 @@ for p in Path('dmeta-ir').rglob('*.yaml'):
         yaml.safe_load(f)
 print('yaml ok')
 PY
+```
+
+## Step 7: Add a Local DMETA IR Validator
+
+I added the first repository-local validator for the new RAG `dmeta-ir` catalog. The validator is intentionally lightweight and scriptable: it parses YAML, checks explicit manifest references, enforces human-readable fields on major objects, detects duplicate IDs, and verifies the most important representation/action/template references.
+
+This gives the new catalog a safety net before any generator exists. It also turns the phase-3 follow-up from a prose recommendation into an executable repository command.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 5)
+
+**Assistant interpretation:** Continue with the next safe increment after seeding the DMETA IR catalog, maintaining diary and committing validated changes.
+
+**Inferred user intent:** The user wants the newly created IR not to become ungoverned YAML; it should have at least basic validation immediately.
+
+**Commit (code):** N/A at time of writing — implementation changes pending commit.
+
+### What I did
+
+- Added `scripts/validate-dmeta-ir.py`.
+- Added `make dmeta-validate` to the root `Makefile`.
+- The validator checks:
+  - all `dmeta-ir/**/*.yaml` files parse,
+  - `00-index.yaml` manifest targets exist,
+  - major catalog objects have non-empty `summary`, `description`, and `why`,
+  - IDs are globally unique,
+  - key capability/representation/action/template references resolve.
+- Ran:
+  - `make dmeta-validate`
+
+### Why
+
+- The catalog now has enough structure to enforce basic invariants.
+- Human-readable YAML fields were a key design decision; enforcing them early prevents the IR from becoming opaque implementation metadata.
+- Explicit manifests and duplicate-ID checks match the TTC lessons learned.
+
+### What worked
+
+- `make dmeta-validate` passed:
+  - `DMETA IR validation passed (15 YAML files, 36 IDs)`
+
+### What didn't work
+
+- The first implementation of the validator incorrectly treated every list named `representations`, `actions`, or `capabilities` as a list of major objects. In this catalog those names also appear in `consumes` and `outputs` blocks as string references. The validator initially failed with many false positives such as:
+  - `dmeta-ir/meta-design-systems/web/lowering-rules.yaml: representations[0] should be an object`
+- I fixed this by treating only list items with an `id` field as major catalog objects and by skipping semantic reference validation inside manifest files.
+
+### What I learned
+
+- YAML validators need to understand context; field names like `actions` can mean object collections or reference lists.
+- The current catalog already has enough reference structure to catch useful errors without a full DMETA loader.
+
+### What was tricky to build
+
+- The tricky part was avoiding over-validation. A strict schema would be premature because the RAG IR is still a seed. The validator now enforces durable invariants while leaving room for the catalog shape to evolve.
+- Another subtle issue was global duplicate ID scope. I chose global IDs across all major objects because earlier TTC work established duplicate IDs across merged catalog files should fail during load.
+
+### What warrants a second pair of eyes
+
+- Whether global ID uniqueness should include token-family and recipe IDs forever, or whether future tooling should namespace some categories.
+- Whether `PyYAML` is acceptable as an implicit operator dependency or should be replaced by a small Go validator later.
+
+### What should be done in the future
+
+- Add validation for selected template/action/representation closure against instantiations.
+- Add validation for Web MDS composition dependency closure.
+- Move this logic into the eventual Go DMETA tooling if/when RAG generation starts.
+
+### Code review instructions
+
+- Review `scripts/validate-dmeta-ir.py` for validation scope and false-positive avoidance.
+- Review `Makefile` for the new `dmeta-validate` target.
+- Validate with:
+  - `make dmeta-validate`
+
+### Technical details
+
+Validation output:
+
+```text
+python3 scripts/validate-dmeta-ir.py
+DMETA IR validation passed (15 YAML files, 36 IDs)
 ```
