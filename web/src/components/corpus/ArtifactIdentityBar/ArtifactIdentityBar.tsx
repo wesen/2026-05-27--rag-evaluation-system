@@ -1,10 +1,13 @@
 import React from 'react';
+import { Caption, CodeText } from '../../foundation';
+import { Inline } from '../../layout';
 import {
   DocumentProcessingIdentity,
   ChunkEnrichmentIdentity,
   DocumentProcessingCoverageArgs,
   ChunkEnrichmentCoverageArgs,
 } from '../../../services/api';
+import styles from './ArtifactIdentityBar.module.css';
 
 // ─── Document Processing Identity Selector ────────────────────────────────
 
@@ -21,40 +24,40 @@ export const DocProcessingIdentityBar: React.FC<DocProcessingIdentityBarProps> =
 }) => {
   if (identities.length === 0) {
     return (
-      <div className="text-dim text-mono" style={{ fontSize: 10, padding: '2px 4px' }}>
+      <Caption className={styles.empty}>
         No preprocessing identities found
-      </div>
+      </Caption>
     );
   }
 
   return (
-    <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap', padding: '2px 4px' }}>
-      <span className="text-mono" style={{ fontSize: 10, fontWeight: 'bold' }}>Preprocessing:</span>
-      {identities.map((id) => {
-        const key = `${id.artifact_type}|${id.prompt_version}|${id.provider}|${id.model}`;
+    <Inline gap="xs" className={styles.root} data-rag-component="DocProcessingIdentityBar">
+      <Caption tone="inherit" className={styles.label}>Preprocessing:</Caption>
+      {identities.map((identity) => {
+        const key = `${identity.artifact_type}|${identity.prompt_version}|${identity.provider}|${identity.model}`;
         const isSelected =
-          selected.artifact_type === id.artifact_type &&
-          selected.prompt_version === id.prompt_version &&
-          selected.provider === id.provider &&
-          selected.model === id.model;
+          selected.artifact_type === identity.artifact_type &&
+          selected.prompt_version === identity.prompt_version &&
+          selected.provider === identity.provider &&
+          selected.model === identity.model;
         return (
           <button
             key={key}
-            className={`btn ${isSelected ? 'btn-primary' : ''}`}
-            style={{ fontSize: 10, padding: '1px 6px' }}
+            type="button"
+            className={[styles.option, isSelected ? styles.selected : ''].filter(Boolean).join(' ')}
             onClick={() => onChange({
-              artifact_type: id.artifact_type,
-              prompt_version: id.prompt_version,
-              provider: id.provider,
-              model: id.model,
+              artifact_type: identity.artifact_type,
+              prompt_version: identity.prompt_version,
+              provider: identity.provider,
+              model: identity.model,
             })}
-            title={`${id.provider}/${id.model} — ${id.artifact_count} artifacts`}
+            title={`${identity.provider}/${identity.model} — ${identity.artifact_count} artifacts`}
           >
-            {id.artifact_type}/{id.prompt_version} ({id.provider}/{id.model}) [{id.artifact_count}]
+            <CodeText>{identity.artifact_type}/{identity.prompt_version} ({identity.provider}/{identity.model}) [{identity.artifact_count}]</CodeText>
           </button>
         );
       })}
-    </div>
+    </Inline>
   );
 };
 
@@ -76,28 +79,28 @@ export const ChunkEnrichmentIdentityBar: React.FC<ChunkEnrichmentIdentityBarProp
   }
 
   return (
-    <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap', padding: '2px 4px' }}>
-      <span className="text-mono" style={{ fontSize: 10, fontWeight: 'bold' }}>Enrichment:</span>
-      {identities.map((id) => {
-        const key = `${id.strategy_id}|${id.prompt_version}`;
+    <Inline gap="xs" className={styles.root} data-rag-component="ChunkEnrichmentIdentityBar">
+      <Caption tone="inherit" className={styles.label}>Enrichment:</Caption>
+      {identities.map((identity) => {
+        const key = `${identity.strategy_id}|${identity.prompt_version}`;
         const isSelected =
-          selected.strategy_id === id.strategy_id &&
-          selected.prompt_version === id.prompt_version;
+          selected.strategy_id === identity.strategy_id &&
+          selected.prompt_version === identity.prompt_version;
         return (
           <button
             key={key}
-            className={`btn ${isSelected ? 'btn-primary' : ''}`}
-            style={{ fontSize: 10, padding: '1px 6px' }}
+            type="button"
+            className={[styles.option, isSelected ? styles.selected : ''].filter(Boolean).join(' ')}
             onClick={() => onChange({
-              strategy_id: id.strategy_id,
-              prompt_version: id.prompt_version,
+              strategy_id: identity.strategy_id,
+              prompt_version: identity.prompt_version,
             })}
-            title={`${id.provider}/${id.model} — ${id.enriched_count} enriched`}
+            title={`${identity.provider}/${identity.model} — ${identity.enriched_count} enriched`}
           >
-            {id.strategy_id}/{id.prompt_version} ({id.provider}/{id.model}) [{id.enriched_count}]
+            <CodeText>{identity.strategy_id}/{identity.prompt_version} ({identity.provider}/{identity.model}) [{identity.enriched_count}]</CodeText>
           </button>
         );
       })}
-    </div>
+    </Inline>
   );
 };

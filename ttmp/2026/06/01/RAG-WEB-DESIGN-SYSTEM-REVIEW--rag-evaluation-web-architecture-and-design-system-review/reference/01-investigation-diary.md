@@ -2516,3 +2516,92 @@ pnpm typecheck
 pnpm build
 pnpm build-storybook
 ```
+
+## Step 25: Refactor Corpus Artifact Identity Selectors
+
+I continued the Corpus identity cleanup by refactoring the document-processing and chunk-enrichment identity selector bars. These controls now use shared foundation/layout primitives plus a local CSS Module for selector button anatomy instead of raw `text-mono` classes, inline flex layouts, and global button styling.
+
+This keeps the artifact identity controls feature-local, but makes their states visible in Storybook. The components are still in one file because they share a small style and conceptual role; a future split into separate folders is only warranted if they diverge or become reusable outside Corpus.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue the next high-priority post-audit cleanup after `IdentityBar`, namely `ArtifactIdentityBar`.
+
+**Inferred user intent:** The user wants systematic application of the guidelines to Corpus identity controls, with stories as changes are made.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Refactored `web/src/components/corpus/ArtifactIdentityBar/ArtifactIdentityBar.tsx` to use:
+  - `Inline`,
+  - `Caption`,
+  - `CodeText`.
+- Removed direct `text-mono`/`text-dim` usage and global `btn`/`btn-primary` usage from these controls.
+- Added `ArtifactIdentityBar.module.css` for local selector anatomy and selected state.
+- Added `ArtifactIdentityBar.stories.tsx` covering:
+  - document-processing selector,
+  - chunk-enrichment selector,
+  - combined stacked selectors,
+  - empty preprocessing identities,
+  - empty enrichment identities.
+- Added `ArtifactIdentityBar/index.ts`.
+
+### Why
+
+- The guideline audit marked this file as a high-priority non-compliant area.
+- These selectors define which document-processing and chunk-enrichment artifact identity the Corpus dashboard is currently inspecting.
+- They need Storybook coverage because they encode important RAG state-selection behavior.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed and included the new artifact identity stories.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+- Storybook still emits the known large iframe chunk warning; build succeeds.
+
+### What I learned
+
+- The document-processing and enrichment selectors are similar enough to share styling, but their selected identity shapes differ enough that a generic identity-selector abstraction would be premature.
+- Replacing global `.btn` here also helps the later global CSS shrink pass because these buttons were one of the remaining active consumers of generic button styling.
+
+### What was tricky to build
+
+- The tricky part was preserving the exact selection keys and callback payloads. Document-processing selection includes `artifact_type`, `prompt_version`, `provider`, and `model`; chunk enrichment selection only includes `strategy_id` and `prompt_version`.
+- Empty enrichment currently renders nothing by design. The story documents that behavior explicitly.
+
+### What warrants a second pair of eyes
+
+- Whether selected buttons with nested `CodeText` are visually clear enough in the retro monochrome style.
+- Whether the empty enrichment behavior should eventually render a caption like preprocessing does.
+
+### What should be done in the future
+
+- Clean `ChunkTimelineBar` next: move global chunk-bar CSS into a module and add stories.
+- Revisit whether artifact identity selectors should split into separate files after any future behavior divergence.
+
+### Code review instructions
+
+- Review `ArtifactIdentityBar.tsx` for unchanged selected identity comparisons and `onChange` payloads.
+- Review the new stories for coverage of available and empty identity states.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```

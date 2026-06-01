@@ -1,0 +1,31 @@
+.root {
+  align-items: center;
+  padding: 2px 4px;
+}
+
+.label {
+  font-weight: 700;
+}
+
+.option {
+  appearance: none;
+  border: 1px solid var(--mac-border);
+  background: var(--mac-surface);
+  color: var(--mac-text);
+  cursor: pointer;
+  font: var(--rag-font-role-metadata);
+  padding: 1px 6px;
+}
+
+.option:hover {
+  background: var(--mac-surface-2);
+}
+
+.selected {
+  background: var(--mac-bg-dark);
+  color: var(--mac-text-inv);
+}
+
+.empty {
+  padding: 2px 4px;
+}

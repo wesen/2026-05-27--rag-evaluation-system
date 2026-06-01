@@ -308,3 +308,14 @@ Refactored Corpus IdentityBar through shared primitives and added Storybook stat
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/IdentityBar/IdentityBar.stories.tsx — IdentityBar Storybook coverage
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/IdentityBar/IdentityBar.tsx — IdentityBar primitive adoption
 
+
+## 2026-06-01
+
+Refactored Corpus artifact identity selectors through shared primitives and added Storybook states
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded artifact identity cleanup
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/ArtifactIdentityBar/ArtifactIdentityBar.stories.tsx — Artifact identity Storybook coverage
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/ArtifactIdentityBar/ArtifactIdentityBar.tsx — Artifact identity primitive adoption
+
