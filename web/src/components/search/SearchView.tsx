@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { CoveragePanel, QueryPresetList } from '../molecules';
+import { RetrievalResultsPanel, SearchControlsPanel, type RetrieverType } from '../organisms';
 import {
   useSearchBM25Mutation,
   useSearchVectorMutation,
@@ -31,8 +33,6 @@ const TEST_QUERIES = [
   'zone 5 flowering trees',
   'compact evergreen shrubs',
 ];
-
-type RetrieverType = 'bm25' | 'vector' | 'hybrid';
 
 // ─── Main component ───
 
@@ -164,7 +164,7 @@ export const SearchView: React.FC = () => {
     <div style={{ display: 'flex', gap: 8, height: 'calc(100vh - 60px)' }}>
       {/* Left: Controls */}
       <div style={{ width: 280, minWidth: 280, display: 'flex', flexDirection: 'column', gap: 6, overflowY: 'auto' }}>
-        <SearchControls
+        <SearchControlsPanel
           query={query} setQuery={setQuery}
           retriever={retriever} setRetriever={setRetriever}
           indexId={indexId} setIndexId={setIndexId}
@@ -185,78 +185,20 @@ export const SearchView: React.FC = () => {
           <CoveragePanel coverage={coverage} coveragePct={coveragePct!} />
         )}
         {/* Quick queries */}
-        <QuickQueries onSelect={setQuery} />
+        <QueryPresetList queries={TEST_QUERIES} onSelect={setQuery} />
       </div>
 
       {/* Center: Results */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
-        <div className="panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <div className="panel-header">
-            <span>
-              {searchResult
-                ? `${searchResult.retriever.toUpperCase()} — ${items.length} results`
-                : 'Results'}
-            </span>
-            {searchResult && <span className="text-mono" style={{ fontSize: 10 }}>{searchResult.query}</span>}
-          </div>
-          <div style={{ flex: 1, overflowY: 'auto' }}>
-            {searchError && <div className="error-box" style={{ margin: 6 }}>{searchError}</div>}
-            {items.length === 0 && !searchError && !isLoading && (
-              <div style={{ padding: 24, textAlign: 'center' }} className="text-dim">
-                {searchResult ? 'No results found.' : 'Enter a query and press Search.'}
-              </div>
-            )}
-            {isLoading && (
-              <div style={{ padding: 24, textAlign: 'center' }} className="text-dim">
-                Searching…
-              </div>
-            )}
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Idx</th>
-                  <th>Score</th>
-                  {retriever === 'hybrid' && <th>BM25</th>}
-                  {retriever === 'hybrid' && <th>Vec</th>}
-                  <th>Preview</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr
-                    key={item.chunk_id}
-                    className={`selectable ${selectedResult?.chunk_id === item.chunk_id ? 'selected' : ''}`}
-                    onClick={() => setSelectedResult(selectedResult?.chunk_id === item.chunk_id ? null : item)}
-                  >
-                    <td className="num">{item.rank}</td>
-                    <td className="truncate" style={{ maxWidth: 160 }}>
-                      {item.title}
-                    </td>
-                    <td className="num">{item.chunk_index}</td>
-                    <td className="num">{item.score.toFixed(4)}</td>
-                    {retriever === 'hybrid' && (
-                      <td className="num">
-                        {item.components?.bm25
-                          ? <span className="accent-amber">#{item.components.bm25.rank} ({item.components.bm25.score.toFixed(3)})</span>
-                          : <span className="text-dim">—</span>}
-                      </td>
-                    )}
-                    {retriever === 'hybrid' && (
-                      <td className="num">
-                        {item.components?.vector
-                          ? <span className="accent">#{item.components.vector.rank} ({item.components.vector.score.toFixed(3)})</span>
-                          : <span className="text-dim">—</span>}
-                      </td>
-                    )}
-                    <td className="truncate" style={{ maxWidth: 300 }}>{item.preview}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <RetrievalResultsPanel
+          searchResult={searchResult}
+          items={items}
+          retriever={retriever}
+          selectedResult={selectedResult}
+          searchError={searchError}
+          isLoading={isLoading}
+          onSelectResult={setSelectedResult}
+        />
       </div>
 
       {/* Right: Inspector */}
@@ -283,207 +225,6 @@ export const SearchView: React.FC = () => {
     </div>
   );
 };
-
-// ─── Search Controls ───
-
-interface SearchControlsProps {
-  query: string; setQuery: (q: string) => void;
-  retriever: RetrieverType; setRetriever: (r: RetrieverType) => void;
-  indexId: string; setIndexId: (v: string) => void;
-  strategyId: string; setStrategyId: (v: string) => void;
-  profile: string; setProfile: (v: string) => void;
-  limit: number; setLimit: (v: number) => void;
-  candidateLimit: number; setCandidateLimit: (v: number) => void;
-  previewRunes: number; setPreviewRunes: (v: number) => void;
-  sources: { source_id: string; source_name: string }[];
-  selectedSourceIds: string[];
-  toggleSource: (id: string) => void;
-  onSearch: () => void;
-  isLoading: boolean;
-  onKeyDown: (e: React.KeyboardEvent) => void;
-}
-
-const SearchControls: React.FC<SearchControlsProps> = ({
-  query, setQuery, retriever, setRetriever,
-  indexId, setIndexId, strategyId, setStrategyId,
-  profile, setProfile, limit, setLimit,
-  candidateLimit, setCandidateLimit, previewRunes, setPreviewRunes,
-  sources, selectedSourceIds, toggleSource,
-  onSearch, isLoading, onKeyDown,
-}) => (
-  <div className="panel">
-    <div className="panel-header"><span>Search</span></div>
-    <div className="panel-body-condensed" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      {/* Query */}
-      <div style={{ display: 'flex', gap: 4 }}>
-        <input
-          className="input"
-          style={{ flex: 1 }}
-          placeholder="Enter query…"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          onKeyDown={onKeyDown}
-          autoFocus
-        />
-        <button className="btn btn-primary" onClick={onSearch} disabled={isLoading || !query.trim()}>
-          {isLoading ? '…' : '▶'}
-        </button>
-      </div>
-
-      {/* Retriever selector */}
-      <div className="section-title" style={{ marginTop: 4 }}>Retriever</div>
-      <div style={{ display: 'flex', gap: 0 }}>
-        {(['bm25', 'vector', 'hybrid'] as RetrieverType[]).map(r => (
-          <button
-            key={r}
-            className={`btn ${retriever === r ? 'btn-primary' : ''}`}
-            style={{ flex: 1, textTransform: 'uppercase', fontSize: 10 }}
-            onClick={() => setRetriever(r)}
-          >
-            {r}
-          </button>
-        ))}
-      </div>
-
-      {/* BM25 params */}
-      {(retriever === 'bm25' || retriever === 'hybrid') && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <div className="section-title" style={{ marginTop: 2 }}>BM25 Index</div>
-          <input
-            className="input"
-            style={{ width: '100%' }}
-            value={indexId}
-            onChange={e => setIndexId(e.target.value)}
-            placeholder="Index ID"
-          />
-        </div>
-      )}
-
-      {/* Vector params */}
-      {(retriever === 'vector' || retriever === 'hybrid') && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <div className="section-title" style={{ marginTop: 2 }}>Vector</div>
-          <div className="meta-grid">
-            <span className="meta-key">Strategy</span>
-            <input className="input" style={{ width: '100%' }} value={strategyId} onChange={e => setStrategyId(e.target.value)} />
-            <span className="meta-key">Profile</span>
-            <input className="input" style={{ width: '100%' }} value={profile} onChange={e => setProfile(e.target.value)} />
-          </div>
-        </div>
-      )}
-
-      {/* Source filters */}
-      <div className="section-title" style={{ marginTop: 2 }}>Source Filter</div>
-      <div style={{ maxHeight: 100, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1 }}>
-        {sources.map(s => (
-          <label key={s.source_id} className="checkbox-row" style={{ fontSize: 10 }}>
-            <input
-              type="checkbox"
-              checked={selectedSourceIds.includes(s.source_id)}
-              onChange={() => toggleSource(s.source_id)}
-            />
-            <span className="truncate">{s.source_name}</span>
-          </label>
-        ))}
-        {sources.length === 0 && <span className="text-dim text-small">Loading sources…</span>}
-      </div>
-
-      {/* Limits */}
-      <div className="section-title" style={{ marginTop: 2 }}>Limits</div>
-      <div className="meta-grid">
-        <span className="meta-key">Limit</span>
-        <input className="input" type="number" style={{ width: 60 }} value={limit} onChange={e => setLimit(Number(e.target.value))} min={1} max={100} />
-        {(retriever === 'vector' || retriever === 'hybrid') && (
-          <>
-            <span className="meta-key">Candidates</span>
-            <input className="input" type="number" style={{ width: 60 }} value={candidateLimit} onChange={e => setCandidateLimit(Number(e.target.value))} min={1} />
-          </>
-        )}
-        <span className="meta-key">Preview</span>
-        <input className="input" type="number" style={{ width: 60 }} value={previewRunes} onChange={e => setPreviewRunes(Number(e.target.value))} min={0} />
-      </div>
-    </div>
-  </div>
-);
-
-// ─── Coverage Panel ───
-
-interface CoveragePanelProps {
-  coverage: EmbeddingCoverageResult;
-  coveragePct: number;
-}
-
-const CoveragePanel: React.FC<CoveragePanelProps> = ({ coverage, coveragePct }) => {
-  const isSparse = coveragePct < 50;
-  return (
-    <div className="panel">
-      <div className="panel-header">
-        <span>Coverage</span>
-        <span className={isSparse ? 'status-partial' : 'status-done'}>{coveragePct}%</span>
-      </div>
-      <div className="panel-body-condensed">
-        <div className="meta-grid" style={{ marginBottom: 4 }}>
-          <span className="meta-key">Embedded</span>
-          <span className="stat-value accent-green">{coverage.embedded_chunks}</span>
-          <span className="meta-key">Total</span>
-          <span className="stat-value">{coverage.total_chunks}</span>
-          <span className="meta-key">Missing</span>
-          <span className="stat-value accent-red">{coverage.total_chunks - coverage.embedded_chunks}</span>
-        </div>
-        {coverage.sources && coverage.sources.length > 0 && (
-          <table className="data-table" style={{ fontSize: 10 }}>
-            <thead>
-              <tr><th>Source</th><th>Cov</th><th>Emb</th><th>Tot</th></tr>
-            </thead>
-            <tbody>
-              {coverage.sources.map(s => (
-                <tr key={s.source_id}>
-                  <td className="truncate" style={{ maxWidth: 120 }}>{s.source_name}</td>
-                  <td className="num" style={{ color: s.coverage_pct >= 50 ? 'var(--mac-green)' : 'var(--mac-amber)' }}>
-                    {Math.round(s.coverage_pct)}%
-                  </td>
-                  <td className="num">{s.embedded_chunks}</td>
-                  <td className="num">{s.total_chunks}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        {isSparse && (
-          <div style={{ marginTop: 4, padding: 4, border: '1px solid var(--mac-amber)', fontSize: 10, color: 'var(--mac-amber)', fontFamily: 'var(--font-mono)' }}>
-            ⚠ Vector search only compares embedded chunks. Coverage is sparse — results validate behavior but not full-corpus quality.
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// ─── Quick Queries ───
-
-interface QuickQueriesProps {
-  onSelect: (q: string) => void;
-}
-
-const QuickQueries: React.FC<QuickQueriesProps> = ({ onSelect }) => (
-  <div className="panel">
-    <div className="panel-header"><span>Test Queries</span></div>
-    <div className="panel-body-condensed" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {TEST_QUERIES.map(q => (
-        <span
-          key={q}
-          className="text-mono"
-          style={{ cursor: 'pointer', padding: '2px 4px', fontSize: 10 }}
-          onClick={() => onSelect(q)}
-          onMouseEnter={e => (e.currentTarget.style.background = 'var(--mac-surface-2)')}
-          onMouseLeave={e => (e.currentTarget.style.background = '')}
-        >
-          {q}
-        </span>
-      ))}
-    </div>
-  </div>
-);
 
 // ─── Result Inspector ───
 

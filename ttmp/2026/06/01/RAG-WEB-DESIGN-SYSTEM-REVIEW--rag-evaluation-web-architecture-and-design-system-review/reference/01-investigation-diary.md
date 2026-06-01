@@ -22,8 +22,18 @@ RelatedFiles:
       Note: Phase 1 foundation primitive barrel
     - Path: web/src/components/layout/index.ts
       Note: Phase 1 layout primitive barrel
+    - Path: web/src/components/molecules/CoveragePanel/CoveragePanel.tsx
+      Note: Phase 2 extraction diary evidence
+    - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
+      Note: Phase 2 extraction diary evidence
+    - Path: web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.tsx
+      Note: Phase 2 extraction diary evidence
+    - Path: web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx
+      Note: Phase 2 extraction diary evidence
     - Path: web/src/components/search/SearchView.tsx
-      Note: First recommended vertical-slice evidence
+      Note: |-
+        First recommended vertical-slice evidence
+        Phase 2 Search Workbench composition update
     - Path: web/src/index.css
       Note: CSS/design-system evidence
     - Path: web/src/services/api.ts
@@ -36,6 +46,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -393,4 +404,108 @@ Repository-level Go validation attempted but blocked by the missing sibling scra
 ```bash
 cd 2026-05-27--rag-evaluation-system
 go test ./...
+```
+
+## Step 4: Extract the First Search Workbench Components and Stories
+
+I continued Phase 2 by extracting the first Search Workbench organisms and molecules from `SearchView.tsx`. This keeps the current runtime behavior intact while creating named component boundaries and Storybook review surfaces. The result is intentionally incremental: controls, results, coverage, and query presets are now reusable components, while the larger `ResultInspector` remains inside `SearchView.tsx` for the next pass.
+
+This step follows the playbook's vertical-slice approach. The Search view is no longer one monolithic file for every visible obligation. It now starts to express a page composition: query controls, optional coverage warning, query presets, retrieval results, and selected-result inspector.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue."
+
+**Assistant interpretation:** Continue the Phase 2 implementation from the previous turn by extracting Search Workbench components and expanding Storybook coverage.
+
+**Inferred user intent:** The user wants concrete progress through the Search Workbench design-system vertical slice, with Storybook stories created as components are extracted.
+
+**Commit (code):** N/A at time of writing — implementation changes pending commit.
+
+### What I did
+
+- Extracted `SearchControlsPanel` to:
+  - `web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx`
+  - `web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.stories.tsx`
+- Extracted `RetrievalResultsPanel` to:
+  - `web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.tsx`
+  - `web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.stories.tsx`
+- Extracted `CoveragePanel` to:
+  - `web/src/components/molecules/CoveragePanel/CoveragePanel.tsx`
+  - `web/src/components/molecules/CoveragePanel/CoveragePanel.stories.tsx`
+- Extracted `QueryPresetList` to:
+  - `web/src/components/molecules/QueryPresetList/QueryPresetList.tsx`
+  - `web/src/components/molecules/QueryPresetList/QueryPresetList.stories.tsx`
+- Added molecule and organism barrels:
+  - `web/src/components/molecules/index.ts`
+  - `web/src/components/organisms/index.ts`
+- Updated `web/src/components/index.ts` to export molecules and organisms.
+- Refactored `SearchView.tsx` to import and compose the extracted components.
+- Updated ticket tasks to mark the extracted components and stories as done, while leaving `ResultInspectorPanel` extraction as the next Phase 2 task.
+
+### Why
+
+- Search is the recommended first vertical slice from the review.
+- Storybook should start during Phase 2, not after all refactors are complete.
+- Extracting controls/results/coverage first reduces the size and responsibility of `SearchView.tsx` without touching API behavior or navigation behavior.
+
+### What worked
+
+- `SearchView.tsx` now composes `SearchControlsPanel`, `CoveragePanel`, `QueryPresetList`, and `RetrievalResultsPanel`.
+- Storybook now includes organism-level stories for the search controls and retrieval results.
+- Storybook now includes molecule-level stories for coverage states and query presets.
+- Validation passed:
+  - `pnpm typecheck`
+  - `pnpm build`
+  - `pnpm build-storybook`
+
+### What didn't work
+
+- The first typecheck after adding stories failed because Storybook's typed `StoryObj<typeof meta>` required `args` for stories whose components have required props. I fixed this by using looser `StoryObj` typing for stateful render-only stories in `SearchControlsPanel.stories.tsx` and `QueryPresetList.stories.tsx`.
+
+### What I learned
+
+- Search Workbench extraction can proceed safely in smaller units; it does not require rewriting the whole page at once.
+- `ResultInspector` is the next high-value extraction because it still owns a lot of tabbed detail/chunk/document behavior.
+- Stories for data-heavy RAG components need realistic mock DTOs, not placeholder text, to be useful for review.
+
+### What was tricky to build
+
+- The main tricky part was preserving behavior while moving JSX. `SearchControlsPanel` needs many state setter props because behavior still lives in `SearchView.tsx`. This is acceptable for the first extraction, but a future `useSearchWorkbenchState` hook could make the page cleaner.
+- Another subtle part was Storybook typing for required callback-heavy components. The stateful story pattern is useful, but stricter Storybook generic inference expects required props in `args`. I used `StoryObj` for these stories to keep the examples concise.
+
+### What warrants a second pair of eyes
+
+- Whether `SearchControlsPanel` should stay an organism or become a molecule once the full Search Workbench page exists.
+- Whether `CoveragePanel` belongs under molecules or organisms; it is currently a small dependent panel, so molecule is a reasonable starting point.
+- Whether `RetrievalResultsPanel` should depend on a reusable `DataTable` molecule before more result-table variants appear.
+
+### What should be done in the future
+
+- Extract `ResultInspectorPanel` and add stories for detail, chunk, document, loading, and missing-document states.
+- Replace the remaining Search view inline layout with `DashboardGrid` and `Stack` after the inspector is extracted.
+- Start Phase 3 DMETA IR after the Search Workbench component boundaries are stable enough to model.
+
+### Code review instructions
+
+- Start with `web/src/components/search/SearchView.tsx` to see the new composition.
+- Review extracted components under:
+  - `web/src/components/organisms/SearchControlsPanel/`
+  - `web/src/components/organisms/RetrievalResultsPanel/`
+  - `web/src/components/molecules/CoveragePanel/`
+  - `web/src/components/molecules/QueryPresetList/`
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
 ```

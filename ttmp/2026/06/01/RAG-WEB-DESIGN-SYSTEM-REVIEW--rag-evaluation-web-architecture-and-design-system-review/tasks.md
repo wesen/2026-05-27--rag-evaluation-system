@@ -26,7 +26,11 @@
 
 ## TODO
 
-- [ ] Phase 2 follow-up: add Storybook stories for extracted Search Workbench organisms (`SearchControlsPanel`, `RetrievalResultsPanel`, `ResultInspectorPanel`, `CoveragePanel`).
-- [ ] Phase 2 follow-up: split `SearchView.tsx` into page/organism/molecule components while preserving behavior.
-- [ ] Phase 2 follow-up: add stories for loading, empty, BM25, vector, hybrid, sparse coverage, and selected-result inspector states.
+- [x] Phase 2 follow-up: extract `SearchControlsPanel` with interactive and loading Storybook stories.
+- [x] Phase 2 follow-up: extract `RetrievalResultsPanel` with empty, loading, hybrid results, and error Storybook stories.
+- [x] Phase 2 follow-up: extract `CoveragePanel` with complete and sparse coverage Storybook stories.
+- [x] Phase 2 follow-up: extract `QueryPresetList` with TTC query Storybook story.
+- [x] Phase 2 follow-up: refactor `SearchView.tsx` to compose extracted controls/results/coverage/preset components while preserving behavior.
+- [ ] Phase 2 follow-up: extract `ResultInspectorPanel` and add stories for detail, chunk, document, loading, and no-document states.
+- [ ] Phase 2 follow-up: migrate Search Workbench layout from inline styles to `DashboardGrid`/`Stack` after inspector extraction.
 - [ ] Phase 3: add initial `dmeta-ir` core/interaction/Web MDS YAML for the Search Workbench vertical slice.

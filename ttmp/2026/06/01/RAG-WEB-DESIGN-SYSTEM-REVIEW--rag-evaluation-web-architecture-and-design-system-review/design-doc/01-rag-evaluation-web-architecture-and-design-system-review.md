@@ -48,6 +48,18 @@ RelatedFiles:
       Note: Dashboard grid recipe primitive introduced in Phase 1
     - Path: web/src/components/layout/Panel/Panel.tsx
       Note: Layout panel primitive introduced in Phase 1
+    - Path: web/src/components/molecules/CoveragePanel/CoveragePanel.tsx
+      Note: Phase 2 extracted embedding coverage molecule
+    - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
+      Note: Phase 2 extracted query preset molecule
+    - Path: web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.stories.tsx
+      Note: Phase 2 organism Storybook coverage
+    - Path: web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.tsx
+      Note: Phase 2 extracted retrieval results organism
+    - Path: web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.stories.tsx
+      Note: Phase 2 organism Storybook coverage
+    - Path: web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx
+      Note: Phase 2 extracted query controls organism
     - Path: web/src/components/search/SearchView.tsx
       Note: Search workbench and recommended first design-system/DMETA vertical slice
     - Path: web/src/components/workflows/WorkflowsView.tsx
@@ -66,6 +78,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 
