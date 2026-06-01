@@ -57,5 +57,6 @@
 - [x] Phase 3 follow-up: refactor `EmbeddingsView` panels/forms/results through design-system primitives while keeping RTK Query and mutation behavior in the view.
 - [x] Phase 3 follow-up: refactor `PipelineView` through a storyable `PipelineOverview` and `PipelinePage` boundary with Storybook stories.
 - [x] Phase 3 follow-up: organize Corpus widgets into per-widget subdirectories while preserving existing Corpus stories.
+- [x] Phase 4 guidance: write RAG-specific React/design-system guidelines modeled after the TTC foundation guide, including CSS ownership, file layout, Storybook, page-boundary, and cleanup rules.
 - [ ] Deferred beyond requested scope (Phase 6): generated React scaffold output and promotion metadata.
 - [ ] Deferred beyond requested scope (Phase 7): executable validators for the documentation-only IR catalog.

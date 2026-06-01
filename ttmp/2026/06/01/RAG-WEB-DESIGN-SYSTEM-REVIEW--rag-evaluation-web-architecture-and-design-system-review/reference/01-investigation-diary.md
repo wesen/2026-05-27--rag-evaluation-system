@@ -2227,3 +2227,98 @@ pnpm typecheck
 pnpm build
 pnpm build-storybook
 ```
+
+## Step 22: Write RAG React Design-System Guidelines
+
+I paused implementation and converted the TTC foundation-system guidance into a RAG-specific design-system guideline document. The new guide keeps the RAG dashboard's retro monochrome identity, but raises the standard for ownership, file layout, Storybook coverage, page boundaries, and CSS cleanup so this project can move closer to the TTC design-system discipline.
+
+This is intentionally a project guideline, not more code. The immediate value is that future refactors now have a local RAG rulebook instead of relying on memory or on a TTC document written for a different product surface.
+
+### Prompt Context
+
+**User prompt (verbatim):** "now read this and go back threough /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--ttc-design-system/ttmp/2026/06/01/TTC-FOUNDATION-SYSTEM--ttc-react-foundation-primitives-and-token-documentation/design-doc/01-react-foundation-system-implementation-guide.md and create a similar set of guidelines for our project, we still have too much ad-hoc css and for example no full fledged design system like ttc-design-system, we should be much closer"
+
+**Assistant interpretation:** Read the TTC foundation guide and author an equivalent RAG-local React/design-system guideline document that addresses remaining ad-hoc CSS and missing design-system rigor.
+
+**Inferred user intent:** The user wants the RAG project to stop accumulating piecemeal cleanup and instead follow explicit, reusable design-system rules comparable to TTC.
+
+**User prompt (verbatim):** "create your own set of guidelines for react and design system and guidelines and file layouts and store in the ticket"
+
+**Assistant interpretation:** Store a new RAG-specific design-system guideline document inside the current docmgr ticket.
+
+**Inferred user intent:** The user wants this guidance persisted as ticket documentation, not just summarized in chat.
+
+**Commit (code):** N/A at time of writing — documentation-only changes pending commit.
+
+### What I did
+
+- Read the TTC foundation-system implementation guide.
+- Created a new ticket design doc:
+  - `design-doc/02-rag-react-design-system-guidelines.md`
+- Wrote RAG-specific rules for:
+  - target React/design-system stack,
+  - CSS ownership,
+  - file/folder layout,
+  - Storybook requirements for components and pages,
+  - container vs presentational boundaries,
+  - foundation/layout/molecule/organism/page responsibilities,
+  - DMETA boundaries,
+  - global CSS reduction,
+  - validation and commit checklist,
+  - recommended next work.
+- Updated ticket tasks to mark the guideline work complete.
+
+### Why
+
+- The RAG project has improved primitives, but still lacks a full TTC-like foundation documentation surface and clear local rules.
+- The user explicitly called out too much ad-hoc CSS and asked for project-local guidelines.
+- A written guideline prevents future cleanup from becoming subjective or inconsistent.
+
+### What worked
+
+- `docmgr doc add` created the design doc under the existing RAG ticket.
+- The TTC guide translated cleanly into a RAG-specific stack with `Text`, `CodeText`, `Caption`, `StatusText`, `Divider`, `VisuallyHidden`, `Panel`, `Stack`, `DashboardGrid`, `DataTable`, and `MetadataGrid` as the current foundation.
+
+### What didn't work
+
+- N/A; this was documentation authoring only.
+
+### What I learned
+
+- RAG should not blindly mirror TTC's editorial primitives like `Heading` and `Eyebrow`; it should add them only if repeated dashboard heading semantics require them.
+- The biggest missing RAG piece is now a foundation overview Storybook documentation surface plus continued migration of legacy global CSS into primitives/modules.
+
+### What was tricky to build
+
+- The main tricky part was preserving TTC's discipline without importing TTC's product assumptions. RAG is a dense developer dashboard, not a commerce/editorial landing page, so the guideline emphasizes panels, tables, metadata, status, code text, API containers, and page stories.
+- Another subtlety was keeping the DMETA boundary strict: the guidelines are React/design-system rules and do not authorize RAG IR validators or scaffold generation.
+
+### What warrants a second pair of eyes
+
+- Whether the recommended future primitives (`MetricGrid`, `ProgressBar`, `IdentitySelectorBar`, `CoverageStrip`) are framed narrowly enough to avoid premature abstraction.
+- Whether Storybook title taxonomy should be adjusted before adding more page-level stories.
+
+### What should be done in the future
+
+- Add RAG foundation overview Storybook docs.
+- Add stories and primitive cleanup for `IdentityBar`, `ArtifactIdentityBar`, and `ChunkTimelineBar`.
+- Continue shrinking `web/src/index.css` only after `rg` confirms consumers are gone.
+
+### Code review instructions
+
+- Review `design-doc/02-rag-react-design-system-guidelines.md` first.
+- Compare its rules against the TTC foundation guide and the current RAG component tree.
+- Confirm it preserves these constraints:
+  - no generic `Box`,
+  - Storybook mandatory for components and pages,
+  - CSS Modules remain for anatomy,
+  - RAG DMETA remains documentation-only for now.
+
+### Technical details
+
+Key commands:
+
+```bash
+cd 2026-05-27--rag-evaluation-system
+docmgr --root ttmp doc add --ticket RAG-WEB-DESIGN-SYSTEM-REVIEW --doc-type design-doc --title "RAG React Design System Guidelines"
+```
