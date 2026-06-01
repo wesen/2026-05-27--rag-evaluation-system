@@ -39,7 +39,7 @@
 - [x] Phase 4: add Storybook review surfaces for the Search Workbench organisms/molecules extracted so far.
 - [x] Phase 4: add Storybook review surfaces for `Caption`, `AppShell`, `ScrollRegion`, `TabList`, `FormRow`, `MetadataGrid`, and `DataTable`.
 - [x] Phase 4: add Storybook review surfaces for Corpus `SourcePanel`, `DocumentBrowser`, and `DocumentInspector` states.
-- [x] Phase 4: add Storybook review surfaces for Workflow `QueueHealthPanel`, `WorkflowListPanel`, `WorkflowSummaryPanel`, `WorkflowOpGraphPanel`, and `WorkflowOpGroupsPanel` states.
+- [x] Phase 4: add Storybook review surfaces for Workflow `QueueHealthPanel`, `WorkflowListPanel`, `WorkflowSummaryPanel`, `WorkflowOpGraphPanel`, `WorkflowOpGroupsPanel`, and `WorkflowOpInspectorPanel` states.
 - [x] Phase 4 optional follow-up: expand `ResultInspectorPanel` stories with explicit chunk-tab, document-tab, and document-loading states via `defaultTab`.
 - [x] Phase 5: add initial documentation-only `dmeta-ir` core/interaction/Web MDS YAML for the Search Workbench vertical slice.
 - [x] Phase 3: add reusable `MetadataGrid` and `DataTable` molecules as extraction targets for inspector/results/corpus/workflow views.
@@ -50,6 +50,7 @@
 - [x] Phase 3 follow-up: adopt `DataTable`, `MetadataGrid`, `TabList`, `Panel`, `ScrollRegion`, `Caption`, and `StatusText` in Corpus source/document/inspector surfaces.
 - [x] Phase 3 follow-up: extract Workflow `QueueHealthPanel` and `WorkflowListPanel` organisms and adopt them in `WorkflowsView`.
 - [x] Phase 3 follow-up: extract Workflow `WorkflowSummaryPanel`, `WorkflowOpGraphPanel`, and `WorkflowOpGroupsPanel` organisms and adopt them in workflow detail.
-- [ ] Phase 3 follow-up: extract Workflow op inspector/result surfaces and adopt `MetadataGrid`/`DataTable` there.
+- [x] Phase 3 follow-up: extract Workflow `WorkflowOpInspectorPanel` and adopt `MetadataGrid`, `Panel`, `Caption`, and `StatusText` for sampled op details.
+- [ ] Phase 3 follow-up: extract Workflow op result section and adopt `MetadataGrid`/`DataTable` there.
 - [ ] Deferred beyond requested scope (Phase 6): generated React scaffold output and promotion metadata.
 - [ ] Deferred beyond requested scope (Phase 7): executable validators for the documentation-only IR catalog.

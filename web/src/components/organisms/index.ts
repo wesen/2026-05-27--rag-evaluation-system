@@ -6,3 +6,4 @@ export * from './WorkflowListPanel';
 export * from './WorkflowSummaryPanel';
 export * from './WorkflowOpGraphPanel';
 export * from './WorkflowOpGroupsPanel';
+export * from './WorkflowOpInspectorPanel';

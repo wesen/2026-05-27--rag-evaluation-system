@@ -209,3 +209,15 @@ Moved SourcePanel back into Corpus and extracted workflow summary, op graph, and
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.tsx — Workflow detail summary/progress organism
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — Workflow detail now composes extracted organisms
 
+
+## 2026-06-01
+
+Extracted WorkflowOpInspectorPanel with Storybook stories and refactored WorkflowsView sampled-op inspection through it
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded workflow op inspector extraction
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.stories.tsx — Storybook coverage for succeeded and failed sampled op states
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.tsx — Sampled workflow op inspector organism
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — Delegates sampled op inspection to WorkflowOpInspectorPanel
+

@@ -128,6 +128,10 @@ RelatedFiles:
       Note: Workflow op graph organism
     - Path: web/src/components/organisms/WorkflowOpGroupsPanel/WorkflowOpGroupsPanel.tsx
       Note: Workflow op groups organism
+    - Path: web/src/components/organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.stories.tsx
+      Note: Workflow sampled-op Storybook review surface
+    - Path: web/src/components/organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.tsx
+      Note: Workflow sampled-op inspector organism
     - Path: web/src/components/organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.tsx
       Note: Workflow summary/progress organism
     - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx
@@ -154,6 +158,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 

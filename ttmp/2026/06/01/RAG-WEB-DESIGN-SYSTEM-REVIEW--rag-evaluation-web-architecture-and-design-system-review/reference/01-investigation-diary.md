@@ -82,6 +82,8 @@ RelatedFiles:
       Note: Diary evidence for workflow detail extraction
     - Path: web/src/components/organisms/WorkflowOpGroupsPanel/WorkflowOpGroupsPanel.tsx
       Note: Diary evidence for workflow detail extraction
+    - Path: web/src/components/organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.tsx
+      Note: Diary evidence for sampled-op inspector extraction
     - Path: web/src/components/organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.tsx
       Note: Diary evidence for workflow detail extraction
     - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx
@@ -92,6 +94,8 @@ RelatedFiles:
       Note: |-
         First recommended vertical-slice evidence
         Phase 2 Search Workbench composition update
+    - Path: web/src/components/workflows/WorkflowsView.tsx
+      Note: Diary evidence for sampled-op inspector composition
     - Path: web/src/index.css
       Note: CSS/design-system evidence
     - Path: web/src/services/api.ts
@@ -104,6 +108,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -1628,6 +1633,88 @@ I then continued the Workflow extraction by pulling the workflow detail header/p
 - Confirm `web/src/components/corpus/SourcePanel.tsx` is the real source-panel implementation again.
 - Review `web/src/components/organisms/WorkflowSummaryPanel/`, `WorkflowOpGraphPanel/`, and `WorkflowOpGroupsPanel/`.
 - Review `web/src/components/workflows/WorkflowsView.tsx` for the new workflow-detail composition.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```
+
+## Step 16: Extract the Workflow Op Inspector Panel
+
+I extracted the sampled workflow operation inspector into a dedicated organism. The new `WorkflowOpInspectorPanel` owns the selected operation's identity, status, queue, dedup key, input metadata, and retry affordance, while `WorkflowsView` still owns the polled data, selected group state, retry mutation, and op result fetching.
+
+This keeps the design-system ownership consistent: reusable foundation primitives own caption/status text, `MetadataGrid` owns key/value structure, `Panel` owns the shell, and the workflow-specific inspector CSS owns only local anatomy such as the accent rail and section spacing.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 15)
+
+**Assistant interpretation:** Continue extracting workflow detail surfaces into organized, Storybook-backed components while keeping foundation/layout ownership rigorous.
+
+**Inferred user intent:** The user wants the workflow dashboard to receive the same component extraction and Storybook discipline as Search and Corpus.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Added `web/src/components/organisms/WorkflowOpInspectorPanel/`.
+- Added `WorkflowOpInspectorPanel.tsx`, `.module.css`, `index.ts`, and Storybook stories.
+- Refactored `WorkflowsView` to render `WorkflowOpInspectorPanel` for the selected sampled op.
+- Kept `OpResultSection` in `WorkflowsView` for now and passed it as children to the inspector panel.
+- Removed now-unused local status/op formatting helpers from `WorkflowsView` after moving that presentation into organisms.
+
+### Why
+
+- The sampled op inspector was one of the last large workflow-detail regions still using ad hoc panel/metadata/status CSS directly in the page file.
+- Extracting it makes the next step smaller: only the op result section remains as the main workflow-detail presentation target.
+- Storybook can now review succeeded and failed/retryable sampled op states without live API calls.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+- The new story uses DTO-shaped `WorkflowOp` data and does not need a Redux provider because it is presentation-only.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+- `OpResultSection` still uses RTK Query directly in `WorkflowsView`, so it remains a follow-up extraction target.
+
+### What I learned
+
+- Passing the op result section as `children` is a useful incremental boundary: the inspector can become storyable immediately without moving the data-fetching hook.
+- Workflow detail is now mostly composed of named organisms, which makes the remaining legacy pieces easier to identify.
+
+### What was tricky to build
+
+- The tricky part was preserving retry behavior. `WorkflowsView` still looks up the selected group by the stable key and calls the retry mutation; `WorkflowOpInspectorPanel` only renders the retry button and invokes the callback.
+- Another subtlety was avoiding over-generalization: the accent rail and inspector spacing stay in an organism CSS module rather than becoming new primitives.
+
+### What warrants a second pair of eyes
+
+- Whether `OpResultSection` should become `WorkflowOpResultPanel` or a smaller molecule used inside `WorkflowOpInspectorPanel`.
+- Whether retry controls should remain inside the inspector organism or become an action slot supplied by the container.
+
+### What should be done in the future
+
+- Extract `WorkflowOpResultSection` and add stories for no-result, records, artifacts, emitted ops, and error states.
+- Consider replacing remaining workflow form rows in `SubmitIntakeModal` with `FormRow` after op result extraction.
+
+### Code review instructions
+
+- Review `web/src/components/organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.tsx`.
+- Review the selected-op block in `web/src/components/workflows/WorkflowsView.tsx` to confirm behavior is preserved.
 - Validate with:
   - `cd web && pnpm typecheck`
   - `cd web && pnpm build`

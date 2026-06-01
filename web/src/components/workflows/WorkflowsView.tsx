@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { QueueHealthPanel, WorkflowListPanel, WorkflowOpGraphPanel, WorkflowOpGroupsPanel, WorkflowSummaryPanel, workflowGroupKey } from '../organisms';
+import { QueueHealthPanel, WorkflowListPanel, WorkflowOpGraphPanel, WorkflowOpGroupsPanel, WorkflowOpInspectorPanel, WorkflowSummaryPanel, workflowGroupKey } from '../organisms';
 import {
   useListWorkflowsQuery,
   useGetWorkflowQuery,
@@ -12,23 +12,6 @@ import {
   useListSourcesQuery,
   SubmitIntakeRequest,
 } from '../../services/api';
-
-// ─── Status helpers ──────────────────────────────────────────────────────────
-
-const STATUS_ICON: Record<string, string> = {
-  pending: '◌', ready: '◌', running: '●', succeeded: '✔', failed: '✘', canceled: '⊘',
-};
-const STATUS_CLASS: Record<string, string> = {
-  pending: 'status-pending', ready: 'status-pending', running: 'status-running',
-  succeeded: 'status-done', failed: 'status-error', canceled: 'status-canceled',
-};
-
-function statusIcon(s: string) { return STATUS_ICON[s] ?? '?'; }
-function statusClass(s: string) { return STATUS_CLASS[s] ?? ''; }
-
-function friendlyOpName(op: string): string {
-  return op.replace(/_/g, ' ');
-}
 
 // ─── Queue Health Widget ─────────────────────────────────────────────────────
 
@@ -372,58 +355,20 @@ const WorkflowDetail: React.FC<WorkflowDetailProps> = ({ workflowId, onBack, onN
 
       {/* Inspector for a sample op */}
       {inspectedSample && (
-        <div className="panel" style={{ borderLeft: '3px solid var(--mac-accent)' }}>
-          <div className="panel-header">
-            <span>Sample Op: {friendlyOpName(inspectedSample.op.Kind)}</span>
-            <button className="copy-btn" onClick={() => setInspectedGroup(null)}>✕</button>
-          </div>
-          <div className="panel-body-condensed" style={{ fontSize: 12 }}>
-            <div className="meta-grid">
-              <span className="meta-key">ID</span>
-              <span className="meta-value">{inspectedSample.op.ID}</span>
-              <span className="meta-key">Status</span>
-              <span className={statusClass(inspectedSample.status)}>
-                {statusIcon(inspectedSample.status)} {inspectedSample.status}
-              </span>
-              <span className="meta-key">Queue</span>
-              <span className="meta-value">{inspectedSample.op.Queue}</span>
-              <span className="meta-key">Dedup</span>
-              <span className="meta-value">{inspectedSample.op.DedupKey}</span>
-            </div>
-
-            <fieldset className="form-section" style={{ marginTop: 6 }}>
-              <legend>Input</legend>
-              {Object.entries(inspectedSample.op.Input as Record<string, unknown>).map(([k, v]) => (
-                <div className="meta-grid" key={k}>
-                  <span className="meta-key">{k}</span>
-                  <span className="meta-value">{typeof v === 'string' ? v : JSON.stringify(v)}</span>
-                </div>
-              ))}
-            </fieldset>
-
-            {/* Op Result — fetch for succeeded/failed ops */}
-            {(inspectedSample.status === 'succeeded' || inspectedSample.status === 'failed') && (
-              <OpResultSection workflowId={workflowId} opId={inspectedSample.op.ID} opStatus={inspectedSample.status} />
-            )}
-
-            {inspectedSample.status === 'failed' && inspectedSample.op.RetryState.LastError && (
-              <div className="error-box" style={{ marginTop: 6 }}>
-                {inspectedSample.op.RetryState.LastError}
-                <div className="text-dim text-mono" style={{ marginTop: 4 }}>
-                  Attempt {inspectedSample.op.RetryState.Attempt}/{inspectedSample.op.Retry.MaxAttempts}
-                </div>
-                <button className="btn" style={{ marginTop: 4 }} onClick={async () => {
-                  // Look up the sample from current polled data using the stable key
-                  const g = groups.find(gr => gr.operation + '|' + gr.status === inspectedGroup);
-                  if (!g?.sample) return;
-                  try { await retryOp({ workflowId, opId: g.sample.op.ID }).unwrap(); } catch (e) { console.error('retry failed', e); }
-                }} disabled={retrying}>
-                  {retrying ? 'Retrying…' : 'Retry Now'}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        <WorkflowOpInspectorPanel
+          sample={inspectedSample}
+          onClose={() => setInspectedGroup(null)}
+          retrying={retrying}
+          onRetry={inspectedSample.status === 'failed' ? async () => {
+            const group = groups.find(candidate => workflowGroupKey(candidate) === inspectedGroup);
+            if (!group?.sample) return;
+            try { await retryOp({ workflowId, opId: group.sample.op.ID }).unwrap(); } catch (error) { console.error('retry failed', error); }
+          } : undefined}
+        >
+          {(inspectedSample.status === 'succeeded' || inspectedSample.status === 'failed') && (
+            <OpResultSection workflowId={workflowId} opId={inspectedSample.op.ID} opStatus={inspectedSample.status} />
+          )}
+        </WorkflowOpInspectorPanel>
       )}
     </div>
   );
