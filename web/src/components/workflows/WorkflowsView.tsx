@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { QueueHealthPanel, WorkflowListPanel } from '../organisms';
+import { QueueHealthPanel, WorkflowListPanel, WorkflowOpGraphPanel, WorkflowOpGroupsPanel, WorkflowSummaryPanel, workflowGroupKey } from '../organisms';
 import {
   useListWorkflowsQuery,
   useGetWorkflowQuery,
@@ -10,7 +10,6 @@ import {
   useCancelWorkflowMutation,
   useListQueuesQuery,
   useListSourcesQuery,
-  WorkflowOpGroup,
   SubmitIntakeRequest,
 } from '../../services/api';
 
@@ -29,15 +28,6 @@ function statusClass(s: string) { return STATUS_CLASS[s] ?? ''; }
 
 function friendlyOpName(op: string): string {
   return op.replace(/_/g, ' ');
-}
-
-function timeAgo(iso: string): string {
-  const ms = Date.now() - new Date(iso).getTime();
-  if (ms < 0) return 'now';
-  if (ms < 60000) return `${Math.floor(ms / 1000)}s`;
-  if (ms < 3600000) return `${Math.floor(ms / 60000)}m`;
-  if (ms < 86400000) return `${Math.floor(ms / 3600000)}h`;
-  return `${Math.floor(ms / 86400000)}d`;
 }
 
 // ─── Queue Health Widget ─────────────────────────────────────────────────────
@@ -209,95 +199,6 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
   );
 };
 
-// ─── Op Group Row ────────────────────────────────────────────────────────────
-
-const OpGroupRow: React.FC<{
-  group: WorkflowOpGroup;
-  onInspect: (sample: WorkflowOpGroup['sample']) => void;
-  isSelected: boolean;
-}> = ({ group, onInspect, isSelected }) => {
-  return (
-    <tr className={isSelected ? 'selected' : 'selectable'}
-      onClick={() => onInspect(group.sample)}>
-      <td className={statusClass(group.status)}>{statusIcon(group.status)} {group.status}</td>
-      <td>{friendlyOpName(group.operation)}</td>
-      <td className="mono" style={{ fontSize: 11 }}>{group.queue.replace('rag-eval:', '')}</td>
-      <td className="num">{group.count}</td>
-    </tr>
-  );
-};
-
-// ─── Progress Bar ────────────────────────────────────────────────────────────
-
-const ProgressBar: React.FC<{ done: number; total: number; running?: number; failed?: number }> = ({
-  done, total, running = 0, failed = 0,
-}) => {
-  const pct = total > 0 ? (done / total) * 100 : 0;
-  const runPct = total > 0 ? (running / total) * 100 : 0;
-  const failPct = total > 0 ? (failed / total) * 100 : 0;
-
-  return (
-    <div className="progress-bar">
-      <div className="progress-fill status-done" style={{ width: `${pct}%` }} />
-      {running > 0 && <div className="progress-fill status-running"
-        style={{ width: `${runPct}%`, marginLeft: `${pct}%`, position: 'absolute', top: 0 }} />}
-      {failed > 0 && <div className="progress-fill status-error"
-        style={{ width: `${failPct}%`, marginLeft: `${pct + runPct}%`, position: 'absolute', top: 0 }} />}
-      <div className="progress-label" style={{ color: pct > 50 ? 'var(--mac-text-inv)' : 'var(--mac-text)' }}>
-        {done}/{total} ({Math.round(pct)}%)
-      </div>
-    </div>
-  );
-};
-
-// ─── Op Graph ────────────────────────────────────────────────────────────────
-
-const OpGraph: React.FC<{ groups: WorkflowOpGroup[]; total: number; done: number }> = ({ groups, total, done }) => {
-  // Classify operations into phases
-  const fanOutOps = groups.filter(g =>
-    g.operation === 'chunk_document' || g.operation === 'preprocess_document');
-  const fanInOps = groups.filter(g =>
-    g.operation === 'compute_embeddings' || g.operation === 'build_bm25');
-  const otherOps = groups.filter(g =>
-    !fanOutOps.some(f => f.operation === g.operation && f.status === g.status) &&
-    !fanInOps.some(f => f.operation === g.operation && f.status === g.status));
-
-  return (
-    <div className="op-graph">
-      {/* Fan-out: per-document operations */}
-      <div className="op-fan-out">
-        {fanOutOps.map(g => (
-          <span key={g.operation + '|' + g.status}
-            className={`op-node ${statusClass(g.status)}`}>
-            {statusIcon(g.status)} {friendlyOpName(g.operation)} × {g.count}
-          </span>
-        ))}
-        {otherOps.map(g => (
-          <span key={g.operation + '|' + g.status}
-            className={`op-node ${statusClass(g.status)}`}>
-            {statusIcon(g.status)} {friendlyOpName(g.operation)} × {g.count}
-          </span>
-        ))}
-      </div>
-
-      {/* Arrow */}
-      <div className="op-arrow">↓ {done}/{total} completed</div>
-
-      {/* Fan-in: aggregate operations */}
-      {fanInOps.length > 0 && (
-        <div className="op-fan-out">
-          {fanInOps.map(g => (
-            <span key={g.operation + '|' + g.status}
-              className={`op-node ${statusClass(g.status)}`}>
-              {statusIcon(g.status)} {friendlyOpName(g.operation)}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
 // ─── Op Result Section ────────────────────────────────────────────────────────
 
 const OpResultSection: React.FC<{ workflowId: string; opId: string; opStatus: string }> = ({
@@ -444,68 +345,30 @@ const WorkflowDetail: React.FC<WorkflowDetailProps> = ({ workflowId, onBack, onN
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {/* Header */}
-      <div className="panel">
-        <div className="panel-header">
-          <button className="copy-btn" onClick={onBack}>← Back</button>
-          <span style={{ flex: 1, textAlign: 'center' }}>{wf.ID}</span>
-          <span className={statusClass(wf.Status)}>{statusIcon(wf.Status)} {wf.Status}</span>
-        </div>
-        <div className="panel-body-condensed">
-          {/* Progress bar */}
-          <ProgressBar done={succeededCount} total={totalOps} running={runningCount} failed={failedCount} />
+      <WorkflowSummaryPanel
+        workflow={wf}
+        strategyId={strategyId}
+        docCount={docIds.length}
+        sourceId={sourceIds[0]}
+        totalOps={totalOps}
+        succeededCount={succeededCount}
+        runningCount={runningCount}
+        pendingCount={pendingCount}
+        failedCount={failedCount}
+        isRunning={isRunning}
+        onBack={onBack}
+        onCancel={() => cancelWorkflow(workflowId)}
+        onNavigateToCorpus={onNavigateToCorpus}
+      />
 
-          {/* Stats row */}
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12, marginTop: 4 }}>
-            <span>Strategy: <span className="mono">{strategyId}</span></span>
-            <span>Docs: <span className="num">{docIds.length}</span></span>
-            {runningCount > 0 && <span className="status-running">Running: {runningCount}</span>}
-            {pendingCount > 0 && <span className="status-pending">Pending: {pendingCount}</span>}
-            {failedCount > 0 && <span className="status-error">Failed: {failedCount}</span>}
-            <span>Age: <span className="mono">{timeAgo(wf.CreatedAt)}</span></span>
-            {isRunning && (
-              <button className="btn" style={{ marginLeft: 'auto' }}
-                onClick={() => cancelWorkflow(workflowId)}>Cancel</button>
-            )}
-            {wf.Status === 'succeeded' && sourceIds[0] && (
-              <button className="btn" style={{ marginLeft: 'auto' }}
-                onClick={() => onNavigateToCorpus(sourceIds[0]!, strategyId)}>View in Corpus →</button>
-            )}
-          </div>
-        </div>
-      </div>
+      <WorkflowOpGraphPanel groups={groups} total={totalOps} done={succeededCount} />
 
-      {/* Op Graph */}
-      <div className="panel">
-        <div className="panel-header"><span>Op Graph</span></div>
-        <OpGraph groups={groups} total={totalOps} done={succeededCount} />
-      </div>
-
-      {/* Op Groups Table */}
-      <div className="panel">
-        <div className="panel-header"><span>Ops by Group ({totalOps} total)</span></div>
-        <div className="panel-body-condensed">
-          {groups.length === 0 ? (
-            <div className="text-dim text-mono">No ops yet</div>
-          ) : (
-            <table className="data-table">
-              <thead>
-                <tr><th>Status</th><th>Operation</th><th>Queue</th><th>Count</th></tr>
-              </thead>
-              <tbody>
-                {groups.map(g => (
-                  <OpGroupRow
-                    key={g.operation + '|' + g.status}
-                    group={g}
-                    onInspect={(sample) => setInspectedGroup(sample ? g.operation + '|' + g.status : null)}
-                    isSelected={inspectedGroup === g.operation + '|' + g.status}
-                  />
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </div>
+      <WorkflowOpGroupsPanel
+        groups={groups}
+        totalOps={totalOps}
+        selectedKey={inspectedGroup}
+        onInspect={(group) => setInspectedGroup(group.sample ? workflowGroupKey(group) : null)}
+      />
 
       {/* Inspector for a sample op */}
       {inspectedSample && (

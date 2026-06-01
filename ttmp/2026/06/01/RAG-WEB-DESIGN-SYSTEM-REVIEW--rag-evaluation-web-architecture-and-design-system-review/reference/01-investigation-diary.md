@@ -41,7 +41,9 @@ RelatedFiles:
     - Path: web/src/components/corpus/SourcePanel.stories.tsx
       Note: Diary evidence for Corpus Storybook coverage
     - Path: web/src/components/corpus/SourcePanel.tsx
-      Note: Diary evidence for Corpus source design-system adoption
+      Note: |-
+        Diary evidence for Corpus source design-system adoption
+        Diary evidence for SourcePanel move-back
     - Path: web/src/components/foundation/Caption/Caption.tsx
       Note: Diary evidence for expanded primitive extraction
     - Path: web/src/components/foundation/index.ts
@@ -58,8 +60,6 @@ RelatedFiles:
       Note: Diary evidence for reusable molecule extraction
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
       Note: Phase 2 extraction diary evidence
-    - Path: web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.tsx
-      Note: Diary evidence for organism taxonomy correction
     - Path: web/src/components/organisms/QueueHealthPanel/QueueHealthPanel.tsx
       Note: Diary evidence for workflow organism extraction
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css
@@ -78,6 +78,12 @@ RelatedFiles:
         Diary evidence for controls primitive adoption
     - Path: web/src/components/organisms/WorkflowListPanel/WorkflowListPanel.tsx
       Note: Diary evidence for workflow organism extraction
+    - Path: web/src/components/organisms/WorkflowOpGraphPanel/WorkflowOpGraphPanel.tsx
+      Note: Diary evidence for workflow detail extraction
+    - Path: web/src/components/organisms/WorkflowOpGroupsPanel/WorkflowOpGroupsPanel.tsx
+      Note: Diary evidence for workflow detail extraction
+    - Path: web/src/components/organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.tsx
+      Note: Diary evidence for workflow detail extraction
     - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx
       Note: Diary evidence for page-boundary extraction
     - Path: web/src/components/search/SearchView.module.css
@@ -98,6 +104,8 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
+
 
 
 
@@ -1527,6 +1535,99 @@ I also started the Workflow extraction in the same style: dense workflow surface
 - Review `web/src/components/corpus/SourcePanel.tsx` to confirm it is only a compatibility re-export.
 - Review `web/src/components/organisms/QueueHealthPanel/` and `WorkflowListPanel/` for workflow organism extraction.
 - Review `web/src/components/corpus/DocumentInspector.stories.tsx` for the local Redux provider decorator.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```
+
+## Step 15: Move SourcePanel Back and Extract Workflow Detail Panels
+
+I moved `SourcePanel` back into the Corpus feature area after the user clarified the desired organization. The important design-system ownership remains intact: `SourcePanel` still uses shared foundation/layout primitives, but its source-specific feature identity now lives next to the other Corpus components.
+
+I then continued the Workflow extraction by pulling the workflow detail header/progress, op graph, and op groups table into Storybook-backed organism components. `WorkflowsView` still owns polling and workflow-detail orchestration, while the new organisms own reusable presentation.
+
+### Prompt Context
+
+**User prompt (verbatim):** "ok move corpus source panel back i guess. continue"
+
+**Assistant interpretation:** Move the source panel implementation back to the Corpus folder and continue the rigorous design-system extraction work.
+
+**Inferred user intent:** The user wants practical organization over rigid taxonomy: feature-local Corpus components may stay grouped together as long as foundation/layout ownership is clean and Storybook remains organized.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Moved `CorpusSourcePanel` back to:
+  - `web/src/components/corpus/SourcePanel.tsx`
+  - `web/src/components/corpus/SourcePanel.module.css`
+  - `web/src/components/corpus/SourcePanel.stories.tsx`
+- Removed the organism-level `CorpusSourcePanel` folder and export.
+- Restored the story title to `Component Library/Corpus/SourcePanel`.
+- Added workflow detail organisms:
+  - `WorkflowSummaryPanel`
+  - `WorkflowOpGraphPanel`
+  - `WorkflowOpGroupsPanel`
+- Added Storybook stories for the new workflow detail organisms.
+- Refactored `WorkflowsView` to use the new workflow detail organisms.
+- Kept typography/status ownership in foundation primitives (`Caption`, `StatusText`) and layout/table ownership in layout/molecule primitives (`Panel`, `DataTable`, `MetadataGrid`).
+
+### Why
+
+- The user explicitly asked to move the source panel back.
+- The TTC foundation guidance says not to over-abstract or reorganize for its own sake; keep component-specific anatomy local and use primitives for shared foundation/layout concerns.
+- Workflow detail had repeated progress, op graph, and table structures that were better as Storybook-reviewable organisms.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+- Storybook now includes workflow detail organism stories in addition to queue/list workflow stories.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+- Workflow op inspector/result detail is still partly legacy and should be the next extraction target.
+
+### What I learned
+
+- The source panel can be feature-local without violating design-system ownership. Folder location and design-system level are related, but not identical.
+- Workflow detail is now much easier to reason about because progress/header, graph, and group table are separate components with stories.
+
+### What was tricky to build
+
+- The tricky part was preserving the existing workflow selection semantics. `WorkflowOpGroupsPanel` emits selected groups, and `WorkflowsView` still maps that to the stable `operation|status` key used to find the sampled op.
+- Another tricky part was avoiding foundation leakage: workflow-specific progress bar and graph anatomy live in workflow organism CSS modules, while typography/status text uses foundation primitives.
+
+### What warrants a second pair of eyes
+
+- Whether `WorkflowSummaryPanel` should expose the progress bar as a separate molecule later.
+- Whether workflow graph styling should remain organism-specific or become a reusable graph primitive after more graph-like views appear.
+- Whether `SourcePanel` should remain in `components/corpus` permanently or move later if a broader organism taxonomy is reintroduced.
+
+### What should be done in the future
+
+- Extract `WorkflowOpInspectorPanel` and `WorkflowOpResultSection` with stories.
+- Add API-mocked stories for artifact/result loading states if needed.
+- Keep Storybook titles consistent by feature area unless a component is genuinely generic.
+
+### Code review instructions
+
+- Confirm `web/src/components/corpus/SourcePanel.tsx` is the real source-panel implementation again.
+- Review `web/src/components/organisms/WorkflowSummaryPanel/`, `WorkflowOpGraphPanel/`, and `WorkflowOpGroupsPanel/`.
+- Review `web/src/components/workflows/WorkflowsView.tsx` for the new workflow-detail composition.
 - Validate with:
   - `cd web && pnpm typecheck`
   - `cd web && pnpm build`

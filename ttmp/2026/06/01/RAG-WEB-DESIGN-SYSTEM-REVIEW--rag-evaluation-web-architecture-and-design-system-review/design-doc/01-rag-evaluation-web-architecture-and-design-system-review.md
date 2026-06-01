@@ -63,9 +63,13 @@ RelatedFiles:
     - Path: web/src/components/corpus/SourcePanel.module.css
       Note: SourcePanel-specific anatomy after primitive adoption
     - Path: web/src/components/corpus/SourcePanel.stories.tsx
-      Note: Corpus source panel Storybook review surface
+      Note: |-
+        Corpus source panel Storybook review surface
+        Storybook review surface for feature-local SourcePanel
     - Path: web/src/components/corpus/SourcePanel.tsx
-      Note: Corpus source panel design-system adoption
+      Note: |-
+        Corpus source panel design-system adoption
+        Feature-local Corpus source panel using shared primitives
     - Path: web/src/components/embeddings/EmbeddingsView.tsx
       Note: Embedding compute and stored-vector similarity inspector
     - Path: web/src/components/foundation/Caption/Caption.tsx
@@ -100,10 +104,6 @@ RelatedFiles:
       Note: Reusable metadata grid molecule for inspectors/details
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
       Note: Phase 2 extracted query preset molecule
-    - Path: web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.stories.tsx
-      Note: Storybook review surface for corpus source organism
-    - Path: web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.tsx
-      Note: Organism-level corpus source selector
     - Path: web/src/components/organisms/QueueHealthPanel/QueueHealthPanel.tsx
       Note: Workflow queue health organism
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css
@@ -124,6 +124,12 @@ RelatedFiles:
       Note: Phase 2 extracted query controls organism
     - Path: web/src/components/organisms/WorkflowListPanel/WorkflowListPanel.tsx
       Note: Workflow list organism
+    - Path: web/src/components/organisms/WorkflowOpGraphPanel/WorkflowOpGraphPanel.tsx
+      Note: Workflow op graph organism
+    - Path: web/src/components/organisms/WorkflowOpGroupsPanel/WorkflowOpGroupsPanel.tsx
+      Note: Workflow op groups organism
+    - Path: web/src/components/organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.tsx
+      Note: Workflow summary/progress organism
     - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx
       Note: Search Workbench page boundary
     - Path: web/src/components/search/SearchView.module.css
@@ -148,6 +154,8 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
+
 
 
 

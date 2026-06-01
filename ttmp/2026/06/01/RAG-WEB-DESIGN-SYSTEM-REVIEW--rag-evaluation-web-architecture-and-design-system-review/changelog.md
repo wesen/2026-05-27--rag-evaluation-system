@@ -195,3 +195,17 @@ Reclassified Corpus source selection as an organism, added workflow list/queue o
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowListPanel/WorkflowListPanel.tsx — Workflow list organism
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — Delegates workflow list and queue presentation to organisms
 
+
+## 2026-06-01
+
+Moved SourcePanel back into Corpus and extracted workflow summary, op graph, and op group organisms with Storybook stories
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded SourcePanel move-back and workflow detail extraction
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/SourcePanel.tsx — Feature-local Corpus source panel using shared primitives
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowOpGraphPanel/WorkflowOpGraphPanel.tsx — Workflow op graph organism
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowOpGroupsPanel/WorkflowOpGroupsPanel.tsx — Workflow op groups table organism
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.tsx — Workflow detail summary/progress organism
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — Workflow detail now composes extracted organisms
+

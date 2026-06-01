@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { CorpusSourcePanel } from './CorpusSourcePanel';
-import type { CorpusSourceSummary, DocumentProcessingCoverageItem } from '../../../services/api';
+import { SourcePanel } from './SourcePanel';
+import type { CorpusSourceSummary, DocumentProcessingCoverageItem } from '../../services/api';
 
 const meta = {
-  title: 'Component Library/Organisms/CorpusSourcePanel',
-  component: CorpusSourcePanel,
-} satisfies Meta<typeof CorpusSourcePanel>;
+  title: 'Component Library/Corpus/SourcePanel',
+  component: SourcePanel,
+} satisfies Meta<typeof SourcePanel>;
 
 export default meta;
 type Story = StoryObj;
@@ -26,10 +26,10 @@ const preprocessing: Record<string, DocumentProcessingCoverageItem> = {
 export const Interactive: Story = {
   render: () => {
     const [selectedId, setSelectedId] = useState('ttc-guides');
-    return <CorpusSourcePanel sources={sources} selectedId={selectedId} onSelect={setSelectedId} isLoading={false} preprocessingCoverage={preprocessing} />;
+    return <SourcePanel sources={sources} selectedId={selectedId} onSelect={setSelectedId} isLoading={false} preprocessingCoverage={preprocessing} />;
   },
 };
 
 export const Loading: Story = {
-  render: () => <CorpusSourcePanel sources={[]} selectedId="" onSelect={() => undefined} isLoading preprocessingCoverage={{}} />,
+  render: () => <SourcePanel sources={[]} selectedId="" onSelect={() => undefined} isLoading preprocessingCoverage={{}} />,
 };

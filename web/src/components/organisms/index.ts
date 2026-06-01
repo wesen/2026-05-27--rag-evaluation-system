@@ -3,4 +3,6 @@ export * from './RetrievalResultsPanel';
 export * from './ResultInspectorPanel';
 export * from './QueueHealthPanel';
 export * from './WorkflowListPanel';
-export * from './CorpusSourcePanel';
+export * from './WorkflowSummaryPanel';
+export * from './WorkflowOpGraphPanel';
+export * from './WorkflowOpGroupsPanel';
