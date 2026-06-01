@@ -18,8 +18,14 @@ RelatedFiles:
       Note: High-priority artifact identity cleanup target
     - Path: web/src/components/corpus/ChunkTimelineBar/ChunkTimelineBar.tsx
       Note: High-priority timeline CSS-module cleanup target
+    - Path: web/src/components/corpus/IdentityBar/IdentityBar.module.css
+      Note: IdentityBar local anatomy CSS
+    - Path: web/src/components/corpus/IdentityBar/IdentityBar.stories.tsx
+      Note: IdentityBar required Storybook coverage
     - Path: web/src/components/corpus/IdentityBar/IdentityBar.tsx
-      Note: High-priority identity selector cleanup target
+      Note: |-
+        High-priority identity selector cleanup target
+        IdentityBar cleanup completed after audit
     - Path: web/src/components/foundation/Foundation.stories.module.css
       Note: Story-only foundation overview styling
     - Path: web/src/components/foundation/Foundation.stories.tsx
@@ -30,6 +36,7 @@ LastUpdated: 2026-06-01T19:30:00-04:00
 WhatFor: Use this audit to plan the next cleanup passes after foundation Storybook docs and to decide what should be extracted from each component.
 WhenToUse: Read before touching RAG React components, deleting global CSS, adding stories, or extracting new primitives/molecules/organisms/pages.
 ---
+
 
 
 # RAG Design System Guideline Audit

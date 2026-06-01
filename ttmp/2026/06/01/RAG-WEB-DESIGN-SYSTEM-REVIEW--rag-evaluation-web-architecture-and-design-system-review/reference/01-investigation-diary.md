@@ -2432,3 +2432,87 @@ pnpm typecheck
 pnpm build
 pnpm build-storybook
 ```
+
+## Step 24: Refactor Corpus IdentityBar Through Shared Primitives
+
+I started the high-priority Corpus identity cleanup identified by the guideline audit. `IdentityBar` now uses the design-system primitives for its panel shell, wrapping selector layout, labeled controls, and totals caption instead of global `panel`/`text-*` classes and inline flex styles.
+
+This is the first concrete post-audit cleanup pass. It keeps the component feature-local under Corpus, but gives it the same co-located folder/story/module shape as the rest of the reusable dashboard widgets.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue with the next recommended cleanup from the audit, starting with Corpus identity widgets.
+
+**Inferred user intent:** The user wants the guideline audit to turn into implementation work, with Storybook coverage as we go.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Refactored `web/src/components/corpus/IdentityBar/IdentityBar.tsx` to use:
+  - `Panel`,
+  - `Inline`,
+  - `FormRow`,
+  - `Caption`.
+- Added `IdentityBar.module.css` for component-specific sizing and totals placement.
+- Added `IdentityBar.stories.tsx` with interactive, sparse coverage, and no-strategies states.
+- Added `IdentityBar/index.ts`.
+
+### Why
+
+- `IdentityBar` was one of the audit's highest-priority non-compliant widgets.
+- It used old global panel/text classes and many inline styles.
+- It is important RAG UX: it controls the embedding identity under which Corpus data is inspected.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed and included the new IdentityBar stories.
+
+### What didn't work
+
+- The first Storybook story attempt omitted a required `onChange` arg in default meta args, causing TypeScript errors. I added a noop default and reran validation successfully.
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+
+### What I learned
+
+- `FormRow` works for compact inline identity controls, but it may need future tuning if identity bars become denser.
+- `IdentityBar` should stay feature-local for now; a generic `IdentitySelectorBar` should wait until Artifact and Embeddings selectors converge on the same shape.
+
+### What was tricky to build
+
+- The main subtlety was keeping the control semantics unchanged while replacing label/flex markup. `FormRow` is not a native `<label>`, so the existing control behavior is preserved but not made more semantically coupled yet.
+- The no-strategies state is story-covered but still renders an empty select; this matches current behavior but may warrant UX improvement later.
+
+### What warrants a second pair of eyes
+
+- Whether the wrapped inline `FormRow` layout is compact enough for narrow dashboard widths.
+- Whether we should add IDs/html labels to `FormRow` controls in a future accessibility pass.
+
+### What should be done in the future
+
+- Refactor `ArtifactIdentityBar` next and decide whether the two identity selector styles should share a small private subcomponent.
+- Continue with `ChunkTimelineBar` after artifact identity selectors.
+
+### Code review instructions
+
+- Review `web/src/components/corpus/IdentityBar/IdentityBar.tsx` for unchanged identity update behavior.
+- Review `web/src/components/corpus/IdentityBar/IdentityBar.stories.tsx` for the required Corpus identity states.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```

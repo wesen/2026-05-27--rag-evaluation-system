@@ -297,3 +297,14 @@ Added detailed follow-up tasks, completed the guideline audit, and added RAG fou
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/analysis/01-rag-design-system-guideline-audit.md — Component-by-component guideline audit and extraction plan
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/foundation/Foundation.stories.tsx — Foundation overview stories
 
+
+## 2026-06-01
+
+Refactored Corpus IdentityBar through shared primitives and added Storybook states
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded IdentityBar cleanup
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/IdentityBar/IdentityBar.stories.tsx — IdentityBar Storybook coverage
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/IdentityBar/IdentityBar.tsx — IdentityBar primitive adoption
+
