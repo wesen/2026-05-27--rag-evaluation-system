@@ -1,5 +1,6 @@
 import React from 'react';
-import { Caption, CodeText } from '../../foundation';
+import { Button } from '../../atoms';
+import { Caption } from '../../foundation';
 import { Inline } from '../../layout';
 import {
   DocumentProcessingIdentity,
@@ -41,10 +42,11 @@ export const DocProcessingIdentityBar: React.FC<DocProcessingIdentityBarProps> =
           selected.provider === identity.provider &&
           selected.model === identity.model;
         return (
-          <button
+          <Button
             key={key}
-            type="button"
-            className={[styles.option, isSelected ? styles.selected : ''].filter(Boolean).join(' ')}
+            size="compact"
+            selected={isSelected}
+            aria-pressed={isSelected}
             onClick={() => onChange({
               artifact_type: identity.artifact_type,
               prompt_version: identity.prompt_version,
@@ -53,8 +55,8 @@ export const DocProcessingIdentityBar: React.FC<DocProcessingIdentityBarProps> =
             })}
             title={`${identity.provider}/${identity.model} — ${identity.artifact_count} artifacts`}
           >
-            <CodeText>{identity.artifact_type}/{identity.prompt_version} ({identity.provider}/{identity.model}) [{identity.artifact_count}]</CodeText>
-          </button>
+            {identity.artifact_type}/{identity.prompt_version} ({identity.provider}/{identity.model}) [{identity.artifact_count}]
+          </Button>
         );
       })}
     </Inline>
@@ -87,18 +89,19 @@ export const ChunkEnrichmentIdentityBar: React.FC<ChunkEnrichmentIdentityBarProp
           selected.strategy_id === identity.strategy_id &&
           selected.prompt_version === identity.prompt_version;
         return (
-          <button
+          <Button
             key={key}
-            type="button"
-            className={[styles.option, isSelected ? styles.selected : ''].filter(Boolean).join(' ')}
+            size="compact"
+            selected={isSelected}
+            aria-pressed={isSelected}
             onClick={() => onChange({
               strategy_id: identity.strategy_id,
               prompt_version: identity.prompt_version,
             })}
             title={`${identity.provider}/${identity.model} — ${identity.enriched_count} enriched`}
           >
-            <CodeText>{identity.strategy_id}/{identity.prompt_version} ({identity.provider}/{identity.model}) [{identity.enriched_count}]</CodeText>
-          </button>
+            {identity.strategy_id}/{identity.prompt_version} ({identity.provider}/{identity.model}) [{identity.enriched_count}]
+          </Button>
         );
       })}
     </Inline>

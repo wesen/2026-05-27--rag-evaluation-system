@@ -319,3 +319,16 @@ Refactored Corpus artifact identity selectors through shared primitives and adde
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/ArtifactIdentityBar/ArtifactIdentityBar.stories.tsx — Artifact identity Storybook coverage
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/ArtifactIdentityBar/ArtifactIdentityBar.tsx — Artifact identity primitive adoption
 
+
+## 2026-06-01
+
+Added Button atom, fixed selected artifact identity contrast, and moved ChunkTimelineBar styling into a CSS Module
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded Button atom and ChunkTimelineBar cleanup
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/atoms/Button/Button.tsx — Reusable Button atom for selected/primary/default states
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/ArtifactIdentityBar/ArtifactIdentityBar.tsx — Artifact identity selectors now use Button atom
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/ChunkTimelineBar/ChunkTimelineBar.tsx — Chunk timeline now uses local CSS module and accessible buttons
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/index.css — Removed unused global chunk-bar styles
+

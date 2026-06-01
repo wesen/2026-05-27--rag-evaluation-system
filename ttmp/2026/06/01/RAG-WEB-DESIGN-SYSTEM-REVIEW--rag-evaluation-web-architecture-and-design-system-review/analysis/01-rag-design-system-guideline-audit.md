@@ -14,6 +14,10 @@ Owners: []
 RelatedFiles:
     - Path: ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/design-doc/02-rag-react-design-system-guidelines.md
       Note: Guidelines applied by this audit
+    - Path: web/src/components/atoms/Button/Button.stories.tsx
+      Note: Button atom Storybook states
+    - Path: web/src/components/atoms/Button/Button.tsx
+      Note: Button atom added after selected-state contrast issue
     - Path: web/src/components/corpus/ArtifactIdentityBar/ArtifactIdentityBar.module.css
       Note: Artifact identity local selector anatomy
     - Path: web/src/components/corpus/ArtifactIdentityBar/ArtifactIdentityBar.stories.tsx
@@ -22,8 +26,14 @@ RelatedFiles:
       Note: |-
         High-priority artifact identity cleanup target
         Artifact identity cleanup completed after audit
+    - Path: web/src/components/corpus/ChunkTimelineBar/ChunkTimelineBar.module.css
+      Note: Timeline local CSS replacing global chunk-bar styles
+    - Path: web/src/components/corpus/ChunkTimelineBar/ChunkTimelineBar.stories.tsx
+      Note: Timeline Storybook coverage
     - Path: web/src/components/corpus/ChunkTimelineBar/ChunkTimelineBar.tsx
-      Note: High-priority timeline CSS-module cleanup target
+      Note: |-
+        High-priority timeline CSS-module cleanup target
+        ChunkTimelineBar cleanup completed after audit
     - Path: web/src/components/corpus/IdentityBar/IdentityBar.module.css
       Note: IdentityBar local anatomy CSS
     - Path: web/src/components/corpus/IdentityBar/IdentityBar.stories.tsx
@@ -42,6 +52,7 @@ LastUpdated: 2026-06-01T19:30:00-04:00
 WhatFor: Use this audit to plan the next cleanup passes after foundation Storybook docs and to decide what should be extracted from each component.
 WhenToUse: Read before touching RAG React components, deleting global CSS, adding stories, or extracting new primitives/molecules/organisms/pages.
 ---
+
 
 
 

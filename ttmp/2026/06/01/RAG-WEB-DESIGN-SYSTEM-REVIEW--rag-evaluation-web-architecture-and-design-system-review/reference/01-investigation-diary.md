@@ -2605,3 +2605,104 @@ pnpm typecheck
 pnpm build
 pnpm build-storybook
 ```
+
+## Step 26: Add Button Atom and Move ChunkTimelineBar CSS Local
+
+The selected artifact identity buttons exposed a design-system gap: selected buttons were implemented ad hoc, and nesting `CodeText` inside a black selected button produced unreadable black-on-black text. I fixed the immediate contrast issue by introducing a reusable `Button` atom with explicit default, primary, selected, disabled, normal, and compact states, then migrated the artifact identity selectors to use it.
+
+I also completed the next Corpus cleanup target by moving `ChunkTimelineBar` out of global `chunk-bar-*` CSS and into a local CSS Module. The only remaining inline styles in that component are dynamic geometry (`left` and `width`), which the guidelines explicitly allow.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue the next high-priority cleanup after artifact identity bars, namely `ChunkTimelineBar`.
+
+**Inferred user intent:** The user wants the audit cleanup sequence to continue with stories and local CSS modules.
+
+**User prompt (verbatim):** "selected style in say, Artifact IdentityBar is all black : /tmp/pi-clipboard-873bd5fb-4e01-4720-b568-fe7e0ab2f07d.png (this issue might appear in other pleaces, it feels like Button should be an Atom maybe?"
+
+**Assistant interpretation:** The selected artifact identity button has a contrast/readability bug, and the broader pattern suggests buttons should be represented as a reusable atom rather than ad hoc/global button classes.
+
+**Inferred user intent:** The user wants the design system to address button states systematically, not just patch one selected-state CSS bug.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Added a reusable Button atom:
+  - `web/src/components/atoms/Button/Button.tsx`
+  - `Button.module.css`
+  - `Button.stories.tsx`
+  - `Button/index.ts`
+  - `atoms/index.ts`
+- Exported atoms from `web/src/components/index.ts`.
+- Migrated `ArtifactIdentityBar` selected identity options to `Button size="compact" selected`.
+- Removed the nested `CodeText` inside selected identity buttons to avoid black-on-black text.
+- Simplified `ArtifactIdentityBar.module.css` to only local bar/label/empty anatomy.
+- Added `ChunkTimelineBar.module.css` and moved the timeline CSS out of `web/src/index.css`.
+- Converted timeline chunks from generic divs to buttons with `aria-label` and `aria-pressed`.
+- Added `ChunkTimelineBar.stories.tsx` with mixed coverage, all embedded, selected chunk, and empty states.
+- Added `ChunkTimelineBar/index.ts`.
+- Verified `rg -n "chunk-bar" src` returns no consumers after deleting the global block.
+
+### Why
+
+- The screenshot showed the selected artifact identity button text was unreadable.
+- Button states are a repeated atom-level concern, not a local Corpus concern.
+- `ChunkTimelineBar` was one of the last high-priority Corpus widgets using global CSS.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+- The Storybook build now includes `Design System/Atoms/Button` and `Component Library/Corpus/ChunkTimelineBar`.
+
+### What didn't work
+
+- The first `ChunkTimelineBar` story attempt omitted required `onSelect` in default args, causing Storybook/TypeScript errors. I added a noop default and reran validation successfully.
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+
+### What I learned
+
+- The selected-state contrast issue was not just an ArtifactIdentityBar bug; it showed that button visual states should be owned by an atom.
+- `ChunkTimelineBar` is a good example of the inline-style rule: dynamic geometry belongs inline, static geometry/anatomy belongs in a CSS Module.
+
+### What was tricky to build
+
+- The selected identity label originally used `CodeText`, whose CSS forces `color: var(--mac-text)`. That was incompatible with a selected black button. Rather than adding cross-component override hacks, the selected button now owns the text style directly.
+- The timeline needed to remain absolutely positioned, so only `left` and `width` stayed inline.
+
+### What warrants a second pair of eyes
+
+- Whether the Button atom should immediately replace all remaining global `.btn` consumers or whether that should happen in smaller focused passes.
+- Whether compact selected buttons need a stronger focus-visible style for keyboard users.
+
+### What should be done in the future
+
+- Migrate remaining `.btn`/`.btn-primary` consumers to the Button atom.
+- Continue global CSS cleanup by removing button globals only after `rg` confirms no active consumers.
+- Move on to Search/Corpus/Workflow page-boundary story splits after Corpus identity/timeline cleanup.
+
+### Code review instructions
+
+- Start with `web/src/components/atoms/Button/Button.tsx` and `Button.module.css`.
+- Review `ArtifactIdentityBar.tsx` to confirm selected identity payload behavior is unchanged and selected text remains readable.
+- Review `ChunkTimelineBar.tsx` and `.module.css` to confirm only dynamic geometry remains inline.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+rg -n "chunk-bar" src || true
+```

@@ -258,37 +258,6 @@ body {
   height: 7px;
 }
 
-/* ===== Chunk Timeline ===== */
-.chunk-bar-container {
-  position: relative;
-  height: 28px;
-  background: var(--mac-surface);
-  border: 1px solid var(--mac-border);
-  overflow: hidden;
-}
-
-.chunk-bar {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  border-right: 1px solid #CCCCCC;
-  cursor: pointer;
-}
-
-.chunk-bar.embedded {
-  background: var(--mac-bg-dark);
-}
-
-.chunk-bar.not-embedded {
-  background: var(--mac-surface-2);
-}
-
-.chunk-bar.selected {
-  outline: 2px solid var(--mac-accent);
-  outline-offset: -2px;
-  z-index: 1;
-}
-
 /* ===== Fieldset ===== */
 .fieldset {
   border: 1px solid var(--mac-border);
