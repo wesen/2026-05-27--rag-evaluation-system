@@ -14,6 +14,20 @@ Owners: []
 RelatedFiles:
     - Path: cmd/rag-eval/cmds/serve/server.go
       Note: HTTP server wiring for API handlers and embedded SPA
+    - Path: dmeta-ir/README.md
+      Note: RAG DMETA IR layer boundary overview
+    - Path: dmeta-ir/core-model/archetypes/10-search-workbench.yaml
+      Note: Core Search Workbench semantics
+    - Path: dmeta-ir/instantiations/rag-evaluation-dashboard.yaml
+      Note: First RAG dashboard instantiation
+    - Path: dmeta-ir/interactions/actions/10-search-workbench.yaml
+      Note: Search Workbench action contracts
+    - Path: dmeta-ir/interactions/representations/10-search-workbench.yaml
+      Note: Search Workbench visible obligations
+    - Path: dmeta-ir/meta-design-systems/web/lowering-rules.yaml
+      Note: Search Workbench lowering rules
+    - Path: dmeta-ir/meta-design-systems/web/widgets/search-workbench.yaml
+      Note: Web MDS Search Workbench templates
     - Path: internal/api/handlers.go
       Note: Go API route registry and search/corpus endpoint implementations used by the web app
     - Path: internal/api/workflow_artifact_handlers.go
@@ -84,6 +98,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 

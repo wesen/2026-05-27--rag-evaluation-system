@@ -12,6 +12,14 @@ DocType: reference
 Intent: long-term
 Owners: []
 RelatedFiles:
+    - Path: dmeta-ir/README.md
+      Note: Phase 3 diary evidence for catalog boundary
+    - Path: dmeta-ir/core-model/archetypes/10-search-workbench.yaml
+      Note: Phase 3 core-model diary evidence
+    - Path: dmeta-ir/interactions/representations/10-search-workbench.yaml
+      Note: Phase 3 Interaction IR diary evidence
+    - Path: dmeta-ir/meta-design-systems/web/widgets/search-workbench.yaml
+      Note: Phase 3 Web MDS diary evidence
     - Path: ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/design-doc/01-rag-evaluation-web-architecture-and-design-system-review.md
       Note: Primary report produced by the investigation
     - Path: web/package.json
@@ -50,6 +58,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -614,4 +623,118 @@ cd 2026-05-27--rag-evaluation-system/web
 pnpm typecheck
 pnpm build
 pnpm build-storybook
+```
+
+## Step 6: Seed the Search Workbench DMETA IR Catalog
+
+I started Phase 3 by adding the first RAG-local `dmeta-ir` catalog. This is intentionally a seed catalog rather than a generator-ready implementation: it names the Search Workbench core concepts, visible Interaction IR obligations/actions, Web MDS templates, lowering rules, token/recipe references, React target metadata, and the first instantiation.
+
+The catalog follows the boundary rules from the TTC design-system work. Core model files name target-neutral retrieval/corpus concepts; Interaction IR files name visible obligations and actions; Web MDS files choose Web dashboard templates, component levels, coarse layout recipes, CSS ownership, and Storybook contracts.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 5)
+
+**Assistant interpretation:** Continue the implementation after the Search Workbench component extraction, keeping documentation and commits aligned.
+
+**Inferred user intent:** The user wants the RAG design-system work to move from React extraction into the DMETA modeling layer while preserving an implementation diary.
+
+**Commit (code):** N/A at time of writing — implementation changes pending commit.
+
+### What I did
+
+- Added `dmeta-ir/README.md` explaining the layer boundaries.
+- Added explicit manifests:
+  - `dmeta-ir/core-model/00-index.yaml`
+  - `dmeta-ir/interactions/00-index.yaml`
+  - `dmeta-ir/meta-design-systems/web/00-index.yaml`
+- Added core model seed files:
+  - `dmeta-ir/core-model/archetypes/10-search-workbench.yaml`
+  - `dmeta-ir/core-model/capabilities/10-search-workbench.yaml`
+- Added Interaction IR seed files:
+  - `dmeta-ir/interactions/representations/10-search-workbench.yaml`
+  - `dmeta-ir/interactions/actions/10-search-workbench.yaml`
+  - `dmeta-ir/interactions/elaboration-rules/10-search-workbench.yaml`
+- Added Web MDS seed files:
+  - `dmeta-ir/meta-design-systems/web/component-system.yaml`
+  - `dmeta-ir/meta-design-systems/web/lowering-rules.yaml`
+  - `dmeta-ir/meta-design-systems/web/widgets/search-workbench.yaml`
+  - `dmeta-ir/meta-design-systems/web/style/tokens.yaml`
+  - `dmeta-ir/meta-design-systems/web/style/recipes.yaml`
+  - `dmeta-ir/meta-design-systems/web/targets/react.yaml`
+- Added the first instantiation:
+  - `dmeta-ir/instantiations/rag-evaluation-dashboard.yaml`
+- Validated that every YAML file parses with Python/PyYAML:
+  - `python3 - <<'PY' ... yaml.safe_load(...) ... PY`
+
+### Why
+
+- The review called out that the RAG repository had no `dmeta-ir`, which meant the important concepts only existed in React and Go code.
+- The Search Workbench now has extracted React boundaries, making it a good moment to formalize the IR names behind those components.
+- Explicit manifests and human-readable fields reduce future ambiguity and avoid glob-based catalog loading.
+
+### What worked
+
+- All YAML files parsed successfully.
+- The catalog maps directly onto the components already extracted in Phase 2:
+  - `SearchControlsPanel`
+  - `CoveragePanel`
+  - `QueryPresetList`
+  - `RetrievalResultsPanel`
+  - `ResultInspectorPanel`
+- The Web MDS templates include Storybook contracts that mirror existing stories.
+
+### What didn't work
+
+- There is not yet a repository-local DMETA validator for the RAG catalog. I used a parse-only YAML check for this step and recorded a follow-up to add duplicate-ID, manifest-reference, and human-readable-field validation.
+- There is not yet a generator path for RAG React scaffolds, so the instantiation records selected representations/actions/templates but does not produce generated output.
+
+### What I learned
+
+- The Search Workbench slice is now cohesive enough to model cleanly: query composition, coverage, presets, retrieval results, and result inspection each have clear IR representations.
+- The current custom event for `open_in_corpus` belongs in action `human_notes`; it is a known implementation detail, not a target-neutral contract.
+- Web MDS can stay coarse: component level, role, layout primitive/recipe, composition, CSS ownership, and stories are enough for this seed.
+
+### What was tricky to build
+
+- The main tricky part was avoiding React leakage into core or Interaction IR. For example, the core `RetrievalResult` archetype describes ranked evidence, while `RetrievalResultsPanel` only appears in Web MDS.
+- Another tricky point was naming coverage. I modeled `embedding_coverage_summary` as an Interaction IR representation because it is a visible obligation that changes how users interpret vector/hybrid search quality, not just a visual widget.
+
+### What warrants a second pair of eyes
+
+- Whether `query_preset_list` should remain a representation or become supporting Web-only content if presets stay purely demo-oriented.
+- Whether `copy_artifact_identity` belongs in the first slice or should be generalized later across corpus/workflow inspectors.
+- Whether Web MDS `css_ownership` values should align exactly with TTC's `none`, `anatomy_only`, `widget_internal`, and `page_chrome` vocabulary before validators are added.
+
+### What should be done in the future
+
+- Add a validation script for duplicate IDs, manifest references, required human-readable fields, and lowering-rule references.
+- Add generated scaffold output only after the RAG catalog has a tooling consumer.
+- Extend the catalog to corpus explorer and workflow monitor after the Search Workbench slice is validated.
+
+### Code review instructions
+
+- Start with `dmeta-ir/README.md` for the layer contract.
+- Then review:
+  - `dmeta-ir/core-model/archetypes/10-search-workbench.yaml`
+  - `dmeta-ir/interactions/representations/10-search-workbench.yaml`
+  - `dmeta-ir/meta-design-systems/web/widgets/search-workbench.yaml`
+  - `dmeta-ir/meta-design-systems/web/lowering-rules.yaml`
+- Validate YAML parsing with:
+  - `python3 - <<'PY' ... yaml.safe_load(...) ... PY`
+
+### Technical details
+
+Parse validation command:
+
+```bash
+cd 2026-05-27--rag-evaluation-system
+python3 - <<'PY'
+from pathlib import Path
+import yaml
+for p in Path('dmeta-ir').rglob('*.yaml'):
+    with p.open() as f:
+        yaml.safe_load(f)
+print('yaml ok')
+PY
 ```

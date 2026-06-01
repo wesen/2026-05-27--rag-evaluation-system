@@ -74,3 +74,18 @@ Completed the next Phase 2 increment by extracting ResultInspectorPanel and movi
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/search/SearchView.module.css — Page-local sizing and scroll ownership for Search Workbench shell
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/search/SearchView.tsx — Search page now owns data orchestration and composes ResultInspectorPanel with layout primitives
 
+
+## 2026-06-01
+
+Started Phase 3 by adding a RAG-local dmeta-ir catalog for the Search Workbench vertical slice
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/README.md — Documents RAG DMETA IR layer boundaries
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/core-model/archetypes/10-search-workbench.yaml — Core Search Workbench semantics
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/instantiations/rag-evaluation-dashboard.yaml — First Search Workbench instantiation
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/interactions/actions/10-search-workbench.yaml — Search Workbench actions
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/interactions/representations/10-search-workbench.yaml — Search Workbench visible obligations
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/meta-design-systems/web/lowering-rules.yaml — Interaction-to-Web lowering rules
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/dmeta-ir/meta-design-systems/web/widgets/search-workbench.yaml — Web MDS Search Workbench templates
+
