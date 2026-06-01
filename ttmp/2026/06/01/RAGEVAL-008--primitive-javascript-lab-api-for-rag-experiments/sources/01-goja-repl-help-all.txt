@@ -1,0 +1,54 @@
+
+  # goja-repl - JavaScript REPL CLI, TUI, and JSON server                     
+                                                                              
+  Create, evaluate, inspect, export, restore, serve, and interact with goja-  
+  backed REPL sessions.                                                       
+                                                                              
+  Run goja-repl help --ui to open the interactive help TUI.                   
+                                                                              
+  ## General topics                                                           
+                                                                              
+  Run goja-repl help <topic> to view a topic's page.                          
+                                                                              
+  • introduction - Introduction to go-go-goja                                 
+  • jsparse-framework-reference - JSParse Framework Reference                 
+  • inspectorapi-hybrid-service-guide - Inspector API Hybrid Service Guide    
+  • jsverbs-example-reference - jsverbs-example reference                     
+  • goja-plugin-user-guide - Using HashiCorp Plugins with go-go-goja          
+  • goja-plugin-developer-guide - HashiCorp plugin developer guide for go-go- 
+  goja                                                                        
+  • goja-docs-module-guide - Using the docs Module                            
+  • nodejs-primitives - Node.js Primitives in go-go-goja                      
+  • yaml-module - YAML Module                                                 
+  • express-module - Express-style HTTP Module                                
+  • uidsl-module - ui.dsl Module                                              
+  • bun-bundling-playbook-goja - Bun Bundling Playbook for Goja               
+                                                                              
+  ## Examples                                                                 
+                                                                              
+  Run goja-repl help <example> to view an example in full.                    
+                                                                              
+  • repl-usage - Using the Interactive REPL                                   
+  • jsverbs-example-fixture-format - jsverbs-example fixture format           
+                                                                              
+  ## Applications                                                             
+                                                                              
+  Run goja-repl help <application> to view an application in full.            
+                                                                              
+  • jsverbs-example-overview - jsverbs-example overview                       
+                                                                              
+  ## Tutorials                                                                
+                                                                              
+  Run goja-repl help <tutorial> to view a tutorial in full.                   
+                                                                              
+  • creating-modules - Creating Native Modules                                
+  • async-patterns - Asynchronous Patterns with Promises                      
+  • inspector-example-user-guide - Inspector Example User Guide               
+  • typescript-declaration-generator - TypeScript Declaration Generator for   
+  Native Modules                                                              
+  • jsverbs-example-developer-guide - jsverbs-example developer guide         
+  • plugin-tutorial-build-install - Tutorial: build and install a go-go-goja  
+  plugin                                                                      
+  • connected-eventemitters-developer-guide - Connected EventEmitter Developer
+  Guide                                                                       
+

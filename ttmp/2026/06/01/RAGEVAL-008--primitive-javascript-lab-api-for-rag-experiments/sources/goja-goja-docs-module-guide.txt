@@ -1,0 +1,214 @@
+
+  # Using the docs Module:                                                    
+                                                                              
+  Reference and usage guide for the runtime-scoped docs module that exposes   
+  help pages, jsdoc entries, and plugin metadata.                             
+                                                                              
+  The docs module gives JavaScript code a uniform way to inspect runtime      
+  documentation sources. It is available through require("docs") in runtimes  
+  that wire the documentation registrar, which now includes goja-repl tui.    
+                                                                              
+  This guide explains what the module exposes, what kinds of entries it       
+  returns, and how to use it in practice.                                     
+                                                                              
+  ## What the module aggregates                                               
+                                                                              
+  The module is a view over one or more documentation providers:              
+                                                                              
+  • embedded Glazed help pages from the main help system                      
+  • attached jsdoc stores, when a runtime registers one                       
+  • loaded plugin manifests, exports, and methods                             
+                                                                              
+  Each result tells you which source it came from. The module does not flatten
+  everything into one opaque blob.                                            
+                                                                              
+  ## Basic usage                                                              
+                                                                              
+    const docs = require("docs")                                              
+                                                                              
+    docs.sources()                                                            
+                                                                              
+  Typical result:                                                             
+                                                                              
+    [                                                                         
+      {                                                                       
+        id: "default-help",                                                   
+        kind: "glazed-help",                                                  
+        title: "Default Help",                                                
+        summary: "Embedded REPL help pages",                                  
+        runtimeScoped: false,                                                 
+        metadata: null,                                                       
+      },                                                                      
+      {                                                                       
+        id: "plugin-manifests",                                               
+        kind: "plugin",                                                       
+        title: "Plugin Manifests",                                            
+        summary: "Runtime-scoped plugin metadata",                            
+        runtimeScoped: true,                                                  
+        metadata: null,                                                       
+      },                                                                      
+    ]                                                                         
+                                                                              
+  ## API reference                                                            
+                                                                              
+  ### docs.sources()                                                          
+                                                                              
+  Return every registered documentation source descriptor.                    
+                                                                              
+  Use this first when you want to know what data is available in the current  
+  runtime.                                                                    
+                                                                              
+  ### docs.search(query)                                                      
+                                                                              
+  Search across one or more sources.                                          
+                                                                              
+  Accepted query fields:                                                      
+                                                                              
+  • text                                                                      
+  • sourceIds                                                                 
+  • kinds                                                                     
+  • topics                                                                    
+  • tags                                                                      
+  • limit                                                                     
+                                                                              
+  Example:                                                                    
+                                                                              
+    docs.search({                                                             
+      text: "plugin",                                                         
+      kinds: ["plugin-module", "plugin-method"],                              
+      limit: 10,                                                              
+    })                                                                        
+                                                                              
+  ### docs.get(ref)                                                           
+                                                                              
+  Fetch one entry by explicit reference object:                               
+                                                                              
+    docs.get({                                                                
+      sourceId: "default-help",                                               
+      kind: "help-section",                                                   
+      id: "repl-usage",                                                       
+    })                                                                        
+                                                                              
+  This returns null when the entry does not exist.                            
+                                                                              
+  ### docs.byID(sourceId, kind, id)                                           
+                                                                              
+  Convenience form of docs.get(...) when you already know the reference       
+  components.                                                                 
+                                                                              
+  Example:                                                                    
+                                                                              
+    docs.byID("plugin-manifests", "plugin-module", "plugin:examples:kv")      
+                                                                              
+  ### docs.bySlug(sourceId, slug)                                             
+                                                                              
+  Convenience helper for Glazed help pages:                                   
+                                                                              
+    docs.bySlug("default-help", "repl-usage")                                 
+                                                                              
+  ### docs.bySymbol(sourceId, symbol)                                         
+                                                                              
+  Convenience helper for jsdoc symbol entries:                                
+                                                                              
+    docs.bySymbol("workspace-jsdoc", "smoothstep")                            
+                                                                              
+  ## Entry shapes                                                             
+                                                                              
+  Every returned entry uses the same top-level structure:                     
+                                                                              
+    {                                                                         
+      ref: { sourceId, kind, id },                                            
+      title,                                                                  
+      summary,                                                                
+      body,                                                                   
+      topics,                                                                 
+      tags,                                                                   
+      path,                                                                   
+      kindLabel,                                                              
+      related,                                                                
+      metadata,                                                               
+    }                                                                         
+                                                                              
+  The shared shape is stable, but metadata is source-specific.                
+                                                                              
+  ## Help page examples                                                       
+                                                                              
+    const docs = require("docs")                                              
+    const replUsage = docs.bySlug("default-help", "repl-usage")               
+                                                                              
+    replUsage.title                                                           
+    replUsage.summary                                                         
+    replUsage.body                                                            
+    replUsage.metadata.commands                                               
+    replUsage.metadata.flags                                                  
+                                                                              
+  ## Plugin metadata examples                                                 
+                                                                              
+  Plugin entries are especially useful because they let you inspect manifests 
+  without reverse-engineering the JS callable surface.                        
+                                                                              
+  ### Module-level entry                                                      
+                                                                              
+    docs.byID("plugin-manifests", "plugin-module", "plugin:examples:kv")      
+                                                                              
+  ### Export-level entry                                                      
+                                                                              
+    docs.byID("plugin-manifests", "plugin-export", "plugin:examples:kv/store")
+                                                                              
+  ### Method-level entry                                                      
+                                                                              
+    docs.byID("plugin-manifests", "plugin-method", "plugin:examples:kv/store. 
+  get")                                                                       
+                                                                              
+  This is where rich method summaries, bodies, and tags now show up.          
+                                                                              
+  ## Common workflows                                                         
+                                                                              
+  ### Discover everything loaded from plugins                                 
+                                                                              
+    docs.search({                                                             
+      sourceIds: ["plugin-manifests"],                                        
+    })                                                                        
+                                                                              
+  ### Find all help pages about the REPL                                      
+                                                                              
+    docs.search({                                                             
+      sourceIds: ["default-help"],                                            
+      text: "repl",                                                           
+    })                                                                        
+                                                                              
+  ### Show method docs for a plugin object                                    
+                                                                              
+    docs.search({                                                             
+      sourceIds: ["plugin-manifests"],                                        
+      kinds: ["plugin-method"],                                               
+      text: "store",                                                          
+    })                                                                        
+                                                                              
+  ## Troubleshooting                                                          
+                                                                              
+   Problem                | Cause                  | Solution                 
+  ------------------------|------------------------|------------------------  
+   require("docs") fails  | The runtime was        | Use goja-repl tui, or    
+                          | created without the    | attach the GOJA-11       
+                          | documentation          | registrar in your own    
+                          | registrar              | runtime builder          
+   plugin-manifests       | No plugins were loaded | Pass --plugin-dir or     
+   source is missing      | in that runtime        | install plugins under    
+                          |                        | ~/.go-go-                
+                          |                        | goja/plugins/...         
+   docs.bySymbol(...)     | No jsdoc store was     | Attach a jsdoc           
+   returns null           | attached under that    | provider when            
+                          | source ID              | constructing your        
+                          |                        | runtime or query         
+                          |                        | docs.sources() first     
+   A plugin method has no | The plugin did not     | Add sdk.MethodDoc(...)   
+   body                   | publish method docs    | in the plugin SDK        
+                          |                        | declaration              
+                                                                              
+  ## See Also                                                                 
+                                                                              
+  • repl-usage                                                                
+  • goja-plugin-user-guide                                                    
+  • goja-plugin-developer-guide                                               
+
