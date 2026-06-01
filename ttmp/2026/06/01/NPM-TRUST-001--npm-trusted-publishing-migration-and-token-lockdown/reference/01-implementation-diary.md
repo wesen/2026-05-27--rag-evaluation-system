@@ -122,7 +122,7 @@ The key source-backed migration order is:
 
 I started the migration pilot on `@go-go-golems/os-repl`, one of the public workspace packages in `go-go-os-frontend`. The repository already has a `publish-npm` GitHub Actions workflow with OIDC permission and an `npm-production` environment, but it also still reads `NODE_AUTH_TOKEN` from Vault. That means the workflow is close to trusted publishing readiness, but the token path still exists and should not be considered fully locked down.
 
-The pilot reached the npm authentication boundary. I could validate the intended trusted-publisher configuration with `npm trust github --dry-run`, but the actual registry mutation failed because this machine is not logged into npm. That is a useful stopping point: the next action requires an npm-authenticated maintainer session with 2FA, not more repository edits.
+The pilot initially reached the npm authentication boundary. I could validate the intended trusted-publisher configuration with `npm trust github --dry-run`, but the actual registry mutation failed because this machine was not logged into npm. That established the exact command to run once an npm-authenticated maintainer session became available.
 
 ### Prompt Context
 
@@ -441,4 +441,189 @@ version: 0.1.6
 repo: go-go-golems/go-go-os-frontend
 workflow: publish-npm.yml
 environment: npm-production
+```
+
+## Step 3: Use the authenticated npm window for the `os-repl` pilot
+
+After the user authenticated npm locally, I resumed the `@go-go-golems/os-repl` pilot. This time the npm CLI could identify the current account and list the trusted publisher configuration for the package. That changed the situation: `os-repl` already has the expected GitHub Actions trusted publisher configuration.
+
+The remaining hardening step is package-level token lockdown. I attempted to set the package MFA mode through the npm CLI, but npm required an additional one-time-password authorization for the settings change. This is consistent with npm's documentation that modifying package settings requires 2FA. The command produced an npm CLI browser-auth URL, so the next action is a human 2FA confirmation, not a repository code change.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Ok, you have 5 minutes of auth, i should be logged in now."
+
+**Assistant interpretation:** Retry the npm trusted publishing pilot while the local npm CLI has a fresh authenticated session.
+
+**Inferred user intent:** The user wants the pilot to progress past the earlier E401 auth blocker and configure or verify the real npm package state.
+
+**Commit (code):** N/A — npm registry/package-setting investigation only so far.
+
+### What I did
+
+- Verified local npm authentication with npm latest:
+
+```bash
+npx -y npm@latest whoami
+```
+
+  Output:
+
+```text
+wesen3000
+```
+
+- Listed the trusted publisher config for the pilot package:
+
+```bash
+npx -y npm@latest trust list @go-go-golems/os-repl --json
+```
+
+  Output:
+
+```json
+{
+  "id": "3a36bac3-d905-4e91-bbec-458c600d8d35",
+  "type": "github",
+  "file": "publish-npm.yml",
+  "repository": "go-go-golems/go-go-os-frontend",
+  "environment": "npm-production",
+  "permissions": [
+    "createPackage"
+  ]
+}
+```
+
+- Checked package access status:
+
+```bash
+npx -y npm@latest access get status @go-go-golems/os-repl --json
+```
+
+  Output:
+
+```json
+{
+  "@go-go-golems/os-repl": "public"
+}
+```
+
+- Checked collaborators:
+
+```bash
+npx -y npm@latest access list collaborators @go-go-golems/os-repl --json
+```
+
+  Output:
+
+```json
+{
+  "wesen3000": "read-write"
+}
+```
+
+- Attempted the package-level token-lockdown setting through npm CLI:
+
+```bash
+npx -y npm@latest access set mfa=publish @go-go-golems/os-repl --json 2>&1
+```
+
+  Output:
+
+```text
+npm error code EOTP
+npm error This operation requires a one-time password.
+npm error Open this URL in your browser to authenticate:
+npm error   https://www.npmjs.com/auth/cli/***
+npm error
+npm error After authenticating, your token can be retrieved from:
+npm error   https://registry.npmjs.org/-/v1/done?authId=***
+{
+  "error": {
+    "code": "EOTP",
+    "summary": "This operation requires a one-time password.",
+    "detail": "Open this URL in your browser to authenticate:\n  https://www.npmjs.com/auth/cli/6ac0f3bf-c4ac-437c-bb98-95a181db83dc\n\nAfter authenticating, your token can be retrieved from:\n  https://registry.npmjs.org/-/v1/done?authId=6ac0f3bf-c4ac-437c-bb98-95a181db83dc",
+    "authUrl": "https://www.npmjs.com/auth/cli/6ac0f3bf-c4ac-437c-bb98-95a181db83dc",
+    "doneUrl": "https://registry.npmjs.org/-/v1/done?authId=6ac0f3bf-c4ac-437c-bb98-95a181db83dc"
+  }
+}
+```
+
+- Checked account token inventory:
+
+```bash
+npx -y npm@latest token list --json 2>&1
+```
+
+  Output:
+
+```json
+[]
+```
+
+### Why
+
+- Listing the trust config was necessary before creating anything. The package already had the correct trusted publisher, so creating another one would have been wrong.
+- Checking token inventory helps confirm the user's statement that the old token was deleted.
+- Attempting `npm access set mfa=publish` tested whether the package-level token-disallow setting can be managed through CLI instead of the npm website.
+
+### What worked
+
+- The local npm session is now authenticated as `wesen3000`.
+- `@go-go-golems/os-repl` already has a trusted publisher configured for:
+  - repository: `go-go-golems/go-go-os-frontend`
+  - workflow: `publish-npm.yml`
+  - environment: `npm-production`
+- The account's npm token list is empty according to `npm token list --json`.
+
+### What didn't work
+
+- Package-level MFA/token-lockdown setting still requires explicit 2FA confirmation. The CLI returned `EOTP` and provided a browser-auth URL.
+- I did not complete the `mfa=publish` change because the OTP/browser confirmation was not completed inside the command session.
+
+### What I learned
+
+- The `os-repl` trusted publisher itself is already correctly installed. The remaining mismatch observed by the user is likely the package Publishing access mode, not the trusted publisher relationship.
+- The shared workflow still contains Vault token wiring even though the pilot package can match an OIDC trusted publisher.
+- npm package-setting modifications have stronger 2FA requirements than `trust list`, even within an authenticated session.
+
+### What was tricky to build
+
+The tricky part is mapping npm's old CLI vocabulary to the current website language. The website says `Require two-factor authentication and disallow tokens`; the CLI exposes `npm access set mfa=none|publish|automation`. Based on npm's historical naming and the current docs, `mfa=publish` is the likely CLI equivalent for requiring interactive 2FA and disallowing automation-token publishing, while `mfa=automation` corresponds to allowing automation/bypass-token publishing. This should be confirmed after the setting is applied by checking the npm package UI.
+
+### What warrants a second pair of eyes
+
+- Confirm that `npm access set mfa=publish` is still the correct CLI representation of `Require two-factor authentication and disallow tokens` in npm's current UI.
+- Confirm whether `permissions: ["createPackage"]` in `npm trust list` is npm's current label for `--allow-publish`.
+- Decide whether to change the shared workflow now or wait until every public package has matching trusted publisher config.
+
+### What should be done in the future
+
+- Complete the OTP/browser confirmation for:
+
+```bash
+npx -y npm@latest access set mfa=publish @go-go-golems/os-repl --json
+```
+
+- Verify the package UI shows `Require two-factor authentication and disallow tokens`.
+- Trigger a dry-run workflow dispatch for `package_set=single`, `package_name=@go-go-golems/os-repl`, `dry_run=true` to ensure the workflow still builds and packs the package.
+- Plan a tokenless workflow edit after all packages are trusted or after a one-package OIDC pilot path is isolated.
+
+### Code review instructions
+
+- No repository code changed in this step.
+- Review the diary command outputs to confirm actual npm state.
+- If completing token lockdown, prefer a second terminal/browser session where the user can approve the OTP URL immediately.
+
+### Technical details
+
+Current verified `os-repl` npm trust state:
+
+```text
+trust id: 3a36bac3-d905-4e91-bbec-458c600d8d35
+type: github
+repository: go-go-golems/go-go-os-frontend
+workflow file: publish-npm.yml
+environment: npm-production
+permissions: createPackage
 ```

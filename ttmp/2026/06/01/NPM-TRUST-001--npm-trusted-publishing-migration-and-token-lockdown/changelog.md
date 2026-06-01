@@ -25,3 +25,12 @@ Started @go-go-golems/os-repl trusted publishing pilot: audited go-go-os-fronten
 - /home/manuel/code/wesen/go-go-golems/go-go-os-frontend/packages/os-repl/package.json — Pilot package metadata
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/NPM-TRUST-001--npm-trusted-publishing-migration-and-token-lockdown/reference/01-implementation-diary.md — Detailed pilot diary with exact commands and outputs
 
+
+## 2026-06-01
+
+Used authenticated npm session for os-repl pilot: confirmed trusted publisher exists, confirmed npm token list is empty, and hit EOTP on package-level mfa=publish token-lockdown setting.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/NPM-TRUST-001--npm-trusted-publishing-migration-and-token-lockdown/reference/01-implementation-diary.md — Step 3 records authenticated npm pilot commands and OTP blocker
+
