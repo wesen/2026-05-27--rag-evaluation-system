@@ -61,3 +61,16 @@ Continued Phase 2 by extracting SearchControlsPanel, RetrievalResultsPanel, Cove
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx — Extracted search controls organism
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/search/SearchView.tsx — Refactored to compose extracted Search Workbench components
 
+
+## 2026-06-01
+
+Completed the next Phase 2 increment by extracting ResultInspectorPanel and moving the Search Workbench shell onto DashboardGrid/Stack
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded ResultInspector extraction and layout primitive adoption
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.stories.tsx — Storybook examples for inspector states
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx — Extracted selected-result inspector organism
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/search/SearchView.module.css — Page-local sizing and scroll ownership for Search Workbench shell
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/search/SearchView.tsx — Search page now owns data orchestration and composes ResultInspectorPanel with layout primitives
+

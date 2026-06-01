@@ -31,6 +31,7 @@
 - [x] Phase 2 follow-up: extract `CoveragePanel` with complete and sparse coverage Storybook stories.
 - [x] Phase 2 follow-up: extract `QueryPresetList` with TTC query Storybook story.
 - [x] Phase 2 follow-up: refactor `SearchView.tsx` to compose extracted controls/results/coverage/preset components while preserving behavior.
-- [ ] Phase 2 follow-up: extract `ResultInspectorPanel` and add stories for detail, chunk, document, loading, and no-document states.
-- [ ] Phase 2 follow-up: migrate Search Workbench layout from inline styles to `DashboardGrid`/`Stack` after inspector extraction.
+- [x] Phase 2 follow-up: extract `ResultInspectorPanel` and add stories for detail/BM25/document-loading inspector states.
+- [x] Phase 2 follow-up: migrate Search Workbench page shell from inline flex layout to `DashboardGrid`/`Stack` plus `SearchView.module.css`.
+- [ ] Phase 2 follow-up: expand `ResultInspectorPanel` stories with explicit chunk-tab, document-tab, and no-document states once tab state can be controlled externally or via story interactions.
 - [ ] Phase 3: add initial `dmeta-ir` core/interaction/Web MDS YAML for the Search Workbench vertical slice.

@@ -26,10 +26,14 @@ RelatedFiles:
       Note: Phase 2 extraction diary evidence
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
       Note: Phase 2 extraction diary evidence
+    - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx
+      Note: Phase 2 inspector extraction diary evidence
     - Path: web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.tsx
       Note: Phase 2 extraction diary evidence
     - Path: web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx
       Note: Phase 2 extraction diary evidence
+    - Path: web/src/components/search/SearchView.module.css
+      Note: Phase 2 layout primitive migration diary evidence
     - Path: web/src/components/search/SearchView.tsx
       Note: |-
         First recommended vertical-slice evidence
@@ -46,6 +50,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -494,6 +499,107 @@ This step follows the playbook's vertical-slice approach. The Search view is no 
   - `web/src/components/organisms/RetrievalResultsPanel/`
   - `web/src/components/molecules/CoveragePanel/`
   - `web/src/components/molecules/QueryPresetList/`
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```
+
+## Step 5: Extract the Result Inspector and Move Search Layout onto Primitives
+
+I finished the next Phase 2 increment by pulling the selected-result inspector out of `SearchView.tsx` and into a dedicated `ResultInspectorPanel` organism. This keeps document-fetching orchestration in the Search page while moving the tabbed result/detail/chunk/document presentation into a reusable component with Storybook examples.
+
+I also moved the Search Workbench page shell away from a page-level inline flex layout and onto the new `DashboardGrid` and `Stack` layout primitives. The remaining page-local CSS now only owns Search-view sizing and scroll behavior in `SearchView.module.css`.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue, keep a diary, commit at appropriate intervals."
+
+**Assistant interpretation:** Continue the RAG Phase 2 implementation, maintain the investigation diary as work proceeds, and create focused commits after validated increments.
+
+**Inferred user intent:** The user wants momentum through the Search Workbench design-system slice without losing implementation traceability or leaving uncommitted validated work behind.
+
+**Commit (code):** N/A at time of writing — implementation changes pending commit.
+
+### What I did
+
+- Extracted `ResultInspectorPanel` to:
+  - `web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx`
+  - `web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.stories.tsx`
+  - `web/src/components/organisms/ResultInspectorPanel/index.ts`
+- Updated `web/src/components/organisms/index.ts` to export `ResultInspectorPanel`.
+- Refactored `SearchView.tsx` so it:
+  - fetches selected document detail with `useGetCorpusDocumentQuery`,
+  - dispatches the existing `rag:navigate-to-chunk` event from the page layer,
+  - passes `result`, `docDetail`, `onClose`, and `onOpenInCorpus` into `ResultInspectorPanel`.
+- Added `web/src/components/search/SearchView.module.css` for Search page shell sizing/scroll behavior.
+- Replaced Search page shell inline flex layout with:
+  - `DashboardGrid recipe="searchWorkbench"`,
+  - `Stack` for the left controls rail,
+  - `Stack` for the results column.
+- Added Storybook examples for:
+  - a populated hybrid inspector,
+  - document-loading state,
+  - BM25-only result state.
+
+### Why
+
+- `ResultInspectorPanel` was the largest remaining chunk of presentational UI inside `SearchView.tsx`.
+- Keeping the RTK Query hook in `SearchView.tsx` preserves the current data-flow boundary while making the inspector storyable with mock data.
+- Moving the outer shell to `DashboardGrid` proves the layout primitives can host real application pages, not just isolated Storybook demos.
+
+### What worked
+
+- The extraction preserved TypeScript correctness.
+- The Storybook build now includes `ResultInspectorPanel`.
+- Validation passed:
+  - `pnpm typecheck`
+  - `pnpm build`
+  - `pnpm build-storybook`
+
+### What didn't work
+
+- `pnpm build` again rewrote `internal/web/dist/index.html` because Vite emits the SPA into the Go embed directory. I reverted that file before committing, as in the previous step, because the emitted hashed assets are ignored and the tracked HTML would otherwise point at ignored build artifacts.
+- I did not add separate stories that open the chunk/document tabs by default because `ResultInspectorPanel` currently owns its active tab internally. Those states are reachable interactively in Storybook, but explicit initial-tab stories should wait for a small controlled-tab API or play-function interaction.
+
+### What I learned
+
+- The useful boundary is container/page versus presentational organism: Search page owns API fetching and cross-view navigation events; `ResultInspectorPanel` owns result-detail rendering.
+- The new `DashboardGrid` primitive already has a `searchWorkbench` recipe that matches this page well enough to remove the top-level inline flex shell.
+- The inspector's internal tab state is a small obstacle to exhaustive static story coverage.
+
+### What was tricky to build
+
+- The main tricky part was not moving the RTK Query hook into the presentational component. Doing so would make Storybook harder to isolate and would entangle the organism with live API assumptions. I kept the query in `SearchView.tsx` and passed `docDetail` as data.
+- The `Open in Corpus` action also needed to remain behavior-preserving. I moved only the event dispatch callback to the page and passed it as `onOpenInCorpus`, keeping the custom event contract unchanged.
+
+### What warrants a second pair of eyes
+
+- Whether `ResultInspectorPanel` should expose a controlled `activeTab`/`defaultTab` API for stronger Storybook state coverage.
+- Whether the `rag:navigate-to-chunk` custom event should be replaced by typed route state or a dashboard navigation store in a later phase.
+- Whether page shell sizing belongs in `SearchView.module.css` or should become a reusable app-frame primitive once more pages migrate.
+
+### What should be done in the future
+
+- Add explicit chunk-tab and document-tab stories via controlled tab props or Storybook play interactions.
+- Start Phase 3 `dmeta-ir` YAML now that the Search Workbench component boundary is stable enough to model.
+- Keep replacing inline internals gradually, but avoid abstracting table rows or metadata grids until repetition across pages proves the need.
+
+### Code review instructions
+
+- Start with `web/src/components/search/SearchView.tsx` to verify that API fetching and navigation behavior stayed in the page layer.
+- Review `web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx` for the presentational split.
+- Review `web/src/components/search/SearchView.module.css` for the new page-local layout ownership.
 - Validate with:
   - `cd web && pnpm typecheck`
   - `cd web && pnpm build`
