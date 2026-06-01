@@ -243,3 +243,14 @@ Refactored SubmitIntakeModal through Panel, Stack, FormRow, and Caption while pr
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded intake modal primitive adoption
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — Workflow intake modal now uses shared form/layout primitives
 
+
+## 2026-06-01
+
+Cleaned up CoveragePanel and QueryPresetList to use shared foundation/layout/molecule primitives instead of global panel/table/text classes
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded Search support molecule CSS ownership cleanup
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/CoveragePanel/CoveragePanel.tsx — Coverage support molecule now uses Panel/MetadataGrid/DataTable/StatusText
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/QueryPresetList/QueryPresetList.tsx — Query presets now use Panel/Stack/Caption with local button anatomy
+

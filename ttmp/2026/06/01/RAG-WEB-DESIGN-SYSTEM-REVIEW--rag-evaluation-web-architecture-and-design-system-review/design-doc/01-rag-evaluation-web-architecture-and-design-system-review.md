@@ -97,13 +97,17 @@ RelatedFiles:
     - Path: web/src/components/layout/TabList/TabList.tsx
       Note: Controlled tab primitive added from reusable design-system plan
     - Path: web/src/components/molecules/CoveragePanel/CoveragePanel.tsx
-      Note: Phase 2 extracted embedding coverage molecule
+      Note: |-
+        Phase 2 extracted embedding coverage molecule
+        CoveragePanel CSS ownership cleanup using shared primitives
     - Path: web/src/components/molecules/DataTable/DataTable.tsx
       Note: Reusable dense data table molecule for results/lists
     - Path: web/src/components/molecules/MetadataGrid/MetadataGrid.tsx
       Note: Reusable metadata grid molecule for inspectors/details
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
-      Note: Phase 2 extracted query preset molecule
+      Note: |-
+        Phase 2 extracted query preset molecule
+        QueryPresetList CSS ownership cleanup using shared primitives
     - Path: web/src/components/organisms/QueueHealthPanel/QueueHealthPanel.tsx
       Note: Workflow queue health organism
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css
@@ -162,6 +166,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 

@@ -1,3 +1,7 @@
+import { Caption } from '../../foundation';
+import { Panel, Stack } from '../../layout';
+import styles from './QueryPresetList.module.css';
+
 export interface QueryPresetListProps {
   queries: string[];
   onSelect: (query: string) => void;
@@ -5,22 +9,14 @@ export interface QueryPresetListProps {
 
 export function QueryPresetList({ queries, onSelect }: QueryPresetListProps) {
   return (
-    <div className="panel" data-rag-component="QueryPresetList">
-      <div className="panel-header"><span>Test Queries</span></div>
-      <div className="panel-body-condensed" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {queries.map(q => (
-          <span
-            key={q}
-            className="text-mono"
-            style={{ cursor: 'pointer', padding: '2px 4px', fontSize: 10 }}
-            onClick={() => onSelect(q)}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--mac-surface-2)')}
-            onMouseLeave={e => (e.currentTarget.style.background = '')}
-          >
-            {q}
-          </span>
+    <Panel title="Test Queries" density="condensed" data-rag-component="QueryPresetList">
+      <Stack gap="xs">
+        {queries.map(query => (
+          <button key={query} type="button" className={styles.item} onClick={() => onSelect(query)}>
+            <Caption tone="inherit">{query}</Caption>
+          </button>
         ))}
-      </div>
-    </div>
+      </Stack>
+    </Panel>
   );
 }

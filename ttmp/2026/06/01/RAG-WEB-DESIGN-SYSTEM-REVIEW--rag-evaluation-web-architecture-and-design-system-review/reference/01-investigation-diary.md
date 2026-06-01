@@ -53,13 +53,17 @@ RelatedFiles:
     - Path: web/src/components/layout/index.ts
       Note: Phase 1 layout primitive barrel
     - Path: web/src/components/molecules/CoveragePanel/CoveragePanel.tsx
-      Note: Phase 2 extraction diary evidence
+      Note: |-
+        Phase 2 extraction diary evidence
+        Diary evidence for support molecule primitive adoption
     - Path: web/src/components/molecules/DataTable/DataTable.tsx
       Note: Diary evidence for reusable molecule extraction
     - Path: web/src/components/molecules/MetadataGrid/MetadataGrid.tsx
       Note: Diary evidence for reusable molecule extraction
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
-      Note: Phase 2 extraction diary evidence
+      Note: |-
+        Phase 2 extraction diary evidence
+        Diary evidence for support molecule primitive adoption
     - Path: web/src/components/organisms/QueueHealthPanel/QueueHealthPanel.tsx
       Note: Diary evidence for workflow organism extraction
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css
@@ -113,6 +117,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -1920,4 +1925,92 @@ cd 2026-05-27--rag-evaluation-system/web
 pnpm typecheck
 pnpm build
 pnpm build-storybook
+```
+
+## Step 19: Clean Up Search Support Molecules Against Foundation Ownership
+
+I audited remaining global panel/table/text class usage after the workflow extraction and cleaned up two Search support molecules that still had old global structure embedded in them. `CoveragePanel` and `QueryPresetList` now use the shared design-system primitives instead of rendering their own global `panel`, `panel-header`, `data-table`, `meta-grid`, and `text-mono` structure.
+
+This is a small but important CSS-ownership pass. It follows the TTC foundation guidance by moving typography/status/table/metadata ownership into foundation/layout/molecule primitives while keeping only component-specific anatomy in local CSS modules.
+
+### Prompt Context
+
+**User prompt (verbatim):** "go ahead"
+
+**Assistant interpretation:** Proceed with the next cleanup step: audit remaining global CSS usage and reduce foundation/layout debt where it is clearly safe.
+
+**Inferred user intent:** The user wants the design-system extraction to continue beyond large page splits into rigorous CSS ownership cleanup.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Refactored `CoveragePanel` to use:
+  - `Panel`
+  - `StatusText`
+  - `Caption`
+  - `MetadataGrid`
+  - `DataTable`
+- Added `CoveragePanel.module.css` for the remaining sparse-coverage warning anatomy.
+- Refactored `QueryPresetList` to use:
+  - `Panel`
+  - `Stack`
+  - `Caption`
+- Added `QueryPresetList.module.css` for query button hover/click anatomy.
+- Ran a scan of remaining global panel/table/text class usage to identify next cleanup candidates.
+
+### Why
+
+- These molecules were already extracted but still carried old global classes internally.
+- They are low-risk because they are small and covered by existing Storybook stories.
+- The design-system contract should be used consistently inside new/recently extracted components.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build-storybook` passed.
+- `pnpm build` passed.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+
+### What I learned
+
+- The remaining global CSS debt is now concentrated in older page/view areas (`EmbeddingsView`, `PipelineView`, some corpus identity/artifact bars, and Storybook demo snippets), rather than the main Search/Corpus/Workflow extracted panels.
+- Small molecules are good places to enforce the design-system rules because they should not need bespoke panel/table/metadata implementations.
+
+### What was tricky to build
+
+- The only tricky point was avoiding circular barrel imports from inside `CoveragePanel`; I imported `DataTable` and `MetadataGrid` directly from their sibling folders instead of from the molecule barrel.
+
+### What warrants a second pair of eyes
+
+- Whether `CoveragePanel` should eventually use a shared `CoverageStrip` if more visual coverage strips are normalized.
+- Whether `QueryPresetList` should be an organism if presets become stateful or source-aware; it is currently still a small molecule.
+
+### What should be done in the future
+
+- Continue global CSS cleanup in `EmbeddingsView`, `PipelineView`, `IdentityBar`, and `ArtifactIdentityBar`.
+- Replace story demo snippets that use raw global panel classes with actual `Panel` primitives.
+- Consider adding design-system overview stories for token/foundation usage once component cleanup stabilizes.
+
+### Code review instructions
+
+- Review `web/src/components/molecules/CoveragePanel/CoveragePanel.tsx` and `.module.css`.
+- Review `web/src/components/molecules/QueryPresetList/QueryPresetList.tsx` and `.module.css`.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build-storybook`
+  - `cd web && pnpm build`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build-storybook
+pnpm build
 ```
