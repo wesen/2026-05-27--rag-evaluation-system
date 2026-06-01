@@ -43,7 +43,9 @@
 ## Phase 4 — Documentation and delivery
 
 - [x] Write intern-friendly design and implementation guide.
+- [x] Write textbook-style developer handoff for the Geppetto JS API implementer.
 - [x] Update implementation diary for source capture and design work.
 - [x] Run `docmgr doctor` and fix hygiene issues.
 - [x] Upload the guide bundle to reMarkable.
+- [x] Upload the developer handoff to reMarkable.
 - [x] Commit ticket documentation.

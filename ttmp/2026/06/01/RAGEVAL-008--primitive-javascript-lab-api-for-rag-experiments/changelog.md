@@ -23,3 +23,13 @@ Validated ticket with docmgr doctor and uploaded RAGEVAL-008 Primitive JavaScrip
 
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAGEVAL-008--primitive-javascript-lab-api-for-rag-experiments/design-doc/01-primitive-javascript-lab-api-design-and-implementation-guide.md — Uploaded design guide bundle
 
+
+## 2026-06-01
+
+Added textbook-style Geppetto JS API developer handoff and uploaded RAGEVAL-008 Geppetto JS API Developer Handoff.pdf to reMarkable at /ai/2026/06/01/RAGEVAL-008.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAGEVAL-008--primitive-javascript-lab-api-for-rag-experiments/reference/01-implementation-diary.md — Diary Step 2 records handoff creation
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAGEVAL-008--primitive-javascript-lab-api-for-rag-experiments/reference/02-developer-handoff-geppetto-js-api.md — Developer handoff for Geppetto implementation
+

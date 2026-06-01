@@ -165,3 +165,94 @@ const embedder = gp.embeddings.fromProfile({ profileSlug: "openai-small" });
 const reranker = gp.rerank.fake();
 const ws = rag.workspace.open({ dbPath: "state/eval.db", root: "lab-runs/demo" });
 ```
+
+## Step 2: Write the Geppetto implementer handoff
+
+I added a focused handoff document for the developer who will implement the Geppetto portion of the JavaScript API. The design guide explains the whole cross-repository concept; the handoff narrows the frame to what should happen first in `geppetto/`: verify the JS harness, add the provider-side primitives, expose `gp.llm`, `gp.embeddings`, and `gp.rerank`, and keep runtime-owner async safety central.
+
+The handoff is written in a textbook style because the next developer needs more than a checklist. They need to understand the boundary. Geppetto should become the provider runtime for JavaScript intelligence primitives, while rag-eval later owns workspace, corpus, search, and experiment storage through a separate module.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Create a handoff document to a developer who is going to work on the JS API in geppetto, on what you would like to see, what the current status is, what is needed, etc...
+
+Store in the ticket. upload to remarkable. Write in a textbook writing style."
+
+**Assistant interpretation:** Add a ticket-local handoff reference document that tells a Geppetto implementer what to build, what exists now, what to avoid, what files to read, and how to validate the work; then upload that document to reMarkable.
+
+**Inferred user intent:** The user wants the next developer to start implementation with a clear conceptual model and concrete work plan, without needing to reconstruct the design discussion from prior conversation history.
+
+**Commit (code):** N/A — documentation update only at this step.
+
+### What I did
+
+- Added `reference/02-developer-handoff-geppetto-js-api.md` under the RAGEVAL-008 ticket.
+- Wrote the handoff around the Geppetto-specific scope: `gp.llm`, `gp.embeddings`, and `gp.rerank`.
+- Documented current status, desired end state, implementation order, acceptance criteria, and review checklist.
+- Related the handoff to the most important Geppetto files, including `module.go`, `api_engines.go`, `api_runner.go`, `api_owner_bridge.go`, `pkg/embeddings/embeddings.go`, and `pkg/doc/types/geppetto.d.ts`.
+- Updated `tasks.md` to include the handoff and upload work.
+
+### Why
+
+- The existing design guide is broad and includes future rag-eval `raglab` work. The implementer needs a smaller entry document focused on Geppetto.
+- The most important implementation risk is not naming; it is accidentally mixing boundaries or violating Goja async ownership rules.
+- A handoff document makes the first pull requests obvious: repair/confirm the harness, add embeddings fake JS API, add rerank package and fake JS API, then add LLM convenience API.
+
+### What worked
+
+- The design guide already contained enough evidence to produce a concise implementer-facing handoff.
+- The textbook style fit the subject well because the work depends on understanding responsibility boundaries before writing adapter code.
+- `docmgr doc relate` cleanly attached the implementation-relevant Geppetto files to the handoff document.
+
+### What didn't work
+
+- No implementation or tests were run for Geppetto because this step was intentionally documentation-only.
+- The known stale-harness issue remains open: the Geppetto README references `cmd/examples/geppetto-js-lab`, but that path was not present in the inspected checkout.
+
+### What I learned
+
+- The handoff should emphasize `gp.embeddings` as the best first implementation target because Geppetto already has a provider interface.
+- Reranking should start as a pure Go package with a fake provider before any JS adapter or live provider is introduced.
+- The LLM convenience layer should reuse the existing engine/runner machinery rather than creating a second inference stack.
+
+### What was tricky to build
+
+The main challenge was avoiding duplication with the full design guide. The handoff needed to be actionable for a developer, not a second architecture essay. I handled that by making it Geppetto-specific: desired end state, current status, boundary, API sketch, files to read, implementation order, acceptance criteria, and suggested first PRs.
+
+The other tricky part was keeping the style explanatory without making it vague. The handoff uses concrete TypeScript-like interfaces, file paths, test names, and command expectations so the prose remains tied to implementation.
+
+### What warrants a second pair of eyes
+
+- Whether the suggested first PR order matches the Geppetto maintainer's preference.
+- Whether `gp.llm`, `gp.embeddings`, and `gp.rerank` are the right namespace names.
+- Whether `gp.llm.fake()` should exist as a public API or only as a test helper.
+- Whether `cosineSimilarity` belongs under `gp.embeddings`.
+
+### What should be done in the future
+
+- Upload the handoff to reMarkable and record the result in the changelog.
+- Commit the updated ticket documents.
+- Start implementation with the harness repair/confirmation PR.
+
+### Code review instructions
+
+- Review the new handoff first:
+  - `ttmp/2026/06/01/RAGEVAL-008--primitive-javascript-lab-api-for-rag-experiments/reference/02-developer-handoff-geppetto-js-api.md`
+- Check that it stays consistent with the broader design guide:
+  - `ttmp/2026/06/01/RAGEVAL-008--primitive-javascript-lab-api-for-rag-experiments/design-doc/01-primitive-javascript-lab-api-design-and-implementation-guide.md`
+- Validate ticket hygiene with:
+
+```bash
+docmgr doctor --ticket RAGEVAL-008 --stale-after 30
+```
+
+### Technical details
+
+The handoff's implementation sequence is:
+
+1. Repair or confirm the documented Geppetto JS harness.
+2. Add pure Go service/provider primitives first.
+3. Add `gp.llm`, `gp.embeddings`, and `gp.rerank` JS adapters.
+4. Use Promise-safe runtime-owner settlement for blocking calls.
+5. Add runtime integration tests with fake providers.
+6. Add TypeScript declarations and runnable examples.
