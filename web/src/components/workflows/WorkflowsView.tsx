@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { Caption } from '../foundation';
+import { FormRow, Panel, Stack } from '../layout';
 import { QueueHealthPanel, WorkflowListPanel, WorkflowOpGraphPanel, WorkflowOpGroupsPanel, WorkflowOpInspectorPanel, WorkflowOpResultPanel, WorkflowSummaryPanel, workflowGroupKey } from '../organisms';
 import {
   useListWorkflowsQuery,
@@ -76,99 +78,71 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
 
   return (
     <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="panel modal-panel">
-        <div className="panel-header">
-          <span>Submit Intake Workflow</span>
-          <button className="copy-btn" onClick={onClose}>✕</button>
-        </div>
-        <div className="panel-body-condensed" style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 10 }}>
+      <Panel
+        className="modal-panel"
+        title="Submit Intake Workflow"
+        actions={<button className="copy-btn" onClick={onClose}>✕</button>}
+        density="condensed"
+      >
+        <Stack gap="sm" style={{ padding: 10 }}>
           <fieldset className="form-section">
             <legend>Document Selection</legend>
-            <div className="form-row">
-              <label>Source IDs</label>
-              <input className="input" style={{ flex: 1 }} value={sourceInput}
-                onChange={e => setSourceInput(e.target.value)} placeholder="ttc-guides, ttc-articles" />
-            </div>
-            {sourceNames.length > 0 && (
-              <div className="text-dim text-mono" style={{ fontSize: 10 }}>
-                Available: {sourceNames.join(', ')}
-              </div>
-            )}
-            <div className="form-row">
-              <label>Strategy</label>
-              <span className="mono" style={{ fontWeight: 'bold' }}>{strategyId}</span>
-            </div>
+            <Stack gap="xs">
+              <FormRow
+                label="Source IDs"
+                control={<input className="input" style={{ width: '100%' }} value={sourceInput} onChange={e => setSourceInput(e.target.value)} placeholder="ttc-guides, ttc-articles" />}
+              />
+              {sourceNames.length > 0 && <Caption>Available: {sourceNames.join(', ')}</Caption>}
+              <FormRow label="Strategy" control={<Caption tone="accent">{strategyId}</Caption>} />
+            </Stack>
           </fieldset>
 
           <fieldset className="form-section">
             <legend>Chunking</legend>
-            <div className="form-row">
-              <label>Strategy</label>
-              <select className="select" value={form.strategy} onChange={e => set('strategy', e.target.value)}>
-                <option value="fixed">fixed</option>
-                <option value="recursive">recursive</option>
-              </select>
-            </div>
-            <div className="form-row">
-              <label>Chunk Size</label>
-              <input className="input" type="number" value={form.chunk_size}
-                onChange={e => set('chunk_size', +e.target.value)} style={{ width: 80 }} />
-            </div>
-            <div className="form-row">
-              <label>Overlap</label>
-              <input className="input" type="number" value={form.overlap}
-                onChange={e => set('overlap', +e.target.value)} style={{ width: 80 }} />
-            </div>
+            <Stack gap="xs">
+              <FormRow
+                label="Strategy"
+                control={(
+                  <select className="select" value={form.strategy} onChange={e => set('strategy', e.target.value)}>
+                    <option value="fixed">fixed</option>
+                    <option value="recursive">recursive</option>
+                  </select>
+                )}
+              />
+              <FormRow label="Chunk Size" control={<input className="input" type="number" value={form.chunk_size} onChange={e => set('chunk_size', +e.target.value)} style={{ width: 80 }} />} />
+              <FormRow label="Overlap" control={<input className="input" type="number" value={form.overlap} onChange={e => set('overlap', +e.target.value)} style={{ width: 80 }} />} />
+            </Stack>
           </fieldset>
 
           <fieldset className="form-section">
             <legend>Embedding</legend>
-            <div className="form-row">
-              <label>Compute</label>
-              <input type="checkbox" checked={!form.skip_embeddings}
-                onChange={e => set('skip_embeddings', !e.target.checked)} />
-            </div>
-            {!form.skip_embeddings && (
-              <>
-                <div className="form-row">
-                  <label>Provider</label>
-                  <select className="select" value={form.embeddings_type}
-                    onChange={e => set('embeddings_type', e.target.value)}>
-                    <option value="ollama">ollama</option>
-                    <option value="openai">openai</option>
-                  </select>
-                </div>
-                <div className="form-row">
-                  <label>Engine</label>
-                  <input className="input" value={form.embeddings_engine}
-                    onChange={e => set('embeddings_engine', e.target.value)} />
-                </div>
-                <div className="form-row">
-                  <label>Dimensions</label>
-                  <input className="input" type="number" value={form.embeddings_dimensions}
-                    onChange={e => set('embeddings_dimensions', +e.target.value)} style={{ width: 80 }} />
-                </div>
-                <div className="form-row">
-                  <label>Batch Size</label>
-                  <input className="input" type="number" value={form.batch_size}
-                    onChange={e => set('batch_size', +e.target.value)} style={{ width: 80 }} />
-                </div>
-              </>
-            )}
+            <Stack gap="xs">
+              <FormRow label="Compute" control={<input type="checkbox" checked={!form.skip_embeddings} onChange={e => set('skip_embeddings', !e.target.checked)} />} />
+              {!form.skip_embeddings && (
+                <>
+                  <FormRow
+                    label="Provider"
+                    control={(
+                      <select className="select" value={form.embeddings_type} onChange={e => set('embeddings_type', e.target.value)}>
+                        <option value="ollama">ollama</option>
+                        <option value="openai">openai</option>
+                      </select>
+                    )}
+                  />
+                  <FormRow label="Engine" control={<input className="input" value={form.embeddings_engine} onChange={e => set('embeddings_engine', e.target.value)} />} />
+                  <FormRow label="Dimensions" control={<input className="input" type="number" value={form.embeddings_dimensions} onChange={e => set('embeddings_dimensions', +e.target.value)} style={{ width: 80 }} />} />
+                  <FormRow label="Batch Size" control={<input className="input" type="number" value={form.batch_size} onChange={e => set('batch_size', +e.target.value)} style={{ width: 80 }} />} />
+                </>
+              )}
+            </Stack>
           </fieldset>
 
           <fieldset className="form-section">
             <legend>BM25 Index</legend>
-            <div className="form-row">
-              <label>Build</label>
-              <input type="checkbox" checked={!form.skip_bm25}
-                onChange={e => set('skip_bm25', !e.target.checked)} />
-            </div>
+            <FormRow label="Build" control={<input type="checkbox" checked={!form.skip_bm25} onChange={e => set('skip_bm25', !e.target.checked)} />} />
           </fieldset>
 
-          {error && (
-            <div className="error-box">{error}</div>
-          )}
+          {error && <div className="error-box">{error}</div>}
 
           <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 4 }}>
             <button className="btn" onClick={onClose}>Cancel</button>
@@ -176,8 +150,8 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
               {submitting ? 'Submitting…' : 'Submit Workflow'}
             </button>
           </div>
-        </div>
-      </div>
+        </Stack>
+      </Panel>
     </div>
   );
 };

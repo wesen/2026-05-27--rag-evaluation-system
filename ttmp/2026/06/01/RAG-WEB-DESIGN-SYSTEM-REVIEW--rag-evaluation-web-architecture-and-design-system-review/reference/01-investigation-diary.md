@@ -100,6 +100,7 @@ RelatedFiles:
       Note: |-
         Diary evidence for sampled-op inspector composition
         Diary evidence for op result container/presentation split
+        Diary evidence for intake modal primitive adoption
     - Path: web/src/index.css
       Note: CSS/design-system evidence
     - Path: web/src/services/api.ts
@@ -112,6 +113,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -1813,6 +1815,97 @@ This finishes the main workflow-detail extraction target identified in the previ
 
 - Review `web/src/components/organisms/WorkflowOpResultPanel/WorkflowOpResultPanel.tsx`.
 - Review `OpResultSection` in `web/src/components/workflows/WorkflowsView.tsx` to confirm it only fetches and delegates rendering.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```
+
+## Step 18: Refactor the Intake Modal Form Through Layout/Foundation Primitives
+
+I continued the workflow cleanup by refactoring the intake workflow modal's form structure through the shared design-system primitives. The modal still lives inside `WorkflowsView` because it owns mutation state and submission behavior, but its field layout now uses `Panel`, `Stack`, `FormRow`, and `Caption` instead of repeated `form-row` divs and ad hoc text classes.
+
+This follows the TTC foundation guidance: keep behavior and feature-specific form grouping local, but move repeated foundation and layout concerns into primitives. The result is not a new abstraction for every form field; it is a cleaner use of the already-extracted layout vocabulary.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 17)
+
+**Assistant interpretation:** Continue cleaning remaining workflow UI surfaces after extracting the op result panel.
+
+**Inferred user intent:** The user wants the workflow dashboard to keep reducing repeated CSS/layout patterns while preserving behavior.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Refactored `SubmitIntakeModal` inside `web/src/components/workflows/WorkflowsView.tsx` to use:
+  - `Panel` for the modal shell,
+  - `Stack` for vertical field grouping,
+  - `FormRow` for label/control rows,
+  - `Caption` for strategy and available-source metadata.
+- Preserved existing behavior:
+  - source input parsing,
+  - strategy id derivation,
+  - chunking settings,
+  - embedding toggles/settings,
+  - BM25 toggle,
+  - error display,
+  - submit/cancel actions.
+
+### Why
+
+- The modal had many repeated form-row/layout classes that overlapped with the new layout primitives.
+- This was the main remaining workflow form structure after the list/detail/op panels were extracted.
+- Keeping the mutation logic in the view avoids turning a presentational form into an API-aware component prematurely.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+
+### What didn't work
+
+- The first edit accidentally left a duplicate `);` after the modal return block, causing TypeScript parse errors:
+  - `TS1128: Declaration or statement expected.`
+- I removed the extra closing expression and reran validation successfully.
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+
+### What I learned
+
+- `FormRow` is useful for workflow forms without needing a large form framework.
+- It is still appropriate for `WorkflowsView` to own modal submission state until/unless a storyable presentational `SubmitIntakeWorkflowForm` becomes necessary.
+
+### What was tricky to build
+
+- The tricky part was replacing a large JSX block without changing form state wiring. Each control still calls the same `set` helper or `setSourceInput` callback.
+- Another subtlety was not over-extracting: fieldsets remain local because their grouping is feature-specific, while row layout and caption text move to shared primitives.
+
+### What warrants a second pair of eyes
+
+- Whether `SubmitIntakeModal` should become its own component once API mocking/story infrastructure is added.
+- Whether `FormRow` needs a compact/numeric-width convention before more forms adopt it.
+
+### What should be done in the future
+
+- Add a story for a presentational intake form only if the form is split from RTK Query mutation state.
+- Continue scanning Workflow/Cross-page CSS for remaining repeated foundation concerns.
+
+### Code review instructions
+
+- Review `SubmitIntakeModal` in `web/src/components/workflows/WorkflowsView.tsx`.
+- Confirm behavior is unchanged and only form layout/foundation ownership changed.
 - Validate with:
   - `cd web && pnpm typecheck`
   - `cd web && pnpm build`

@@ -233,3 +233,13 @@ Extracted WorkflowOpResultPanel with Storybook states and delegated op result re
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowOpResultPanel/WorkflowOpResultPanel.tsx — Workflow op result renderer using MetadataGrid and DataTable
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — OpResultSection now fetches and delegates rendering
 
+
+## 2026-06-01
+
+Refactored SubmitIntakeModal through Panel, Stack, FormRow, and Caption while preserving workflow submission behavior
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded intake modal primitive adoption
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — Workflow intake modal now uses shared form/layout primitives
+
