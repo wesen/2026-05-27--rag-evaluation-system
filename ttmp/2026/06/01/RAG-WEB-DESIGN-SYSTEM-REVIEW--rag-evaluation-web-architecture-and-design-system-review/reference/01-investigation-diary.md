@@ -28,10 +28,16 @@ RelatedFiles:
       Note: |-
         App shell and navigation event evidence
         Diary evidence for AppShell adoption
+    - Path: web/src/components/corpus/DocumentBrowser.stories.tsx
+      Note: Diary evidence for Corpus Storybook coverage
     - Path: web/src/components/corpus/DocumentBrowser.tsx
       Note: Diary evidence for Corpus document table adoption
+    - Path: web/src/components/corpus/DocumentInspector.stories.tsx
+      Note: Diary evidence for Corpus Storybook coverage
     - Path: web/src/components/corpus/DocumentInspector.tsx
       Note: Diary evidence for Corpus inspector primitive adoption
+    - Path: web/src/components/corpus/SourcePanel.stories.tsx
+      Note: Diary evidence for Corpus Storybook coverage
     - Path: web/src/components/corpus/SourcePanel.tsx
       Note: Diary evidence for Corpus source design-system adoption
     - Path: web/src/components/foundation/Caption/Caption.tsx
@@ -84,6 +90,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -1335,4 +1342,97 @@ cd 2026-05-27--rag-evaluation-system/web
 pnpm typecheck
 pnpm build
 pnpm build-storybook
+```
+
+## Step 13: Add Corpus Storybook Coverage and Re-check Foundation Guidance
+
+I added Storybook stories for the Corpus components that were just moved onto the reusable design-system primitives. I also read the TTC foundation implementation guide and used it to recalibrate the RAG work: primitives should own typography/accessibility/separators/layout mechanics, but component-specific anatomy should remain local and CSS Modules should not be eliminated wholesale.
+
+This step focuses on review surfaces. The Corpus refactor is now visible in Storybook with realistic source, document, and inspector states instead of relying only on the live app.
+
+### Prompt Context
+
+**User prompt (verbatim):** "also read /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--ttc-design-system/ttmp/2026/06/01/TTC-FOUNDATION-SYSTEM--ttc-react-foundation-primitives-and-token-documentation/design-doc/01-react-foundation-system-implementation-guide.md for guidelines on how to extract foundation stuff and clean up the css"
+
+**Assistant interpretation:** Read the TTC foundation guide and apply its design-system extraction rules while continuing the RAG component/story work.
+
+**Inferred user intent:** The user wants the RAG extraction to follow the proven TTC foundation approach: small targeted primitives, Storybook documentation, CSS reduction without over-abstracting, and local anatomy CSS where appropriate.
+
+**Commit (code):** N/A at time of writing — Storybook coverage pending commit.
+
+### What I did
+
+- Read the TTC foundation guide at:
+  - `/home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--ttc-design-system/ttmp/2026/06/01/TTC-FOUNDATION-SYSTEM--ttc-react-foundation-primitives-and-token-documentation/design-doc/01-react-foundation-system-implementation-guide.md`
+- Added Corpus stories:
+  - `web/src/components/corpus/SourcePanel.stories.tsx`
+  - `web/src/components/corpus/DocumentBrowser.stories.tsx`
+  - `web/src/components/corpus/DocumentInspector.stories.tsx`
+- Covered realistic states:
+  - source list interactive selection/loading,
+  - document browser interactive selection/no-source/loading,
+  - document inspector overview/highlighted chunk/no content.
+- Ran validation:
+  - `pnpm typecheck`
+  - `pnpm build-storybook`
+  - `pnpm build`
+
+### Why
+
+- The user explicitly asked to build many Storybook stories for the extracted components.
+- The TTC guide says Storybook should become the review surface before broad CSS cleanup.
+- Corpus components are now using reusable primitives, so they need stories to make those states inspectable.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build-storybook` passed and now includes Corpus component stories.
+- `pnpm build` passed.
+
+### What didn't work
+
+- Storybook produces the existing large iframe chunk warning. This is not new and does not block the current extraction work.
+- `pnpm build` again rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+
+### What I learned
+
+- The TTC guide reinforces the current RAG direction: avoid a generic Box primitive, keep primitive APIs small, and only refactor where the primitive clarifies ownership.
+- Local CSS modules such as `DocumentInspector.module.css` and `SearchControlsPanel.module.css` are appropriate because they own component-specific anatomy, not reusable foundation concerns.
+- Story coverage should accompany each extraction increment, not trail behind it.
+
+### What was tricky to build
+
+- `DocumentInspector` depends on RTK Query for artifacts when the artifacts tab is active, so the initial stories focus on overview/chunk/no-content states that do not require mocking the API store.
+- This suggests that richer document artifact stories may need an API mocking pattern later, but that should be done carefully rather than blocking current component coverage.
+
+### What warrants a second pair of eyes
+
+- Whether Corpus stories should move under `Applications/Corpus` or stay under `Component Library/Corpus`.
+- Whether we should add an MSW/RTK Query mocking setup before writing stories for API-active tabs.
+- Whether `DocumentInspector` should expose a `defaultTab` prop like `ResultInspectorPanel` to make chunk/coverage/artifact stories more explicit.
+
+### What should be done in the future
+
+- Add Storybook coverage for Workflow list/detail/op states as workflow extraction proceeds.
+- Add `defaultTab` support to `DocumentInspector` if we need explicit coverage/text/artifacts stories without play functions.
+- Continue CSS cleanup by moving repeated foundation/layout concerns into primitives while keeping component anatomy local.
+
+### Code review instructions
+
+- Review the new Corpus stories under `web/src/components/corpus/`.
+- Confirm the stories use realistic DTO-shaped data and no live API assumptions.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build-storybook`
+  - `cd web && pnpm build`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build-storybook
+pnpm build
 ```

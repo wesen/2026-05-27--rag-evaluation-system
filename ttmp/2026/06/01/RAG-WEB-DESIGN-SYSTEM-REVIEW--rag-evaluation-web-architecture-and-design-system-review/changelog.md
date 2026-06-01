@@ -168,3 +168,16 @@ Adopted reusable design-system primitives and molecules in Corpus source, docume
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentInspector.tsx — Document inspector now uses TabList/MetadataGrid/DataTable
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/SourcePanel.tsx — Source list now uses Panel/ScrollRegion/Caption
 
+
+## 2026-06-01
+
+Added Corpus Storybook coverage and aligned RAG foundation extraction with the TTC foundation guide
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded Corpus Storybook coverage and TTC foundation guide takeaways
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentBrowser.stories.tsx — Storybook coverage for Corpus document browser states
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentInspector.stories.tsx — Storybook coverage for Corpus document inspector states
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/SourcePanel.stories.tsx — Storybook coverage for Corpus source panel states
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--ttc-design-system/ttmp/2026/06/01/TTC-FOUNDATION-SYSTEM--ttc-react-foundation-primitives-and-token-documentation/design-doc/01-react-foundation-system-implementation-guide.md — Foundation extraction and CSS cleanup guidelines applied to RAG work
+

@@ -38,6 +38,7 @@
 - [x] Phase 3: migrate Search Workbench page shell from inline flex layout to `DashboardGrid`/`Stack` plus `SearchView.module.css`.
 - [x] Phase 4: add Storybook review surfaces for the Search Workbench organisms/molecules extracted so far.
 - [x] Phase 4: add Storybook review surfaces for `Caption`, `AppShell`, `ScrollRegion`, `TabList`, `FormRow`, `MetadataGrid`, and `DataTable`.
+- [x] Phase 4: add Storybook review surfaces for Corpus `SourcePanel`, `DocumentBrowser`, and `DocumentInspector` states.
 - [x] Phase 4 optional follow-up: expand `ResultInspectorPanel` stories with explicit chunk-tab, document-tab, and document-loading states via `defaultTab`.
 - [x] Phase 5: add initial documentation-only `dmeta-ir` core/interaction/Web MDS YAML for the Search Workbench vertical slice.
 - [x] Phase 3: add reusable `MetadataGrid` and `DataTable` molecules as extraction targets for inspector/results/corpus/workflow views.

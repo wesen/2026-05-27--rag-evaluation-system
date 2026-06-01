@@ -48,16 +48,22 @@ RelatedFiles:
       Note: Corpus source/document/chunk exploration and artifact coverage workflow
     - Path: web/src/components/corpus/DocumentBrowser.module.css
       Note: DocumentBrowser-specific anatomy after primitive adoption
+    - Path: web/src/components/corpus/DocumentBrowser.stories.tsx
+      Note: Corpus document browser Storybook review surface
     - Path: web/src/components/corpus/DocumentBrowser.tsx
       Note: Corpus document browser DataTable adoption
     - Path: web/src/components/corpus/DocumentInspector.module.css
       Note: DocumentInspector-specific anatomy after primitive adoption
+    - Path: web/src/components/corpus/DocumentInspector.stories.tsx
+      Note: Corpus document inspector Storybook review surface
     - Path: web/src/components/corpus/DocumentInspector.tsx
       Note: |-
         Document detail tabs for text
         Corpus document inspector TabList/MetadataGrid/DataTable adoption
     - Path: web/src/components/corpus/SourcePanel.module.css
       Note: SourcePanel-specific anatomy after primitive adoption
+    - Path: web/src/components/corpus/SourcePanel.stories.tsx
+      Note: Corpus source panel Storybook review surface
     - Path: web/src/components/corpus/SourcePanel.tsx
       Note: Corpus source panel design-system adoption
     - Path: web/src/components/embeddings/EmbeddingsView.tsx
@@ -132,6 +138,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 
