@@ -254,3 +254,14 @@ Cleaned up CoveragePanel and QueryPresetList to use shared foundation/layout/mol
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/CoveragePanel/CoveragePanel.tsx — Coverage support molecule now uses Panel/MetadataGrid/DataTable/StatusText
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/QueryPresetList/QueryPresetList.tsx — Query presets now use Panel/Stack/Caption with local button anatomy
 
+
+## 2026-06-01
+
+Refactored EmbeddingsView through shared Panel/FormRow/MetadataGrid/DataTable primitives while preserving API-owned behavior
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded embeddings view primitive adoption
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/embeddings/EmbeddingsView.module.css — View-specific embeddings anatomy after primitive adoption
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/embeddings/EmbeddingsView.tsx — Embeddings view now composes shared design-system primitives
+

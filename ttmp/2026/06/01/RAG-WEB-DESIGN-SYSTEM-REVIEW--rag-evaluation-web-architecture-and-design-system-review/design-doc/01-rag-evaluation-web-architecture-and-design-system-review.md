@@ -70,8 +70,12 @@ RelatedFiles:
       Note: |-
         Corpus source panel design-system adoption
         Feature-local Corpus source panel using shared primitives
+    - Path: web/src/components/embeddings/EmbeddingsView.module.css
+      Note: Embeddings view-specific CSS module
     - Path: web/src/components/embeddings/EmbeddingsView.tsx
-      Note: Embedding compute and stored-vector similarity inspector
+      Note: |-
+        Embedding compute and stored-vector similarity inspector
+        EmbeddingsView primitive adoption and global CSS cleanup
     - Path: web/src/components/foundation/Caption/Caption.tsx
       Note: Foundation caption primitive added from reusable design-system plan
     - Path: web/src/components/foundation/StatusText/StatusText.tsx
@@ -166,6 +170,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 

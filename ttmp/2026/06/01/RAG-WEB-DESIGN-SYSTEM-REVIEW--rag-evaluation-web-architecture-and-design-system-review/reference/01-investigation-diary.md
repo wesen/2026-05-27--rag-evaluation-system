@@ -44,6 +44,10 @@ RelatedFiles:
       Note: |-
         Diary evidence for Corpus source design-system adoption
         Diary evidence for SourcePanel move-back
+    - Path: web/src/components/embeddings/EmbeddingsView.module.css
+      Note: Diary evidence for embeddings view CSS ownership
+    - Path: web/src/components/embeddings/EmbeddingsView.tsx
+      Note: Diary evidence for embeddings view primitive adoption
     - Path: web/src/components/foundation/Caption/Caption.tsx
       Note: Diary evidence for expanded primitive extraction
     - Path: web/src/components/foundation/index.ts
@@ -117,6 +121,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -2013,4 +2018,96 @@ cd 2026-05-27--rag-evaluation-system/web
 pnpm typecheck
 pnpm build-storybook
 pnpm build
+```
+
+## Step 20: Refactor the Embeddings View Through Shared Primitives
+
+I continued the global CSS ownership cleanup by targeting `EmbeddingsView`, which was one of the largest remaining view-level users of raw `panel`, `panel-header`, `panel-body`, `data-table`, `text-dim`, and inline flex/grid structures. The view still owns its RTK Query hooks, local form state, and mutation handlers, but its visible layout now composes `Panel`, `DashboardGrid`, `Stack`, `FormRow`, `Caption`, `CodeText`, `MetadataGrid`, and `DataTable`.
+
+This keeps the refactor inside the current scope: it improves design-system adoption without creating generated DMETA scaffolds, validators, or premature presentational extraction for API-heavy controls.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue the next design-system cleanup pass after the Search support molecule cleanup.
+
+**Inferred user intent:** The user wants systematic reduction of remaining global CSS debt and stronger reuse of the shared primitives across older dashboard views.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Rewrote `web/src/components/embeddings/EmbeddingsView.tsx` to use shared primitives:
+  - `Panel` for all major cards,
+  - `DashboardGrid` for compute/similarity two-column layout,
+  - `Stack` for vertical spacing,
+  - `FormRow` for labeled controls,
+  - `Caption` for explanatory and muted text,
+  - `CodeText` for chunk/model identifiers,
+  - `MetadataGrid` for snapshot and compute result facts,
+  - `DataTable` for similarity matches.
+- Added `web/src/components/embeddings/EmbeddingsView.module.css` for view-specific anatomy that is not a general primitive:
+  - controls grid,
+  - fieldset styling,
+  - short numeric inputs,
+  - checkbox row,
+  - action/table spacing.
+- Preserved all existing data/query/mutation behavior.
+
+### Why
+
+- `EmbeddingsView` was a high-value cleanup target because it contained several repeated global class patterns in one file.
+- It is still API-heavy, so extracting a Storybook-friendly organism should wait until there is a clearer mocking/provider pattern for page-level views.
+- Moving to primitives now improves consistency while keeping behavioral ownership stable.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+- Storybook still emits the known large iframe chunk warning; build succeeds.
+
+### What I learned
+
+- The existing primitives cover most of the embeddings inspector without adding a new generic `Box` or page-specific layout component.
+- `MetadataGrid` is a better fit than an ad hoc two-column result table for compute summaries.
+
+### What was tricky to build
+
+- The main sharp edge was preserving the dependent state behavior for chunks while replacing large JSX blocks. The effects that default `strategyId`, `documentId`, `chunkIDA`, and `chunkIDB` were left unchanged.
+- Another subtle point was keeping feature-specific fieldsets local: they describe this view's information grouping, not a reusable design-system primitive.
+
+### What warrants a second pair of eyes
+
+- Confirm the visual spacing of the controls grid after replacing inline styles with the module class.
+- Confirm whether `EmbeddingsView` should later split into presentational panels if/when API mocking patterns are standardized for Storybook.
+
+### What should be done in the future
+
+- Continue cleanup in `PipelineView`, `IdentityBar`, and `ArtifactIdentityBar`.
+- Consider page-level stories only after standardized Redux/RTK Query mocking is available.
+
+### Code review instructions
+
+- Start with `web/src/components/embeddings/EmbeddingsView.tsx` and compare the preserved hooks/effects/handlers against the previous behavior.
+- Review `web/src/components/embeddings/EmbeddingsView.module.css` for view-only CSS ownership.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
 ```

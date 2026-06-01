@@ -54,5 +54,6 @@
 - [x] Phase 3 follow-up: extract Workflow `WorkflowOpResultPanel` and adopt `MetadataGrid`/`DataTable` for op result records/artifacts.
 - [x] Phase 3 follow-up: refactor `SubmitIntakeModal` form structure through `Panel`, `Stack`, `FormRow`, and `Caption` while keeping workflow submission behavior in the view.
 - [x] Phase 3 follow-up: refactor `CoveragePanel` and `QueryPresetList` to use shared `Panel`, `Stack`, `Caption`, `StatusText`, `MetadataGrid`, and `DataTable` primitives instead of global panel/table/text classes.
+- [x] Phase 3 follow-up: refactor `EmbeddingsView` panels/forms/results through design-system primitives while keeping RTK Query and mutation behavior in the view.
 - [ ] Deferred beyond requested scope (Phase 6): generated React scaffold output and promotion metadata.
 - [ ] Deferred beyond requested scope (Phase 7): executable validators for the documentation-only IR catalog.
