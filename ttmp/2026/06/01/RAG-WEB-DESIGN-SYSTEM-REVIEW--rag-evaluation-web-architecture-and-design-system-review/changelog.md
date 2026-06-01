@@ -181,3 +181,17 @@ Added Corpus Storybook coverage and aligned RAG foundation extraction with the T
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/SourcePanel.stories.tsx — Storybook coverage for Corpus source panel states
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--ttc-design-system/ttmp/2026/06/01/TTC-FOUNDATION-SYSTEM--ttc-react-foundation-primitives-and-token-documentation/design-doc/01-react-foundation-system-implementation-guide.md — Foundation extraction and CSS cleanup guidelines applied to RAG work
 
+
+## 2026-06-01
+
+Reclassified Corpus source selection as an organism, added workflow list/queue organisms with Storybook stories, and added Redux provider to DocumentInspector stories
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentInspector.stories.tsx — Redux Provider wrapper for RTK Query-backed document inspector stories
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/SourcePanel.tsx — Compatibility re-export for moved CorpusSourcePanel
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.tsx — Organism-level corpus source selector
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/QueueHealthPanel/QueueHealthPanel.tsx — Workflow queue health organism
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/WorkflowListPanel/WorkflowListPanel.tsx — Workflow list organism
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx — Delegates workflow list and queue presentation to organisms
+

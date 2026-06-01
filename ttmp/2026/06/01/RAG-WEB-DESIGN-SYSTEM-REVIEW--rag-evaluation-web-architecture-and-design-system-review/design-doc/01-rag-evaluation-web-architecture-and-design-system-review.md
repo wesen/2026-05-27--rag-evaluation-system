@@ -100,6 +100,12 @@ RelatedFiles:
       Note: Reusable metadata grid molecule for inspectors/details
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
       Note: Phase 2 extracted query preset molecule
+    - Path: web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.stories.tsx
+      Note: Storybook review surface for corpus source organism
+    - Path: web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.tsx
+      Note: Organism-level corpus source selector
+    - Path: web/src/components/organisms/QueueHealthPanel/QueueHealthPanel.tsx
+      Note: Workflow queue health organism
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css
       Note: Inspector-specific anatomy CSS after adopting reusable primitives
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.stories.tsx
@@ -116,6 +122,8 @@ RelatedFiles:
       Note: Phase 2 organism Storybook coverage
     - Path: web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx
       Note: Phase 2 extracted query controls organism
+    - Path: web/src/components/organisms/WorkflowListPanel/WorkflowListPanel.tsx
+      Note: Workflow list organism
     - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx
       Note: Search Workbench page boundary
     - Path: web/src/components/search/SearchView.module.css
@@ -124,6 +132,8 @@ RelatedFiles:
       Note: Search workbench and recommended first design-system/DMETA vertical slice
     - Path: web/src/components/workflows/WorkflowsView.tsx
       Note: Workflow dashboard
+    - Path: web/src/components/workflows/workflowFormat.ts
+      Note: Shared workflow formatting helpers for organisms
     - Path: web/src/index.css
       Note: 'Current implicit design system: tokens'
     - Path: web/src/services/api.ts
@@ -138,6 +148,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 

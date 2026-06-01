@@ -1,10 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Provider } from 'react-redux';
 import { DocumentInspector } from './DocumentInspector';
 import type { CorpusDocumentDetail, CorpusIdentityArgs } from '../../services/api';
+import { store } from '../../store';
 
 const meta = {
   title: 'Component Library/Corpus/DocumentInspector',
   component: DocumentInspector,
+  decorators: [
+    (Story) => (
+      <Provider store={store}>
+        <Story />
+      </Provider>
+    ),
+  ],
 } satisfies Meta<typeof DocumentInspector>;
 
 export default meta;

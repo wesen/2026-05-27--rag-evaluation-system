@@ -33,7 +33,9 @@ RelatedFiles:
     - Path: web/src/components/corpus/DocumentBrowser.tsx
       Note: Diary evidence for Corpus document table adoption
     - Path: web/src/components/corpus/DocumentInspector.stories.tsx
-      Note: Diary evidence for Corpus Storybook coverage
+      Note: |-
+        Diary evidence for Corpus Storybook coverage
+        Diary evidence for Redux Provider story fix
     - Path: web/src/components/corpus/DocumentInspector.tsx
       Note: Diary evidence for Corpus inspector primitive adoption
     - Path: web/src/components/corpus/SourcePanel.stories.tsx
@@ -56,6 +58,10 @@ RelatedFiles:
       Note: Diary evidence for reusable molecule extraction
     - Path: web/src/components/molecules/QueryPresetList/QueryPresetList.tsx
       Note: Phase 2 extraction diary evidence
+    - Path: web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.tsx
+      Note: Diary evidence for organism taxonomy correction
+    - Path: web/src/components/organisms/QueueHealthPanel/QueueHealthPanel.tsx
+      Note: Diary evidence for workflow organism extraction
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.module.css
       Note: Diary evidence for remaining inspector anatomy CSS
     - Path: web/src/components/organisms/ResultInspectorPanel/ResultInspectorPanel.tsx
@@ -70,6 +76,8 @@ RelatedFiles:
       Note: |-
         Phase 2 extraction diary evidence
         Diary evidence for controls primitive adoption
+    - Path: web/src/components/organisms/WorkflowListPanel/WorkflowListPanel.tsx
+      Note: Diary evidence for workflow organism extraction
     - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx
       Note: Diary evidence for page-boundary extraction
     - Path: web/src/components/search/SearchView.module.css
@@ -90,6 +98,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -1435,4 +1444,101 @@ cd 2026-05-27--rag-evaluation-system/web
 pnpm typecheck
 pnpm build-storybook
 pnpm build
+```
+
+## Step 14: Reclassify Corpus Source Selection and Add Workflow Organism Stories
+
+I corrected the component taxonomy after the user pointed out that the source selector is an organism, not a corpus-local helper. The source selector owns a meaningful dashboard region with data summaries, selection state, preprocessing coverage, and scroll behavior, so it now lives under `components/organisms/CorpusSourcePanel/` with a compatibility re-export at the old corpus path.
+
+I also started the Workflow extraction in the same style: dense workflow surfaces are being moved into organism-level panels with Storybook stories. `WorkflowsView` now delegates queue health and workflow list rendering to reusable organisms while still owning API polling and high-level page state.
+
+### Prompt Context
+
+**User prompt (verbatim):** "sourcepanel is an organism, no?"
+
+**Assistant interpretation:** Correct the component hierarchy so SourcePanel is modeled and organized as an organism, and continue rigorous Storybook/design-system organization.
+
+**Inferred user intent:** The user wants taxonomy discipline: components should live in folders that match their actual design-system level, not where they happened to originate.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Moved source selection into an organism:
+  - `web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.tsx`
+  - `web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.module.css`
+  - `web/src/components/organisms/CorpusSourcePanel/CorpusSourcePanel.stories.tsx`
+  - `web/src/components/organisms/CorpusSourcePanel/index.ts`
+- Kept `web/src/components/corpus/SourcePanel.tsx` as a compatibility re-export.
+- Updated Storybook title from a corpus-local grouping to:
+  - `Component Library/Organisms/CorpusSourcePanel`
+- Added workflow organism components and stories:
+  - `web/src/components/organisms/QueueHealthPanel/`
+  - `web/src/components/organisms/WorkflowListPanel/`
+- Added `web/src/components/workflows/workflowFormat.ts` for workflow status/time formatting helpers shared by workflow organisms and the legacy workflow view.
+- Refactored `WorkflowsView` so API polling remains in the page/view layer while `QueueHealthPanel` and `WorkflowListPanel` own reusable presentation.
+- Updated `DocumentInspector.stories.tsx` to wrap stories in the Redux `Provider`, because the component uses RTK Query hooks even when most stories do not actively fetch artifact data.
+
+### Why
+
+- Per the TTC foundation guidance, primitives own foundation/layout concerns, but feature-level dashboard regions should be organisms.
+- Corpus source selection is a region-level component, not a molecule.
+- Workflow queue health and workflow list are also region-level organisms and need Storybook review surfaces.
+- Storybook stories that render RTK Query components must provide the Redux store to avoid runtime provider errors.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+- Storybook now includes Workflow organism stories and the corrected `CorpusSourcePanel` organism story.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+- Workflow detail/op inspector surfaces remain partially legacy and still need a follow-up extraction pass.
+
+### What I learned
+
+- Component taxonomy is not just folder hygiene; it controls Storybook navigation and future DMETA/Web MDS naming.
+- API-owning views can remain containers while organism components receive DTO-shaped data and callbacks, making them easy to story.
+- RTK Query hooks in components require explicit Provider setup in Storybook unless the hook is moved out to a container.
+
+### What was tricky to build
+
+- The main tricky part was preserving existing imports of `SourcePanel` while moving the implementation. A compatibility re-export avoids a broad rename blast radius.
+- Another subtlety was avoiding a global Storybook provider for every story just to support `DocumentInspector`; adding a local decorator keeps the dependency explicit for the component that needs it.
+
+### What warrants a second pair of eyes
+
+- Whether `DocumentInspector` should eventually become an organism folder too, with the current corpus path as a re-export.
+- Whether workflow detail should be split into `WorkflowDetailPanel`, `WorkflowOpGroupsPanel`, and `WorkflowOpInspectorPanel` organisms.
+- Whether Storybook titles should use `Component Library/Organisms/...` consistently for all organisms, including the earlier Search Workbench panels.
+
+### What should be done in the future
+
+- Extract workflow detail/op inspector surfaces next.
+- Add stories for workflow detail states, op graph states, and op result states.
+- Consider a shared Storybook decorator for RTK Query/API-backed stories if more components need providers.
+
+### Code review instructions
+
+- Review `web/src/components/organisms/CorpusSourcePanel/` for the source selector reclassification.
+- Review `web/src/components/corpus/SourcePanel.tsx` to confirm it is only a compatibility re-export.
+- Review `web/src/components/organisms/QueueHealthPanel/` and `WorkflowListPanel/` for workflow organism extraction.
+- Review `web/src/components/corpus/DocumentInspector.stories.tsx` for the local Redux provider decorator.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
 ```

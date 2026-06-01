@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { QueueHealthPanel, WorkflowListPanel } from '../organisms';
 import {
   useListWorkflowsQuery,
   useGetWorkflowQuery,
@@ -9,9 +10,7 @@ import {
   useCancelWorkflowMutation,
   useListQueuesQuery,
   useListSourcesQuery,
-  WorkflowListItem,
   WorkflowOpGroup,
-  QueueStatus,
   SubmitIntakeRequest,
 } from '../../services/api';
 
@@ -48,52 +47,7 @@ const QueueHealthWidget: React.FC = () => {
     pollingInterval: 5000,
   });
 
-  const totalReady = queues.reduce((s: number, q: QueueStatus) => s + q.ready, 0);
-  const totalRunning = queues.reduce((s: number, q: QueueStatus) => s + q.running, 0);
-  const totalFailed = queues.reduce((s: number, q: QueueStatus) => s + q.failed, 0);
-
-  return (
-    <div className="panel" style={{ minWidth: 240 }}>
-      <div className="panel-header">
-        <span>Queue Health</span>
-      </div>
-      <div className="panel-body-condensed">
-        {isLoading ? (
-          <div className="text-dim text-mono">Loading...</div>
-        ) : queues.length === 0 ? (
-          <div className="text-dim text-mono">No queues active</div>
-        ) : (
-          <>
-            <div className="stat-grid" style={{ marginBottom: 6 }}>
-              <span className="stat-label">Ready</span><span className="stat-value">{totalReady}</span>
-              <span className="stat-label">Running</span><span className="stat-value">{totalRunning}</span>
-              <span className="stat-label">Failed</span>
-              <span className="stat-value" style={{ color: totalFailed > 0 ? 'var(--mac-accent-2)' : undefined }}>
-                {totalFailed}
-              </span>
-            </div>
-            <table className="data-table">
-              <thead>
-                <tr><th>Queue</th><th>R</th><th>Run</th><th>F</th></tr>
-              </thead>
-              <tbody>
-                {queues.map((q: QueueStatus) => (
-                  <tr key={q.queue}>
-                    <td className="mono">{q.queue.replace('rag-eval:', '')}</td>
-                    <td className="num">{q.ready}</td>
-                    <td className="num">{q.running}</td>
-                    <td className="num" style={{ color: q.failed > 0 ? 'var(--mac-accent-2)' : undefined }}>
-                      {q.failed}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
-      </div>
-    </div>
-  );
+  return <QueueHealthPanel queues={queues} isLoading={isLoading} />;
 };
 
 // ─── Submit Intake Modal ──────────────────────────────────────────────────────
@@ -620,57 +574,16 @@ const WorkflowsList: React.FC<{ onSelect: (id: string) => void }> = ({ onSelect 
     { status: statusFilter || undefined },
     { pollingInterval: 2000 },
   );
-  const workflows = result?.workflows ?? [];
 
   return (
-    <div className="panel" style={{ flex: 1 }}>
-      <div className="panel-header">
-        <span>Workflows ({result?.total ?? 0})</span>
-        <select className="select" value={statusFilter}
-          onChange={e => setStatusFilter(e.target.value)} style={{ fontSize: 11 }}>
-          <option value="">all</option>
-          <option value="pending">pending</option>
-          <option value="running">running</option>
-          <option value="succeeded">succeeded</option>
-          <option value="failed">failed</option>
-          <option value="canceled">canceled</option>
-        </select>
-      </div>
-      <div className="panel-body-condensed" style={{ overflowY: 'auto', maxHeight: 400 }}>
-        {isLoading ? (
-          <div className="text-dim text-mono">Loading...</div>
-        ) : workflows.length === 0 ? (
-          <div className="text-dim text-mono">
-            No workflows{statusFilter ? ` with status "${statusFilter}"` : ' yet'}.
-            {!statusFilter && ' Submit one!'}
-          </div>
-        ) : (
-          <table className="data-table">
-            <thead>
-              <tr><th>Status</th><th>Workflow ID</th><th>Strategy</th><th>Ops</th><th>Age</th></tr>
-            </thead>
-            <tbody>
-              {workflows.map((w: WorkflowListItem) => (
-                <tr key={w.workflow.ID} className="selectable"
-                  onClick={() => onSelect(w.workflow.ID)}>
-                  <td className={statusClass(w.workflow.Status)}>
-                    {statusIcon(w.workflow.Status)} {w.workflow.Status}
-                  </td>
-                  <td className="mono truncate" style={{ fontSize: 11, maxWidth: 250 }}>
-                    {w.workflow.ID}
-                  </td>
-                  <td className="mono" style={{ fontSize: 11 }}>
-                    {w.workflow.Metadata?.strategy ?? '—'}
-                  </td>
-                  <td className="num">{w.opDone}/{w.opTotal}</td>
-                  <td className="mono">{timeAgo(w.workflow.CreatedAt)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </div>
+    <WorkflowListPanel
+      workflows={result?.workflows ?? []}
+      total={result?.total ?? 0}
+      isLoading={isLoading}
+      statusFilter={statusFilter}
+      onStatusFilterChange={setStatusFilter}
+      onSelect={onSelect}
+    />
   );
 };
 
