@@ -84,6 +84,8 @@ RelatedFiles:
       Note: Diary evidence for workflow detail extraction
     - Path: web/src/components/organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.tsx
       Note: Diary evidence for sampled-op inspector extraction
+    - Path: web/src/components/organisms/WorkflowOpResultPanel/WorkflowOpResultPanel.tsx
+      Note: Diary evidence for workflow op result extraction
     - Path: web/src/components/organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.tsx
       Note: Diary evidence for workflow detail extraction
     - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx
@@ -95,7 +97,9 @@ RelatedFiles:
         First recommended vertical-slice evidence
         Phase 2 Search Workbench composition update
     - Path: web/src/components/workflows/WorkflowsView.tsx
-      Note: Diary evidence for sampled-op inspector composition
+      Note: |-
+        Diary evidence for sampled-op inspector composition
+        Diary evidence for op result container/presentation split
     - Path: web/src/index.css
       Note: CSS/design-system evidence
     - Path: web/src/services/api.ts
@@ -108,6 +112,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -1715,6 +1720,99 @@ This keeps the design-system ownership consistent: reusable foundation primitive
 
 - Review `web/src/components/organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.tsx`.
 - Review the selected-op block in `web/src/components/workflows/WorkflowsView.tsx` to confirm behavior is preserved.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```
+
+## Step 17: Extract the Workflow Op Result Panel
+
+I extracted the workflow op result renderer into a Storybook-backed `WorkflowOpResultPanel`. The container hook remains in `WorkflowsView`, but the result presentation now owns its reusable metadata, records, artifacts, emitted op, loading, no-result, and error states.
+
+This finishes the main workflow-detail extraction target identified in the previous step. Workflow details now compose named organisms for summary/progress, op graph, op groups, sampled op inspection, and op result rendering.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue the workflow extraction, focusing on the remaining legacy op result surface.
+
+**Inferred user intent:** The user wants the workflow view to keep moving toward organized, Storybook-reviewable design-system components.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Added `web/src/components/organisms/WorkflowOpResultPanel/`.
+- Implemented result states for:
+  - loading,
+  - 404/no result,
+  - completed metadata,
+  - JSON data,
+  - records written via `DataTable`,
+  - artifacts via `DataTable`,
+  - emitted op IDs,
+  - result errors.
+- Added Storybook stories for:
+  - complete result,
+  - loading,
+  - no result,
+  - error result.
+- Refactored `OpResultSection` in `WorkflowsView` to fetch data and delegate rendering to `WorkflowOpResultPanel`.
+- Updated tasks to mark op result extraction and Storybook coverage complete.
+
+### Why
+
+- `OpResultSection` was the last large workflow-detail presentation block still rendering bespoke metadata grids and tables directly inside `WorkflowsView`.
+- Keeping the RTK Query hook in `WorkflowsView` preserves the container/presentation split and keeps the new result panel easy to story with plain DTO-shaped props.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+- Storybook now includes `WorkflowOpResultPanel` review states.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+
+### What I learned
+
+- Workflow details are now mostly container/presentation split: `WorkflowsView` owns API calls and mutations, while extracted organisms own rendering.
+- `DataTable` continues to work for dense operational data without adding custom table variants.
+
+### What was tricky to build
+
+- The tricky part was preserving the special 404 behavior. A missing result is not a hard failure; it means no result data was recorded yet. `WorkflowOpResultPanel` now models that as a normal no-result state.
+- Another subtle point was not moving the RTK Query hook into the result panel, because doing that would make Storybook harder and mix data fetching into the reusable organism.
+
+### What warrants a second pair of eyes
+
+- Whether `WorkflowOpResultPanel` should be a molecule rather than organism. It is currently an organism because it owns a multi-section operational panel, but it is nested inside another organism.
+- Whether the JSON data block needs a shared `CodeBlock` foundation/utility component after more JSON views are found.
+
+### What should be done in the future
+
+- Refactor `SubmitIntakeModal` with `FormRow`, `Stack`, `Panel`, and `Caption`.
+- Add a workflow page-level story once RTK Query mocking is standardized.
+- Consider splitting `WorkflowsView` into a `WorkflowPage` container folder after modal cleanup.
+
+### Code review instructions
+
+- Review `web/src/components/organisms/WorkflowOpResultPanel/WorkflowOpResultPanel.tsx`.
+- Review `OpResultSection` in `web/src/components/workflows/WorkflowsView.tsx` to confirm it only fetches and delegates rendering.
 - Validate with:
   - `cd web && pnpm typecheck`
   - `cd web && pnpm build`

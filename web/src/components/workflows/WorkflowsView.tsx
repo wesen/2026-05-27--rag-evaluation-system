@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { QueueHealthPanel, WorkflowListPanel, WorkflowOpGraphPanel, WorkflowOpGroupsPanel, WorkflowOpInspectorPanel, WorkflowSummaryPanel, workflowGroupKey } from '../organisms';
+import { QueueHealthPanel, WorkflowListPanel, WorkflowOpGraphPanel, WorkflowOpGroupsPanel, WorkflowOpInspectorPanel, WorkflowOpResultPanel, WorkflowSummaryPanel, workflowGroupKey } from '../organisms';
 import {
   useListWorkflowsQuery,
   useGetWorkflowQuery,
@@ -194,93 +194,8 @@ const OpResultSection: React.FC<{ workflowId: string; opId: string; opStatus: st
   );
 
   if (opStatus !== 'succeeded' && opStatus !== 'failed') return null;
-  if (isLoading) return <div className="text-dim text-mono" style={{ marginTop: 6 }}>Loading result…</div>;
 
-  // 404 = no result yet (op completed but result not written, or op not actually completed)
-  if (error) {
-    if ('status' in error && (error as { status: number }).status === 404) {
-      return (
-        <fieldset className="form-section" style={{ marginTop: 6 }}>
-          <legend>Result</legend>
-          <div className="text-dim text-mono">No result data recorded for this op.</div>
-        </fieldset>
-      );
-    }
-    return (
-      <div className="error-box" style={{ marginTop: 6 }}>
-        Failed to load result: {String(error)}
-      </div>
-    );
-  }
-
-  if (!result) return null;
-
-  return (
-    <fieldset className="form-section" style={{ marginTop: 6 }}>
-      <legend>Result</legend>
-      <div className="meta-grid">
-        <span className="meta-key">Completed</span>
-        <span className="meta-value">{result.CompletedAt || '—'}</span>
-      </div>
-
-      {/* Data field */}
-      {result.Data && Object.keys(result.Data).length > 0 && (
-        <div style={{ marginTop: 4 }}>
-          <div className="text-bold" style={{ fontSize: 11 }}>Data</div>
-          <pre className="text-mono" style={{ fontSize: 10, overflowX: 'auto', background: 'var(--mac-bg-dark)', color: 'var(--mac-text-inv)', padding: 4, maxHeight: 120 }}>
-            {JSON.stringify(result.Data, null, 2)}
-          </pre>
-        </div>
-      )}
-
-      {/* Records written */}
-      {result.Records && result.Records.length > 0 && (
-        <div style={{ marginTop: 4 }}>
-          <div className="text-bold" style={{ fontSize: 11 }}>Records Written ({result.Records.length})</div>
-          <table className="data-table" style={{ fontSize: 10 }}>
-            <thead><tr><th>Table</th><th>PK</th></tr></thead>
-            <tbody>
-              {result.Records.map((rec, i) => (
-                <tr key={i}><td className="mono">{rec.Table}</td><td className="mono">{rec.PK}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Artifacts produced */}
-      {result.Artifacts && result.Artifacts.length > 0 && (
-        <div style={{ marginTop: 4 }}>
-          <div className="text-bold" style={{ fontSize: 11 }}>Artifacts ({result.Artifacts.length})</div>
-          {result.Artifacts.map((art, i) => (
-            <div key={i} className="meta-grid">
-              <span className="meta-key">{art.Name}</span>
-              <span className="meta-value">{art.Kind} · {art.ContentType}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Emitted (child) ops */}
-      {result.EmittedIDs && result.EmittedIDs.length > 0 && (
-        <div style={{ marginTop: 4 }}>
-          <div className="text-bold" style={{ fontSize: 11 }}>Emitted Ops ({result.EmittedIDs.length})</div>
-          <div className="text-mono" style={{ fontSize: 10, maxHeight: 60, overflowY: 'auto' }}>
-            {result.EmittedIDs.slice(0, 20).map(id => <div key={id}>{id}</div>)}
-            {result.EmittedIDs.length > 20 && <div>… and {result.EmittedIDs.length - 20} more</div>}
-          </div>
-        </div>
-      )}
-
-      {/* Error from result */}
-      {result.Error && (
-        <div className="error-box" style={{ marginTop: 4 }}>
-          [{result.Error.Code}] {result.Error.Message}
-          {result.Error.Retryable && <div className="text-dim">(retryable)</div>}
-        </div>
-      )}
-    </fieldset>
-  );
+  return <WorkflowOpResultPanel result={result} isLoading={isLoading} error={error} />;
 };
 
 // ─── Workflow Detail ──────────────────────────────────────────────────────────
