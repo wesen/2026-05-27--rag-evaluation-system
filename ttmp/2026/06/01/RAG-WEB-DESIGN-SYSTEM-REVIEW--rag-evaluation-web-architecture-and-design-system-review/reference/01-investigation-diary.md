@@ -2322,3 +2322,113 @@ Key commands:
 cd 2026-05-27--rag-evaluation-system
 docmgr --root ttmp doc add --ticket RAG-WEB-DESIGN-SYSTEM-REVIEW --doc-type design-doc --title "RAG React Design System Guidelines"
 ```
+
+## Step 23: Audit Components Against Guidelines and Add Foundation Overview Stories
+
+I turned the new RAG React design-system guidelines into concrete ticket work. First I added detailed continuation tasks for auditing, foundation documentation, Corpus identity cleanup, global CSS cleanup, and page-story extraction. Then I completed the first two requested steps: a component-by-component guideline audit and the missing TTC-style foundation Storybook overview.
+
+This gives the project a clearer next path. We now have both a rulebook and an audit that says which components already comply, which ones are partial, and what should be extracted after the foundation layer is visible in Storybook.
+
+### Prompt Context
+
+**User prompt (verbatim):** "alright, add detailed tasks to the ticket to continue the audit, add all the stuff above, and then let's do the full 1. and 2."
+
+**Assistant interpretation:** Add detailed follow-up tasks to the ticket, then complete the guideline audit and foundation Storybook documentation steps.
+
+**Inferred user intent:** The user wants the guidelines translated into actionable project management and wants immediate progress on auditing/foundation docs before more component cleanup.
+
+**User prompt (verbatim):** "after doing the foundations (typography, etc...) , go through each components and figure out what should be extracted further"
+
+**Assistant interpretation:** The audit should not stop at generic compliance; it should identify concrete component-by-component extraction opportunities after the foundation docs are in place.
+
+**Inferred user intent:** The user wants a systematic walkthrough of all prior work to plan deeper cleanup, not isolated refactors.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Added detailed ticket tasks for:
+  - guideline inventory/audit,
+  - audit analysis doc,
+  - foundation overview Storybook docs,
+  - Corpus identity/timeline stories and cleanup,
+  - global CSS cleanup,
+  - page story boundaries.
+- Created `analysis/01-rag-design-system-guideline-audit.md`.
+- Audited each component/page for:
+  - story coverage,
+  - legacy global class usage,
+  - inline style pressure,
+  - layer compliance,
+  - extraction opportunities.
+- Added `web/src/components/foundation/Foundation.stories.tsx`.
+- Added `web/src/components/foundation/Foundation.stories.module.css`.
+- Foundation overview stories cover:
+  - colors,
+  - typography,
+  - status tones,
+  - spacing,
+  - borders/radii,
+  - accessibility.
+- Checked tasks 56, 57, 58, and 59.
+
+### Why
+
+- The user explicitly asked for detailed ticket tasks and a full audit before continuing component cleanup.
+- RAG had individual primitive stories but no TTC-style overview documentation surface for the design-system foundation.
+- The audit is needed so future cleanup happens in a deliberate order rather than opportunistically.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed and included the new foundation overview stories.
+- The audit clearly identified Corpus identity widgets, Search page story split, Workflows page split, Embeddings page split, and Evaluation placeholder cleanup as the next sequence.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+- Storybook still emits the known large iframe chunk warning and plugin timing warning; build succeeds.
+
+### What I learned
+
+- The strongest layers are now foundation/layout/molecules plus most Search and Workflow organisms.
+- The biggest design-system debt is concentrated in `IdentityBar`, `ArtifactIdentityBar`, `ChunkTimelineBar`, API-heavy page boundaries, and remaining global CSS blocks.
+- Foundation overview stories make the missing design-system surface visible without adding new app-facing primitives.
+
+### What was tricky to build
+
+- The audit needed to distinguish pure RTK Query containers from presentational components. Containers do not always need stories if they delegate to a storyable page/presentation boundary.
+- Foundation docs needed some story-only visual styling, but the guideline forbids creating a generic `Box` or app-facing demo primitive. I kept that styling in `Foundation.stories.module.css`.
+
+### What warrants a second pair of eyes
+
+- Whether the audit's proposed extraction order matches product priorities.
+- Whether `SearchWorkbenchPage` should be split before Corpus identity cleanup, or vice versa.
+- Whether the Storybook foundation taxonomy should be `Design System/Foundation/Overview` or split into separate title groups later.
+
+### What should be done in the future
+
+- Start the next cleanup with Corpus identity/timeline widgets and required stories.
+- Then split API-heavy pages into storyable boundaries.
+- Delete global CSS blocks only after `rg` confirms no remaining consumers.
+
+### Code review instructions
+
+- Review `analysis/01-rag-design-system-guideline-audit.md` for the component-by-component extraction plan.
+- Review `web/src/components/foundation/Foundation.stories.tsx` and `.module.css` for the foundation overview documentation.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```

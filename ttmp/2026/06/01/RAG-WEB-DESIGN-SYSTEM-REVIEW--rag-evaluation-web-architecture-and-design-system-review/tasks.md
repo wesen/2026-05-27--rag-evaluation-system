@@ -60,3 +60,13 @@
 - [x] Phase 4 guidance: write RAG-specific React/design-system guidelines modeled after the TTC foundation guide, including CSS ownership, file layout, Storybook, page-boundary, and cleanup rules.
 - [ ] Deferred beyond requested scope (Phase 6): generated React scaffold output and promotion metadata.
 - [ ] Deferred beyond requested scope (Phase 7): executable validators for the documentation-only IR catalog.
+- [x] Guideline audit: inventory every current React component/page against the RAG design-system guidelines (layer, folder layout, Storybook coverage, global CSS usage, inline styles, container/presentation split).
+- [x] Guideline audit: create a ticket analysis doc listing compliant, partially compliant, and non-compliant components with concrete file-level cleanup recommendations.
+- [x] Foundation docs: add RAG Foundation Storybook overview stories for colors, typography, status tones, spacing, borders/radii, and accessibility.
+- [x] Foundation docs: add local story styling for foundation overview demos without introducing app-facing primitives or generic Box APIs.
+- [ ] Corpus cleanup: add stories for IdentityBar, DocProcessingIdentityBar, ChunkEnrichmentIdentityBar, and ChunkTimelineBar.
+- [ ] Corpus cleanup: refactor IdentityBar through Panel/Inline/FormRow/Caption/CodeText/MetadataGrid and move remaining anatomy into a CSS Module.
+- [ ] Corpus cleanup: refactor ArtifactIdentityBar identity selectors through shared primitives and split presentational widgets if needed.
+- [ ] Corpus cleanup: move ChunkTimelineBar global chunk-bar CSS into ChunkTimelineBar.module.css and keep dynamic geometry inline only where required.
+- [ ] Global CSS cleanup: replace raw panel/table/text/status/meta/form/tab classes in stories and active components, then delete unused legacy blocks only after rg proves no consumers.
+- [ ] Page stories: add storyable DTO-shaped page boundaries for Corpus, Workflows, Embeddings, and Evaluation as those areas are split from RTK Query containers.
