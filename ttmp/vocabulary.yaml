@@ -31,6 +31,12 @@ topics:
       description: Scraper workflow engine library
     - slug: ui
       description: Frontend user interface
+    - slug: npm
+      description: npm package publishing, registry configuration, and package security
+    - slug: publishing
+      description: Release and package publishing automation
+    - slug: security
+      description: Authentication, authorization, tokens, and supply-chain hardening
 docTypes:
     - slug: design-doc
       description: Structured rationale and architecture notes
