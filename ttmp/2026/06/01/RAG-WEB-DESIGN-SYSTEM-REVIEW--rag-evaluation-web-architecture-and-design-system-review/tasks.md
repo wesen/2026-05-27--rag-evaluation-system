@@ -44,6 +44,7 @@
 - [x] Phase 3 follow-up: adopt `MetadataGrid`, `DataTable`, `TabList`, and `ScrollRegion` inside Search Workbench result/inspector panels.
 - [x] Phase 3 follow-up: adopt `Panel`, `Stack`, `FormRow`, `ScrollRegion`, and `Caption` inside `SearchControlsPanel`.
 - [x] Phase 3 follow-up: adopt `AppShell` in the root app shell.
-- [ ] Phase 3 follow-up: adopt `MetadataGrid` and `DataTable` inside Corpus Explorer and Workflow views.
+- [x] Phase 3 follow-up: adopt `DataTable`, `MetadataGrid`, `TabList`, `Panel`, `ScrollRegion`, `Caption`, and `StatusText` in Corpus source/document/inspector surfaces.
+- [ ] Phase 3 follow-up: adopt `MetadataGrid` and `DataTable` inside Workflow views.
 - [ ] Deferred beyond requested scope (Phase 6): generated React scaffold output and promotion metadata.
 - [ ] Deferred beyond requested scope (Phase 7): executable validators for the documentation-only IR catalog.

@@ -28,6 +28,12 @@ RelatedFiles:
       Note: |-
         App shell and navigation event evidence
         Diary evidence for AppShell adoption
+    - Path: web/src/components/corpus/DocumentBrowser.tsx
+      Note: Diary evidence for Corpus document table adoption
+    - Path: web/src/components/corpus/DocumentInspector.tsx
+      Note: Diary evidence for Corpus inspector primitive adoption
+    - Path: web/src/components/corpus/SourcePanel.tsx
+      Note: Diary evidence for Corpus source design-system adoption
     - Path: web/src/components/foundation/Caption/Caption.tsx
       Note: Diary evidence for expanded primitive extraction
     - Path: web/src/components/foundation/index.ts
@@ -78,6 +84,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 
@@ -1203,6 +1210,117 @@ This step also moves the root app shell onto the new `AppShell` primitive and re
 - Review `web/src/components/search/SearchView.tsx` to confirm it is only a compatibility re-export.
 - Review `web/src/App.tsx` for `AppShell` adoption.
 - Review `web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx` for primitive adoption.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```
+
+## Step 12: Adopt Design-System Molecules in Corpus Surfaces
+
+I extended the adoption pass from Search into the Corpus Explorer supporting components. Source selection, document browsing, and document inspection now use the reusable design-system primitives and molecules instead of bespoke panel/table/tab/metadata structures.
+
+This is a broader proof point for the design system: the same `Panel`, `ScrollRegion`, `Caption`, `StatusText`, `DataTable`, `MetadataGrid`, and `TabList` components now support both Search Workbench and Corpus exploration workflows.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue the broad design-system extraction and component/page refactor work from the previous step.
+
+**Inferred user intent:** The user wants sustained progress applying the new reusable primitives beyond Search and into the rest of the dashboard.
+
+**Commit (code):** N/A at time of writing — implementation changes pending commit.
+
+### What I did
+
+- Refactored `SourcePanel` to use:
+  - `Panel`
+  - `ScrollRegion`
+  - `Caption`
+  - `SourcePanel.module.css`
+- Refactored `DocumentBrowser` to use:
+  - `Panel`
+  - `ScrollRegion`
+  - `DataTable`
+  - `Caption`
+  - `StatusText`
+  - `DocumentBrowser.module.css`
+- Refactored `DocumentInspector` to use:
+  - `TabList`
+  - `ScrollRegion`
+  - `MetadataGrid`
+  - `DataTable`
+  - `Panel`
+  - `Caption`
+  - `StatusText`
+  - `DocumentInspector.module.css`
+- Preserved the existing corpus behaviors:
+  - source selection,
+  - document filtering,
+  - document selection,
+  - chunk row selection,
+  - chunk timeline selection,
+  - missing coverage list,
+  - artifact loading and workflow navigation.
+
+### Why
+
+- Corpus Explorer had the same repeated global classes and inline styles as Search: panel headers, data tables, metadata grids, tab bars, scroll regions, and status text.
+- Refactoring Corpus after Search checks whether the primitives generalize across views.
+- The design doc explicitly called out corpus inspector tabs as Phase 4/5 review targets.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+- The corpus components now share the same table/metadata/tab primitives as the Search Workbench.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before preparing the commit.
+- A surprising unrelated `go.mod` diff appeared removing local `replace` directives. I reverted `go.mod` because it was unrelated to the React design-system work and would also disturb the known local `../scraper` setup.
+- Workflow views are still largely unreworked and remain the largest remaining design-system adoption target.
+
+### What I learned
+
+- `DataTable` is reusable across retrieval results, document rows, chunk rows, missing chunks, and artifact rows without needing a more complex API yet.
+- `MetadataGrid` maps cleanly to document overview and artifact detail metadata.
+- `TabList` can replace both Search inspector tabs and Document inspector tabs with the same controlled-tab pattern.
+
+### What was tricky to build
+
+- The main tricky part was preserving chunk selection behavior while moving chunk rows to `DataTable`. I kept selection keyed by chunk ID but converted it back to the existing selected index state so `ChunkTimelineBar` remains unchanged.
+- Artifact detail had a local selected-index state that was not previously connected to row selection. I preserved its existing behavior without introducing new artifact-row selection semantics in this pass.
+
+### What warrants a second pair of eyes
+
+- Whether `DocumentInspector` should be split into smaller organisms/molecules now that it has clearer sections.
+- Whether `DataTable` should gain optional wrapping cells for long IDs/text before Workflow adoption.
+- Whether the corpus coverage strip should eventually share an extracted `CoverageStrip` with `ResultInspectorPanel`.
+
+### What should be done in the future
+
+- Refactor `WorkflowsView` next; it still contains many local panels, tables, status classes, and metadata grids.
+- Consider extracting `DocumentInspector` section components if it remains large after the design-system adoption.
+- Add Storybook stories for Corpus source/document/inspector states.
+
+### Code review instructions
+
+- Review `web/src/components/corpus/SourcePanel.tsx` for source list primitive adoption.
+- Review `web/src/components/corpus/DocumentBrowser.tsx` for `DataTable` adoption.
+- Review `web/src/components/corpus/DocumentInspector.tsx` for `TabList`, `MetadataGrid`, and `DataTable` adoption.
 - Validate with:
   - `cd web && pnpm typecheck`
   - `cd web && pnpm build`

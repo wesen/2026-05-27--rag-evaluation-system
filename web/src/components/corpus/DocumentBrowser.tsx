@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
+import { Caption, StatusText } from '../foundation';
+import { Panel, ScrollRegion } from '../layout';
+import { DataTable, type DataTableColumn } from '../molecules';
 import { CorpusDocumentRow } from '../../services/api';
+import styles from './DocumentBrowser.module.css';
 
 interface DocumentBrowserProps {
   documents: CorpusDocumentRow[];
@@ -24,72 +28,56 @@ export const DocumentBrowser: React.FC<DocumentBrowserProps> = ({
       )
     : documents;
 
+  const columns: DataTableColumn<CorpusDocumentRow>[] = [
+    { id: 'title', header: 'Title', maxWidth: 300, cell: (doc) => doc.title },
+    { id: 'words', header: 'Words', align: 'end', cell: (doc) => doc.word_count.toLocaleString() },
+    { id: 'chunks', header: 'Chunks', align: 'end', cell: (doc) => doc.chunk_count },
+    {
+      id: 'embed',
+      header: 'Embed',
+      align: 'end',
+      cell: (doc) => doc.chunk_count > 0
+        ? <Caption tone={doc.embedded_count === doc.chunk_count ? 'success' : doc.embedded_count > 0 ? 'warning' : 'muted'}>{doc.embedded_count}/{doc.chunk_count}</Caption>
+        : '—',
+    },
+    { id: 'status', header: 'Status', cell: (doc) => <StatusText status={doc.status === 'chunked' ? 'done' : doc.status}>{doc.status}</StatusText> },
+  ];
+
   return (
-    <div className="panel" style={{ flex: 1, minWidth: 0 }}>
-      <div className="panel-header">
-        <span>{sourceName ? `${sourceName} — Documents` : 'Documents'}</span>
-        {sourceName && (
-          <span className="text-mono" style={{ fontSize: 10 }}>
-            {totalDocs} docs
-          </span>
-        )}
-      </div>
+    <Panel
+      className={styles.root}
+      title={sourceName ? `${sourceName} — Documents` : 'Documents'}
+      actions={sourceName && <Caption>{totalDocs} docs</Caption>}
+      density="condensed"
+    >
       {sourceName && (
-        <div style={{ padding: '3px 6px', borderBottom: '1px solid var(--mac-border)' }}>
+        <div className={styles.searchBar}>
           <input
-            className="input"
+            className={`input ${styles.searchInput}`}
             placeholder="Search title or ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ width: '100%', fontSize: 11 }}
           />
         </div>
       )}
-      <div className="panel-body-condensed" style={{ overflowY: 'auto', maxHeight: 570 }}>
+      <ScrollRegion axis="y" style={{ maxHeight: 570 }}>
         {!sourceName ? (
-          <span className="text-dim text-mono">Select a source to browse documents.</span>
+          <Caption>Select a source to browse documents.</Caption>
         ) : isLoading ? (
-          <span className="text-dim text-mono">Loading...</span>
+          <Caption>Loading...</Caption>
         ) : filtered.length === 0 ? (
-          <span className="text-dim text-mono">{search ? 'No matching documents.' : 'No documents found.'}</span>
+          <Caption>{search ? 'No matching documents.' : 'No documents found.'}</Caption>
         ) : (
           <>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Words</th>
-                  <th>Chunks</th>
-                  <th>Embed</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((doc) => (
-                  <tr
-                    key={doc.id}
-                    className={`selectable ${doc.id === selectedDocId ? 'selected' : ''}`}
-                    onClick={() => onSelectDocument(doc.id)}
-                  >
-                    <td className="truncate" style={{ maxWidth: 300 }}>{doc.title}</td>
-                    <td className="num">{doc.word_count.toLocaleString()}</td>
-                    <td className="num">{doc.chunk_count}</td>
-                    <td className="num">
-                      {doc.chunk_count > 0 ? (
-                        <span className={doc.embedded_count === doc.chunk_count ? 'accent-green' : doc.embedded_count > 0 ? 'accent-amber' : 'accent-dim'}>
-                          {doc.embedded_count}/{doc.chunk_count}
-                        </span>
-                      ) : '—'}
-                    </td>
-                    <td>
-                      <span className={`status-${doc.status === 'chunked' ? 'done' : doc.status}`}>{doc.status}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <DataTable
+              rows={filtered}
+              columns={columns}
+              getRowKey={(doc) => doc.id}
+              selectedKey={selectedDocId}
+              onRowSelect={(doc) => onSelectDocument(doc.id)}
+            />
             {hasMore && (
-              <div style={{ padding: '4px 0', textAlign: 'center' }}>
+              <div className={styles.loadMore}>
                 <button className="btn" onClick={onLoadMore} style={{ fontSize: 11 }}>
                   Load more ({totalDocs - documents.length} remaining)
                 </button>
@@ -97,7 +85,7 @@ export const DocumentBrowser: React.FC<DocumentBrowserProps> = ({
             )}
           </>
         )}
-      </div>
-    </div>
+      </ScrollRegion>
+    </Panel>
   );
 };

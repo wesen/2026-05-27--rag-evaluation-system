@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Caption, StatusText } from '../foundation';
+import { Panel, ScrollRegion, TabList } from '../layout';
+import { DataTable, MetadataGrid, type DataTableColumn, type MetadataGridItem } from '../molecules';
 import {
   CorpusChunk,
   CorpusDocumentDetail,
@@ -7,6 +10,7 @@ import {
   DocumentProcessingArtifact,
 } from '../../services/api';
 import { ChunkTimelineBar } from './ChunkTimelineBar';
+import styles from './DocumentInspector.module.css';
 
 function timeAgoShort(iso: string): string {
   const ms = Date.now() - new Date(iso).getTime();
@@ -20,39 +24,27 @@ const ArtifactDetail: React.FC<{ artifacts: DocumentProcessingArtifact[] }> = ({
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const selected = selectedIdx !== null ? artifacts[selectedIdx] : null;
 
-  return (
-    <>
-      {selected && (
-        <div className="panel" style={{ borderLeft: '3px solid var(--mac-accent)', marginTop: 6 }}>
-          <div className="panel-header">
-            <span>Artifact: {selected.artifact_type} ({selected.prompt_version})</span>
-            <button className="copy-btn" onClick={() => setSelectedIdx(null)}>✕</button>
-          </div>
-          <div className="panel-body-condensed" style={{ fontSize: 12 }}>
-            <div className="meta-grid">
-              <span className="meta-key">Provider</span>
-              <span className="meta-value">{selected.provider}/{selected.model}</span>
-              <span className="meta-key">Status</span>
-              <span className={`status-${selected.status === 'fresh' ? 'done' : selected.status === 'failed' ? 'error' : 'pending'}`}>{selected.status}</span>
-              <span className="meta-key">Hash</span>
-              <span className="meta-value">{selected.input_hash}</span>
-            </div>
-            {selected.output_text && (
-              <fieldset className="form-section" style={{ marginTop: 6 }}>
-                <legend>Output Text</legend>
-                <div className="text-content" style={{ maxHeight: 200 }}>{selected.output_text}</div>
-              </fieldset>
-            )}
-            {selected.error_message && (
-              <div className="error-box" style={{ marginTop: 6 }}>
-                {selected.error_message}
-              </div>
-            )}
-          </div>
-        </div>
+  return selected ? (
+    <Panel
+      className={styles.artifactPanel}
+      title={`Artifact: ${selected.artifact_type} (${selected.prompt_version})`}
+      actions={<button className="copy-btn" onClick={() => setSelectedIdx(null)}>✕</button>}
+      density="condensed"
+    >
+      <MetadataGrid items={[
+        { key: 'Provider', value: `${selected.provider}/${selected.model}` },
+        { key: 'Status', value: <StatusText status={selected.status === 'fresh' ? 'done' : selected.status === 'failed' ? 'error' : 'pending'}>{selected.status}</StatusText> },
+        { key: 'Hash', value: selected.input_hash },
+      ]} />
+      {selected.output_text && (
+        <section className={styles.section}>
+          <div className={styles.sectionTitle}>Output Text</div>
+          <div className={styles.textContent}>{selected.output_text}</div>
+        </section>
       )}
-    </>
-  );
+      {selected.error_message && <div className="error-box" style={{ marginTop: 6 }}>{selected.error_message}</div>}
+    </Panel>
+  ) : null;
 };
 
 interface DocumentInspectorProps {
@@ -62,8 +54,18 @@ interface DocumentInspectorProps {
   highlightChunkId?: string | null;
 }
 
+type InspectorTab = 'overview' | 'text' | 'chunks' | 'coverage' | 'artifacts';
+
+const tabs = [
+  { id: 'overview', label: 'overview' },
+  { id: 'text', label: 'text' },
+  { id: 'chunks', label: 'chunks' },
+  { id: 'coverage', label: 'coverage' },
+  { id: 'artifacts', label: 'artifacts' },
+] satisfies { id: InspectorTab; label: string }[];
+
 export const DocumentInspector: React.FC<DocumentInspectorProps> = ({ detail, chunks, identity, highlightChunkId }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'text' | 'chunks' | 'coverage' | 'artifacts'>(highlightChunkId ? 'chunks' : 'overview');
+  const [activeTab, setActiveTab] = useState<InspectorTab>(highlightChunkId ? 'chunks' : 'overview');
   const [selectedChunkIdx, setSelectedChunkIdx] = useState<number | null>(() => {
     if (!highlightChunkId) return null;
     const idx = (chunks ?? []).findIndex(c => c.id === highlightChunkId);
@@ -73,274 +75,135 @@ export const DocumentInspector: React.FC<DocumentInspectorProps> = ({ detail, ch
   const safeChunks = chunks ?? [];
   const doc = detail.document;
   const metaKeys = Object.keys(doc.metadata || {});
-
   const embeddedCount = safeChunks.filter((c) => c.embedding?.present).length;
   const missingCount = safeChunks.length - embeddedCount;
-
   const identityLabel = `${identity.provider_type || '?'}/${identity.model || '?'} @ ${identity.dimensions || '?'}`;
 
-  // Fetch document processing artifacts when artifacts tab is active
   const { data: artifactsData, isLoading: artifactsLoading } = useGetDocumentProcessingArtifactsQuery(
     doc.id,
     { skip: activeTab !== 'artifacts' },
   );
   const artifacts = artifactsData?.items ?? [];
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-      {/* Tabs */}
-      <div className="tab-bar">
-        {(['overview', 'text', 'chunks', 'coverage', 'artifacts'] as const).map((tab) => (
-          <span
-            key={tab}
-            className={`tab-item ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </span>
-        ))}
-      </div>
+  const overviewItems: MetadataGridItem[] = [
+    { key: 'ID', value: doc.id, copyValue: doc.id },
+    { key: 'Source', value: doc.source_id },
+    { key: 'URL', value: doc.url ? <a href={doc.url} target="_blank" rel="noreferrer" className="accent" style={{ textDecoration: 'none' }}>{doc.url}</a> : '—' },
+    { key: 'Words', value: doc.word_count.toLocaleString() },
+    { key: 'Chunks', value: safeChunks.length },
+    { key: 'Embedded', value: <Caption tone={embeddedCount === safeChunks.length && safeChunks.length > 0 ? 'success' : embeddedCount > 0 ? 'warning' : 'muted'}>{embeddedCount}/{safeChunks.length}</Caption> },
+    { key: 'Status', value: <StatusText status={doc.status === 'chunked' ? 'done' : doc.status}>{doc.status}</StatusText> },
+  ];
 
-      <div style={{ padding: '6px 0' }}>
+  const chunkColumns: DataTableColumn<CorpusChunk>[] = [
+    { id: 'index', header: '#', cell: (chunk) => chunk.chunk_index },
+    { id: 'range', header: 'Range', cell: (chunk) => `${chunk.start_offset}–${chunk.end_offset}` },
+    { id: 'tokens', header: 'Tokens', align: 'end', cell: (chunk) => chunk.token_count },
+    { id: 'embed', header: 'Embed', align: 'center', cell: (chunk) => <Caption tone={chunk.embedding?.present ? 'success' : 'muted'}>{chunk.embedding?.present ? '●' : '○'}</Caption> },
+    { id: 'enrich', header: 'Enrich', align: 'center', cell: (chunk) => <Caption tone={chunk.enrichment?.present ? 'success' : 'muted'} title={chunk.enrichment?.short_summary ?? ''}>{chunk.enrichment?.present ? '●' : '○'}</Caption> },
+    { id: 'id', header: 'ID', cell: (chunk) => <button className="copy-btn" onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(chunk.id); }} title="Copy chunk ID">{chunk.id.slice(0, 12)}…</button> },
+  ];
+
+  const missingColumns: DataTableColumn<CorpusChunk>[] = [
+    { id: 'index', header: '#', cell: (chunk) => chunk.chunk_index },
+    { id: 'range', header: 'Range', cell: (chunk) => `${chunk.start_offset}–${chunk.end_offset}` },
+    { id: 'tokens', header: 'Tokens', align: 'end', cell: (chunk) => chunk.token_count },
+    { id: 'id', header: 'ID', cell: (chunk) => `${chunk.id.slice(0, 16)}…` },
+  ];
+
+  const artifactColumns: DataTableColumn<DocumentProcessingArtifact>[] = [
+    { id: 'type', header: 'Type', cell: (a) => a.artifact_type },
+    { id: 'version', header: 'Version', cell: (a) => a.prompt_version },
+    { id: 'provider', header: 'Provider', cell: (a) => <Caption>{a.provider}/{a.model}</Caption> },
+    { id: 'status', header: 'Status', cell: (a) => <StatusText status={a.status === 'fresh' ? 'done' : a.status === 'failed' ? 'error' : 'pending'}>{a.status}</StatusText> },
+    { id: 'age', header: 'Age', cell: (a) => <Caption>{timeAgoShort(a.updated_at)}</Caption> },
+  ];
+
+  return (
+    <div className={styles.root}>
+      <TabList items={tabs} activeId={activeTab} onChange={setActiveTab} ariaLabel="Document inspector tabs" />
+      <ScrollRegion axis="y" className={styles.body}>
         {activeTab === 'overview' && (
           <>
-            <div className="stat-grid">
-              <span className="stat-label">ID</span>
-              <span className="stat-value">
-                {doc.id}
-                <button className="copy-btn" onClick={() => navigator.clipboard.writeText(doc.id)} title="Copy"> [copy]</button>
-              </span>
-              <span className="stat-label">Source</span>
-              <span className="stat-value">{doc.source_id}</span>
-              <span className="stat-label">URL</span>
-              <span className="stat-value">
-                {doc.url ? (
-                  <a href={doc.url} target="_blank" rel="noreferrer" className="accent" style={{ textDecoration: 'none' }}>
-                    {doc.url}
-                  </a>
-                ) : '—'}
-              </span>
-              <span className="stat-label">Words</span>
-              <span className="stat-value">{doc.word_count.toLocaleString()}</span>
-              <span className="stat-label">Chunks</span>
-              <span className="stat-value">{safeChunks.length}</span>
-              <span className="stat-label">Embedded</span>
-              <span className="stat-value">
-                <span className={embeddedCount === safeChunks.length && safeChunks.length > 0 ? 'accent-green' : embeddedCount > 0 ? 'accent-amber' : ''}>
-                  {embeddedCount}/{safeChunks.length}
-                </span>
-              </span>
-              <span className="stat-label">Status</span>
-              <span className="stat-value">
-                <span className={`status-${doc.status === 'chunked' ? 'done' : doc.status}`}>{doc.status}</span>
-              </span>
-            </div>
-
+            <section className={styles.section}>
+              <MetadataGrid items={overviewItems} />
+            </section>
             {metaKeys.length > 0 && (
-              <>
-                <div className="section-title" style={{ marginTop: 8 }}>Metadata</div>
-                <div className="meta-grid">
-                  {metaKeys.map((key) => (
-                    <React.Fragment key={key}>
-                      <span className="meta-key">{key}</span>
-                      <span className="meta-value">{String(doc.metadata[key] ?? '')}</span>
-                    </React.Fragment>
-                  ))}
-                </div>
-              </>
+              <section className={styles.section}>
+                <div className={styles.sectionTitle}>Metadata</div>
+                <MetadataGrid items={metaKeys.map((key) => ({ key, value: String(doc.metadata[key] ?? '') }))} />
+              </section>
             )}
           </>
         )}
 
         {activeTab === 'text' && (
-          <>
-            <div className="section-title">Extracted Text ({doc.word_count.toLocaleString()} words)</div>
-            <div className="text-content">
-              {doc.content_text || <span className="text-dim">No content text available.</span>}
-            </div>
-          </>
+          <section className={styles.section}>
+            <div className={styles.sectionTitle}>Extracted Text ({doc.word_count.toLocaleString()} words)</div>
+            <div className={styles.textContent}>{doc.content_text || <span className={styles.empty}>No content text available.</span>}</div>
+          </section>
         )}
 
         {activeTab === 'chunks' && (
           <>
-            <div className="section-title">
-              Chunks ({safeChunks.length}) — {embeddedCount} embedded, {missingCount} missing · {safeChunks.filter(c => c.enrichment?.present).length} enriched
-            </div>
-
-            <ChunkTimelineBar
-              chunks={safeChunks}
-              selectedIdx={selectedChunkIdx}
-              onSelect={setSelectedChunkIdx}
-            />
-
-            <table className="data-table" style={{ marginTop: 4 }}>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Range</th>
-                  <th>Tokens</th>
-                  <th>Embed</th>
-                  <th>Enrich</th>
-                  <th>ID</th>
-                </tr>
-              </thead>
-              <tbody>
-                {safeChunks.map((chunk, idx) => (
-                  <tr
-                    key={chunk.id}
-                    className={`selectable ${selectedChunkIdx === idx ? 'selected' : ''}`}
-                    onClick={() => setSelectedChunkIdx(idx === selectedChunkIdx ? null : idx)}
-                  >
-                    <td className="mono">{chunk.chunk_index}</td>
-                    <td className="mono">{chunk.start_offset}–{chunk.end_offset}</td>
-                    <td className="num">{chunk.token_count}</td>
-                    <td>
-                      <span className={chunk.embedding?.present ? 'accent-green' : 'accent-dim'}>
-                        {chunk.embedding?.present ? '●' : '○'}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={chunk.enrichment?.present ? 'accent-green' : 'accent-dim'}
-                        title={chunk.enrichment?.short_summary ?? ''}>
-                        {chunk.enrichment?.present ? '●' : '○'}
-                      </span>
-                    </td>
-                    <td className="mono">
-                      <button
-                        className="copy-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigator.clipboard.writeText(chunk.id);
-                        }}
-                        title="Copy chunk ID"
-                      >
-                        {chunk.id.slice(0, 12)}…
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>Chunks ({safeChunks.length}) — {embeddedCount} embedded, {missingCount} missing · {safeChunks.filter(c => c.enrichment?.present).length} enriched</div>
+              <ChunkTimelineBar chunks={safeChunks} selectedIdx={selectedChunkIdx} onSelect={setSelectedChunkIdx} />
+              <DataTable rows={safeChunks} columns={chunkColumns} getRowKey={(chunk) => chunk.id} selectedKey={selectedChunkIdx !== null ? safeChunks[selectedChunkIdx]?.id : null} onRowSelect={(chunk) => { const idx = safeChunks.findIndex((c) => c.id === chunk.id); setSelectedChunkIdx(idx === selectedChunkIdx ? null : idx); }} />
+            </section>
             {selectedChunkIdx !== null && safeChunks[selectedChunkIdx] && (
-              <div style={{ marginTop: 6 }}>
-                <div className="section-title">
-                  Chunk #{safeChunks[selectedChunkIdx].chunk_index} — {safeChunks[selectedChunkIdx].token_count} tokens
-                </div>
-                <div className="text-content">
-                  {safeChunks[selectedChunkIdx].text}
-                </div>
-              </div>
+              <section className={`${styles.section} ${styles.chunkDetail}`}>
+                <div className={styles.sectionTitle}>Chunk #{safeChunks[selectedChunkIdx].chunk_index} — {safeChunks[selectedChunkIdx].token_count} tokens</div>
+                <div className={styles.textContent}>{safeChunks[selectedChunkIdx].text}</div>
+              </section>
             )}
           </>
         )}
 
         {activeTab === 'coverage' && (
           <>
-            <div className="section-title">
-              Embedding Coverage — {identityLabel}
-            </div>
-            <div className="stat-grid" style={{ marginBottom: 8 }}>
-              <span className="stat-label">Total</span>
-              <span className="stat-value">{safeChunks.length}</span>
-              <span className="stat-label">Embedded</span>
-              <span className="stat-value accent-green">{embeddedCount}</span>
-              <span className="stat-label">Missing</span>
-              <span className="stat-value accent-amber">{missingCount}</span>
-              <span className="stat-label">Coverage</span>
-              <span className="stat-value">
-                {safeChunks.length > 0 ? Math.round((embeddedCount / safeChunks.length) * 100) : 0}%
-              </span>
-            </div>
-
-            <div className="section-title">Per-chunk status</div>
-            <div className="coverage-strip">
-              {safeChunks.map((chunk) => (
-                <span
-                  key={chunk.id}
-                  className={`coverage-dot ${chunk.embedding?.present ? 'present' : 'missing'}`}
-                  title={`#${chunk.chunk_index} ${chunk.embedding?.present ? 'embedded' : 'missing'}`}
-                />
-              ))}
-            </div>
-            <div className="text-mono text-dim" style={{ marginTop: 4, fontSize: 10 }}>
-              ● embedded · ○ missing
-            </div>
-
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>Embedding Coverage — {identityLabel}</div>
+              <MetadataGrid items={[
+                { key: 'Total', value: safeChunks.length },
+                { key: 'Embedded', value: <Caption tone="success">{embeddedCount}</Caption> },
+                { key: 'Missing', value: <Caption tone="warning">{missingCount}</Caption> },
+                { key: 'Coverage', value: `${safeChunks.length > 0 ? Math.round((embeddedCount / safeChunks.length) * 100) : 0}%` },
+              ]} />
+            </section>
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>Per-chunk status</div>
+              <div className={styles.coverageStrip}>
+                {safeChunks.map((chunk) => <span key={chunk.id} className={`${styles.coverageDot} ${chunk.embedding?.present ? styles.present : styles.missing}`} title={`#${chunk.chunk_index} ${chunk.embedding?.present ? 'embedded' : 'missing'}`} />)}
+              </div>
+              <Caption>● embedded · ○ missing</Caption>
+            </section>
             {missingCount > 0 && (
-              <>
-                <div className="section-title" style={{ marginTop: 8 }}>Missing chunks</div>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Range</th>
-                      <th>Tokens</th>
-                      <th>ID</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {safeChunks.filter((c) => !c.embedding?.present).map((chunk) => (
-                      <tr key={chunk.id}>
-                        <td className="mono">{chunk.chunk_index}</td>
-                        <td className="mono">{chunk.start_offset}–{chunk.end_offset}</td>
-                        <td className="num">{chunk.token_count}</td>
-                        <td className="mono">{chunk.id.slice(0, 16)}…</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </>
+              <section className={styles.section}>
+                <div className={styles.sectionTitle}>Missing chunks</div>
+                <DataTable rows={safeChunks.filter((c) => !c.embedding?.present)} columns={missingColumns} getRowKey={(chunk) => chunk.id} />
+              </section>
             )}
           </>
         )}
 
         {activeTab === 'artifacts' && (
-          <>
-            <div className="section-title">
-              Document Processing Artifacts ({artifacts.length})
-            </div>
+          <section className={styles.section}>
+            <div className={styles.sectionTitle}>Document Processing Artifacts ({artifacts.length})</div>
             {artifactsLoading ? (
-              <span className="text-dim text-mono">Loading...</span>
+              <Caption>Loading...</Caption>
             ) : artifacts.length === 0 ? (
-              <div className="text-dim text-mono">
+              <div className={styles.empty}>
                 No preprocessing artifacts for this document.
-                <button className="btn" style={{ marginLeft: 8, fontSize: 11 }}
-                  onClick={() => window.dispatchEvent(new CustomEvent('rag:navigate-to-workflows'))}>
-                  Submit Workflow →
-                </button>
+                <button className="btn" style={{ marginLeft: 8, fontSize: 11 }} onClick={() => window.dispatchEvent(new CustomEvent('rag:navigate-to-workflows'))}>Submit Workflow →</button>
               </div>
             ) : (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Version</th>
-                    <th>Provider</th>
-                    <th>Status</th>
-                    <th>Age</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {artifacts.map((a: DocumentProcessingArtifact) => (
-                    <tr key={`${a.artifact_type}-${a.prompt_version}-${a.provider}-${a.model}`}>
-                      <td className="mono">{a.artifact_type}</td>
-                      <td className="mono">{a.prompt_version}</td>
-                      <td className="mono" style={{ fontSize: 10 }}>{a.provider}/{a.model}</td>
-                      <td className={a.status === 'fresh' ? 'status-done' : a.status === 'failed' ? 'status-error' : 'status-pending'}>{a.status}</td>
-                      <td className="mono" style={{ fontSize: 10 }}>{timeAgoShort(a.updated_at)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <DataTable rows={artifacts} columns={artifactColumns} getRowKey={(a) => `${a.artifact_type}-${a.prompt_version}-${a.provider}-${a.model}`} />
             )}
-
-            {artifacts.length > 0 && (
-              <ArtifactDetail artifacts={artifacts} />
-            )}
-          </>
+            {artifacts.length > 0 && <ArtifactDetail artifacts={artifacts} />}
+          </section>
         )}
-      </div>
+      </ScrollRegion>
     </div>
   );
 };

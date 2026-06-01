@@ -155,3 +155,16 @@ Moved Search into a SearchWorkbenchPage boundary and adopted AppShell/FormRow/Pa
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx — Explicit Search Workbench page boundary
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/search/SearchView.tsx — Compatibility re-export for moved SearchWorkbenchPage
 
+
+## 2026-06-01
+
+Adopted reusable design-system primitives and molecules in Corpus source, document, and inspector surfaces
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded Corpus design-system adoption
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentBrowser.tsx — Document browser now uses DataTable/Panel/ScrollRegion
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentInspector.module.css — Document-inspector-specific anatomy after primitive adoption
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/DocumentInspector.tsx — Document inspector now uses TabList/MetadataGrid/DataTable
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/corpus/SourcePanel.tsx — Source list now uses Panel/ScrollRegion/Caption
+
