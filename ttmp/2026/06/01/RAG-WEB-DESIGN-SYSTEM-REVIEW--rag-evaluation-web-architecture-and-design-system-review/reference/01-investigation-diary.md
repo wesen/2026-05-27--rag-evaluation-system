@@ -14,20 +14,29 @@ Owners: []
 RelatedFiles:
     - Path: ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/design-doc/01-rag-evaluation-web-architecture-and-design-system-review.md
       Note: Primary report produced by the investigation
+    - Path: web/package.json
+      Note: Phase 0/2 tooling changes
     - Path: web/src/App.tsx
       Note: App shell and navigation event evidence
+    - Path: web/src/components/foundation/index.ts
+      Note: Phase 1 foundation primitive barrel
+    - Path: web/src/components/layout/index.ts
+      Note: Phase 1 layout primitive barrel
     - Path: web/src/components/search/SearchView.tsx
       Note: First recommended vertical-slice evidence
     - Path: web/src/index.css
       Note: CSS/design-system evidence
     - Path: web/src/services/api.ts
       Note: API contract evidence
+    - Path: web/src/styles/tokens.css
+      Note: Phase 1 token extraction
 ExternalSources: []
 Summary: Chronological diary for the RAG Evaluation web architecture and design-system/DMETA review.
 LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this diary to understand how the RAG web review was investigated, what commands were run, what failed, and how to continue.
 WhenToUse: Read before continuing the RAG web design-system or DMETA IR implementation work.
 ---
+
 
 
 # Diary
@@ -251,4 +260,137 @@ remarquee upload bundle \
   --remote-dir "/ai/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW" \
   --toc-depth 2 \
   --non-interactive
+```
+
+## Step 3: Implement Phases 0, 1, and the Start of Phase 2
+
+I started the implementation work requested after the review by making the web package buildable locally, adding Storybook scaffolding, extracting the first design-system token file, and adding the first foundation and layout primitives. This is intentionally a bottom-up step: it does not split the Search page yet, but it creates the primitives and Storybook surface that the Search Workbench refactor should use next.
+
+I also updated the ticket tasks so Storybook work starts in Phase 2 immediately, not after all React refactoring is done. The new stories are co-located with the primitives so later extracted organisms can follow the same pattern.
+
+### Prompt Context
+
+**User prompt (verbatim):** "ok, hase 0 1 2. don't forget to add tasks to write the storybook stories, start right away in phase 2 already."
+
+**Assistant interpretation:** Begin implementation for phases 0, 1, and 2 of the RAG web design-system plan, and make sure Storybook stories are represented as explicit tasks and started immediately during Phase 2.
+
+**Inferred user intent:** The user wants implementation momentum, not another planning-only pass, and wants Storybook to become part of the design-system loop before large component extraction.
+
+**Commit (code):** N/A at time of writing — implementation changes pending commit.
+
+### What I did
+
+- Installed web dependencies with `pnpm install`.
+- Added Storybook dependencies with `pnpm add -D storybook @storybook/react-vite`.
+- Added package scripts:
+  - `typecheck`
+  - `storybook`
+  - `build-storybook`
+- Added `.storybook/main.ts` and `.storybook/preview.ts`.
+- Added `storybook-static` to `web/.gitignore`.
+- Extracted the current retro `:root` tokens from `web/src/index.css` into `web/src/styles/tokens.css`.
+- Added RAG role token aliases such as `--rag-font-role-body`, `--rag-font-role-code`, and `--rag-font-role-label`.
+- Added CSS module typing support to `web/src/vite-env.d.ts`.
+- Added foundation primitives with co-located stories:
+  - `Text`
+  - `CodeText`
+  - `StatusText`
+  - `Divider`
+  - `VisuallyHidden`
+- Added layout primitives with co-located stories:
+  - `Panel`
+  - `Stack`
+  - `Inline`
+  - `DashboardGrid`
+- Added component barrels:
+  - `web/src/components/foundation/index.ts`
+  - `web/src/components/layout/index.ts`
+  - `web/src/components/index.ts`
+- Updated ticket tasks to include Phase 0/1/2 completion and Phase 2 follow-up Storybook tasks for Search Workbench organisms.
+
+### Why
+
+- Phase 0 needed a working local package baseline before any serious refactor.
+- Phase 1 needed explicit token/foundation/layout ownership so the next component extractions do not keep adding global classes and inline styles.
+- Phase 2 needed Storybook immediately so primitives are reviewable before the Search Workbench is split into organisms and molecules.
+
+### What worked
+
+- `pnpm install` completed from the existing lockfile.
+- `pnpm add -D storybook @storybook/react-vite` completed and updated `package.json` / `pnpm-lock.yaml`.
+- `pnpm typecheck` passed after fixing CSS module typing and the `Panel` prop name conflict.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+
+### What didn't work
+
+- The first `pnpm typecheck` failed because `noUncheckedIndexedAccess` made CSS module class lookups type as `string | undefined` under the initial declaration:
+
+```text
+src/components/foundation/Text/Text.tsx(21,3): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+```
+
+- The first `pnpm typecheck` also failed because `PanelProps` extended `HTMLAttributes<HTMLDivElement>` while redefining the native `title` attribute as `ReactNode`:
+
+```text
+src/components/layout/Panel/Panel.tsx(4,18): error TS2430: Interface 'PanelProps' incorrectly extends interface 'HTMLAttributes<HTMLDivElement>'.
+```
+
+- `StatusText.stories.tsx` initially needed default `args` because `status` is a required component prop.
+- `go test ./...` failed because this checkout is missing the sibling `../scraper` module required by the local replace directive:
+
+```text
+github.com/go-go-golems/scraper@v0.0.0 (replaced by ./scraper): reading ../scraper/go.mod: open /home/manuel/workspaces/2026-05-27/ttc-design-system/scraper/go.mod: no such file or directory
+```
+
+### What I learned
+
+- The web package was buildable once dependencies were installed; the earlier build failure was environmental rather than a TypeScript failure.
+- Storybook 10.4.1 builds successfully against the current React/Vite package stack.
+- The existing retro global CSS can be preserved while introducing token aliases and primitive components; no visual reset is required for this first step.
+
+### What was tricky to build
+
+- The tricky part was introducing CSS Modules under strict TypeScript with `noUncheckedIndexedAccess`. The immediate pragmatic fix was to type CSS module imports as `any` in `vite-env.d.ts`. A future stricter typed-css-module setup can improve this, but it should not block Phase 1/2 scaffolding.
+- Another subtle issue was avoiding a generated build-artifact commit. `pnpm build` rewrote `internal/web/dist/index.html` to reference ignored hashed assets, so I reverted that tracked build artifact and kept the source/package changes only.
+
+### What warrants a second pair of eyes
+
+- Whether `CodeText`, `StatusText`, and `Text` should remain separate primitives or whether `CodeText`/`StatusText` should become roles on a richer `Text` primitive later.
+- Whether `DashboardGrid` recipes should stay minimal until the Search Workbench extraction proves the exact recipes.
+- Whether the CSS module typing should be tightened after the first refactor.
+
+### What should be done in the future
+
+- Split `SearchView.tsx` into Search Workbench page/organism/molecule components.
+- Add Storybook stories for `SearchControlsPanel`, `RetrievalResultsPanel`, `ResultInspectorPanel`, and `CoveragePanel` during the Phase 2 follow-up.
+- Add initial `dmeta-ir` YAML in Phase 3 after the first component boundaries stabilize.
+
+### Code review instructions
+
+- Start with `web/src/styles/tokens.css` to see how current retro tokens were preserved.
+- Review foundation primitives under `web/src/components/foundation/`.
+- Review layout primitives under `web/src/components/layout/`.
+- Check Storybook setup under `web/.storybook/` and co-located `*.stories.tsx` files.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```
+
+Repository-level Go validation attempted but blocked by the missing sibling scraper checkout:
+
+```bash
+cd 2026-05-27--rag-evaluation-system
+go test ./...
 ```

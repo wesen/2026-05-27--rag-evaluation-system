@@ -20,6 +20,12 @@ RelatedFiles:
       Note: Workflow
     - Path: internal/db/db.go
       Note: SQLite schema for sources
+    - Path: web/.storybook/main.ts
+      Note: Storybook React Vite configuration
+    - Path: web/.storybook/preview.ts
+      Note: Storybook global CSS preview setup
+    - Path: web/package.json
+      Note: Web tooling scripts and Storybook dependencies added for Phase 0/2
     - Path: web/src/App.tsx
       Note: Top-level web app shell
     - Path: web/src/components/corpus/CorpusExplorerView.tsx
@@ -28,6 +34,20 @@ RelatedFiles:
       Note: Document detail tabs for text
     - Path: web/src/components/embeddings/EmbeddingsView.tsx
       Note: Embedding compute and stored-vector similarity inspector
+    - Path: web/src/components/foundation/StatusText/StatusText.tsx
+      Note: Foundation workflow/status tone primitive introduced in Phase 1
+    - Path: web/src/components/foundation/Text/Text.stories.tsx
+      Note: Phase 2 co-located foundation Storybook story
+    - Path: web/src/components/foundation/Text/Text.tsx
+      Note: Foundation typography primitive introduced in Phase 1
+    - Path: web/src/components/index.ts
+      Note: Public component barrel for foundation and layout primitives
+    - Path: web/src/components/layout/DashboardGrid/DashboardGrid.stories.tsx
+      Note: Phase 2 co-located layout Storybook story
+    - Path: web/src/components/layout/DashboardGrid/DashboardGrid.tsx
+      Note: Dashboard grid recipe primitive introduced in Phase 1
+    - Path: web/src/components/layout/Panel/Panel.tsx
+      Note: Layout panel primitive introduced in Phase 1
     - Path: web/src/components/search/SearchView.tsx
       Note: Search workbench and recommended first design-system/DMETA vertical slice
     - Path: web/src/components/workflows/WorkflowsView.tsx
@@ -36,6 +56,8 @@ RelatedFiles:
       Note: 'Current implicit design system: tokens'
     - Path: web/src/services/api.ts
       Note: RTK Query DTOs
+    - Path: web/src/styles/tokens.css
+      Note: Design-system token extraction from global CSS
     - Path: web/vite.config.ts
       Note: Vite dev proxy and build output path into embedded SPA directory
 ExternalSources: []
@@ -44,6 +66,7 @@ LastUpdated: 2026-06-01T00:00:00-04:00
 WhatFor: Use this report before refactoring the RAG Evaluation web UI, extracting design-system primitives, adding Storybook/validators, or authoring DMETA IR for the RAG dashboard.
 WhenToUse: Read when onboarding to the web app or planning the first design-system/DMETA vertical slice for search, corpus, workflow, embedding, or evaluation dashboards.
 ---
+
 
 
 # RAG Evaluation Web Architecture and Design System Review

@@ -1,25 +1,6 @@
 @import "tailwindcss";
 
-/* ===== Classic Mac OS 1 — Monochrome ===== */
-:root {
-  /* Palette: pure monochrome + accent */
-  --mac-bg:        #FFFFFF;
-  --mac-bg-dark:   #000000;
-  --mac-stripe:    #000000;
-  --mac-text:      #000000;
-  --mac-text-dim:  #666666;
-  --mac-text-inv:  #FFFFFF;
-  --mac-border:    #000000;
-  --mac-surface:   #FFFFFF;
-  --mac-surface-2: #EEEEEE;
-  --mac-accent:    #0000CC;
-  --mac-accent-2:  #CC0000;
-  --mac-green:     #007722;
-  --mac-amber:     #AA7700;
-  --mac-mono:      'Chicago', 'Geneva', 'Monaco', 'Courier', monospace;
-  --font-body:     'Geneva', 'Helvetica Neue', 'Arial', sans-serif;
-  --font-mono:     'Monaco', 'Courier New', monospace;
-}
+@import "./styles/tokens.css";
 
 /* ===== Global ===== */
 * { box-sizing: border-box; }
