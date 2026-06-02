@@ -4,6 +4,7 @@ import { Panel, ScrollRegion } from '../../layout';
 import { DataTable, type DataTableColumn } from '../../molecules';
 import type { RetrievalResult, SearchResult } from '../../../services/api';
 import type { RetrieverType } from '../SearchControlsPanel';
+import styles from './RetrievalResultsPanel.module.css';
 
 export interface RetrievalResultsPanelProps {
   searchResult: SearchResult | null;
@@ -64,14 +65,14 @@ export function RetrievalResultsPanel({
       <ScrollRegion axis="y" style={{ height: '100%' }}>
         {searchError && <div className="error-box" style={{ margin: 6 }}>{searchError}</div>}
         {items.length === 0 && !searchError && !isLoading && (
-          <div style={{ padding: 24, textAlign: 'center' }} className="text-dim">
+          <Caption className={styles.centeredEmpty}>
             {emptyHint ?? (searchResult ? 'No results found.' : 'Enter a query and press Search.')}
-          </div>
+          </Caption>
         )}
         {isLoading && (
-          <div style={{ padding: 24, textAlign: 'center' }} className="text-dim">
+          <Caption className={styles.centeredEmpty}>
             Searching…
-          </div>
+          </Caption>
         )}
         {items.length > 0 && (
           <DataTable

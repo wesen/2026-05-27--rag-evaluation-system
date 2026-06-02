@@ -2980,3 +2980,108 @@ pnpm typecheck
 pnpm build
 pnpm build-storybook
 ```
+
+## Step 30: Remove Remaining Active Legacy Panel/Text/Form Globals
+
+I continued the global CSS cleanup pass by removing the remaining active uses of legacy panel/text/form classes from components and stories. The Search empty inspector and Corpus document inspector fallback now use `Panel`, `Caption`, and `ScrollRegion`, workflow loading/not-found messages use `Caption`, and layout/page placeholders no longer depend on raw `.panel` markup.
+
+After the migration, I deleted the now-unused global CSS families for panels, data tables, status classes, coverage strips, fieldsets, text utilities, dividers, metadata grids, tab bars, stat grids, progress bars, operation graphs, and modal/form-section layout. This leaves `index.css` much closer to its intended role: global base styles plus a few still-active low-level controls/utilities.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue applying the guideline audit by removing remaining active legacy global CSS usage and deleting unused global blocks.
+
+**Inferred user intent:** The user wants the design-system cleanup to keep pushing toward TTC-like ownership and a smaller global stylesheet.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Replaced remaining active legacy panel/text usage in:
+  - `SearchWorkbenchPage`,
+  - `CorpusExplorerView`,
+  - `RetrievalResultsPanel`,
+  - `WorkflowOpGroupsPanel`,
+  - `WorkflowsView`.
+- Added local CSS Modules where needed:
+  - `RetrievalResultsPanel.module.css`,
+  - `WorkflowsView.module.css`.
+- Moved workflow modal overlay/panel/form-section styles out of global CSS and into `WorkflowsView.module.css`.
+- Deleted unused global CSS blocks from `web/src/index.css` for:
+  - `.panel*`,
+  - `.data-table*`,
+  - `.status-*`,
+  - `.coverage-*`,
+  - `.fieldset`,
+  - `.text-*`,
+  - `.divider`,
+  - `.meta-*`,
+  - `.tab-*`,
+  - `.stat-*`,
+  - `.progress-*`,
+  - `.op-*`,
+  - `.modal-*`,
+  - `.form-row`, `.form-section`.
+- Kept active low-level globals that still have consumers or are intentionally app-wide:
+  - `.input`, `.select`, `.error-box`, `.truncate`, `.checkbox-row`, `.accent`.
+
+### Why
+
+- These global blocks duplicated the primitives/molecules/organisms that now own those concerns.
+- Deleting unused globals after migration reduces styling ambiguity and makes accidental legacy usage easier to spot.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed.
+- A legacy class scan over `src/components` returned no active panel/table/text/status/meta/form/tab/coverage/op class usage.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+- Storybook still emits known chunk-size/plugin-timing warnings; build succeeds.
+
+### What I learned
+
+- Most of the old global CSS was already dead after the earlier extraction work; the final blockers were fallback/empty states and stories.
+- The cleanup pattern is now proven: migrate active consumers, scan, delete global CSS block, validate Storybook.
+
+### What was tricky to build
+
+- The workflow modal styles were still global because the modal is private to `WorkflowsView`. Moving them into `WorkflowsView.module.css` was the right ownership boundary without prematurely extracting a full modal component.
+- `index.css` still contains some global classes like `.input` and `.select`; those are intentionally left because they still have many active consumers and need a separate input/select atom decision.
+
+### What warrants a second pair of eyes
+
+- Whether `.input` and `.select` should become form atoms next, or whether global form controls are acceptable for now.
+- Whether `.error-box` should become an `ErrorBox`/`Callout` atom or molecule.
+
+### What should be done in the future
+
+- Decide on input/select/error/truncate/checkbox ownership.
+- Begin page-boundary splits for Corpus, Workflows, Embeddings, and Search.
+
+### Code review instructions
+
+- Review `web/src/index.css` deletion carefully.
+- Review `WorkflowsView.module.css` and `RetrievalResultsPanel.module.css` for moved local styles.
+- Confirm fallback states still render clearly in Search, Corpus, and Workflows.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+rg -n 'className="[^"]*(panel|panel-header|panel-body|data-table|meta-grid|tab-bar|tab-item|text-mono|text-dim|text-small|status-|form-row|stat-grid|coverage-|op-graph|fieldset|form-section)|className=\{`[^"]*(panel|text-mono|text-dim|status-)' src/components src/App.tsx || true
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+```

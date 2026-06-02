@@ -38,6 +38,8 @@ RelatedFiles:
       Note: |-
         High-priority timeline CSS-module cleanup target
         ChunkTimelineBar cleanup completed after audit
+    - Path: web/src/components/corpus/CorpusExplorerView.tsx
+      Note: Corpus fallback inspector migrated to Panel/Caption/ScrollRegion
     - Path: web/src/components/corpus/IdentityBar/IdentityBar.module.css
       Note: IdentityBar local anatomy CSS
     - Path: web/src/components/corpus/IdentityBar/IdentityBar.stories.tsx
@@ -56,24 +58,32 @@ RelatedFiles:
       Note: Raw panel story cleanup
     - Path: web/src/components/layout/Stack/Stack.stories.tsx
       Note: Raw panel story cleanup
+    - Path: web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.module.css
+      Note: Retrieval local empty-state style
     - Path: web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx
       Note: Button atom migration evidence
     - Path: web/src/components/pages/EvaluationPage/EvaluationPage.stories.tsx
       Note: EvaluationPage Storybook coverage
     - Path: web/src/components/pages/EvaluationPage/EvaluationPage.tsx
       Note: Evaluation placeholder page boundary added after audit
+    - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx
+      Note: Search empty inspector migrated to Panel/Caption
+    - Path: web/src/components/workflows/WorkflowsView.module.css
+      Note: Workflow local modal/form styles
     - Path: web/src/components/workflows/WorkflowsView.tsx
       Note: Button atom migration evidence
     - Path: web/src/index.css
       Note: |-
         Legacy button global removed after migration
         Legacy copy-btn global removed after migration
+        Legacy global CSS families removed after audit
 ExternalSources: []
 Summary: Component-by-component audit of the current RAG React dashboard against the RAG React Design System Guidelines, including remaining CSS debt, missing Storybook stories, page-boundary gaps, and extraction recommendations.
 LastUpdated: 2026-06-01T19:30:00-04:00
 WhatFor: Use this audit to plan the next cleanup passes after foundation Storybook docs and to decide what should be extracted from each component.
 WhenToUse: Read before touching RAG React components, deleting global CSS, adding stories, or extracting new primitives/molecules/organisms/pages.
 ---
+
 
 
 

@@ -68,7 +68,7 @@
 - [x] Corpus cleanup: refactor IdentityBar through Panel/Inline/FormRow/Caption/CodeText/MetadataGrid and move remaining anatomy into a CSS Module.
 - [x] Corpus cleanup: refactor ArtifactIdentityBar identity selectors through shared primitives and split presentational widgets if needed.
 - [x] Corpus cleanup: move ChunkTimelineBar global chunk-bar CSS into ChunkTimelineBar.module.css and keep dynamic geometry inline only where required.
-- [ ] Global CSS cleanup: replace raw panel/table/text/status/meta/form/tab classes in stories and active components, then delete unused legacy blocks only after rg proves no consumers.
+- [x] Global CSS cleanup: replace raw panel/table/text/status/meta/form/tab classes in stories and active components, then delete unused legacy blocks only after rg proves no consumers.
 - [ ] Page stories: add storyable DTO-shaped page boundaries for Corpus, Workflows, Embeddings, and Evaluation as those areas are split from RTK Query containers.
 - [x] Atoms: add a reusable Button atom for default, primary, selected, disabled, and compact button states, then migrate identity selector buttons away from ad-hoc/global button styling.
 - [x] Atoms: add IconButton for close/copy/back compact actions and migrate copy-btn consumers, then delete legacy copy-btn global CSS after rg confirms no consumers.

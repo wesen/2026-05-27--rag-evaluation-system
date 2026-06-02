@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { Caption } from '../../foundation';
 import { CoveragePanel, QueryPresetList } from '../../molecules';
-import { DashboardGrid, Stack } from '../../layout';
+import { DashboardGrid, Panel, Stack } from '../../layout';
 import { ResultInspectorPanel, RetrievalResultsPanel, SearchControlsPanel, type RetrieverType } from '../../organisms';
 import styles from './SearchWorkbenchPage.module.css';
 import {
@@ -229,12 +230,11 @@ export const SearchWorkbenchPage: React.FC = () => {
             onOpenInCorpus={openSelectedResultInCorpus}
           />
         ) : (
-          <div className={`panel ${styles.emptyInspector}`}>
-            <div className="panel-header"><span>Inspector</span></div>
-            <div className={`text-dim ${styles.emptyInspectorBody}`}>
+          <Panel title="Inspector" className={styles.emptyInspector}>
+            <Caption className={styles.emptyInspectorBody}>
               Click a result to inspect.
-            </div>
-          </div>
+            </Caption>
+          </Panel>
         )}
       </div>
     </DashboardGrid>

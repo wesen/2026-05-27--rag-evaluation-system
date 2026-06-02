@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { IconButton } from '../atoms';
+import { Caption } from '../foundation';
+import { Panel, ScrollRegion } from '../layout';
 import {
   useListCorpusSourcesQuery,
   useListCorpusDocumentsQuery,
@@ -171,30 +173,32 @@ export const CorpusExplorerView: React.FC<CorpusExplorerViewProps> = ({ initialT
           hasMore={hasMore}
         />
 
-        <div className="panel" style={{ flex: 1, minWidth: 0 }}>
-          <div className="panel-header">
-            <span>{selectedDoc ? selectedDoc.title : 'Document Inspector'}</span>
-            {selectedDoc && (
-              <IconButton
-                label="Copy document ID"
-                onClick={() => navigator.clipboard.writeText(selectedDoc.id)}
-              >
-                #{selectedDoc.id}
-              </IconButton>
-            )}
-          </div>
-          <div className="panel-body-condensed" style={{ overflowY: 'auto', maxHeight: 600 }}>
+        <Panel
+          title={selectedDoc ? selectedDoc.title : 'Document Inspector'}
+          actions={selectedDoc && (
+            <IconButton
+              label="Copy document ID"
+              onClick={() => navigator.clipboard.writeText(selectedDoc.id)}
+            >
+              #{selectedDoc.id}
+            </IconButton>
+          )}
+          density="condensed"
+          fill
+          style={{ flex: 1, minWidth: 0 }}
+        >
+          <ScrollRegion axis="y" style={{ maxHeight: 600 }}>
             {!documentId ? (
-              <span className="text-dim text-mono">Select a document to inspect.</span>
+              <Caption>Select a document to inspect.</Caption>
             ) : detailLoading ? (
-              <span className="text-dim text-mono">Loading...</span>
+              <Caption>Loading...</Caption>
             ) : detail ? (
               <DocumentInspector detail={detail} chunks={detail.chunks} identity={identity} highlightChunkId={highlightChunkId} />
             ) : (
-              <span className="text-dim text-mono">Document not found.</span>
+              <Caption>Document not found.</Caption>
             )}
-          </div>
-        </div>
+          </ScrollRegion>
+        </Panel>
       </div>
     </div>
   );

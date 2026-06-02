@@ -1,4 +1,4 @@
-import { StatusText } from '../../foundation';
+import { Caption, StatusText } from '../../foundation';
 import { Panel } from '../../layout';
 import { DataTable, type DataTableColumn } from '../../molecules';
 import type { WorkflowOpGroup } from '../../../services/api';
@@ -26,7 +26,7 @@ export function WorkflowOpGroupsPanel({ groups, totalOps, selectedKey, onInspect
   return (
     <Panel title={`Ops by Group (${totalOps} total)`} density="condensed" data-rag-component="WorkflowOpGroupsPanel">
       {groups.length === 0 ? (
-        <span className="text-dim text-mono">No ops yet</span>
+        <Caption>No ops yet</Caption>
       ) : (
         <DataTable rows={groups} columns={columns} getRowKey={workflowGroupKey} selectedKey={selectedKey} onRowSelect={onInspect} />
       )}

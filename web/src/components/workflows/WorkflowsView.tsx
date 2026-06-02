@@ -3,6 +3,7 @@ import { Button, IconButton } from '../atoms';
 import { Caption } from '../foundation';
 import { FormRow, Panel, Stack } from '../layout';
 import { QueueHealthPanel, WorkflowListPanel, WorkflowOpGraphPanel, WorkflowOpGroupsPanel, WorkflowOpInspectorPanel, WorkflowOpResultPanel, WorkflowSummaryPanel, workflowGroupKey } from '../organisms';
+import styles from './WorkflowsView.module.css';
 import {
   useListWorkflowsQuery,
   useGetWorkflowQuery,
@@ -78,15 +79,15 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
     setForm(f => ({ ...f, [key]: val }));
 
   return (
-    <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className={styles.modalOverlay} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <Panel
-        className="modal-panel"
+        className={styles.modalPanel}
         title="Submit Intake Workflow"
         actions={<IconButton label="Close intake workflow modal" onClick={onClose}>✕</IconButton>}
         density="condensed"
       >
         <Stack gap="sm" style={{ padding: 10 }}>
-          <fieldset className="form-section">
+          <fieldset className={styles.formSection}>
             <legend>Document Selection</legend>
             <Stack gap="xs">
               <FormRow
@@ -98,7 +99,7 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
             </Stack>
           </fieldset>
 
-          <fieldset className="form-section">
+          <fieldset className={styles.formSection}>
             <legend>Chunking</legend>
             <Stack gap="xs">
               <FormRow
@@ -115,7 +116,7 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
             </Stack>
           </fieldset>
 
-          <fieldset className="form-section">
+          <fieldset className={styles.formSection}>
             <legend>Embedding</legend>
             <Stack gap="xs">
               <FormRow label="Compute" control={<input type="checkbox" checked={!form.skip_embeddings} onChange={e => set('skip_embeddings', !e.target.checked)} />} />
@@ -138,7 +139,7 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
             </Stack>
           </fieldset>
 
-          <fieldset className="form-section">
+          <fieldset className={styles.formSection}>
             <legend>BM25 Index</legend>
             <FormRow label="Build" control={<input type="checkbox" checked={!form.skip_bm25} onChange={e => set('skip_bm25', !e.target.checked)} />} />
           </fieldset>
@@ -192,13 +193,13 @@ const WorkflowDetail: React.FC<WorkflowDetailProps> = ({ workflowId, onBack, onN
   const [cancelWorkflow] = useCancelWorkflowMutation();
   const [inspectedGroup, setInspectedGroup] = useState<string | null>(null);
 
-  if (summaryLoading || opsLoading) return <div className="text-dim text-mono">Loading workflow…</div>;
+  if (summaryLoading || opsLoading) return <Caption className={styles.workflowMessage}>Loading workflow…</Caption>;
 
   const wf = summary?.workflow;
   const groups = opsData?.groups ?? [];
   const totalOps = opsData?.total ?? 0;
 
-  if (!wf) return <div className="text-dim text-mono">Workflow not found.</div>;
+  if (!wf) return <Caption className={styles.workflowMessage}>Workflow not found.</Caption>;
 
   const isRunning = wf.Status === 'running' || wf.Status === 'pending';
   const input = wf.Input as Record<string, unknown>;

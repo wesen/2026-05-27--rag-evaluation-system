@@ -371,3 +371,15 @@ Added storyable EvaluationPage boundary and cleaned layout stories to use Panel 
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/layout/Stack/Stack.stories.tsx — Layout story now uses Panel primitive
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/pages/EvaluationPage/EvaluationPage.tsx — Storyable evaluation page placeholder
 
+
+## 2026-06-01
+
+Removed remaining active legacy panel/text/form global usage and deleted unused global CSS families after migration
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded global legacy CSS cleanup
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/RetrievalResultsPanel/RetrievalResultsPanel.module.css — Retrieval empty-state local style
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.module.css — Workflow modal/form local styles moved from globals
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/index.css — Global CSS reduced after legacy class migration
+
