@@ -410,3 +410,16 @@ Removed leftover accent/truncate/no-select globals by migrating active consumers
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/organisms/SearchControlsPanel/SearchControlsPanel.tsx — Replaced global truncate with Caption truncate
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/index.css — Removed leftover global utilities
 
+
+## 2026-06-01
+
+Extracted app navigation into a storyable AppNav molecule and removed nav globals from index.css
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded AppNav extraction
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/App.tsx — Composes AppShell with AppNav
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/AppNav/AppNav.module.css — Local nav styling formerly in index.css
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/AppNav/AppNav.tsx — Storyable app navigation molecule
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/index.css — Removed nav component globals
+

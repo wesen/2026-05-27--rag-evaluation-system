@@ -75,3 +75,4 @@
 - [x] Page stories: replace the Evaluation placeholder with a storyable EvaluationPage boundary using design-system primitives.
 - [x] Atoms: add TextInput, SelectInput, CheckboxRow, and ErrorCallout atoms; migrate form/error consumers; delete legacy input/select/error/checkbox globals after rg confirms no consumers.
 - [x] Globals: remove leftover accent/truncate/no-select utilities by migrating active consumers to foundation/local CSS.
+- [x] Navigation: extract global nav-strip/nav-brand/nav-item styling into storyable AppNav molecule and remove nav globals from index.css.

@@ -3271,3 +3271,90 @@ pnpm typecheck
 pnpm build
 rg -n 'className="truncate|className=\{`[^`]*truncate|className="accent|className=\{`[^`]*accent|^\.(accent|truncate)\s*\{' src src/index.css || true
 ```
+
+## Step 33: Extract App Navigation from Global CSS
+
+I moved the remaining app navigation chrome out of `index.css` and into a storyable `AppNav` molecule. The top-level `App` now renders `AppNav` inside `AppShell`, and the molecule owns the retro nav strip, brand, active state, hover state, and focus-visible affordance through a CSS Module.
+
+This keeps `index.css` limited to actual global concerns: token import, box sizing, body base styles, and browser scrollbar styling. The active navigation styling is no longer an implicit `.nav-*` global API.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 32)
+
+**Assistant interpretation:** Continue the RAG design-system cleanup by removing the next active global component-style family.
+
+**Inferred user intent:** The user wants the cleanup to proceed through concrete ownership fixes and Storybook coverage.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Added `web/src/components/molecules/AppNav/` with:
+  - `AppNav.tsx`,
+  - `AppNav.module.css`,
+  - `AppNav.stories.tsx`,
+  - `index.ts`.
+- Exported `AppNav` from `web/src/components/molecules/index.ts`.
+- Updated `web/src/App.tsx` to use `AppNav` instead of raw `.nav-*` spans.
+- Converted nav items from clickable spans to buttons with `aria-current="page"` for the active view.
+- Removed `.nav-strip`, `.nav-brand`, and `.nav-item` global CSS from `web/src/index.css`.
+
+### Why
+
+- The navigation strip was the last large active component-style family in global CSS.
+- App navigation is reusable enough to deserve a molecule story and local styling contract.
+- Button semantics improve keyboard/accessibility behavior compared with clickable spans.
+
+### What worked
+
+- `pnpm typecheck` passed after adding required story args.
+- `pnpm build-storybook` passed and emitted an `AppNav` story bundle.
+- `pnpm build` passed.
+- The generated `internal/web/dist/index.html` artifact was reverted after build.
+
+### What didn't work
+
+- The first `pnpm typecheck` failed because the interactive Storybook story omitted required `args`:
+  - `Property 'args' is missing in type '{ render: () => JSX.Element; }' ...`
+- Adding inert args to the interactive story fixed the Storybook type requirement.
+
+### What I learned
+
+- Storybook's typed story object still requires `args` when the component has required props, even if `render` supplies stateful props internally.
+- After this change, `index.css` is mostly true global setup rather than a component style dump.
+
+### What was tricky to build
+
+- The nav needed to preserve the visual language while changing semantics from `span` to `button`; this required resetting native button appearance in the module.
+- The AppNav story needed both static and interactive cases without loosening prop types.
+
+### What warrants a second pair of eyes
+
+- Confirm that the button reset preserves the exact desired retro navigation spacing and baseline alignment.
+- Confirm that `aria-current="page"` is the desired accessibility semantic for in-app view switching.
+
+### What should be done in the future
+
+- Consider whether AppNav should accept an optional `ariaLabel` prop if more navigation surfaces appear.
+- Continue DTO-shaped page-boundary stories, starting with Corpus or Workflows.
+
+### Code review instructions
+
+- Start with `web/src/components/molecules/AppNav/AppNav.tsx` and `AppNav.module.css`.
+- Then review `web/src/App.tsx` for the AppShell/AppNav composition.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build-storybook`
+  - `cd web && pnpm build`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build-storybook
+pnpm build
+```
