@@ -37,6 +37,8 @@ topics:
       description: Release and package publishing automation
     - slug: security
       description: Authentication, authorization, tokens, and supply-chain hardening
+    - slug: release
+      description: Release engineering, versioning, tagging, and publishing
 docTypes:
     - slug: design-doc
       description: Structured rationale and architecture notes

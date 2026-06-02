@@ -27,3 +27,5 @@ internal/web/dist/favicon.svg
 internal/web/dist/icons.svg
 .playwright-mcp/
 *.png
+
+.devctl
