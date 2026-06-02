@@ -3358,3 +3358,120 @@ pnpm typecheck
 pnpm build-storybook
 pnpm build
 ```
+
+## Step 34: Devctl Visual Smoke Check and Report Screenshots
+
+I paused the refactor work to run the real RAG web page through `devctl` and capture screenshots for visual QA. This produced full-page captures for each top-level app view and iframe-only Storybook captures for report-ready component/design-system examples without Storybook chrome.
+
+The smoke check found no obvious layout regressions across the real app pages. While starting the app, I also found and fixed a devctl plugin launch bug: the plugin allocated a free backend port but the backend command did not pass that port to `rag-eval serve`, so it still tried the default `127.0.0.1:8772` and failed when an existing process owned that port.
+
+### Prompt Context
+
+**User prompt (verbatim):** "ok after this, before we get too far, use devctl to stsart the page and take a bunch of screenshots of the real page to make sure we didn't break anything in all these refactors."
+
+**Assistant interpretation:** Stop before more refactors, start the real app under devctl, inspect it visually, and capture screenshots as evidence.
+
+**Inferred user intent:** The user wants confidence that the accumulated design-system refactors did not silently break the real dashboard UI.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Ran `devctl help --all` and `devctl help user-guide` to confirm the installed devctl workflow.
+- Ran `devctl plan` and `devctl up --force`.
+- Investigated an initial `devctl up` health timeout via `.devctl/logs/backend-*.stderr.log`.
+- Fixed `plugins/rag-eval.py` so `launch.plan` passes:
+  - `--address 127.0.0.1:<allocated-port>`,
+  - `--db state/rag-eval.db`,
+  - `--engine-db state/rag-eval-workflows.db`.
+- Added `.devctl/` and `state/` to `.gitignore` as local runtime state.
+- Started the app successfully with `devctl up --force --skip-build`.
+- Captured real app screenshots:
+  - Search,
+  - Corpus,
+  - Workflows,
+  - Pipeline,
+  - Embeddings,
+  - Evaluation.
+- Served the built Storybook static output locally and captured iframe-only screenshots without Storybook chrome:
+  - AppNav,
+  - SearchControlsPanel,
+  - DocumentInspector overview,
+  - WorkflowOpInspectorPanel failed/retry state,
+  - PipelinePage populated,
+  - Foundation color tokens.
+- Copied report screenshot assets into the ticket artifact directory.
+
+### Why
+
+- After many component/style refactors, type/build validation is not enough; the real browser surface needs visual checking.
+- The future project report needs clean screenshots that show both the live dashboard and the design-system/story surfaces.
+- The devctl launch bug would make future visual QA unreliable on machines where the default backend port is occupied.
+
+### What worked
+
+- `devctl up --force --skip-build` succeeded after the plugin fix.
+- The real app loaded at the devctl-managed Vite URL.
+- Screenshots showed the expected retro monochrome layout across all top-level pages.
+- The only browser console error was a missing `/favicon.ico`, which is unrelated to the refactor.
+- Storybook iframe URLs avoided Storybook chrome and produced report-suitable assets.
+- A direct image review via `read()` confirmed the key screenshots are inspectable in-session.
+
+### What didn't work
+
+- Initial `devctl up --force` failed with:
+  - `Error: http health timeout: context deadline exceeded`
+- Backend stderr showed the root cause:
+  - `server failed error="listen tcp 127.0.0.1:8772: bind: address already in use"`
+- The Storybook `DocumentInspector` highlighted-chunk screenshot had a large blue selected/focus-looking rail; I captured the overview story instead for a cleaner report image.
+
+### What I learned
+
+- The app visually survived the global CSS and component extraction work.
+- The devctl plugin's config mutation and launch command had drifted: config allocated ports correctly, but launch did not pass the allocated backend port into the server command.
+- For report images, Storybook `iframe.html?id=...&viewMode=story` is the right capture target because it excludes the Storybook manager chrome.
+
+### What was tricky to build
+
+- `devctl status` was empty after the failed launch because devctl removed state when health failed, so the useful failure evidence was in `.devctl/logs/` rather than `devctl logs`.
+- Screenshots saved by Playwright landed in the parent workspace because the Playwright tool process uses the harness working directory, not the RAG repo root.
+- Some Storybook component screenshots need element-level crops to avoid excessive white canvas.
+
+### What warrants a second pair of eyes
+
+- Verify that committing screenshot PNGs into the ticket artifact directory is acceptable for the report workflow.
+- Review the devctl plugin fix because it changes local launch behavior, even though it aligns launch with the already-computed config.
+- Review whether the missing favicon should be addressed separately.
+
+### What should be done in the future
+
+- Use the captured screenshots as source material for the project report.
+- Add a favicon only if desired; it is not related to the design-system refactor.
+- Consider adding a devctl smoke command later if visual QA becomes a repeated workflow.
+
+### Code review instructions
+
+- Review `plugins/rag-eval.py` around `launch.plan` to confirm the backend command uses the allocated port.
+- Review `.gitignore` to confirm local devctl/runtime state is ignored.
+- Review ticket screenshots under `artifacts/screenshots/`.
+- Validate with:
+  - `devctl plan`
+  - `devctl up --force --skip-build`
+  - open the Vite URL from `devctl status`/logs and inspect the app.
+
+### Technical details
+
+Useful commands:
+
+```bash
+cd 2026-05-27--rag-evaluation-system
+devctl plan
+devctl up --force --skip-build
+devctl status --tail-lines 20
+```
+
+Captured ticket assets:
+
+```text
+ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/artifacts/screenshots/
+```

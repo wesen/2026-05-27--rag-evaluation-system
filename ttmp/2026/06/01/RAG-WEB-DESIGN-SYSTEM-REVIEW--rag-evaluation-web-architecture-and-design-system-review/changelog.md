@@ -423,3 +423,15 @@ Extracted app navigation into a storyable AppNav molecule and removed nav global
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/molecules/AppNav/AppNav.tsx — Storyable app navigation molecule
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/index.css — Removed nav component globals
 
+
+## 2026-06-01
+
+Ran devctl visual smoke check, fixed devctl backend port launch, and captured real-page plus Storybook report screenshots
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/.gitignore — Ignores local devctl and state runtime files
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/plugins/rag-eval.py — Passes allocated backend port to rag-eval serve
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/artifacts/screenshots — Visual QA and report screenshot assets
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded devctl visual smoke check
+
