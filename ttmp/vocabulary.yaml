@@ -47,6 +47,14 @@ topics:
       description: Reusable UI design-system architecture
     - slug: dmeta
       description: DMETA IR and MetaDesignSystem modeling
+    - slug: chunking
+      description: Text chunking strategies for RAG indexing
+    - slug: geppetto
+      description: Geppetto LLM inference engine and goja module
+    - slug: goja
+      description: Goja JavaScript engine and runtime builder
+    - slug: xgoja
+      description: Xgoja custom binary code generator for goja
 docTypes:
     - slug: design-doc
       description: Structured rationale and architecture notes
