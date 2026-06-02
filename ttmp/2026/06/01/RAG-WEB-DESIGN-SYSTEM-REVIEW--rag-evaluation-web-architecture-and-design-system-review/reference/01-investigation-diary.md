@@ -3286,7 +3286,7 @@ This keeps `index.css` limited to actual global concerns: token import, box sizi
 
 **Inferred user intent:** The user wants the cleanup to proceed through concrete ownership fixes and Storybook coverage.
 
-**Commit (code):** N/A at time of writing — changes pending commit.
+**Commit (code):** e6d7c24 — "feat: extract RAG app navigation"
 
 ### What I did
 
