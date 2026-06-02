@@ -3373,7 +3373,7 @@ The smoke check found no obvious layout regressions across the real app pages. W
 
 **Inferred user intent:** The user wants confidence that the accumulated design-system refactors did not silently break the real dashboard UI.
 
-**Commit (code):** N/A at time of writing — changes pending commit.
+**Commit (code):** a595420 — "test: capture RAG visual smoke screenshots"
 
 ### What I did
 
