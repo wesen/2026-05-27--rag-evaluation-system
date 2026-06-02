@@ -106,7 +106,7 @@ export function SearchControlsPanel({
         <ScrollRegion axis="y" className={styles.sourceList}>
           {sources.map(s => (
             <CheckboxRow key={s.source_id} className={styles.sourceLabel} checked={selectedSourceIds.includes(s.source_id)} onChange={() => toggleSource(s.source_id)}>
-              <span className="truncate">{s.source_name}</span>
+              <Caption tone="inherit" truncate>{s.source_name}</Caption>
             </CheckboxRow>
           ))}
           {sources.length === 0 && <Caption>Loading sources…</Caption>}

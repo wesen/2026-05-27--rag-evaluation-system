@@ -55,9 +55,6 @@ body {
   border: 1px solid var(--mac-border);
 }
 
-/* ===== Accent Colors (foreground only) ===== */
-.accent { color: var(--mac-accent); }
-
 /* ===== Scrollbars (retro thick style) ===== */
 ::-webkit-scrollbar {
   width: 16px;
@@ -74,14 +71,4 @@ body {
   border: 1px solid var(--mac-border);
 }
 
-/* ===== Utility ===== */
-.truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.no-select {
-  user-select: none;
-}
 

@@ -89,7 +89,7 @@ export const DocumentInspector: React.FC<DocumentInspectorProps> = ({ detail, ch
   const overviewItems: MetadataGridItem[] = [
     { key: 'ID', value: doc.id, copyValue: doc.id },
     { key: 'Source', value: doc.source_id },
-    { key: 'URL', value: doc.url ? <a href={doc.url} target="_blank" rel="noreferrer" className="accent" style={{ textDecoration: 'none' }}>{doc.url}</a> : '—' },
+    { key: 'URL', value: doc.url ? <a href={doc.url} target="_blank" rel="noreferrer" className={styles.link}>{doc.url}</a> : '—' },
     { key: 'Words', value: doc.word_count.toLocaleString() },
     { key: 'Chunks', value: safeChunks.length },
     { key: 'Embedded', value: <Caption tone={embeddedCount === safeChunks.length && safeChunks.length > 0 ? 'success' : embeddedCount > 0 ? 'warning' : 'muted'}>{embeddedCount}/{safeChunks.length}</Caption> },

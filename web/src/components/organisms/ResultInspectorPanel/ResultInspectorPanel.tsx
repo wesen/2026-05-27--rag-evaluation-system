@@ -163,7 +163,7 @@ export function ResultInspectorPanel({ result, docDetail, onClose, onOpenInCorpu
                         );
                       })}
                     </div>
-                    <Caption>{docDetail.chunks.filter(c => c.embedding?.present).length}/{docDetail.chunks.length} embedded · <span className="accent">■</span> = current</Caption>
+                    <Caption>{docDetail.chunks.filter(c => c.embedding?.present).length}/{docDetail.chunks.length} embedded · <Caption tone="accent">■</Caption> = current</Caption>
                   </section>
                 )}
                 {metadataItems.length > 0 && (

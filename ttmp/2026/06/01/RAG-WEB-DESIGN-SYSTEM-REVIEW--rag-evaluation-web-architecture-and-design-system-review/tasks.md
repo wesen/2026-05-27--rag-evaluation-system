@@ -74,3 +74,4 @@
 - [x] Atoms: add IconButton for close/copy/back compact actions and migrate copy-btn consumers, then delete legacy copy-btn global CSS after rg confirms no consumers.
 - [x] Page stories: replace the Evaluation placeholder with a storyable EvaluationPage boundary using design-system primitives.
 - [x] Atoms: add TextInput, SelectInput, CheckboxRow, and ErrorCallout atoms; migrate form/error consumers; delete legacy input/select/error/checkbox globals after rg confirms no consumers.
+- [x] Globals: remove leftover accent/truncate/no-select utilities by migrating active consumers to foundation/local CSS.

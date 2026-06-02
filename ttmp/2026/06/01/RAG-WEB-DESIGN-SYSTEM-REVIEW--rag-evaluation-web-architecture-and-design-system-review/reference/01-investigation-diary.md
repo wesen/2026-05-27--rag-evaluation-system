@@ -3188,3 +3188,86 @@ pnpm build
 pnpm build-storybook
 rg -n 'className="input|className=\{`input|className="select|className=\{`select|error-box|checkbox-row|^\.(input|select|error-box|checkbox-row)' src src/index.css || true
 ```
+
+## Step 32: Remove Leftover Accent and Truncate Globals
+
+I removed the final generic foreground/truncation global utilities that still had active consumers. The remaining usages now go through foundation primitives (`Caption` tone/truncate) or component-local CSS modules, so `index.css` no longer exposes `.accent`, `.truncate`, or the unused `.no-select` utility as styling APIs.
+
+This is a small cleanup step, but it matters because the web app now has fewer implicit global styling contracts. Text tone and truncation are owned by foundation components, while document-specific link styling belongs to the component that renders the link.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue the RAG design-system cleanup from the previous atomization step, focusing on remaining global CSS ownership.
+
+**Inferred user intent:** The user wants the cleanup playbook to continue without reintroducing IR validation/scaffolding work or broad unrelated rewrites.
+
+**Commit (code):** N/A at time of writing — changes pending commit.
+
+### What I did
+
+- Replaced the source-filter `.truncate` span in `SearchControlsPanel` with `Caption truncate`.
+- Replaced the `.accent` legend marker in `ResultInspectorPanel` with `Caption tone="accent"`.
+- Replaced the `.accent` URL link in `DocumentInspector` with `styles.link` in the component CSS module.
+- Removed `.accent`, `.truncate`, and unused `.no-select` from `web/src/index.css`.
+
+### Why
+
+- `.accent` and `.truncate` were effectively foundation concerns already supported by `Caption`/`Text`.
+- Link coloration in `DocumentInspector` is component-local presentation, not a global utility contract.
+- `.no-select` had no active consumers.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- A class scan no longer finds active global `.accent`/`.truncate` class consumers; remaining matches are CSS module internals.
+- The generated embed HTML was reverted after build.
+
+### What didn't work
+
+- `pnpm build` again rewrote `internal/web/dist/index.html`; this remains expected and was reverted.
+
+### What I learned
+
+- Most remaining index-level CSS is now true application shell/global browser styling rather than reusable component styling.
+- App navigation still uses global `.nav-item`; that is now the most visible remaining active global component-style family.
+
+### What was tricky to build
+
+- The search pattern needed manual review because CSS module classes named `.accent`/`.truncate` are valid and should remain local.
+- The fix had to avoid flattening component-local concerns into a generic Box/link primitive.
+
+### What warrants a second pair of eyes
+
+- Whether nested `Caption` usage in the Result Inspector legend is acceptable or should become a local inline span with a module class.
+- Whether URL links should eventually get a dedicated foundation/link primitive if similar patterns spread.
+
+### What should be done in the future
+
+- Replace the global `.nav-item` app navigation with an atom/layout primitive or AppShell slot styling.
+- Continue DTO-shaped page boundaries for Corpus, Workflows, Embeddings, and Search.
+
+### Code review instructions
+
+- Review `web/src/index.css` to confirm no useful utility contract was deleted accidentally.
+- Review the three migrated consumers:
+  - `SearchControlsPanel`,
+  - `ResultInspectorPanel`,
+  - `DocumentInspector`.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - optionally `cd web && pnpm build-storybook` for the full UI catalog.
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+rg -n 'className="truncate|className=\{`[^`]*truncate|className="accent|className=\{`[^`]*accent|^\.(accent|truncate)\s*\{' src src/index.css || true
+```
