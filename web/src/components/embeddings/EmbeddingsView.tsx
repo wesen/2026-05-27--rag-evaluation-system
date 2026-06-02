@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button } from '../atoms';
+import { Button, ErrorCallout, SelectInput, TextInput } from '../atoms';
 import { Caption, CodeText } from '../foundation';
 import { DashboardGrid, FormRow, Panel, Stack } from '../layout';
 import { DataTable, MetadataGrid } from '../molecules';
@@ -116,10 +116,10 @@ export const EmbeddingsView: React.FC = () => {
               <FormRow
                 label="Strategy"
                 control={(
-                  <select className="select" value={strategyId} onChange={(event) => setStrategyId(event.target.value)}>
+                  <SelectInput value={strategyId} onChange={(event) => setStrategyId(event.target.value)}>
                     {strategiesLoading ? <option>Loading...</option> : null}
                     {strategies.map((strategy) => <option key={strategy.id} value={strategy.id}>{strategy.id}</option>)}
-                  </select>
+                  </SelectInput>
                 )}
               />
               <Caption>
@@ -131,9 +131,9 @@ export const EmbeddingsView: React.FC = () => {
           <fieldset className={styles.fieldset}>
             <legend>Provider Identity</legend>
             <Stack gap="xs">
-              <FormRow label="Provider" control={<input className="input" value={providerType} onChange={(event) => setProviderType(event.target.value)} />} />
-              <FormRow label="Model" control={<input className="input" value={model} onChange={(event) => setModel(event.target.value)} />} />
-              <FormRow label="Dims" control={<input className={`input ${styles.shortInput}`} type="number" min={1} value={dimensions} onChange={(event) => setDimensions(Number(event.target.value))} />} />
+              <FormRow label="Provider" control={<TextInput value={providerType} onChange={(event) => setProviderType(event.target.value)} />} />
+              <FormRow label="Model" control={<TextInput value={model} onChange={(event) => setModel(event.target.value)} />} />
+              <FormRow label="Dims" control={<TextInput className={styles.shortInput} type="number" min={1} value={dimensions} onChange={(event) => setDimensions(Number(event.target.value))} />} />
             </Stack>
           </fieldset>
 
@@ -157,8 +157,8 @@ export const EmbeddingsView: React.FC = () => {
           <Stack gap="sm">
             <Caption>Keep the limit small for first tests.</Caption>
             <Stack gap="xs">
-              <FormRow label="Batch" control={<input className={`input ${styles.shortInput}`} type="number" min={1} value={batchSize} onChange={(event) => setBatchSize(Number(event.target.value))} />} />
-              <FormRow label="Limit" control={<input className={`input ${styles.shortInput}`} type="number" min={0} value={computeLimit} onChange={(event) => setComputeLimit(Number(event.target.value))} />} />
+              <FormRow label="Batch" control={<TextInput className={styles.shortInput} type="number" min={1} value={batchSize} onChange={(event) => setBatchSize(Number(event.target.value))} />} />
+              <FormRow label="Limit" control={<TextInput className={styles.shortInput} type="number" min={0} value={computeLimit} onChange={(event) => setComputeLimit(Number(event.target.value))} />} />
               <label className={styles.checkboxRow}>
                 <input type="checkbox" checked={force} onChange={(event) => setForce(event.target.checked)} />
                 <span>Force recompute</span>
@@ -181,7 +181,7 @@ export const EmbeddingsView: React.FC = () => {
                 ]}
               />
             ) : null}
-            {computeState.error ? <pre className="error-box">{formatApiError(computeState.error)}</pre> : null}
+            {computeState.error ? <ErrorCallout>{formatApiError(computeState.error)}</ErrorCallout> : null}
           </Stack>
         </Panel>
 
@@ -191,10 +191,10 @@ export const EmbeddingsView: React.FC = () => {
             <FormRow
               label="Document"
               control={(
-                <select className="select" value={documentId} onChange={(event) => setDocumentId(event.target.value)}>
+                <SelectInput value={documentId} onChange={(event) => setDocumentId(event.target.value)}>
                   {documentsLoading ? <option>Loading...</option> : null}
                   {documents.map((document) => <option key={document.id} value={document.id}>{document.title || document.id}</option>)}
-                </select>
+                </SelectInput>
               )}
               hint={selectedDocument ? `${selectedDocument.status} · ${selectedDocument.word_count} words · ${selectedDocument.id}` : 'No document selected.'}
             />
@@ -202,28 +202,28 @@ export const EmbeddingsView: React.FC = () => {
               <FormRow
                 label="Chunk A"
                 control={(
-                  <select className="select" value={chunkIDA} onChange={(event) => setChunkIDA(event.target.value)}>
+                  <SelectInput value={chunkIDA} onChange={(event) => setChunkIDA(event.target.value)}>
                     {strategyChunks.map((chunk) => <option key={chunk.id} value={chunk.id}>#{chunk.chunk_index} {chunk.id}</option>)}
-                  </select>
+                  </SelectInput>
                 )}
               />
               <FormRow
                 label="Chunk B"
                 control={(
-                  <select className="select" value={chunkIDB} onChange={(event) => setChunkIDB(event.target.value)}>
+                  <SelectInput value={chunkIDB} onChange={(event) => setChunkIDB(event.target.value)}>
                     <option value="">Top candidates for A</option>
                     {strategyChunks.map((chunk) => <option key={chunk.id} value={chunk.id}>#{chunk.chunk_index} {chunk.id}</option>)}
-                  </select>
+                  </SelectInput>
                 )}
               />
-              <FormRow label="Limit" control={<input className={`input ${styles.shortInput}`} type="number" min={1} value={matchLimit} onChange={(event) => setMatchLimit(Number(event.target.value))} />} />
+              <FormRow label="Limit" control={<TextInput className={styles.shortInput} type="number" min={1} value={matchLimit} onChange={(event) => setMatchLimit(Number(event.target.value))} />} />
             </Stack>
             <div className={styles.actions}>
               <Button variant="primary" onClick={handleCompare} disabled={!canCompare || similarityState.isLoading}>
                 {similarityState.isLoading ? 'Comparing...' : 'Compare Similarity'}
               </Button>
             </div>
-            {similarityState.error ? <pre className="error-box">{formatApiError(similarityState.error)}</pre> : null}
+            {similarityState.error ? <ErrorCallout>{formatApiError(similarityState.error)}</ErrorCallout> : null}
           </Stack>
         </Panel>
       </DashboardGrid>

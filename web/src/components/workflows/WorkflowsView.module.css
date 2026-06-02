@@ -32,3 +32,11 @@
 .workflowMessage {
   display: block;
 }
+
+.fullInput {
+  width: 100%;
+}
+
+.shortInput {
+  width: 80px;
+}

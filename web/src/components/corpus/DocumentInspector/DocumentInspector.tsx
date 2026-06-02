@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, IconButton } from '../../atoms';
+import { Button, ErrorCallout, IconButton } from '../../atoms';
 import { Caption, StatusText } from '../../foundation';
 import { Panel, ScrollRegion, TabList } from '../../layout';
 import { DataTable, MetadataGrid, type DataTableColumn, type MetadataGridItem } from '../../molecules';
@@ -43,7 +43,7 @@ const ArtifactDetail: React.FC<{ artifacts: DocumentProcessingArtifact[] }> = ({
           <div className={styles.textContent}>{selected.output_text}</div>
         </section>
       )}
-      {selected.error_message && <div className="error-box" style={{ marginTop: 6 }}>{selected.error_message}</div>}
+      {selected.error_message && <ErrorCallout className={styles.error}>{selected.error_message}</ErrorCallout>}
     </Panel>
   ) : null;
 };

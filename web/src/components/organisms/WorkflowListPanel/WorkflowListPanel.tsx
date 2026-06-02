@@ -1,3 +1,4 @@
+import { SelectInput } from '../../atoms';
 import { Caption, StatusText } from '../../foundation';
 import { Panel, ScrollRegion } from '../../layout';
 import { DataTable, type DataTableColumn } from '../../molecules';
@@ -27,14 +28,14 @@ export function WorkflowListPanel({ workflows, total, isLoading = false, statusF
       fill
       title={`Workflows (${total})`}
       actions={(
-        <select className="select" value={statusFilter} onChange={event => onStatusFilterChange(event.target.value)} style={{ fontSize: 11 }}>
+        <SelectInput value={statusFilter} onChange={event => onStatusFilterChange(event.target.value)}>
           <option value="">all</option>
           <option value="pending">pending</option>
           <option value="running">running</option>
           <option value="succeeded">succeeded</option>
           <option value="failed">failed</option>
           <option value="canceled">canceled</option>
-        </select>
+        </SelectInput>
       )}
       density="condensed"
       data-rag-component="WorkflowListPanel"

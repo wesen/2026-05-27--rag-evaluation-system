@@ -3085,3 +3085,106 @@ pnpm typecheck
 pnpm build
 pnpm build-storybook
 ```
+
+## Step 31: Atomize Form Controls and Error Callouts
+
+I atomized the remaining global form-control and error-callout styling. Text inputs, selects, checkbox rows, and error boxes now have explicit atom components with co-located CSS and Storybook coverage, and active consumers have been migrated away from `.input`, `.select`, `.checkbox-row`, and `.error-box`.
+
+This continues the global CSS reduction strategy: create a narrow atom, migrate consumers, verify no active legacy class consumers remain, delete the global block, and validate the app plus Storybook.
+
+### Prompt Context
+
+**User prompt (verbatim):** "atomize form control  and error callouts"
+
+**Assistant interpretation:** Add form-control and error-callout atoms, migrate active usages, and remove the corresponding legacy global CSS.
+
+**Inferred user intent:** The user wants remaining app-wide form/error classes to become first-class design-system atoms with stories, matching the Button/IconButton cleanup pattern.
+
+**Commit (code):** 483e073 — "feat: atomize RAG form controls"
+
+### What I did
+
+- Added atoms with stories:
+  - `TextInput`,
+  - `SelectInput`,
+  - `CheckboxRow`,
+  - `ErrorCallout`.
+- Exported the new atoms from `web/src/components/atoms/index.ts`.
+- Migrated active form controls in:
+  - `SearchControlsPanel`,
+  - `EmbeddingsView`,
+  - `WorkflowsView`,
+  - `IdentityBar`,
+  - `DocumentBrowser`,
+  - `WorkflowListPanel`,
+  - `FormRow.stories`,
+  - `Foundation.stories`.
+- Migrated active error callouts in:
+  - `WorkflowsView`,
+  - `EmbeddingsView`,
+  - `RetrievalResultsPanel`,
+  - `WorkflowOpResultPanel`,
+  - `WorkflowOpInspectorPanel`,
+  - `DocumentInspector`.
+- Deleted legacy global `.input`, `.select`, `.error-box`, and `.checkbox-row` CSS from `web/src/index.css`.
+
+### Why
+
+- These controls were the last obvious active global atom-like style families.
+- Leaving them global would keep `index.css` as a styling API instead of a base stylesheet.
+- Storybook now documents form and error states directly.
+
+### What worked
+
+- `pnpm typecheck` passed.
+- `pnpm build` passed.
+- `pnpm build-storybook` passed and included the new atom stories.
+- A scan for the legacy class names found no active consumers; apparent matches were CSS module class names like `.selected`, not `.select`.
+
+### What didn't work
+
+- `pnpm build` rewrote `internal/web/dist/index.html`; I reverted the generated embed artifact before committing.
+- Storybook still emits known chunk-size/plugin-timing warnings; build succeeds.
+
+### What I learned
+
+- The atom layer now covers action buttons, icon buttons, text inputs, selects, checkbox rows, and error callouts.
+- This makes the next decisions clearer: remaining globals are mostly app/base utilities (`accent`, `truncate`) or candidates for later callout/link primitives.
+
+### What was tricky to build
+
+- `SelectInput` and `TextInput` needed to preserve consumer-specific sizing through `className`; the sizing remains local in each component's CSS module.
+- The legacy class scan can produce false positives for strings like `.selected`; review is needed before declaring a class family migrated.
+
+### What warrants a second pair of eyes
+
+- Whether `CheckboxRow` should expose `inputProps` for more complex checkbox scenarios.
+- Whether `ErrorCallout` should support severity variants later; current scope only needed error.
+
+### What should be done in the future
+
+- Decide whether `.truncate` should become a small utility component or remain a global utility.
+- Decide whether `.accent` should be replaced by `Caption/Text tone="accent"` everywhere.
+- Continue page-boundary splits now that the atom/global CSS work is much cleaner.
+
+### Code review instructions
+
+- Review the new atom APIs and stories first.
+- Check migrated forms in Search, Embeddings, Workflow intake, Corpus identity, and Workflow list.
+- Check migrated error displays in retrieval, embeddings, workflow op result/inspector, and document inspector.
+- Validate with:
+  - `cd web && pnpm typecheck`
+  - `cd web && pnpm build`
+  - `cd web && pnpm build-storybook`
+
+### Technical details
+
+Validation commands that passed:
+
+```bash
+cd 2026-05-27--rag-evaluation-system/web
+pnpm typecheck
+pnpm build
+pnpm build-storybook
+rg -n 'className="input|className=\{`input|className="select|className=\{`select|error-box|checkbox-row|^\.(input|select|error-box|checkbox-row)' src src/index.css || true
+```

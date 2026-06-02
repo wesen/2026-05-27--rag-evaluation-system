@@ -1,3 +1,4 @@
+import { ErrorCallout } from '../../atoms';
 import { Caption } from '../../foundation';
 import { DataTable, MetadataGrid, type DataTableColumn } from '../../molecules';
 import type { OpResult } from '../../../services/api';
@@ -28,7 +29,7 @@ export function WorkflowOpResultPanel({ result, isLoading = false, error }: Work
         </section>
       );
     }
-    return <div className="error-box" style={{ marginTop: 6 }}>Failed to load result: {String(error)}</div>;
+    return <ErrorCallout className={styles.error}>Failed to load result: {String(error)}</ErrorCallout>;
   }
 
   if (!result) return null;
@@ -80,10 +81,10 @@ export function WorkflowOpResultPanel({ result, isLoading = false, error }: Work
       )}
 
       {result.Error && (
-        <div className="error-box">
+        <ErrorCallout>
           [{result.Error.Code}] {result.Error.Message}
           {result.Error.Retryable && <Caption>(retryable)</Caption>}
-        </div>
+        </ErrorCallout>
       )}
     </section>
   );

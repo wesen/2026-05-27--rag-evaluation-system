@@ -1,5 +1,5 @@
 import type { KeyboardEvent } from 'react';
-import { Button } from '../../atoms';
+import { Button, CheckboxRow, TextInput } from '../../atoms';
 import { Caption } from '../../foundation';
 import { FormRow, Panel, ScrollRegion, Stack } from '../../layout';
 import styles from './SearchControlsPanel.module.css';
@@ -59,8 +59,8 @@ export function SearchControlsPanel({
     <Panel title="Search" density="condensed" data-rag-component="SearchControlsPanel">
       <Stack gap="sm">
         <div className={styles.queryRow}>
-          <input
-            className={`input ${styles.queryInput}`}
+          <TextInput
+            className={styles.queryInput}
             placeholder="Enter query…"
             value={query}
             onChange={e => setQuery(e.target.value)}
@@ -90,39 +90,34 @@ export function SearchControlsPanel({
         {(retriever === 'bm25' || retriever === 'hybrid') && (
           <FormRow
             label="BM25 Index"
-            control={<input className={`input ${styles.fullInput}`} value={indexId} onChange={e => setIndexId(e.target.value)} placeholder="Index ID" />}
+            control={<TextInput className={styles.fullInput} value={indexId} onChange={e => setIndexId(e.target.value)} placeholder="Index ID" />}
           />
         )}
 
         {(retriever === 'vector' || retriever === 'hybrid') && (
           <Stack gap="xs">
             <Caption transform="uppercase">Vector</Caption>
-            <FormRow label="Strategy" control={<input className={`input ${styles.fullInput}`} value={strategyId} onChange={e => setStrategyId(e.target.value)} />} />
-            <FormRow label="Profile" control={<input className={`input ${styles.fullInput}`} value={profile} onChange={e => setProfile(e.target.value)} />} />
+            <FormRow label="Strategy" control={<TextInput className={styles.fullInput} value={strategyId} onChange={e => setStrategyId(e.target.value)} />} />
+            <FormRow label="Profile" control={<TextInput className={styles.fullInput} value={profile} onChange={e => setProfile(e.target.value)} />} />
           </Stack>
         )}
 
         <Caption transform="uppercase">Source Filter</Caption>
         <ScrollRegion axis="y" className={styles.sourceList}>
           {sources.map(s => (
-            <label key={s.source_id} className={`checkbox-row ${styles.sourceLabel}`}>
-              <input
-                type="checkbox"
-                checked={selectedSourceIds.includes(s.source_id)}
-                onChange={() => toggleSource(s.source_id)}
-              />
+            <CheckboxRow key={s.source_id} className={styles.sourceLabel} checked={selectedSourceIds.includes(s.source_id)} onChange={() => toggleSource(s.source_id)}>
               <span className="truncate">{s.source_name}</span>
-            </label>
+            </CheckboxRow>
           ))}
           {sources.length === 0 && <Caption>Loading sources…</Caption>}
         </ScrollRegion>
 
         <Caption transform="uppercase">Limits</Caption>
-        <FormRow label="Limit" control={<input className={`input ${styles.narrowInput}`} type="number" value={limit} onChange={e => setLimit(Number(e.target.value))} min={1} max={100} />} />
+        <FormRow label="Limit" control={<TextInput className={styles.narrowInput} type="number" value={limit} onChange={e => setLimit(Number(e.target.value))} min={1} max={100} />} />
         {(retriever === 'vector' || retriever === 'hybrid') && (
-          <FormRow label="Candidates" control={<input className={`input ${styles.narrowInput}`} type="number" value={candidateLimit} onChange={e => setCandidateLimit(Number(e.target.value))} min={1} />} />
+          <FormRow label="Candidates" control={<TextInput className={styles.narrowInput} type="number" value={candidateLimit} onChange={e => setCandidateLimit(Number(e.target.value))} min={1} />} />
         )}
-        <FormRow label="Preview" control={<input className={`input ${styles.narrowInput}`} type="number" value={previewRunes} onChange={e => setPreviewRunes(Number(e.target.value))} min={0} />} />
+        <FormRow label="Preview" control={<TextInput className={styles.narrowInput} type="number" value={previewRunes} onChange={e => setPreviewRunes(Number(e.target.value))} min={0} />} />
       </Stack>
     </Panel>
   );

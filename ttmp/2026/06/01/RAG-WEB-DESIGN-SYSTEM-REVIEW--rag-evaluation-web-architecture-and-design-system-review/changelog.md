@@ -383,3 +383,17 @@ Removed remaining active legacy panel/text/form global usage and deleted unused 
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.module.css — Workflow modal/form local styles moved from globals
 - /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/index.css — Global CSS reduced after legacy class migration
 
+
+## 2026-06-01
+
+Added form-control and error-callout atoms, migrated consumers, and removed legacy input/select/error/checkbox globals
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/01/RAG-WEB-DESIGN-SYSTEM-REVIEW--rag-evaluation-web-architecture-and-design-system-review/reference/01-investigation-diary.md — Recorded form-control atomization
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/atoms/CheckboxRow/CheckboxRow.tsx — Checkbox row atom
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/atoms/ErrorCallout/ErrorCallout.tsx — Error callout atom
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/atoms/SelectInput/SelectInput.tsx — Select input atom
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/components/atoms/TextInput/TextInput.tsx — Text input atom
+- /home/manuel/workspaces/2026-05-27/ttc-design-system/2026-05-27--rag-evaluation-system/web/src/index.css — Removed legacy form/error global styles
+

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Button, IconButton } from '../../atoms';
+import { Button, ErrorCallout, IconButton } from '../../atoms';
 import { Caption, StatusText } from '../../foundation';
 import { Panel } from '../../layout';
 import { MetadataGrid } from '../../molecules';
@@ -47,7 +47,7 @@ export function WorkflowOpInspectorPanel({ sample, retrying = false, onClose, on
       {children}
 
       {canRetry && (
-        <div className="error-box" style={{ marginTop: 6 }}>
+        <ErrorCallout className={styles.error}>
           {sample.op.RetryState.LastError}
           <Caption>Attempt {sample.op.RetryState.Attempt}/{sample.op.Retry.MaxAttempts}</Caption>
           <div className={styles.actions}>
@@ -55,7 +55,7 @@ export function WorkflowOpInspectorPanel({ sample, retrying = false, onClose, on
               {retrying ? 'Retrying…' : 'Retry Now'}
             </Button>
           </div>
-        </div>
+        </ErrorCallout>
       )}
     </Panel>
   );

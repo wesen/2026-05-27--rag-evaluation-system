@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ReactNode } from 'react';
+import { TextInput } from '../atoms';
 import { Caption } from './Caption';
 import { CodeText } from './CodeText';
 import { Divider } from './Divider';
@@ -154,7 +155,7 @@ export const Accessibility: Story = {
           </Text>
           <label>
             <VisuallyHidden>Search query</VisuallyHidden>
-            <input className="input" placeholder="Visible input placeholder" />
+            <TextInput placeholder="Visible input placeholder" />
           </label>
           <Caption>Use VisuallyHidden instead of page-local sr-only CSS.</Caption>
         </div>

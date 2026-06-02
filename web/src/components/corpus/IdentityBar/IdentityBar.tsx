@@ -1,4 +1,5 @@
 import React from 'react';
+import { SelectInput, TextInput } from '../../atoms';
 import { Caption } from '../../foundation';
 import { FormRow, Inline, Panel } from '../../layout';
 import { CorpusIdentityArgs } from '../../../services/api';
@@ -23,23 +24,22 @@ export const IdentityBar: React.FC<IdentityBarProps> = ({
           className={styles.field}
           label="Strategy"
           control={(
-            <select
-              className="select"
+            <SelectInput
               value={identity.strategy_id}
               onChange={(e) => onChange({ ...identity, strategy_id: e.target.value })}
             >
               {strategies.map((s) => (
                 <option key={s.id} value={s.id}>{s.id}</option>
               ))}
-            </select>
+            </SelectInput>
           )}
         />
         <FormRow
           className={styles.field}
           label="Provider"
           control={(
-            <input
-              className={`input ${styles.providerInput}`}
+            <TextInput
+              className={styles.providerInput}
               value={identity.provider_type}
               onChange={(e) => onChange({ ...identity, provider_type: e.target.value })}
             />
@@ -49,8 +49,8 @@ export const IdentityBar: React.FC<IdentityBarProps> = ({
           className={styles.field}
           label="Model"
           control={(
-            <input
-              className={`input ${styles.modelInput}`}
+            <TextInput
+              className={styles.modelInput}
               value={identity.model}
               onChange={(e) => onChange({ ...identity, model: e.target.value })}
             />
@@ -60,8 +60,8 @@ export const IdentityBar: React.FC<IdentityBarProps> = ({
           className={styles.field}
           label="Dims"
           control={(
-            <input
-              className={`input ${styles.dimensionsInput}`}
+            <TextInput
+              className={styles.dimensionsInput}
               type="number"
               value={identity.dimensions}
               onChange={(e) => onChange({ ...identity, dimensions: Number(e.target.value) })}

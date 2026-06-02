@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Button, IconButton } from '../atoms';
+import { Button, ErrorCallout, IconButton, SelectInput, TextInput } from '../atoms';
 import { Caption } from '../foundation';
 import { FormRow, Panel, Stack } from '../layout';
 import { QueueHealthPanel, WorkflowListPanel, WorkflowOpGraphPanel, WorkflowOpGroupsPanel, WorkflowOpInspectorPanel, WorkflowOpResultPanel, WorkflowSummaryPanel, workflowGroupKey } from '../organisms';
@@ -92,7 +92,7 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
             <Stack gap="xs">
               <FormRow
                 label="Source IDs"
-                control={<input className="input" style={{ width: '100%' }} value={sourceInput} onChange={e => setSourceInput(e.target.value)} placeholder="ttc-guides, ttc-articles" />}
+                control={<TextInput className={styles.fullInput} value={sourceInput} onChange={e => setSourceInput(e.target.value)} placeholder="ttc-guides, ttc-articles" />}
               />
               {sourceNames.length > 0 && <Caption>Available: {sourceNames.join(', ')}</Caption>}
               <FormRow label="Strategy" control={<Caption tone="accent">{strategyId}</Caption>} />
@@ -105,14 +105,14 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
               <FormRow
                 label="Strategy"
                 control={(
-                  <select className="select" value={form.strategy} onChange={e => set('strategy', e.target.value)}>
+                  <SelectInput value={form.strategy} onChange={e => set('strategy', e.target.value)}>
                     <option value="fixed">fixed</option>
                     <option value="recursive">recursive</option>
-                  </select>
+                  </SelectInput>
                 )}
               />
-              <FormRow label="Chunk Size" control={<input className="input" type="number" value={form.chunk_size} onChange={e => set('chunk_size', +e.target.value)} style={{ width: 80 }} />} />
-              <FormRow label="Overlap" control={<input className="input" type="number" value={form.overlap} onChange={e => set('overlap', +e.target.value)} style={{ width: 80 }} />} />
+              <FormRow label="Chunk Size" control={<TextInput className={styles.shortInput} type="number" value={form.chunk_size} onChange={e => set('chunk_size', +e.target.value)} />} />
+              <FormRow label="Overlap" control={<TextInput className={styles.shortInput} type="number" value={form.overlap} onChange={e => set('overlap', +e.target.value)} />} />
             </Stack>
           </fieldset>
 
@@ -125,15 +125,15 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
                   <FormRow
                     label="Provider"
                     control={(
-                      <select className="select" value={form.embeddings_type} onChange={e => set('embeddings_type', e.target.value)}>
+                      <SelectInput value={form.embeddings_type} onChange={e => set('embeddings_type', e.target.value)}>
                         <option value="ollama">ollama</option>
                         <option value="openai">openai</option>
-                      </select>
+                      </SelectInput>
                     )}
                   />
-                  <FormRow label="Engine" control={<input className="input" value={form.embeddings_engine} onChange={e => set('embeddings_engine', e.target.value)} />} />
-                  <FormRow label="Dimensions" control={<input className="input" type="number" value={form.embeddings_dimensions} onChange={e => set('embeddings_dimensions', +e.target.value)} style={{ width: 80 }} />} />
-                  <FormRow label="Batch Size" control={<input className="input" type="number" value={form.batch_size} onChange={e => set('batch_size', +e.target.value)} style={{ width: 80 }} />} />
+                  <FormRow label="Engine" control={<TextInput value={form.embeddings_engine} onChange={e => set('embeddings_engine', e.target.value)} />} />
+                  <FormRow label="Dimensions" control={<TextInput className={styles.shortInput} type="number" value={form.embeddings_dimensions} onChange={e => set('embeddings_dimensions', +e.target.value)} />} />
+                  <FormRow label="Batch Size" control={<TextInput className={styles.shortInput} type="number" value={form.batch_size} onChange={e => set('batch_size', +e.target.value)} />} />
                 </>
               )}
             </Stack>
@@ -144,7 +144,7 @@ const SubmitIntakeModal: React.FC<SubmitIntakeModalProps> = ({ onClose, onSubmit
             <FormRow label="Build" control={<input type="checkbox" checked={!form.skip_bm25} onChange={e => set('skip_bm25', !e.target.checked)} />} />
           </fieldset>
 
-          {error && <div className="error-box">{error}</div>}
+          {error && <ErrorCallout>{error}</ErrorCallout>}
 
           <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 4 }}>
             <Button onClick={onClose}>Cancel</Button>

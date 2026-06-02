@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ErrorCallout } from '../../atoms';
 import { Caption } from '../../foundation';
 import { Panel, ScrollRegion } from '../../layout';
 import { DataTable, type DataTableColumn } from '../../molecules';
@@ -63,7 +64,7 @@ export function RetrievalResultsPanel({
       data-rag-component="RetrievalResultsPanel"
     >
       <ScrollRegion axis="y" style={{ height: '100%' }}>
-        {searchError && <div className="error-box" style={{ margin: 6 }}>{searchError}</div>}
+        {searchError && <ErrorCallout className={styles.error}>{searchError}</ErrorCallout>}
         {items.length === 0 && !searchError && !isLoading && (
           <Caption className={styles.centeredEmpty}>
             {emptyHint ?? (searchResult ? 'No results found.' : 'Enter a query and press Search.')}

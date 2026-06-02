@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '../../atoms';
+import { Button, TextInput } from '../../atoms';
 import { Caption, StatusText } from '../../foundation';
 import { Panel, ScrollRegion } from '../../layout';
 import { DataTable, type DataTableColumn } from '../../molecules';
@@ -53,8 +53,8 @@ export const DocumentBrowser: React.FC<DocumentBrowserProps> = ({
     >
       {sourceName && (
         <div className={styles.searchBar}>
-          <input
-            className={`input ${styles.searchInput}`}
+          <TextInput
+            className={styles.searchInput}
             placeholder="Search title or ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
