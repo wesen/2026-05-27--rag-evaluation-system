@@ -55,6 +55,30 @@ topics:
       description: Goja JavaScript engine and runtime builder
     - slug: xgoja
       description: Xgoja custom binary code generator for goja
+    - slug: goja-text
+      description: 'Goja-text: Go-backed text modules for goja (markdown, sanitize, extract)'
+    - slug: markdown
+      description: Markdown parsing and AST manipulation via goja-text
+    - slug: extract
+      description: Structured-data extraction from text via goja-text
+    - slug: sanitize
+      description: YAML/JSON sanitization and linting via goja-text
+    - slug: kanban
+      description: Kanban board and task management patterns
+    - slug: javascript
+      description: JavaScript language and runtime topics
+    - slug: dsl
+      description: Domain-specific languages for UI and data configuration
+    - slug: go
+      description: Go programming language
+    - slug: mysql
+      description: MySQL database import/export and source querying
+    - slug: sqlite
+      description: SQLite database exports, schemas, and validation
+    - slug: ttc
+      description: The Tree Center data and domain-specific corpus exports
+    - slug: wordpress
+      description: WordPress/WooCommerce source schema and content extraction
 docTypes:
     - slug: design-doc
       description: Structured rationale and architecture notes

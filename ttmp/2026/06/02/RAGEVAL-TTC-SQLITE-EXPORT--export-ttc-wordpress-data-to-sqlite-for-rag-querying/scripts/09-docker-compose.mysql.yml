@@ -1,0 +1,27 @@
+services:
+  ttc-mysql:
+    image: mysql:8.0
+    container_name: rageval-ttc-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ttc
+      MYSQL_USER: ttc
+      MYSQL_PASSWORD: ttc
+      MYSQL_ROOT_PASSWORD: somewordpress
+    ports:
+      - "3347:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-allowed-packet=1G
+    volumes:
+      - rageval-ttc-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-httc-mysql", "-uttc", "-pttc"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  rageval-ttc-mysql-data:
