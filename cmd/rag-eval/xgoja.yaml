@@ -1,0 +1,89 @@
+name: rag-eval-js
+appName: rag-eval-js
+envPrefix: RAG_EVAL_JS
+config:
+  enabled: true
+  layers:
+    - cwd
+    - explicit
+  fileName: rag-eval-js.yaml
+target:
+  kind: xgoja
+  output: dist/rag-eval-js
+packages:
+  - id: go-go-goja-core
+    import: github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/core
+    replace: ../../../go-go-goja
+  - id: go-go-goja-host
+    import: github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/host
+    replace: ../../../go-go-goja
+  - id: go-go-goja-http
+    import: github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/http
+    replace: ../../../go-go-goja
+  - id: goja-text
+    import: github.com/go-go-golems/goja-text/pkg/xgoja/providers/text
+    replace: ../../../goja-text
+  - id: geppetto
+    import: github.com/go-go-golems/geppetto/pkg/js/modules/geppetto/provider
+    replace: ../../../geppetto
+runtimes:
+  main:
+    modules:
+      - package: go-go-goja-core
+        name: path
+        as: path
+      - package: go-go-goja-core
+        name: yaml
+        as: yaml
+      - package: go-go-goja-host
+        name: fs
+        as: fs
+        config:
+          allow: true
+      - package: go-go-goja-host
+        name: db
+        as: db
+        config:
+          allowConfigure: true
+      - package: goja-text
+        name: markdown
+        as: markdown
+      - package: goja-text
+        name: sanitize
+        as: sanitize
+      - package: goja-text
+        name: extract
+        as: extract
+      - package: go-go-goja-http
+        name: express
+        as: express
+      - package: geppetto
+        name: geppetto
+        as: geppetto
+        config:
+          allowRegistryLoad: true
+          allowNetwork: true
+commands:
+  eval:
+    enabled: true
+    runtime: main
+  run:
+    enabled: true
+    runtime: main
+  repl:
+    enabled: true
+    runtime: main
+  jsverbs:
+    enabled: true
+    runtime: main
+    name: verbs
+    mount: root
+jsverbs:
+  - id: rag-eval-jsverbs
+    path: ./jsverbs
+    embed: true
+help:
+  sources:
+    - id: goja-text-runtime-api
+      package: goja-text
+      source: runtime-api

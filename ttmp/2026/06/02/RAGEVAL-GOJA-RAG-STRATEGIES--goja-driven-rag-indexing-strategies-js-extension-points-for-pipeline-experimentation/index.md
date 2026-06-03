@@ -25,10 +25,30 @@ RelatedFiles:
       Note: Op kind constants and IntakeOpInput — add js_pipeline here
     - Path: 2026-05-27--rag-evaluation-system/internal/workflow/submit.go
       Note: Workflow DAG builder — add js_pipeline op submission
+    - Path: 2026-05-27--rag-evaluation-system/ttmp/2026/06/02/RAGEVAL-GOJA-RAG-STRATEGIES--goja-driven-rag-indexing-strategies-js-extension-points-for-pipeline-experimentation/design/02-rag-preprocessing-research-report-and-investigation-avenues.md
+      Note: New design doc - research report + 8 investigation avenues
+    - Path: 2026-05-27--rag-evaluation-system/ttmp/2026/06/02/RAGEVAL-GOJA-RAG-STRATEGIES--goja-driven-rag-indexing-strategies-js-extension-points-for-pipeline-experimentation/design/03-layered-goja-rag-api-design-and-implementation-guide.md
+      Note: Layered Goja RAG API redesign with raw SQL/Bleve layer
     - Path: geppetto/pkg/js/modules/geppetto/module.go
-      Note: Geppetto goja module — pattern for rag-ops module
+      Note: |-
+        Geppetto goja module — pattern for rag-ops module
+        Hidden Go reference pattern used as precedent for Go-owned JS handles
     - Path: geppetto/pkg/js/modules/geppetto/provider/provider.go
       Note: Geppetto xgoja provider — pattern for rag-ops provider package
+    - Path: go-go-goja/modules/database/database.go
+      Note: Existing raw SQL Goja module pattern used for rag/raw.db design
+    - Path: goja-text/README.md
+      Note: Goja-text README with full API documentation and examples
+    - Path: goja-text/pkg/extract/module.go
+      Note: Extract goja module — structured data extraction from text
+    - Path: goja-text/pkg/markdown/module.go
+      Note: |-
+        Markdown goja module — AST parsing
+        Markdown AST traversal API used as precedent for document-aware chunking
+    - Path: goja-text/pkg/sanitize/module.go
+      Note: Sanitize goja module — YAML/JSON repair and linting
+    - Path: goja-text/pkg/xgoja/providers/text/text.go
+      Note: Goja-text xgoja provider package — registers all three modules
     - Path: scraper/pkg/engine/runner/js.go
       Note: JSRunner — dispatch from scraper op to JS executor
     - Path: scraper/pkg/js/runtime/executor.go
@@ -39,6 +59,13 @@ LastUpdated: 2026-06-02T17:03:10.723119457-04:00
 WhatFor: ""
 WhenToUse: ""
 ---
+
+
+
+
+
+
+
 
 
 # Goja-Driven RAG Indexing Strategies: JS Extension Points for Pipeline Experimentation

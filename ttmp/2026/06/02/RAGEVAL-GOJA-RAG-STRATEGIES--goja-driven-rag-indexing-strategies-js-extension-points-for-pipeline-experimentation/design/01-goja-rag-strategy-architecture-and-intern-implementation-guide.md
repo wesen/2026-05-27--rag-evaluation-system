@@ -3,7 +3,7 @@ title: Goja RAG Strategy Architecture and Intern Implementation Guide
 type: design
 status: active
 intent: long-term
-topics: [rag, goja, embeddings, chunking, search, xgoja, scraper, geppetto]
+topics: [rag, goja, embeddings, chunking, search, xgoja, scraper, geppetto, goja-text, markdown, extract, sanitize]
 ticket: RAGEVAL-GOJA-RAG-STRATEGIES
 ---
 
@@ -15,6 +15,8 @@ This document is a comprehensive, intern-ready guide to the RAG evaluation syste
 
 The central question this document answers is: **how can we write short JS scripts that drive RAG pipeline steps, schedule them as durable workflow operations, and inspect the results through a web UI?**
 
+The `goja-text` module (Section 5) is a critical enabler: it provides Go-backed Markdown parsing, YAML/JSON sanitization, and structured-data extraction directly to JS scripts, which means RAG chunking and enrichment strategies can inspect and split Markdown documents without reimplementing parsers in JavaScript.
+
 ---
 
 ## Table of Contents
@@ -23,14 +25,15 @@ The central question this document answers is: **how can we write short JS scrip
 2. [The RAG Evaluation System](#2-the-rag-evaluation-system)
 3. [The Scraper Workflow Engine](#3-the-scraper-workflow-engine)
 4. [The Goja JavaScript Engine](#4-the-goja-javascript-engine)
-5. [The Geppetto LLM Module](#5-the-geppetto-llm-module)
-6. [Xgoja: Custom Binary Code Generation](#6-xgoja-custom-binary-code-generation)
-7. [Integration Architecture](#7-integration-architecture)
-8. [Proposed JS-Driven RAG Strategies](#8-proposed-js-driven-rag-strategies)
-9. [Implementation Phases](#9-implementation-phases)
-10. [API Reference](#10-api-reference)
-11. [File Reference](#11-file-reference)
-12. [Diagrams](#12-diagrams)
+5. [The Goja-Text Module](#5-the-goja-text-module)
+6. [The Geppetto LLM Module](#6-the-geppetto-llm-module)
+7. [Xgoja: Custom Binary Code Generation](#7-xgoja-custom-binary-code-generation)
+8. [Integration Architecture](#8-integration-architecture)
+9. [Proposed JS-Driven RAG Strategies](#9-proposed-js-driven-rag-strategies)
+10. [Implementation Phases](#10-implementation-phases)
+11. [API Reference](#11-api-reference)
+12. [File Reference](#12-file-reference)
+13. [Diagrams](#13-diagrams)
 
 ---
 
@@ -44,6 +47,7 @@ The workspace at `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/` con
 | `scraper` | A job scheduler and JS runtime for web scraping workflows. Provides durable op scheduling, SQLite-backed queues, and a JS runner |
 | `geppetto` | LLM inference engine and goja module. Provides `require("geppetto")` for JS scripts, with profile-based provider resolution |
 | `go-go-goja` | The goja runtime builder, module system, REPL, and xgoja codegen. Provides the JS VM infrastructure |
+| `goja-text` | Go-backed text modules for goja: Markdown parsing, YAML/JSON sanitization, structured-data extraction |
 | `pinocchio` | A chat/inference TUI that composes geppetto with a web SPA. Uses agent-mode middleware |
 | `glazed` | CLI framework with structured output, help pages, and config loading |
 
@@ -79,6 +83,14 @@ These components form a layered stack. The RAG evaluation system sits at the top
 │  Store       │   │  Modules         │   │  require("geppetto")│
 │  JS Runner   │   │  xgoja codegen   │   │  Profile Registry  │
 └──────────────┘   └──────────────────┘   └─────────────────────┘
+                           │
+                           ▼
+                    ┌──────────────────┐
+                    │   goja-text      │
+                    │  require("markdown")│
+                    │  require("sanitize")│
+                    │  require("extract") │
+                    └──────────────────┘
 ```
 
 ---
@@ -418,13 +430,298 @@ builder := gggengine.NewBuilder().
 
 ---
 
-## 5. The Geppetto LLM Module
+## 5. The Goja-Text Module
 
-### 5.1 What Geppetto Provides for JS
+### 5.1 What Goja-Text Is
+
+Goja-text (`github.com/go-go-golems/goja-text`) is a set of Go-backed text modules for go-go-goja. It gives JavaScript scripts a practical way to parse Markdown, repair YAML and JSON, and extract structured-data snippets from larger documents—all while keeping the parsing logic in Go for correctness and performance.
+
+This module is a **critical enabler** for RAG pipeline experimentation. Instead of reimplementing Markdown parsers, YAML repair, or JSON extraction in JavaScript, scripts call Go-backed functions that return rich, typed objects with source positions, confidence scores, and fix metadata.
+
+### 5.2 Three Sub-Modules
+
+Goja-text exposes three `require()` modules:
+
+| Module | `require()` name | Purpose | Typical first call |
+|---|---|---|---|
+| `markdown` | `markdown` | Parse Markdown into a Go-backed AST, render HTML, walk the tree, extract text content | `markdown.parse(input)` |
+| `sanitize` | `sanitize` | Repair and inspect YAML/JSON syntax with fix metadata and Go-backed option builders | `sanitize.json.sanitize(input)` |
+| `extract` | `extract` | Find structured-data candidates in Markdown, XML-like tags, frontmatter, or raw text | `extract.all(input)` |
+
+### 5.3 The Markdown Module
+
+The markdown module uses **goldmark** in Go and exposes the parsed document as Go-backed `MarkdownNode` objects. This is the most important module for RAG chunking strategies.
+
+```javascript
+const markdown = require("markdown");
+
+// Parse Markdown into an AST
+const ast = markdown.parse("# Hello\n\nSee [docs](https://example.com).");
+console.log(ast.Type);                  // "document"
+console.log(ast.Children[0].Type);       // "heading"
+console.log(ast.Children[0].Level);      // 1
+console.log(markdown.textContent(ast));  // "HelloSee docs."
+
+// Render to HTML
+const html = markdown.renderHTML("# Hello\n\nWorld");
+// <h1>Hello</h1>\n<p>World</p>\n
+// Walk the AST with a visitor callback
+const headings = [];
+markdown.walk(ast, (node, ctx) => {
+  if (node.Type === "heading") {
+    headings.push({
+      level: node.Level,
+      text: markdown.textContent(node),
+      depth: ctx.Depth,
+      startLine: node.StartLine,
+    });
+  }
+});
+// headings = [{ level: 1, text: "Hello", depth: 1, startLine: 1 }]
+
+// Validate input
+const result = markdown.validate("# Valid");
+// { Valid: true }
+```
+
+The `MarkdownNode` type exposes these fields to JavaScript:
+
+```typescript
+interface MarkdownNode {
+  Type: string;           // "document", "heading", "paragraph", "text", "link", "image", "codeBlock", "fencedCodeBlock", "list", "listItem", "htmlBlock", "rawHTML", etc.
+  Children?: MarkdownNode[];
+  Text?: string;           // For text nodes
+  Level?: number;          // For headings (1-6)
+  Language?: string;       // For fenced code blocks
+  Destination?: string;    // For links
+  Title?: string;          // For links
+  Alt?: string;            // For images
+  Ordered?: boolean;       // For lists
+  Start?: number;          // For ordered lists
+  Marker?: string;         // List marker
+  Info?: string;           // Fenced code block info string
+  Raw?: string;            // Raw HTML content
+  StartLine?: number;      // Source position
+  StartColumn?: number;    // Source position
+  SourcePos?: [number, number]; // Source span
+}
+
+interface WalkContext {
+  Parent?: MarkdownNode;
+  Depth: number;
+  Index: number;
+  Path: number[];
+}
+
+type WalkResult = void | boolean | "skip" | "stop";
+```
+
+**Walk return values control traversal:**
+- `void` or `undefined` — continue to children
+- `true` — skip children of this node
+- `false` — continue to children
+- `"skip"` — skip children
+- `"stop"` — stop all traversal
+
+### 5.4 The Sanitize Module
+
+The sanitize module provides YAML and JSON linting, sanitization, parse-tree inspection, and rule catalogs. This is useful for cleaning up LLM-generated JSON/YAML output before parsing it as structured data.
+
+```javascript
+const sanitize = require("sanitize");
+
+// JSON sanitization with options
+const options = sanitize.json.options()
+  .MaxIterations(5)
+  .Build();
+
+const result = sanitize.json.sanitize("~~~json\n{'ok': True,}\n~~~\n", options);
+console.log(result.Sanitized);  // '{"ok": true}'
+console.log(result.Fixes.map(f => f.Rule));  // ["python_bool", "trailing_comma", ...]
+
+// YAML sanitization
+const yamlResult = sanitize.yaml.sanitize("key: True\n  indented: bad");
+console.log(yamlResult.Sanitized);
+console.log(yamlResult.Fixes);
+
+// Linting (no repair, just report issues)
+const issues = sanitize.json.lint("{'broken': True,}");
+// [{Rule: "single_quotes", ...}, {Rule: "python_bool", ...}, {Rule: "trailing_comma", ...}]
+
+// Strict validation
+const strict = sanitize.json.strictParse('{"valid": true}');
+// { Valid: true }
+
+// Rule catalog (for documentation or filtering)
+const jsonRules = sanitize.json.rules();
+const yamlRules = sanitize.yaml.rules();
+
+// Parse tree inspection (tree-sitter)
+const tree = sanitize.json.parseTree("{\"a\": 1}");
+// { TreeText: "...", Errors: [] }
+```
+
+### 5.5 The Extract Module
+
+The extract module locates structured-data candidates inside larger text. It returns evidence (with source positions, confidence, format guesses) rather than trusted parsed values—scripts decide what to accept.
+
+```javascript
+const extract = require("extract");
+
+// Run all extractors on a document
+const candidates = extract.all(`---
+title: Demo
+---
+
+~~~json
+{"ok": true}
+~~~
+`);
+
+for (const candidate of candidates) {
+  const validation = extract.validate(candidate);
+  console.log(candidate.Kind, candidate.Format, candidate.StartRow, validation.Valid);
+}
+// "frontmatter" "yaml" 1 true
+// "markdown_code_block" "json" 5 true
+
+// Individual extractors
+const blocks = extract.markdownCodeBlocks(markdownText);   // Fenced code blocks
+const xmlTags = extract.xmlTagged(text);                   // <tag>...</tag> wrappers
+const raw = extract.rawStructured(text);                    // Raw JSON/YAML payloads
+const fm = extract.frontmatter(text);                      // YAML frontmatter
+
+// Configure extraction with options builder
+const opts = extract.options()
+  .Formats("json", "yaml")
+  .MinConfidence(0.5)
+  .MaxCandidates(20)
+  .IncludeDiagnostics(true)
+  .Build();
+const filtered = extract.all(text, opts);
+
+// Validate a candidate (sanitize + parse)
+const result = extract.validate(candidate);
+// { Candidate: ..., Valid: true, Format: "json", Sanitized: "...", Errors: [], Fixes: [...] }
+```
+
+The `ExtractionCandidate` type exposes these fields:
+
+```typescript
+interface ExtractionCandidate {
+  Kind: string;               // "frontmatter", "markdown_code_block", "xml_tagged", "raw_structured"
+  Format: string;             // "json", "yaml", "xml", "unknown"
+  Text: string;               // Full candidate text including wrapper
+  Raw: string;                // Raw payload text
+  Wrapper: string;            // Wrapper type (e.g., "~~~", "```")
+  Label: string;              // Code block language label (e.g., "json", "yaml")
+  Info: string;               // Fenced code block info string
+  StartByte: number;
+  EndByte: number;
+  StartRow: number;
+  StartColumn: number;
+  EndRow: number;
+  EndColumn: number;
+  PayloadStartByte: number;
+  PayloadEndByte: number;
+  PayloadStartRow: number;
+  PayloadStartColumn: number;
+  PayloadEndRow: number;
+  PayloadEndColumn: number;
+  Confidence: number;         // 0.0 - 1.0
+  Diagnostics?: string[];
+}
+```
+
+### 5.6 Goja-Text and RAG: Why It Matters
+
+Goja-text is a direct fit for RAG indexing strategies because:
+
+1. **Markdown AST-based chunking** — The `markdown.parse()` and `markdown.walk()` functions let JS scripts split documents by heading structure, extract per-section text with source positions, and compute heading hierarchies. This replaces the Go-only `MarkdownHeadingChunker` with a JS-driven version that can make policy decisions (e.g., "merge short sections", "keep heading context in each chunk").
+
+2. **LLM output sanitization** — When geppetto returns JSON or YAML from an LLM (e.g., structured summaries, keyword lists), the `sanitize` module can repair common LLM output mistakes (Python booleans, trailing commas, single quotes) before the script stores them as artifacts.
+
+3. **Structured-data extraction from documents** — The `extract` module can find JSON/YAML code blocks embedded in markdown documents (e.g., frontmatter metadata, embedded structured data), which is useful for pre-processing documents that contain both prose and structured data.
+
+4. **Source position tracking** — Both `MarkdownNode.StartLine`/`StartColumn` and `ExtractionCandidate.StartRow`/`StartColumn` give JS scripts precise source positions, enabling accurate offset-based chunking that matches the RAG evaluation system's `start_offset`/`end_offset` fields.
+
+### 5.7 Xgoja Integration
+
+Goja-text has its own `xgoja.yaml` that builds a standalone `goja-text` binary:
+
+```yaml
+name: goja-text
+packages:
+  - id: goja-text
+    import: github.com/go-go-golems/goja-text/pkg/xgoja/providers/text
+  - id: go-go-goja-core
+    import: github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/core
+  - id: go-go-goja-host
+    import: github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/host
+runtimes:
+  main:
+    modules:
+      - package: goja-text, name: markdown, as: markdown
+      - package: goja-text, name: sanitize, as: sanitize
+      - package: goja-text, name: extract, as: extract
+      - package: go-go-goja-core, name: path, as: path
+      - package: go-go-goja-core, name: yaml, as: yaml
+      - package: go-go-goja-host, name: fs, as: fs, config: { allow: true }
+```
+
+It also includes bundled jsverbs that provide CLI commands like `markdown toc`, `markdown links`, `markdown summary`, `sanitize yaml`, `sanitize json`, `extract list`, and `extract validate`.
+
+### 5.8 Go Embedding Pattern
+
+A Go host can blank-import the module packages and they self-register via `init()`:
+
+```go
+import (
+  _ "github.com/go-go-golems/goja-text/pkg/markdown"
+  _ "github.com/go-go-golems/goja-text/pkg/extract"
+  _ "github.com/go-go-golems/goja-text/pkg/sanitize"
+)
+
+factory, err := engine.NewBuilder().UseModuleMiddleware(engine.MiddlewareOnly("markdown", "extract", "sanitize")).Build()
+rt, err := factory.NewRuntime(engine.WithStartupContext(ctx))
+```
+
+### 5.9 Key Goja-Text Files
+
+| File | Purpose |
+|---|---|
+| `goja-text/pkg/markdown/module.go` | Markdown module registration and loader |
+| `goja-text/pkg/markdown/parser.go` | Goldmark-backed Markdown parsing |
+| `goja-text/pkg/markdown/types.go` | MarkdownNode, WalkContext, ValidationResult types |
+| `goja-text/pkg/markdown/convert.go` | HTML rendering |
+| `goja-text/pkg/extract/module.go` | Extract module registration and loader |
+| `goja-text/pkg/extract/types.go` | ExtractionCandidate, ExtractOptions, builders |
+| `goja-text/pkg/extract/all.go` | All-extractors combined extraction |
+| `goja-text/pkg/extract/markdown_fences.go` | Fenced code block extraction |
+| `goja-text/pkg/extract/frontmatter.go` | YAML frontmatter extraction |
+| `goja-text/pkg/extract/xml_tags.go` | XML-like tag extraction |
+| `goja-text/pkg/extract/raw.go` | Raw structured data detection |
+| `goja-text/pkg/extract/positions.go` | Byte/row/column position computation |
+| `goja-text/pkg/extract/validate.go` | Candidate validation/sanitization |
+| `goja-text/pkg/sanitize/module.go` | Sanitize module registration and loader |
+| `goja-text/pkg/sanitize/options.go` | Options builders for YAML/JSON sanitization |
+| `goja-text/pkg/sanitize/types.go` | Config and result types |
+| `goja-text/pkg/xgoja/providers/text/text.go` | Xgoja provider package (registers all three modules) |
+| `goja-text/cmd/goja-text/xgoja.yaml` | Xgoja build spec for the standalone binary |
+| `goja-text/cmd/goja-text/jsverbs/markdown.js` | Bundled JS verbs: toc, links, summary |
+| `goja-text/cmd/goja-text/jsverbs/extract.js` | Bundled JS verbs: list, validate, firstValid, markdownBlocks |
+| `goja-text/cmd/goja-text/jsverbs/sanitize.js` | Bundled JS verbs: yaml, json, lintJson, rules |
+| `goja-text/examples/js/markdown-demo.js` | Markdown API demo script |
+| `goja-text/examples/js/extract-demo.js` | Extract API demo script |
+| `goja-text/examples/js/sanitize-demo.js` | Sanitize API demo script |
+
+## 6. The Geppetto LLM Module
+
+### 6.1 What Geppetto Provides for JS
 
 The geppetto goja module (`require("geppetto")`) exposes a full LLM inference API to JavaScript scripts. This is the key bridge that enables JS scripts to call LLMs for document processing and chunk enrichment.
 
-### 5.2 JS API Surface
+### 6.2 JS API Surface
 
 ```javascript
 const geppetto = require("geppetto");
@@ -479,7 +776,7 @@ const mwSchemas = geppetto.schemas.listMiddlewares();
 const extSchemas = geppetto.schemas.listExtensions();
 ```
 
-### 5.3 Embeddings in JS
+### 6.3 Embeddings in JS
 
 Geppetto also has a separate embeddings wrapper (`geppetto/pkg/js/embeddings-js.go`) that can register an `embeddings` global in a goja runtime:
 
@@ -501,7 +798,7 @@ const model = embeddings.getModel();
 // { name: "nomic-embed-text", dimensions: 768 }
 ```
 
-### 5.4 Key Geppetto Files
+### 6.4 Key Geppetto Files
 
 | File | Purpose |
 |---|---|
@@ -519,13 +816,13 @@ const model = embeddings.getModel();
 
 ---
 
-## 6. Xgoja: Custom Binary Code Generation
+## 7. Xgoja: Custom Binary Code Generation
 
-### 6.1 What Xgoja Does
+### 7.1 What Xgoja Does
 
 Xgoja generates a custom Go binary from a declarative `xgoja.yaml` spec. The generated binary bundles selected goja modules, provider packages, and command definitions. This lets you create a standalone CLI tool that has exactly the modules you need for your use case.
 
-### 6.2 xgoja.yaml Structure
+### 7.2 xgoja.yaml Structure
 
 ```yaml
 name: rag-eval-js
@@ -538,6 +835,9 @@ target:
 packages:
   - id: go-go-goja-core
     import: github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/core
+    register: Register
+  - id: goja-text
+    import: github.com/go-go-golems/goja-text/pkg/xgoja/providers/text
     register: Register
   - id: geppetto
     import: github.com/go-go-golems/geppetto/pkg/js/modules/geppetto/provider
@@ -558,6 +858,15 @@ runtimes:
       - package: go-go-goja-core
         name: database
         as: database
+      - package: goja-text
+        name: markdown
+        as: markdown
+      - package: goja-text
+        name: sanitize
+        as: sanitize
+      - package: goja-text
+        name: extract
+        as: extract
       - package: geppetto
         name: geppetto
         as: geppetto
@@ -580,7 +889,7 @@ commands:
     runtime: main
 ```
 
-### 6.3 Generated Commands
+### 7.3 Generated Commands
 
 An xgoja binary typically provides these commands:
 
@@ -589,7 +898,7 @@ An xgoja binary typically provides these commands:
 - **`repl`** — interactive JS REPL
 - **`verbs`** — run JS verb scripts (if jsverbs configured)
 
-### 6.4 Adding a New Provider Package
+### 7.4 Adding a New Provider Package
 
 To add a new module provider for xgoja, you need:
 
@@ -600,9 +909,9 @@ To add a new module provider for xgoja, you need:
 
 ---
 
-## 7. Integration Architecture
+## 8. Integration Architecture
 
-### 7.1 Three Integration Surfaces
+### 8.1 Three Integration Surfaces
 
 There are three distinct ways to integrate JS-driven RAG experimentation:
 
@@ -790,9 +1099,9 @@ func NewLoader(opts Options) require.ModuleLoader {
 
 ---
 
-## 8. Proposed JS-Driven RAG Strategies
+## 9. Proposed JS-Driven RAG Strategies
 
-### 8.1 Strategy: LLM-Generated Summaries as Index Terms
+### 9.1 Strategy: LLM-Generated Summaries as Index Terms
 
 **Goal:** Use an LLM to generate a structured summary for each document, then use that summary as additional index terms for both BM25 and vector search.
 
@@ -858,40 +1167,78 @@ module.exports = async function(ctx) {
 };
 ```
 
-### 8.2 Strategy: Markdown Section Chunking with LLM Context Enrichment
+### 9.2 Strategy: Markdown Section Chunking with LLM Context Enrichment
 
-**Goal:** Chunk documents by markdown headings, then use an LLM to prepend each chunk with its parent document context (title, section hierarchy, sibling section summaries).
+**Goal:** Chunk documents by markdown headings using goja-text's `markdown` module for AST-based section splitting, then use an LLM to prepend each chunk with its parent document context (title, section hierarchy, sibling section summaries).
+
+This strategy demonstrates the power of combining goja-text (for precise AST-based chunking with source positions) with geppetto (for LLM-generated context) and rag-ops (for storage).
 
 **JS Script:**
 
 ```javascript
 // scripts/markdown-section-chunk-with-context.js
 module.exports = async function(ctx) {
+  const markdown = require("markdown");      // goja-text markdown module
   const geppetto = require("geppetto");
   const ragOps = require("rag-ops");
+  const sanitize = require("sanitize");     // goja-text sanitize module
   
   const docId = ctx.input.document_id;
   const content = ragOps.documents.getContent(docId);
   const doc = ragOps.documents.get(docId);
   
-  // Step 1: Chunk by markdown headings
-  const chunks = ragOps.chunking.apply({
-    document_id: docId,
-    strategy: "markdown-heading",
-    chunk_size: 2400,
+  // Step 1: Parse Markdown with goja-text for precise AST-based section splitting
+  const ast = markdown.parse(content);
+  
+  // Collect heading structure
+  const headings = [];
+  markdown.walk(ast, (node, walkCtx) => {
+    if (node.Type === "heading") {
+      headings.push({
+        level: node.Level,
+        text: markdown.textContent(node),
+        startLine: node.StartLine,
+        depth: walkCtx.Depth,
+      });
+    }
   });
+  ctx.log(`Found ${headings.length} headings in ${docId}`);
   
-  ctx.log(`Created ${chunks.chunk_count} chunks for ${docId}`);
+  // Step 2: Split into sections by heading boundaries using AST positions
+  const lines = content.split("\n");
+  const sections = [];
+  for (let i = 0; i < headings.length; i++) {
+    const startLine = headings[i].startLine - 1; // 0-indexed
+    const endLine = (i + 1 < headings.length) 
+      ? headings[i + 1].startLine - 1 
+      : lines.length;
+    const sectionText = lines.slice(startLine, endLine).join("\n").trim();
+    if (sectionText) {
+      sections.push({
+        heading: headings[i].text,
+        level: headings[i].level,
+        text: sectionText,
+        startLine: startLine + 1, // 1-indexed for storage
+      });
+    }
+  }
+  // Handle content before first heading
+  if (headings.length > 0 && headings[0].startLine > 1) {
+    const preamble = lines.slice(0, headings[0].startLine - 1).join("\n").trim();
+    if (preamble) {
+      sections.unshift({ heading: "(preamble)", level: 0, text: preamble, startLine: 1 });
+    }
+  }
   
-  // Step 2: For each chunk, compute LLM context
-  const strategyId = chunks.strategy_id;
-  const chunkList = ragOps.chunking.listChunks(docId);
+  ctx.log(`Split into ${sections.length} sections`);
   
-  for (const chunk of chunkList) {
-    // Build context: document title + surrounding section summaries
+  // Step 3: For each section, compute LLM context
+  for (const section of sections) {
     const contextPrompt = `Document: "${doc.title}"
-Section chunk (index ${chunk.chunk_index}):
-${chunk.text.slice(0, 500)}...
+Section heading: "${section.heading}" (level ${section.level})
+Document has ${headings.length} headings total.
+Section text (first 500 chars):
+${section.text.slice(0, 500)}...
 
 Provide a brief 1-2 sentence context note that would help a reader understand 
 where this section fits in the overall document.`;
@@ -901,30 +1248,34 @@ where this section fits in the overall document.`;
       messages: [{ role: "user", content: contextPrompt }],
     });
     
-    // Store as enrichment artifact
+    // Sanitize the LLM response (handle potential JSON wrapping)
+    const contextNote = response.content.trim();
+    
+    // Store as enrichment artifact with source position
     ragOps.chunkEnrichment.store({
-      chunk_id: chunk.id,
-      strategy_id: strategyId,
+      chunk_id: `section-${section.startLine}`,
+      strategy_id: "markdown-ast-sections",
       prompt_version: "context-v1",
       provider: "openai-responses",
-      model: "gpt-4o-mini",
-      enriched_text: `[Context: ${response.content}]\n\n${chunk.text}`,
+      model: ctx.input.profile || "gpt-4o-mini",
+      enriched_text: `[Context: ${contextNote}]\n\n${section.text}`,
     });
     
-    ctx.log(`Enriched chunk ${chunk.id}`);
+    ctx.log(`Enriched section "${section.heading}" at line ${section.startLine}`);
   }
   
   return {
     data: {
       document_id: docId,
-      strategy_id: strategyId,
-      chunks_enriched: chunkList.length,
+      strategy: "markdown-ast-sections",
+      sections_enriched: sections.length,
+      headings_found: headings.length,
     }
   };
 };
 ```
 
-### 8.3 Strategy: Keyword-Enhanced Embeddings
+### 9.3 Strategy: Keyword-Enhanced Embeddings
 
 **Goal:** Compute embeddings not just on raw chunk text, but on chunk text augmented with LLM-extracted keywords. This can improve retrieval precision for domain-specific queries.
 
@@ -987,7 +1338,7 @@ ${chunk.text.slice(0, 2000)}`
 };
 ```
 
-### 8.4 Strategy: Multi-Grain Chunking with Hierarchical Index
+### 9.4 Strategy: Multi-Grain Chunking with Hierarchical Index
 
 **Goal:** Create chunks at multiple granularities (section-level and paragraph-level), compute embeddings for both, and use a two-stage retrieval: first retrieve sections, then retrieve fine-grained paragraphs within matching sections.
 
@@ -1038,7 +1389,144 @@ module.exports = async function(ctx) {
 
 ---
 
-## 9. Implementation Phases
+### 9.5 Strategy: Structured Extraction Pipeline with Sanitized LLM Output
+
+**Goal:** Use goja-text's `extract` and `sanitize` modules to process documents that contain embedded structured data (JSON/YAML code blocks), and use geppetto for LLM-driven field extraction. The sanitize module ensures LLM-generated JSON is valid before storage.
+
+This strategy is especially useful for documents like API documentation or technical guides that contain JSON examples, configuration snippets, and YAML frontmatter.
+
+**JS Script:**
+
+```javascript
+// scripts/structured-extraction-pipeline.js
+module.exports = async function(ctx) {
+  const markdown = require("markdown");      // goja-text: AST parsing
+  const extract = require("extract");       // goja-text: structured data extraction
+  const sanitize = require("sanitize");     // goja-text: JSON/YAML repair
+  const geppetto = require("geppetto");
+  const ragOps = require("rag-ops");
+  
+  const docId = ctx.input.document_id;
+  const content = ragOps.documents.getContent(docId);
+  const doc = ragOps.documents.get(docId);
+  
+  // Step 1: Extract structured data candidates from the document
+  const candidates = extract.all(content, extract.options()
+    .Formats("json", "yaml")
+    .MinConfidence(0.3)
+    .IncludeDiagnostics(true)
+    .Build()
+  );
+  
+  ctx.log(`Found ${candidates.length} structured-data candidates`);
+  
+  // Step 2: Validate and sanitize each candidate
+  const validData = [];
+  for (const candidate of candidates) {
+    const validation = extract.validate(candidate);
+    if (validation.Valid) {
+      validData.push({
+        kind: candidate.Kind,
+        format: candidate.Format,
+        sanitized: validation.Sanitized,
+        startRow: candidate.StartRow,
+        label: candidate.Label,
+      });
+    } else {
+      // Try to sanitize using the sanitize module directly
+      if (candidate.Format === "json") {
+        const result = sanitize.json.sanitize(candidate.Text);
+        if (result.Sanitized) {
+          validData.push({
+            kind: candidate.Kind,
+            format: "json",
+            sanitized: result.Sanitized,
+            startRow: candidate.StartRow,
+            label: candidate.Label,
+            fixesApplied: result.Fixes.map(f => f.Rule),
+          });
+        }
+      }
+    }
+  }
+  
+  ctx.log(`${validData.length} valid structured-data items extracted`);
+  
+  // Step 3: Use LLM to generate a structured summary that includes the extracted data
+  const extractedSummary = validData.map(d => 
+    `[${d.kind}/${d.format} at line ${d.startRow}${d.label ? ', label: ' + d.label : ''}]`
+  ).join("\n");
+  
+  const response = await geppetto.runInference({
+    profile: ctx.input.profile || "gpt-4o-mini",
+    messages: [{
+      role: "user",
+      content: `Analyze this document and its embedded structured data.
+Produce a JSON object with:
+- title: the document title
+- summary: 2-3 sentence summary
+- embedded_data_types: array of data types found (e.g., "json", "yaml")
+- key_concepts: array of 3-5 key concepts
+- has_code_examples: boolean
+
+Document: "${doc.title}"
+Embedded data found:
+${extractedSummary}
+
+First 3000 chars:
+${content.slice(0, 3000)}`
+    }],
+  });
+  
+  // Step 4: Sanitize LLM JSON output before storing
+  const llmOutput = response.content;
+  // Extract JSON from potential markdown wrapper
+  const jsonCandidates = extract.all(llmOutput, extract.options()
+    .Formats("json")
+    .Build()
+  );
+  
+  let structuredSummary = llmOutput;
+  if (jsonCandidates.length > 0) {
+    const firstValid = jsonCandidates.find(c => {
+      const v = extract.validate(c);
+      return v.Valid;
+    });
+    if (firstValid) {
+      const v = extract.validate(firstValid);
+      structuredSummary = v.Sanitized;
+    } else {
+      // Try sanitizing the first candidate
+      const first = jsonCandidates[0];
+      const sanitized = sanitize.json.sanitize(first.Text);
+      if (sanitized.Sanitized) {
+        structuredSummary = sanitized.Sanitized;
+      }
+    }
+  }
+  
+  // Store the result
+  ragOps.documentProcessing.store({
+    document_id: docId,
+    artifact_type: "structured_extraction",
+    prompt_version: "v1",
+    provider: "openai-responses",
+    model: ctx.input.profile || "gpt-4o-mini",
+    output_text: structuredSummary,
+  });
+  
+  return {
+    data: {
+      document_id: docId,
+      candidates_found: candidates.length,
+      valid_data_items: validData.length,
+      llm_json_sanitized: structuredSummary !== llmOutput,
+    }
+  };
+};
+```
+
+## 10. Implementation Phases
 
 ### Phase 1: The `rag-ops` Goja Module (Week 1-2)
 
@@ -1058,7 +1546,8 @@ module.exports = async function(ctx) {
    - `api_chunk_enrichment.go` — `store()`, `getArtifact()`, `coverage()`
 4. Write TypeScript declaration file `rag-ops.d.ts`
 5. Write integration tests using `gggengine.Builder` + test DB
-6. Add xgoja provider package `pkg/xgoja/providers/ragops/`
+6. Verify goja-text modules (`markdown`, `sanitize`, `extract`) are loadable alongside rag-ops in the same runtime
+7. Add xgoja provider package `pkg/xgoja/providers/ragops/`
 
 **Pseudocode for key function:**
 
@@ -1194,9 +1683,9 @@ func (r *JSPipelineRunner) Run(ctx context.Context, runCtx runner.RunContext) (*
 
 ---
 
-## 10. API Reference
+## 11. API Reference
 
-### 10.1 rag-ops Module API
+### 11.1 rag-ops Module API
 
 ```typescript
 declare module "rag-ops" {
@@ -1430,9 +1919,9 @@ interface OpResult {
 
 ---
 
-## 11. File Reference
+## 12. File Reference
 
-### 11.1 RAG Evaluation System Files
+### 12.1 RAG Evaluation System Files
 
 | File Path | Description |
 |---|---|
@@ -1459,7 +1948,7 @@ interface OpResult {
 | `2026-05-27--rag-evaluation-system/web/src/components/embeddings/EmbeddingsView.tsx` | Embedding coverage/similarity |
 | `2026-05-27--rag-evaluation-system/web/src/components/workflows/WorkflowsView.tsx` | Workflow viewer |
 
-### 11.2 Scraper Files
+### 12.2 Scraper Files
 
 | File Path | Description |
 |---|---|
@@ -1470,7 +1959,7 @@ interface OpResult {
 | `scraper/pkg/engine/store/sqlite/store.go` | SQLite workflow/op store |
 | `scraper/pkg/engine/model/types.go` | Core domain types |
 
-### 11.3 Goja / Geppetto Files
+### 12.3 Goja / Geppetto / Goja-Text Files
 
 | File Path | Description |
 |---|---|
@@ -1485,12 +1974,20 @@ interface OpResult {
 | `geppetto/pkg/js/modules/geppetto/provider/provider.go` | Geppetto xgoja provider |
 | `geppetto/pkg/js/embeddings-js.go` | Embeddings wrapper for goja |
 | `geppetto/pkg/js/runtimebridge/bridge.go` | Bridge between goja Owner and geppetto |
+| `goja-text/pkg/markdown/module.go` | Markdown goja module |
+| `goja-text/pkg/markdown/parser.go` | Goldmark-backed Markdown parser |
+| `goja-text/pkg/markdown/types.go` | MarkdownNode, WalkContext types |
+| `goja-text/pkg/extract/module.go` | Extract goja module |
+| `goja-text/pkg/extract/types.go` | ExtractionCandidate, options builder |
+| `goja-text/pkg/sanitize/module.go` | Sanitize goja module |
+| `goja-text/pkg/xgoja/providers/text/text.go` | Goja-text xgoja provider |
+| `goja-text/cmd/goja-text/xgoja.yaml` | Xgoja build spec for standalone binary |
 
 ---
 
-## 12. Diagrams
+## 13. Diagrams
 
-### 12.1 Data Flow: Document Ingestion to Search
+### 13.1 Data Flow: Document Ingestion to Search
 
 ```
                     ┌─────────────────────────────────────────┐
@@ -1536,7 +2033,7 @@ interface OpResult {
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-### 12.2 JS Pipeline Op Execution Flow
+### 13.2 JS Pipeline Op Execution Flow
 
 ```
                     SubmitIntakeWorkflow()
@@ -1583,7 +2080,7 @@ interface OpResult {
                             └──────────────────────────────────┘
 ```
 
-### 12.3 Xgoja Binary Experimentation Flow
+### 13.3 Xgoja Binary Experimentation Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -1592,8 +2089,28 @@ interface OpResult {
 │  $ rag-eval-js repl                                         │
 │  > const rag = require("rag-ops");                          │
 │  > const gpt = require("geppetto");                         │
+│  > const md = require("markdown");      // goja-text         │
+│  > const sanitize = require("sanitize"); // goja-text       │
+│  > const extract = require("extract");   // goja-text       │
 │  > const docs = rag.documents.list({limit: 5});             │
 │  > const content = rag.documents.getContent(docs[0].id);    │
+│  >                                                         │
+│  > // Parse Markdown and extract heading structure           │
+│  > const ast = md.parse(content);                            │
+│  > const headings = [];                                      │
+│  > md.walk(ast, (node) => {                                  │
+│      if (node.Type === "heading")                            │
+│        headings.push({level: node.Level, text: md.textContent(node)});
+│    });                                                      │
+│  > headings                                                  │
+│  [{level:1, text:"General Planting Guide"}, ...]            │
+│  >                                                         │
+│  > // Extract structured data from the document              │
+│  > const candidates = extract.all(content);                  │
+│  > candidates.length                                         │
+│  3                                                           │
+│  >                                                         │
+│  > // LLM summarization with sanitized JSON output           │
 │  > const summary = await gpt.runInference({                 │
 │      profile: "gpt-4o-mini",                                │
 │      messages: [{role: "user", content: "Summarize: " +     │
@@ -1649,7 +2166,7 @@ interface OpResult {
 
 ### DR-3: JS Pipeline Scripts: Embedded FS vs. Filesystem
 
-**Context:** JS pipeline scripts need to be loadable by the goja runtime. Should they be embedded in the binary or loaded from the filesystem?
+**Context:** JS pipeline scripts need to be loadable by the goja runtime. Should they be embedded in the binary or loaded from the filesystem? The goja-text project already establishes the pattern of embedded jsverbs.
 
 **Options:**
 1. `go:embed` — scripts compiled into the binary, version-controlled, but require rebuild to change
@@ -1658,9 +2175,9 @@ interface OpResult {
 
 **Decision:** Option 3 — embedded by default, filesystem override via flag
 
-**Rationale:** Embedded scripts are convenient for production and xgoja binaries. Filesystem access is essential for development iteration. A `--scripts-dir` flag can override the embedded FS, enabling rapid experimentation without recompilation.
+**Rationale:** Goja-text already demonstrates this pattern with its `cmd/goja-text/jsverbs/` and `xgoja_embed/` directories. The `xgoja.yaml` `jsverbs` section with `embed: true` shows how to embed JS scripts into the generated binary. A `--scripts-dir` flag can override the embedded FS, enabling rapid experimentation without recompilation.
 
-**Consequences:** The `JSPipelineRunner` must accept both an `fs.FS` and an optional filesystem path. The `xgoja.yaml` can include an `assets` section for embedding scripts.
+**Consequences:** The `JSPipelineRunner` must accept both an `fs.FS` and an optional filesystem path. The `xgoja.yaml` can include an `assets` section and `jsverbs` entries for embedding scripts, following goja-text's established pattern.
 
 **Status:** proposed
 
@@ -1681,7 +2198,7 @@ interface OpResult {
 
 ### Open Questions
 
-1. **goja-text module:** The user mentioned a `goja-text` module for text processing. Where is it? Is it planned? What should it provide (markdown parsing, section splitting, tokenization)?
+1. **~~goja-text module~~** ✅ Found at `./goja-text`. Provides `require("markdown")`, `require("sanitize")`, `require("extract")` with Go-backed parsers, AST walking, JSON/YAML repair, and structured-data extraction. Already has its own xgoja provider and bundled jsverbs.
 2. **VM pooling:** Should the `js_pipeline` runner reuse goja VMs across ops, or create fresh ones each time? Reuse is faster but risks state leakage.
 3. **Streaming LLM responses:** The current geppetto module collects full responses. For long documents, streaming would be more efficient. How should streaming be exposed in JS?
 4. **Testing strategy:** How should JS pipeline scripts be tested? Unit tests with fake providers? Integration tests against a test corpus?
