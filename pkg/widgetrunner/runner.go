@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/dop251/goja"
-	"github.com/go-go-golems/go-go-goja/engine"
+	"github.com/go-go-golems/go-go-goja/pkg/engine"
 	"github.com/go-go-golems/rag-evaluation-system/pkg/widgetdsl"
 	"github.com/go-go-golems/rag-evaluation-system/pkg/widgetschema"
 )
@@ -28,12 +28,12 @@ var (
 type Config struct {
 	ScriptDirs []string
 	Dev        bool
-	Modules    []engine.RuntimeModuleSpec
+	Modules    []engine.RuntimeModuleRegistrar
 }
 
 type Runner struct {
 	cfg     Config
-	factory *engine.Factory
+	factory *engine.RuntimeFactory
 	runtime *engine.Runtime
 	scripts []ScriptInfo
 }
@@ -75,11 +75,11 @@ func New(ctx context.Context, cfg Config) (*Runner, error) {
 		cfg.ScriptDirs = []string{"./scripts"}
 	}
 
-	mods := make([]engine.RuntimeModuleSpec, 0, len(cfg.Modules)+1)
+	mods := make([]engine.RuntimeModuleRegistrar, 0, len(cfg.Modules)+1)
 	mods = append(mods, widgetdsl.NewRegistrar())
 	mods = append(mods, cfg.Modules...)
 
-	factory, err := engine.NewBuilder().WithModules(mods...).Build()
+	factory, err := engine.NewRuntimeFactoryBuilder().WithModules(mods...).Build()
 	if err != nil {
 		return nil, fmt.Errorf("build widget runner factory: %w", err)
 	}

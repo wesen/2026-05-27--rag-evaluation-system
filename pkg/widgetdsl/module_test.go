@@ -7,8 +7,8 @@ import (
 
 	"github.com/dop251/goja"
 	"github.com/dop251/goja_nodejs/require"
-	"github.com/go-go-golems/go-go-goja/engine"
 	"github.com/go-go-golems/go-go-goja/modules"
+	"github.com/go-go-golems/go-go-goja/pkg/engine"
 )
 
 func TestRequireWidgetDSLExportsHelpers(t *testing.T) {
@@ -96,7 +96,7 @@ func TestBuildsNestedWidgetIR(t *testing.T) {
 }
 
 func TestEngineRegistrarRegistersWidgetAndRagAliases(t *testing.T) {
-	factory, err := engine.NewBuilder().WithModules(NewRegistrar()).Build()
+	factory, err := engine.NewRuntimeFactoryBuilder().WithModules(NewRegistrar()).Build()
 	if err != nil {
 		t.Fatalf("build runtime factory: %v", err)
 	}
