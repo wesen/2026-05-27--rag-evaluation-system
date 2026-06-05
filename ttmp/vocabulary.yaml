@@ -79,6 +79,22 @@ topics:
       description: The Tree Center data and domain-specific corpus exports
     - slug: wordpress
       description: WordPress/WooCommerce source schema and content extraction
+    - slug: intern-guide
+      description: Documentation and guides intended for onboarding new team members
+    - slug: rag-eval
+      description: RAG evaluation system project
+    - slug: scripting
+      description: JavaScript scripting and automation
+    - slug: web
+      description: Web development, browser UI, and HTTP frontend surfaces
+    - slug: frontend
+      description: Frontend UI implementation, packaging, and integration
+    - slug: packaging
+      description: Packaging, bundling, release, and distribution design
+    - slug: research
+      description: Research notes, source evaluation, and investigation artifacts
+    - slug: ui-dsl
+      description: UI DSL and Widget IR systems for declarative user interfaces
 docTypes:
     - slug: design-doc
       description: Structured rationale and architecture notes

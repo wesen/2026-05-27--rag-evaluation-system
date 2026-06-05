@@ -5,6 +5,7 @@ import { SearchView } from './components/search/SearchView';
 import { EvaluationView } from './components/evaluation/EvaluationView';
 import { CorpusExplorerView } from './components/corpus/CorpusExplorerView';
 import { WorkflowsView } from './components/workflows/WorkflowsView';
+import { DslPreviewPage } from './components/pages';
 import { AppShell } from './components/layout';
 import { AppNav } from './components/molecules';
 
@@ -15,6 +16,7 @@ const views = [
   { id: 'pipeline', label: 'Pipeline' },
   { id: 'embeddings', label: 'Embeddings' },
   { id: 'evaluation', label: 'Evaluation' },
+  { id: 'dsl', label: 'DSL' },
 ];
 
 export interface ChunkNavigationTarget {
@@ -67,6 +69,8 @@ export const App: React.FC = () => {
         return <SearchView />;
       case 'evaluation':
         return <EvaluationView />;
+      case 'dsl':
+        return <DslPreviewPage pageId="demo" />;
       default:
         return <SearchView />;
     }

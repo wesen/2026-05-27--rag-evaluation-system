@@ -37,6 +37,9 @@ func RegisterHandlersWithOptions(mux *http.ServeMux, database *sql.DB, opts Opti
 	// Health check
 	mux.HandleFunc("GET /api/v1/health", h.handleHealth)
 
+	// DSL Widget IR demo pages
+	mux.HandleFunc("GET /api/v1/dsl/pages/{id}", h.handleDslDemoPage)
+
 	// Sources
 	mux.HandleFunc("GET /api/v1/sources", h.handleListSources)
 	mux.HandleFunc("POST /api/v1/sources", h.handleCreateSource)
