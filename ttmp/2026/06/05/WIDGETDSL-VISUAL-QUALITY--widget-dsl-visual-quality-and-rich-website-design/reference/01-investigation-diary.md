@@ -28,7 +28,7 @@ RelatedFiles:
       Note: Original RAG app token source that defines --mac and font role variables
 ExternalSources: []
 Summary: ""
-LastUpdated: 2026-06-05T13:40:00-04:00
+LastUpdated: 2026-06-05T14:30:00-04:00
 WhatFor: ""
 WhenToUse: ""
 ---
@@ -460,3 +460,111 @@ css-visual-diff verbs \
   - `packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx`
   - `web/src/styles/tokens.css`
   - `examples/xgoja/widget-site/verbs/sites.js`
+
+## Step 4: Write the Intern-Facing Visual Quality Implementation Guide
+
+This step converted the screenshot/CSS evidence and source-code inspection into a structured implementation guide for a new intern. The guide is intentionally technical and explicit: it explains the Widget DSL stack from JavaScript authoring through Goja, HTTP endpoints, React rendering, component CSS, and visual tooling before it proposes concrete fixes.
+
+The guide's central finding is that the generated page looks poor primarily because the standalone package theme does not define the design tokens consumed by the copied component CSS. The recommendations therefore start with a token bridge, then move to app shell defaults, semantic DSL recipes, visual-test selectors, and a refactored xgoja example.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 1 and Step 2)
+
+**Assistant interpretation:** Write a detailed, technically precise design and implementation guide that teaches a new intern how the system works, what is wrong visually, and how to fix it in phases.
+
+**Inferred user intent:** Make visual-quality work executable by someone new to the project, with enough source references and pseudocode to avoid rediscovery.
+
+**Commit (code):** f3dc7b204b2b404b7ec784f0df1f2ec7542b856f — "Docs: write widget DSL visual quality guide"
+
+### What I did
+
+- Replaced the placeholder design doc with a full guide at:
+  - `design-doc/01-widget-dsl-visual-quality-analysis-and-implementation-guide.md`.
+- Covered these areas:
+  - executive summary,
+  - problem statement and scope,
+  - glossary,
+  - evidence collected,
+  - five-layer architecture model,
+  - root-cause analysis,
+  - proposed architecture,
+  - decision records,
+  - phased implementation plan,
+  - testing strategy,
+  - intern checklist,
+  - risks and open questions,
+  - API reference summary,
+  - visual evidence command reference,
+  - recommended PR sequence.
+- Related the guide to the key source files that shaped it.
+- Updated ticket changelog.
+- Normalized the task list so validation/reMarkable upload remains open until the actual upload is complete.
+
+### Why
+
+- The project needs more than a one-off CSS fix. The Widget DSL is supposed to produce rich websites with little author code, so the guide needs to explain the system-level path from low-level primitives to polished recipes.
+- Intern-facing documentation must explain file ownership and runtime flow before asking the reader to change code.
+- The guide makes the implementation order explicit: theme first, shell second, recipes third, visual selectors/tools fourth, example polish fifth.
+
+### What worked
+
+- The guide now anchors the visual root cause to concrete files:
+  - `packages/rag-evaluation-site/src/theme.css`
+  - `web/src/styles/tokens.css`
+  - `packages/rag-evaluation-site/src/components/atoms/Button/Button.module.css`
+  - `packages/rag-evaluation-site/src/components/layout/Panel/Panel.module.css`
+  - `packages/rag-evaluation-site/src/components/molecules/DataTable/DataTable.module.css`.
+- The guide anchors the runtime architecture to concrete files:
+  - `pkg/widgetdsl/module.go`
+  - `pkg/widgetrunner/runner.go`
+  - `pkg/widgetserver/server.go`
+  - `packages/rag-evaluation-site/src/app/App.tsx`
+  - `packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx`.
+- The guide includes Mermaid diagrams, TypeScript/JavaScript/CSS pseudocode, and command examples.
+
+### What didn't work
+
+- No new tool failure occurred during writing.
+- I did notice the task list had a stale checked upload task from earlier ticket setup. I rewrote `tasks.md` so upload remains unchecked until the final upload command succeeds.
+
+### What I learned
+
+- The implementation guide should not frame the problem as “the demo author made an ugly page.” The more accurate framing is that the system has missing default visual infrastructure: tokens, shell, recipes, and visual selectors.
+- The current low-level Widget DSL is still valuable. The fix is to layer polished defaults and recipes on top, not to discard the existing primitives.
+
+### What was tricky to build
+
+- The guide had to balance two audiences: a new intern who needs foundational explanation and an experienced reviewer who needs precise file references and actionable phases.
+- The strongest recommendation is also the simplest one: restore token compatibility. It would be easy to over-focus on recipes before fixing the missing CSS variables, but computed-style evidence shows that the token bridge is the first implementation slice.
+
+### What warrants a second pair of eyes
+
+- Review the decision to preserve `--mac-*` tokens as a package-local bridge rather than immediately migrating all components to `--rag-*` variables.
+- Review the proposed default shell behavior, especially the `meta.shell = 'none'` opt-out and AppShell double-wrap detection.
+- Review whether recipes should live under `widget.dsl`, `rag.dsl`, or a separate namespace.
+
+### What should be done in the future
+
+- Implement Phase 1: standalone token bridge.
+- Re-run visual evidence after Phase 1 and compare computed CSS.
+- Use the guide's PR sequence to split future work into reviewable commits.
+
+### Code review instructions
+
+- Read the guide from the top through the root-cause analysis before reviewing the proposed implementation phases.
+- Verify that every major claim has a file reference or captured evidence path.
+- Validate docs with:
+
+```text
+docmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30
+```
+
+### Technical details
+
+- Primary guide path:
+  - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/design-doc/01-widget-dsl-visual-quality-analysis-and-implementation-guide.md`
+- Evidence path:
+  - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-02`
+- Visual scripts path:
+  - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts`
