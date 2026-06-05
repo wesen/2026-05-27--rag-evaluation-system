@@ -22,7 +22,7 @@ RelatedFiles:
       Note: 'Widget-site generated binary now preconfigures sqlite3 :memory: through host provider config'
 ExternalSources: []
 Summary: ""
-LastUpdated: 2026-06-05T17:00:00-04:00
+LastUpdated: 2026-06-05T17:05:00-04:00
 WhatFor: ""
 WhenToUse: ""
 ---
@@ -334,3 +334,69 @@ cd examples/xgoja/widget-site && devctl smoke --timeout 10m
   - `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/verbs/sites.js`
 - Browser screenshot:
   - `widgetsite-db-preconfig-smoke-2026-06-05.png`
+
+## Step 4: Close Out Ticket Bookkeeping
+
+This step closed out the ticket after both code repositories had focused commits. The go-go-goja side now has host-provider tests and docs for preconfigured database config, and the RAG side now uses that preconfigured DB path in the generated widget-site example.
+
+All ticket tasks are checked, docmgr validation passes, and the final state is ready for review.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 1)
+
+**Assistant interpretation:** Finish the requested task-by-task workflow by recording commits, checking tasks, and validating the ticket.
+
+**Inferred user intent:** Ensure the implementation is not only coded, but reviewable and documented.
+
+**Commit (code):** N/A — docs closeout only.
+
+### What I did
+
+- Checked task 6 after both repo commits were made.
+- Updated changelog with the final commit references.
+- Ran docmgr validation.
+
+### Why
+
+- The ticket spans go-go-goja and RAG repositories, so the final handoff needs clear commit hashes and validation evidence.
+
+### What worked
+
+- All tasks are checked.
+- `docmgr doctor --ticket XGOJA-DB-PRECONFIG --stale-after 30` passes.
+
+### What didn't work
+
+- N/A.
+
+### What I learned
+
+- The existing preconfigured DB support in go-go-goja was already mostly complete; the valuable work was proving it through provider-config tests and applying it in the generated RAG example.
+
+### What was tricky to build
+
+- The only cross-repo coordination issue was commit ordering: go-go-goja had to be validated first because the RAG generated build uses the workspace-local go-go-goja checkout via `--xgoja-replace`.
+
+### What warrants a second pair of eyes
+
+- Review both commits together:
+  - go-go-goja `ff98deb9ac09f1b68fadf90d2605d7d474f79008`,
+  - RAG `96c0c07de89a7ef7ee60f71fbdfb77718fa37239`.
+
+### What should be done in the future
+
+- Consider adding a generated xgoja example or docs page specifically contrasting `allowConfigure` mode and preconfigured DB mode.
+
+### Code review instructions
+
+- First review go-go-goja host provider tests/docs.
+- Then review the RAG widget-site `xgoja.yaml` and `verbs/sites.js` diff.
+- Validate with the commands recorded in Steps 2 and 3.
+
+### Technical details
+
+- go-go-goja commit:
+  - `ff98deb9ac09f1b68fadf90d2605d7d474f79008` — `xgoja host: test preconfigured database config`
+- RAG commit:
+  - `96c0c07de89a7ef7ee60f71fbdfb77718fa37239` — `Use preconfigured DB in xgoja widget site`
