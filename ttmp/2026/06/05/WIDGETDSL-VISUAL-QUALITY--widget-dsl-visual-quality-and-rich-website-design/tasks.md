@@ -9,4 +9,4 @@
 - [x] Store screenshot/comparison scripts in the ticket `scripts/` directory.
 - [x] Analyze renderer/component gaps that make Widget DSL pages look worse than the original RAG site.
 - [x] Write intern-facing design and implementation guide with APIs, diagrams, pseudocode, and file references.
-- [ ] Validate docmgr ticket and upload bundle to reMarkable.
+- [x] Validate docmgr ticket and upload bundle to reMarkable.

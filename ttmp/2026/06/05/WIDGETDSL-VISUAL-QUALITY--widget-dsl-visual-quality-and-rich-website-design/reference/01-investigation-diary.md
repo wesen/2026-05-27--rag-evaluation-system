@@ -28,7 +28,7 @@ RelatedFiles:
       Note: Original RAG app token source that defines --mac and font role variables
 ExternalSources: []
 Summary: ""
-LastUpdated: 2026-06-05T14:30:00-04:00
+LastUpdated: 2026-06-05T14:55:00-04:00
 WhatFor: ""
 WhenToUse: ""
 ---
@@ -568,3 +568,90 @@ docmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30
   - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-02`
 - Visual scripts path:
   - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts`
+
+## Step 5: Validate and Upload the Visual Quality Guide to reMarkable
+
+This step completed the delivery loop for the visual-quality ticket. After writing and committing the intern-facing guide, I bundled the guide, diary, and visual evidence summary into one PDF and uploaded it to reMarkable.
+
+The upload destination is ticket-specific so the document is easy to find later: `/ai/2026/06/05/WIDGETDSL-VISUAL-QUALITY`. The upload command returned a successful `OK: uploaded ...` response, so no additional cloud listing was required.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 1 and Step 2)
+
+**Assistant interpretation:** Validate the ticket artifacts and deliver the final guide bundle to reMarkable.
+
+**Inferred user intent:** Make the analysis/design package reviewable on the reMarkable device and close the documentation loop cleanly.
+
+**Commit (code):** 462b3230b2ccd35172ae15f1ae04a40ece4be958 — "Docs: record widget DSL visual guide upload"
+
+### What I did
+
+- Uploaded a reMarkable bundle containing:
+  - `design-doc/01-widget-dsl-visual-quality-analysis-and-implementation-guide.md`
+  - `reference/01-investigation-diary.md`
+  - `sources/visual-evidence/run-02/01-visual-evidence-summary.md`.
+- Marked task 8 complete.
+- Updated the changelog with the upload destination.
+
+### Why
+
+- The user explicitly requested that the final guide be stored in the ticket and uploaded to reMarkable.
+- Bundling guide + diary + evidence summary gives the reviewer both the final recommendation and the trace of how it was produced.
+
+### What worked
+
+- Upload command:
+
+```text
+remarquee upload bundle \
+  ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/design-doc/01-widget-dsl-visual-quality-analysis-and-implementation-guide.md \
+  ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/reference/01-investigation-diary.md \
+  ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-02/01-visual-evidence-summary.md \
+  --name "Widget DSL Visual Quality Guide" \
+  --remote-dir "/ai/2026/06/05/WIDGETDSL-VISUAL-QUALITY" \
+  --toc-depth 2 \
+  --non-interactive
+```
+
+- Upload result:
+
+```text
+OK: uploaded Widget DSL Visual Quality Guide.pdf -> /ai/2026/06/05/WIDGETDSL-VISUAL-QUALITY
+```
+
+### What didn't work
+
+- N/A.
+
+### What I learned
+
+- The reMarkable upload path works cleanly for a concise bundle of the guide, diary, and evidence summary.
+- Keeping generated visual evidence Markdown sanitized earlier prevented docmgr validation problems before delivery.
+
+### What was tricky to build
+
+- The main delivery concern was choosing the right bundle contents. Including all raw visual artifacts would make the PDF noisy, so the bundle uses the primary guide, chronological diary, and compact evidence summary. Raw JSON/PNG artifacts remain in the ticket workspace.
+
+### What warrants a second pair of eyes
+
+- Confirm whether the raw overlay screenshots should also be converted into a separate image-heavy PDF later. The current uploaded bundle references them but does not embed every PNG.
+
+### What should be done in the future
+
+- Start implementation with Phase 1 from the guide: add the standalone token bridge and rerun css-visual-diff evidence.
+
+### Code review instructions
+
+- Validate ticket hygiene with:
+
+```text
+docmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30
+```
+
+- Review the uploaded source documents in the ticket if the reMarkable PDF needs regeneration.
+
+### Technical details
+
+- reMarkable destination: `/ai/2026/06/05/WIDGETDSL-VISUAL-QUALITY`
+- Uploaded PDF name: `Widget DSL Visual Quality Guide.pdf`
