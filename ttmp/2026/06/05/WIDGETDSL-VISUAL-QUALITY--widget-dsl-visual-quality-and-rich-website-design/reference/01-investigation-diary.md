@@ -20,8 +20,12 @@ RelatedFiles:
       Note: Synced rebuilt standalone app into generated xgoja example assets
     - Path: examples/xgoja/widget-site/devctl/widget-site.py
       Note: NDJSON devctl plugin for rebuilding and launching the generated widget-site binary
+    - Path: packages/rag-evaluation-site/src/app/App.tsx
+      Note: Added default standalone shell rendering
     - Path: packages/rag-evaluation-site/src/app/app.css
-      Note: Standalone app shell currently provides only min-height and no page chrome/padding/container
+      Note: |-
+        Standalone app shell currently provides only min-height and no page chrome/padding/container
+        Added shell/page chrome styles for root background
     - Path: packages/rag-evaluation-site/src/theme.css
       Note: |-
         Standalone package theme currently lacks mac/design-system tokens consumed by components
@@ -30,16 +34,19 @@ RelatedFiles:
       Note: |-
         css-visual-diff JS verb for capturing Widget DSL and Storybook visual evidence
         Updated visual evidence script to target stable data-rag selectors
+    - Path: ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-shell-01/01-visual-evidence-summary.md
+      Note: Post-default-shell visual evidence summary
     - Path: ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-token-bridge-02/01-visual-evidence-summary.md
       Note: Post-token-bridge visual evidence summary
     - Path: web/src/styles/tokens.css
       Note: Original RAG app token source that defines --mac and font role variables
 ExternalSources: []
 Summary: ""
-LastUpdated: 2026-06-05T16:15:00-04:00
+LastUpdated: 2026-06-05T18:25:00-04:00
 WhatFor: ""
 WhenToUse: ""
 ---
+
 
 
 
@@ -843,3 +850,176 @@ docmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30
   - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts/03-capture-visual-evidence.js`
 - Post-bridge evidence path:
   - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-token-bridge-02`
+
+## Step 7: Add the Default Standalone App Shell
+
+This step implemented Phase 2 from the visual-quality guide: standalone Widget DSL pages now get a default application frame unless they explicitly opt out or already render an `AppShell` as their root. The default frame wraps raw Widget IR pages with the existing React component library's `AppShell` and `AppNav`, adds page padding and a bordered shell, and preserves generated script control through `page.meta`.
+
+The result is that `/pages/actions` no longer looks like a component fragment placed directly against the viewport. Browser smoke confirmed the shell is present, root background and padding are applied, the action workflow still refreshes rows correctly, and the page emits no console warnings or errors.
+
+### Prompt Context
+
+**User prompt (verbatim):** "go ahead"
+
+**Assistant interpretation:** Continue from the previous token-bridge checkpoint and implement the next recommended visual-quality phase.
+
+**Inferred user intent:** Keep moving through the visual-quality implementation plan without waiting for another detailed instruction.
+
+**Commit (code):** de741f7ebc8cc14bb0f71eca8515342b9a332c06 — "Add default shell for widget site app"
+
+### What I did
+
+- Added WIDGETDSL-VISUAL-QUALITY tasks for:
+  - Phase 2 default app shell/page chrome,
+  - rebuild/sync/smoke after shell changes,
+  - post-shell visual evidence capture and comparison.
+- Updated `packages/rag-evaluation-site/src/app/App.tsx` to:
+  - normalize `page.meta.shell`, `page.meta.navItems`, `page.meta.activeNavItemId`, and `page.meta.maxWidth`,
+  - default-wrap pages in `AppShell` unless `meta.shell === "none"` or the root Widget IR node is already an `AppShell`,
+  - render a default `AppNav` with Overview/Demo/Actions entries,
+  - expose `data-rag-shell="default"` and `data-rag-layout="PageContent"` for smoke and visual tooling,
+  - navigate default nav items to `/pages/{id}`.
+- Updated `packages/rag-evaluation-site/src/app/app.css` to:
+  - set root background/color/font,
+  - add 8px shell-mode viewport padding,
+  - add a bordered shell frame,
+  - add content width modes for `none`, `content`, and `wide`.
+- Rebuilt package artifacts:
+
+```text
+cd packages/rag-evaluation-site
+pnpm build
+pnpm build:app
+```
+
+- Synced and rebuilt the generated xgoja example:
+
+```text
+make -C examples/xgoja/widget-site sync-app
+make -C examples/xgoja/widget-site smoke
+```
+
+- Ran the devctl smoke workflow:
+
+```text
+cd examples/xgoja/widget-site
+devctl smoke --timeout 10m
+```
+
+- Captured post-shell visual evidence:
+
+```text
+ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts/04-run-visual-evidence.sh \
+  ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-shell-01
+```
+
+- Ran a Pi Playwright browser smoke at `http://127.0.0.1:18798/pages/actions`:
+  - verified `data-rag-shell="default"`,
+  - verified root padding `8px`,
+  - verified root background `rgb(246, 247, 248)`,
+  - verified shell border `1px solid rgb(0, 0, 0)`,
+  - clicked `Add query`,
+  - verified `Rows: 4` and `Follow-up Query 4`,
+  - verified console warnings/errors count was zero,
+  - captured screenshot `widgetsite-shell-smoke-2026-06-05.png`.
+
+### Why
+
+- Phase 1 restored component-level styling, but the page still lacked a standalone application frame.
+- The guide recommended adding app chrome at the app boundary rather than requiring every Widget IR script to author the same shell manually.
+- Opt-out and double-wrap detection protect embedded/raw pages and pages that already intentionally render their own `AppShell`.
+
+### What worked
+
+- TypeScript and Vite builds passed.
+- Generated xgoja build/smoke passed.
+- devctl smoke passed.
+- css-visual-diff evidence capture passed.
+- Browser action smoke passed with no console warnings/errors.
+- Computed CSS improved from the token-bridge run:
+
+```text
+run-token-bridge-02 app-root:
+  background-color: rgba(0, 0, 0, 0)
+  padding: 0px
+  font-size: 16px
+
+run-shell-01 app-root:
+  background-color: rgb(246, 247, 248)
+  padding: 8px
+  font-size: 12px
+```
+
+- Post-shell assertions passed:
+
+```text
+ASSERTIONS: default shell visual CSS checks passed
+```
+
+### What didn't work
+
+- The first shell implementation placed a `<main>` element inside `AppShell`, which already renders its children inside a `<main>`.
+- Fix: changed the shell content wrapper from `<main>` to `<div data-rag-layout="PageContent">` and reran builds/smokes/evidence.
+
+### What I learned
+
+- The existing `AppShell` component is sufficient for the default shell; the standalone app only needed boundary logic and CSS overrides.
+- The post-shell change should be measured on the root element, not only component internals: root background, padding, and shell border are the clearest evidence.
+- The action flow remained stable after adding chrome because the `WidgetRenderer` and action callback were preserved unchanged inside the shell.
+
+### What was tricky to build
+
+- The main risk was adding chrome without breaking pages that are already authored as complete app shells. The solution was a narrow `isAppShellNode(page.root)` guard plus `meta.shell = "none"` opt-out.
+- Another sharp edge was navigation behavior. The default nav should work without requiring server actions, so items without explicit actions navigate to `/pages/{id}`. Items with explicit actions still call the app action handler.
+- The nested-main issue was easy to miss because it compiled and rendered. I corrected it before final evidence so the committed markup is semantically cleaner.
+
+### What warrants a second pair of eyes
+
+- Review whether the default nav entries should remain hard-coded as Overview/Demo/Actions or be omitted unless `page.meta.navItems` is provided.
+- Review the default max width: this implementation uses `wide` by default to fit the action dashboard; a more document-like page may prefer `content`.
+- Review whether the default shell should expose a prop-level override in addition to `page.meta.shell` for embedding consumers.
+
+### What should be done in the future
+
+- Add focused React tests for shell wrapping, `meta.shell = "none"`, and AppShell-root double-wrap detection.
+- Document the `page.meta` shell contract in provider help docs or schema output.
+- Continue with Phase 3 semantic `rag.dsl` recipes if more visual polish is desired.
+
+### Code review instructions
+
+- Start in `packages/rag-evaluation-site/src/app/App.tsx`:
+  - `renderPage`,
+  - `shouldUseDefaultShell`,
+  - `normalizeMeta`,
+  - `navigateToPage`.
+- Then review `packages/rag-evaluation-site/src/app/app.css` for root/shell/content styles.
+- Check the rebuilt xgoja assets under `examples/xgoja/widget-site/assets/public` only for expected hashed file replacement.
+- Validate with:
+
+```text
+cd packages/rag-evaluation-site && pnpm build && pnpm build:app
+make -C examples/xgoja/widget-site sync-app
+make -C examples/xgoja/widget-site smoke
+cd examples/xgoja/widget-site && devctl smoke --timeout 10m
+```
+
+- Validate visual evidence with:
+
+```text
+docmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30
+```
+
+### Technical details
+
+- App shell implementation:
+  - `packages/rag-evaluation-site/src/app/App.tsx`
+- App shell styling:
+  - `packages/rag-evaluation-site/src/app/app.css`
+- Rebuilt embedded app assets:
+  - `examples/xgoja/widget-site/assets/public/index.html`
+  - `examples/xgoja/widget-site/assets/public/assets/index-*.css`
+  - `examples/xgoja/widget-site/assets/public/assets/index-*.js`
+- Visual evidence:
+  - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-shell-01`
+- Browser screenshot:
+  - `widgetsite-shell-smoke-2026-06-05.png`

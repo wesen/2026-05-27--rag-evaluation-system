@@ -54,3 +54,14 @@ Implemented Phase 1 token bridge in the standalone rag-evaluation-site theme, re
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/theme.css — Token bridge implementation
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-token-bridge-02/01-visual-evidence-summary.md — Post-fix visual evidence
 
+
+## 2026-06-05
+
+Implemented Phase 2 default shell/page chrome for the standalone Widget DSL app, rebuilt/synced xgoja assets, passed generated-site and browser action smokes, and captured post-shell visual evidence showing root background and padding now render correctly.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/app/App.tsx — Default shell implementation
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/app/app.css — Default shell styling
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-shell-01/01-visual-evidence-summary.md — Post-shell visual evidence
+

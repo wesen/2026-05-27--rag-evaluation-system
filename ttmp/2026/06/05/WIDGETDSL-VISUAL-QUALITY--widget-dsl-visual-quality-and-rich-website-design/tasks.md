@@ -13,3 +13,6 @@
 - [x] Implement Phase 1 token bridge in packages/rag-evaluation-site/src/theme.css so standalone components receive --mac, --font, and role font variables.
 - [x] Rebuild package app assets, sync xgoja widget-site assets, and run smoke tests after the token bridge.
 - [x] Re-run css-visual-diff evidence after the token bridge and compare computed CSS against run-02.
+- [x] Implement Phase 2 default standalone app shell/page chrome with meta.shell opt-out and AppShell double-wrap detection.
+- [x] Rebuild/sync xgoja widget-site assets and run smoke tests after the default shell change.
+- [x] Re-run css-visual-diff evidence after the default shell change and verify root/page chrome computed CSS improves.

@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "storybook-retrieval-results",
+  "url": "http://127.0.0.1:6007/iframe.html?id=component-library-organisms-retrievalresultspanel--hybrid-results\u0026viewMode=story",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "name": "table",
+  "selector": "#storybook-root [data-rag-component=\"DataTable\"]",
+  "selector_source": "",
+  "format": "css-json",
+  "created_at": "2026-06-05T16:19:39.905562637Z"
+}

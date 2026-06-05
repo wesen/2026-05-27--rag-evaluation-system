@@ -1,16 +1,34 @@
+import type { ReactNode } from 'react';
 import { ErrorCallout } from '../components/atoms';
 import { Caption } from '../components/foundation';
-import { Panel } from '../components/layout';
+import { AppShell, Panel } from '../components/layout';
+import { AppNav } from '../components/molecules';
 import { WidgetRenderer } from '../widgets/WidgetRenderer';
-import type { ActionSpec } from '../widgets/ir';
+import type { ActionSpec, AppNavItemSpec, RenderableValue, WidgetNode } from '../widgets/ir';
 import type { WidgetActionContext } from '../widgets/actions';
-import { useWidgetPage } from '../hooks/useWidgetPage';
+import { useWidgetPage, type WidgetPageResponse } from '../hooks/useWidgetPage';
 import './app.css';
 
 export interface RagEvaluationSiteAppProps {
   apiBase?: string;
   defaultPageId?: string;
 }
+
+type PageShellMode = 'auto' | 'none' | 'app';
+type PageMaxWidth = 'none' | 'content' | 'wide';
+
+interface WidgetPageMeta {
+  shell?: PageShellMode;
+  activeNavItemId?: string;
+  navItems?: AppNavItemSpec[];
+  maxWidth?: PageMaxWidth;
+}
+
+const DEFAULT_NAV_ITEMS: AppNavItemSpec[] = [
+  { id: 'index', label: 'Overview' },
+  { id: 'demo', label: 'Demo' },
+  { id: 'actions', label: 'Actions' },
+];
 
 export function RagEvaluationSiteApp({ apiBase = '/api/widget', defaultPageId = 'index' }: RagEvaluationSiteAppProps) {
   const pageId = readPageIdFromLocation(defaultPageId);
@@ -46,11 +64,107 @@ export function RagEvaluationSiteApp({ apiBase = '/api/widget', defaultPageId = 
     return <Panel className="rag-evaluation-site-state" title="RAG Evaluation Site" density="condensed"><Caption>No Widget IR returned.</Caption></Panel>;
   }
 
+  return renderPage(page, pageId, (action, context) => { void handleAction(action, context); });
+}
+
+function renderPage(page: WidgetPageResponse, pageId: string, onAction: (action: ActionSpec, context: WidgetActionContext) => void): ReactNode {
+  const meta = normalizeMeta(page.meta);
+  const renderedRoot = <WidgetRenderer node={page.root} onAction={onAction} />;
+  const rootClassName = ['rag-evaluation-site-root', shouldUseDefaultShell(page, meta) ? 'rag-evaluation-site-root--shell' : 'rag-evaluation-site-root--raw']
+    .filter(Boolean)
+    .join(' ');
+
+  if (!shouldUseDefaultShell(page, meta)) {
+    return (
+      <div className={rootClassName} data-rag-page="RagEvaluationSiteApp" data-page-id={page.id} data-rag-shell="none">
+        {renderedRoot}
+      </div>
+    );
+  }
+
+  const navItems = meta.navItems?.length ? meta.navItems : DEFAULT_NAV_ITEMS;
+  const activeNavItemId = meta.activeNavItemId ?? pageId;
+
   return (
-    <div className="rag-evaluation-site-root" data-rag-page="RagEvaluationSiteApp" data-page-id={page.id}>
-      <WidgetRenderer node={page.root} onAction={(action, context) => { void handleAction(action, context); }} />
+    <div className={rootClassName} data-rag-page="RagEvaluationSiteApp" data-page-id={page.id} data-rag-shell="default">
+      <AppShell
+        className="rag-evaluation-site-shell"
+        header={(
+          <AppNav
+            brand={<span className="rag-evaluation-site-brand">{page.title || 'RAG Evaluation Site'}</span>}
+            items={navItems.map((item) => ({ id: item.id, label: renderNavLabel(item.label) }))}
+            activeItemId={activeNavItemId}
+            onItemSelect={(itemId) => {
+              const item = navItems.find((candidate) => candidate.id === itemId);
+              if (item?.action) {
+                onAction(item.action, { value: itemId, componentType: 'AppNav' });
+                return;
+              }
+              navigateToPage(itemId);
+            }}
+          />
+        )}
+      >
+        <div className={contentClassName(meta.maxWidth)} data-rag-layout="PageContent">
+          {renderedRoot}
+        </div>
+      </AppShell>
     </div>
   );
+}
+
+function shouldUseDefaultShell(page: WidgetPageResponse, meta: WidgetPageMeta): boolean {
+  if (meta.shell === 'none') return false;
+  if (isAppShellNode(page.root)) return false;
+  return true;
+}
+
+function isAppShellNode(node: WidgetNode): boolean {
+  return node.kind === 'component' && node.type === 'AppShell';
+}
+
+function normalizeMeta(meta: Record<string, unknown> | undefined): WidgetPageMeta {
+  if (!meta) return {};
+  return {
+    shell: isPageShellMode(meta.shell) ? meta.shell : undefined,
+    activeNavItemId: typeof meta.activeNavItemId === 'string' ? meta.activeNavItemId : undefined,
+    navItems: Array.isArray(meta.navItems) ? meta.navItems.filter(isAppNavItemSpec) : undefined,
+    maxWidth: isPageMaxWidth(meta.maxWidth) ? meta.maxWidth : undefined,
+  };
+}
+
+function isPageShellMode(value: unknown): value is PageShellMode {
+  return value === 'auto' || value === 'none' || value === 'app';
+}
+
+function isPageMaxWidth(value: unknown): value is PageMaxWidth {
+  return value === 'none' || value === 'content' || value === 'wide';
+}
+
+function isAppNavItemSpec(value: unknown): value is AppNavItemSpec {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Partial<AppNavItemSpec>;
+  return typeof candidate.id === 'string' && candidate.label !== undefined;
+}
+
+function renderNavLabel(label: RenderableValue): ReactNode {
+  if (label && typeof label === 'object' && 'kind' in label) {
+    return <WidgetRenderer node={label as WidgetNode} />;
+  }
+  return String(label ?? '');
+}
+
+function contentClassName(maxWidth: PageMaxWidth | undefined): string {
+  const width = maxWidth ?? 'wide';
+  return ['rag-evaluation-site-content', `rag-evaluation-site-content--${width}`].join(' ');
+}
+
+function navigateToPage(pageId: string): void {
+  if (typeof window === 'undefined') return;
+  const url = new URL(window.location.href);
+  url.pathname = `/pages/${encodeURIComponent(pageId)}`;
+  url.searchParams.delete('page');
+  window.location.assign(url.toString());
 }
 
 function readPageIdFromLocation(defaultPageId: string): string {

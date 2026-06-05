@@ -1,0 +1,47 @@
+[
+  {
+    "bounds": {
+      "height": 109.75,
+      "width": 1408,
+      "x": 16,
+      "y": 16
+    },
+    "error": "",
+    "exists": true,
+    "name": "root",
+    "selector": "#storybook-root",
+    "source": "styles",
+    "textStart": "HYBRID — 2 resultsfast growing trees for privacy screen#TitleIdxScoreBM25VecPreview1Fast Growing Trees for Privacy Screens40.0387#1 (12.440)#3 (0.812)Thuja Gree",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 109.75,
+      "width": 1408,
+      "x": 16,
+      "y": 16
+    },
+    "error": "",
+    "exists": true,
+    "name": "panel",
+    "selector": "#storybook-root [data-rag-layout=\"Panel\"]",
+    "source": "styles",
+    "textStart": "HYBRID — 2 resultsfast growing trees for privacy screen#TitleIdxScoreBM25VecPreview1Fast Growing Trees for Privacy Screens40.0387#1 (12.440)#3 (0.812)Thuja Gree",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 68.8125,
+      "width": 1390,
+      "x": 25,
+      "y": 47.9375
+    },
+    "error": "",
+    "exists": true,
+    "name": "table",
+    "selector": "#storybook-root [data-rag-component=\"DataTable\"]",
+    "source": "styles",
+    "textStart": "#TitleIdxScoreBM25VecPreview1Fast Growing Trees for Privacy Screens40.0387#1 (12.440)#3 (0.812)Thuja Green Giant and Leyland Cypress are commonly used where a f",
+    "visible": true
+  }
+]

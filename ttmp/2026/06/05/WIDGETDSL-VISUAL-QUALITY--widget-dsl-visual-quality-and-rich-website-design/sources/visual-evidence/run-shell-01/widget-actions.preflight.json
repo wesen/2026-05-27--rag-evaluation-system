@@ -1,0 +1,62 @@
+[
+  {
+    "bounds": {
+      "height": 1100,
+      "width": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "error": "",
+    "exists": true,
+    "name": "app-root",
+    "selector": "[data-rag-page=\"RagEvaluationSiteApp\"]",
+    "source": "styles",
+    "textStart": "xgoja widget actions demoOverviewDemoActionsxgoja widget actions demo✔ Rows: 3This page is authored by a jsverb. Buttons and table row selection call /api/widge",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 59.875,
+      "width": 1406,
+      "x": 17,
+      "y": 52.390625
+    },
+    "error": "",
+    "exists": true,
+    "name": "first-panel",
+    "selector": "[data-rag-layout=\"Panel\"]",
+    "source": "styles",
+    "textStart": "xgoja widget actions demo✔ Rows: 3This page is authored by a jsverb. Buttons and table row selection call /api/widget/actions/{name} and refresh the React app.",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 91.75,
+      "width": 1388,
+      "x": 26,
+      "y": 473.484375
+    },
+    "error": "",
+    "exists": true,
+    "name": "first-table",
+    "selector": "[data-rag-component=\"DataTable\"]",
+    "source": "styles",
+    "textStart": "PriorityQueryOwnerStatusNotes3Fast Growing Treesbotany✔ succeededSeeded from the xgoja demo2Arborvitae Spacinglandscape● runningNeeds another pass1Broken Import",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 20.84375,
+      "width": 85.421875,
+      "x": 26,
+      "y": 399.703125
+    },
+    "error": "",
+    "exists": true,
+    "name": "first-button",
+    "selector": "[data-rag-atom=\"Button\"]",
+    "source": "styles",
+    "textStart": "Add query",
+    "visible": true
+  }
+]
