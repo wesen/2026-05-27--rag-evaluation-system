@@ -27,8 +27,8 @@
 - [x] Add `examples/xgoja/widget-site` with tiny static webapp, jsverb, xgoja.yaml, and Makefile smoke.
 - [x] Build generated binary with `--xgoja-replace` and `packages[].replace` for local development.
 - [x] Add curl smoke for `/healthz`, `/static/`, and `/api/widget/pages/demo`.
-- [ ] Replace tiny webapp with `packages/rag-evaluation-site/app-dist` once the xgoja path is stable.
-- [ ] Add Playwright smoke for the generated xgoja binary with embedded WidgetRenderer app.
+- [x] Replace tiny webapp with `packages/rag-evaluation-site/app-dist` once the xgoja path is stable.
+- [x] Add Playwright smoke for the generated xgoja binary with embedded WidgetRenderer app.
 - [x] Decide whether to implement preconfigured database host-service contribution or use `db.configure()` only for demo.
 - [ ] Consider adding Express `spaFromAssetsModule` helper for React client-side route fallback.
 - [ ] Reconcile or restore the missing `examples/xgoja/14-generated-runtime-package` referenced by help.

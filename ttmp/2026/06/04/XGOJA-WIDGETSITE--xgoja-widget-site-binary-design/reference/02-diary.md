@@ -13,9 +13,17 @@ Intent: long-term
 Owners: []
 RelatedFiles:
     - Path: examples/xgoja/widget-site/Makefile
-      Note: Doctor
+      Note: |-
+        Doctor
+        sync-app target and React-aware generated binary smoke checks
+    - Path: examples/xgoja/widget-site/assets/public/assets/index-6um6l9-d.js
+      Note: Embedded built React WidgetRenderer application bundle
+    - Path: examples/xgoja/widget-site/assets/public/index.html
+      Note: Embedded React app index copied from packages/rag-evaluation-site/app-dist with /static asset URLs
     - Path: examples/xgoja/widget-site/verbs/sites.js
-      Note: Demo jsverb serving health
+      Note: |-
+        Demo jsverb serving health
+        Serves React app redirect
     - Path: examples/xgoja/widget-site/xgoja.yaml
       Note: Generated binary build spec wiring express
     - Path: pkg/xgoja/providers/widgetsite/provider.go
@@ -30,10 +38,11 @@ RelatedFiles:
       Note: Captured expected build failure without xgoja replace
 ExternalSources: []
 Summary: Chronological diary for the xgoja WidgetRenderer generated binary design ticket.
-LastUpdated: 2026-06-05T02:35:00-04:00
+LastUpdated: 2026-06-05T03:45:00-04:00
 WhatFor: Use this to understand how the xgoja WidgetRenderer binary design was researched, tested, written, validated, uploaded, and committed.
 WhenToUse: Read before resuming implementation of the RAG xgoja provider, example binary, host-service database wiring, or Express embedded app fallback.
 ---
+
 
 
 
@@ -592,3 +601,125 @@ make -C examples/xgoja/widget-site smoke
   - `GET /static/`
   - `GET /api/widget/schema`
   - `GET /api/widget/pages/demo`
+
+
+## Step 6: Embed the React WidgetRenderer App in the xgoja Example
+
+This step replaced the tiny diagnostic HTML page in the generated xgoja example with the packaged React `RagEvaluationSiteApp`. The generated binary now serves the same React WidgetRenderer client used by the standalone package, while JavaScript verbs still produce Widget IR through `widget.dsl` and serve the API endpoints from Express.
+
+The implementation keeps the app mounted under `/static/` because xgoja's current static handler checks static mounts before dynamic routes. Mounting the app at `/` would shadow `/api/widget/...`; using `/static/` lets the browser app load assets from `/static/assets/...` while continuing to call `/api/widget/pages/{id}`.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 5)
+
+**Assistant interpretation:** Continue from the first xgoja provider/example slice by embedding the real React app and validating the generated binary in a browser.
+
+**Inferred user intent:** Move beyond a curl-only static placeholder and prove the generated xgoja binary can host the actual WidgetRenderer frontend.
+
+**Commit (code):** 36cd6ea98fbc24d9db6d8f1b077c80099b0a3431 — "Embed React app in xgoja widget site example"
+
+### What I did
+
+- Copied `packages/rag-evaluation-site/app-dist` into `examples/xgoja/widget-site/assets/public`.
+- Omitted sourcemaps from the embedded example artifact to avoid committing unnecessary generated bulk.
+- Stripped the copied JavaScript bundle's `sourceMappingURL` trailer so the embedded example does not reference a missing sourcemap.
+- Rewrote Vite asset URLs in `index.html` from `/assets/...` to `/static/assets/...` for the xgoja static mount.
+- Added `make -C examples/xgoja/widget-site sync-app` to refresh the embedded React artifact from `app-dist`.
+- Updated `verbs/sites.js`:
+  - `/` redirects to `/static/?page=demo`
+  - `/favicon.ico` returns `204` to avoid a browser console 404
+  - `/api/widget/pages/index` and `/api/widget/pages/demo` both return Widget IR through a shared `widgetPage(id)` helper.
+- Updated the curl smoke to verify the React index and static asset URL shape.
+- Ran a Pi Playwright browser smoke against the generated xgoja binary.
+- Checked ticket tasks 23 and 24.
+
+### Why
+
+- The previous tiny page proved embedded assets, but not the actual React WidgetRenderer client.
+- The React app defaults to page id `index`; adding an `index` alias keeps the app usable without special query parameters, while `/static/?page=demo` demonstrates explicit page selection.
+- The favicon route keeps Playwright console validation clean.
+
+### What worked
+
+- Refreshing the embedded app worked:
+
+```text
+make -C examples/xgoja/widget-site sync-app
+```
+
+- The generated binary curl smoke still passed:
+
+```text
+make -C examples/xgoja/widget-site smoke
+```
+
+- Pi Playwright smoke loaded:
+
+```text
+http://127.0.0.1:18792/static/?page=demo
+```
+
+- Browser validation evidence:
+  - page title: `RAG Evaluation Site`
+  - marker: `data-rag-page="RagEvaluationSiteApp"`
+  - page id: `demo`
+  - rendered text included `Fast Growing Trees`, `Arborvitae Spacing`, and `Rows: 2`
+  - network requests returned `200 OK` for `/static/`, JS, CSS, and `/api/widget/pages/demo`
+  - console messages: `0` errors, `0` warnings
+  - screenshot: `xgoja-widgetsite-react-smoke-2026-06-05.png`.
+
+### What didn't work
+
+- The first browser smoke reported one console error:
+
+```text
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:18792/favicon.ico:0
+```
+
+- Fix: added `app.get("/favicon.ico", (_req, res) => res.status(204).end())` and rebuilt the generated binary.
+- After the fix, Playwright console messages were clean.
+
+### What I learned
+
+- The packaged app can run under `/static/` as long as its built asset URLs are rewritten to match the static mount.
+- xgoja's current static mount ordering makes a root-mounted SPA unsafe for this example because static handling would run before dynamic API routes.
+- A small favicon route is enough to make browser console validation deterministic for this generated server.
+
+### What was tricky to build
+
+- The app artifact generated by Vite assumes root-relative assets (`/assets/...`), but the xgoja static handler is mounted under `/static`. Rather than changing the package's global Vite config, I added an example-local sync step that copies the built app, removes sourcemap references, and rewrites only the example's embedded index.
+- The React app fetches `/api/widget/pages/{pageId}` based on the URL query/path. Since the example is served under `/static/`, using `/static/?page=demo` preserves the static mount while still exercising the `demo` page endpoint.
+
+### What warrants a second pair of eyes
+
+- Review whether committing the built React app artifact under `examples/xgoja/widget-site/assets/public` is acceptable, or whether the example should require `sync-app` before build instead.
+- Review whether xgoja should add an Express/static helper for SPA fallback and API-safe root mounting.
+- Review whether `index` should remain an alias for `demo` or become a distinct landing page.
+
+### What should be done in the future
+
+- Consider building the React app with an explicit `base` option for xgoja examples instead of postprocessing `index.html`.
+- Add a committed Playwright script if the repository adopts Playwright as a dev dependency.
+- Consider adding xgoja Express support for API-safe SPA fallback from embedded assets.
+
+### Code review instructions
+
+- Review `examples/xgoja/widget-site/Makefile` first to understand the sync/build/smoke workflow.
+- Review `examples/xgoja/widget-site/verbs/sites.js` to verify the API and static routes.
+- Review `examples/xgoja/widget-site/assets/public/index.html` to confirm it points at `/static/assets/...`.
+- Validate with:
+
+```text
+make -C examples/xgoja/widget-site sync-app
+make -C examples/xgoja/widget-site smoke
+```
+
+- Optional browser validation: start `examples/xgoja/widget-site/dist/rag-widget-xgoja-site serve sites demo --http-listen 127.0.0.1:18792` and open `/static/?page=demo`.
+
+### Technical details
+
+- React app source artifact: `packages/rag-evaluation-site/app-dist`
+- Embedded xgoja asset root: `examples/xgoja/widget-site/assets/public`
+- Browser smoke URL: `http://127.0.0.1:18792/static/?page=demo`
+- Screenshot artifact: `xgoja-widgetsite-react-smoke-2026-06-05.png`

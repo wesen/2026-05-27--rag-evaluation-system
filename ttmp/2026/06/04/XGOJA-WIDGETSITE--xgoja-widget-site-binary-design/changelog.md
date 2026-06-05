@@ -35,3 +35,13 @@ Implemented first xgoja WidgetRenderer slice: stable widgetsite provider, genera
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/xgoja.yaml — Example build spec exercises local package replace and embedded assets
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/xgoja/providers/widgetsite/provider.go — Provider registers widget.dsl and rag.dsl
 
+
+## 2026-06-04
+
+Embedded the packaged React WidgetRenderer app in the xgoja example and validated it with curl plus Pi Playwright smoke (0 console errors, code commit 36cd6ea98fbc24d9db6d8f1b077c80099b0a3431).
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/assets/public/index.html — React app entry served from /static/
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/verbs/sites.js — API page aliases and favicon route for clean browser smoke
+
