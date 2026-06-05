@@ -34,7 +34,8 @@ modules:
     name: db
     as: db
     config:
-      allowConfigure: true
+      driverName: sqlite3
+      dataSourceName: ':memory:'
   - package: rag-widget-site
     name: widget.dsl
     as: widget.dsl

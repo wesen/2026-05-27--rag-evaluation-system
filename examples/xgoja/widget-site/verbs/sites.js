@@ -12,7 +12,6 @@ function demo() {
   const db = require("db")
   const rag = require("widget.dsl")
 
-  db.configure("sqlite3", ":memory:")
   db.exec("CREATE TABLE queries (id INTEGER PRIMARY KEY, name TEXT, status TEXT, priority INTEGER, owner TEXT, notes TEXT)")
   db.exec("INSERT INTO queries (name, status, priority, owner, notes) VALUES (?, ?, ?, ?, ?)", "Fast Growing Trees", "succeeded", 3, "botany", "Seeded from the xgoja demo")
   db.exec("INSERT INTO queries (name, status, priority, owner, notes) VALUES (?, ?, ?, ?, ?)", "Arborvitae Spacing", "running", 2, "landscape", "Needs another pass")
