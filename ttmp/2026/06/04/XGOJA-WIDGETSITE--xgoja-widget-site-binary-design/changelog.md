@@ -55,3 +55,13 @@ Added provider-bundled Glazed help docs for widget.dsl getting started and JavaS
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/xgoja/providers/widgetsite/doc/01-widget-dsl-getting-started.md — Getting started tutorial
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md — JavaScript API reference
 
+
+## 2026-06-05
+
+Expanded the xgoja widget-site example from a simple table into a stateful action dashboard with multiple server actions, richer Widget IR layout, curl action smoke, and browser action smoke.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/Makefile — Action smoke assertions
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/verbs/sites.js — Interactive action demo implementation
+

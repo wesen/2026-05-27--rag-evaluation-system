@@ -31,7 +31,7 @@ serve-smoke: build
 	log=$$(mktemp); \
 	$(BIN) serve sites demo --http-listen $(HTTP_ADDR) >$$log 2>&1 & \
 	pid=$$!; \
-	trap 'kill $$pid >/dev/null 2>&1 || true; wait $$pid >/dev/null 2>&1 || true; rm -f $$log /tmp/rag-widget-xgoja-page.json /tmp/rag-widget-xgoja-spa.html /tmp/rag-widget-xgoja-health.json /tmp/rag-widget-xgoja-root.html /tmp/rag-widget-xgoja-asset.js' EXIT; \
+	trap 'kill $$pid >/dev/null 2>&1 || true; wait $$pid >/dev/null 2>&1 || true; rm -f $$log /tmp/rag-widget-xgoja-page.json /tmp/rag-widget-xgoja-page-after-actions.json /tmp/rag-widget-xgoja-action-add.json /tmp/rag-widget-xgoja-action-cycle.json /tmp/rag-widget-xgoja-action-retry.json /tmp/rag-widget-xgoja-spa.html /tmp/rag-widget-xgoja-health.json /tmp/rag-widget-xgoja-root.html /tmp/rag-widget-xgoja-asset.js' EXIT; \
 	for i in $$(seq 1 100); do \
 		if curl -fsS http://$(HTTP_ADDR)/healthz >/tmp/rag-widget-xgoja-health.json 2>/dev/null; then break; fi; \
 		if ! kill -0 $$pid >/dev/null 2>&1; then cat $$log; exit 1; fi; \
@@ -44,6 +44,18 @@ serve-smoke: build
 	grep -q '"schemaVersion":"0.1.0"' /tmp/rag-widget-xgoja-page.json; \
 	grep -q '"type":"DataTable"' /tmp/rag-widget-xgoja-page.json; \
 	grep -q 'Fast Growing Trees' /tmp/rag-widget-xgoja-page.json; \
+	grep -q 'Queue controls' /tmp/rag-widget-xgoja-page.json; \
+	curl -fsS -X POST http://$(HTTP_ADDR)/api/widget/actions/add-query -H 'Content-Type: application/json' -d '{"payload":{"owner":"qa"},"context":{"componentType":"Button"}}' >/tmp/rag-widget-xgoja-action-add.json; \
+	grep -q '"refresh":true' /tmp/rag-widget-xgoja-action-add.json; \
+	grep -q 'Added query' /tmp/rag-widget-xgoja-action-add.json; \
+	curl -fsS -X POST http://$(HTTP_ADDR)/api/widget/actions/cycle-status -H 'Content-Type: application/json' -d '{"payload":{"id":2},"context":{"componentType":"Button"}}' >/tmp/rag-widget-xgoja-action-cycle.json; \
+	grep -q 'status' /tmp/rag-widget-xgoja-action-cycle.json; \
+	grep -q 'succeeded' /tmp/rag-widget-xgoja-action-cycle.json; \
+	curl -fsS -X POST http://$(HTTP_ADDR)/api/widget/actions/bulk-retry-failed -H 'Content-Type: application/json' -d '{"payload":{},"context":{"componentType":"Button"}}' >/tmp/rag-widget-xgoja-action-retry.json; \
+	grep -q 'Retried failed queries' /tmp/rag-widget-xgoja-action-retry.json; \
+	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/demo >/tmp/rag-widget-xgoja-page-after-actions.json; \
+	grep -q 'Follow-up Query' /tmp/rag-widget-xgoja-page-after-actions.json; \
+	grep -q 'Bulk retry requested from Widget IR action' /tmp/rag-widget-xgoja-page-after-actions.json; \
 	curl -fsS http://$(HTTP_ADDR)/ >/tmp/rag-widget-xgoja-root.html; \
 	grep -q 'RAG Evaluation Site' /tmp/rag-widget-xgoja-root.html; \
 	grep -q '/assets/index-' /tmp/rag-widget-xgoja-root.html; \

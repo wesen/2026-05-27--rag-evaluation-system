@@ -38,3 +38,4 @@
 - [ ] Use preconfigured db config in examples/xgoja/widget-site and remove JavaScript db.configure() from the jsverb.
 - [ ] Add smoke coverage proving db.configure() is disabled when the xgoja db module is preconfigured.
 - [x] Add provider-bundled Glazed help entries for widget.dsl getting started and JavaScript API reference.
+- [x] Expand examples/xgoja/widget-site with richer stateful Widget IR action examples and smoke coverage.

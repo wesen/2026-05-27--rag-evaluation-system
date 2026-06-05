@@ -16,6 +16,7 @@ RelatedFiles:
       Note: |-
         Doctor
         sync-app target and React-aware generated binary smoke checks
+        Smoke now validates multiple nontrivial action endpoints and refreshed page state
     - Path: examples/xgoja/widget-site/assets/public/assets/index-6um6l9-d.js
       Note: Embedded built React WidgetRenderer application bundle
     - Path: examples/xgoja/widget-site/assets/public/index.html
@@ -24,6 +25,7 @@ RelatedFiles:
       Note: |-
         Demo jsverb serving health
         Serves React app redirect
+        Richer Widget IR action demo with stateful SQLite mutations
     - Path: examples/xgoja/widget-site/xgoja.yaml
       Note: |-
         Generated binary build spec wiring express
@@ -46,10 +48,11 @@ RelatedFiles:
       Note: Captured expected build failure without xgoja replace
 ExternalSources: []
 Summary: Chronological diary for the xgoja WidgetRenderer generated binary design ticket.
-LastUpdated: 2026-06-05T04:20:00-04:00
+LastUpdated: 2026-06-05T12:00:00-04:00
 WhatFor: Use this to understand how the xgoja WidgetRenderer binary design was researched, tested, written, validated, uploaded, and committed.
 WhenToUse: Read before resuming implementation of the RAG xgoja provider, example binary, host-service database wiring, or Express embedded app fallback.
 ---
+
 
 
 
@@ -404,7 +407,7 @@ The resulting bundle contains the design guide, research logbook, and diary. The
 
 **Inferred user intent:** Leave the research/design package in a durable state outside the chat transcript.
 
-**Commit (code):** Pending in this step.
+**Commit (code):** <built-in function hash> — "Expand xgoja widget site action demo"
 
 ### What I did
 
@@ -853,3 +856,172 @@ examples/xgoja/widget-site/dist/rag-widget-xgoja-site help widget-dsl-js-api-ref
   - `widget-dsl-js-api-reference`
 - Provider package: `pkg/xgoja/providers/widgetsite`
 - Generated example selector: `examples/xgoja/widget-site/xgoja.yaml` → `help.sources[0]`
+
+
+## Step 8: Expand the xgoja Widget Site with Stateful Action Examples
+
+This step turned the generated xgoja widget-site example from a simple table into a more representative interactive dashboard. The example now demonstrates multiple server actions, row selection, stateful SQLite mutation, dashboard summaries, selected-row details, and an action audit trail. The goal was to show how Widget IR actions behave in a real page, not only in a trivial button smoke.
+
+The example still stays intentionally small enough to understand in one file. It uses the xgoja HTTP provider's Express module, the host `db` module, embedded frontend assets, and `require("widget.dsl")`. The React app renders the page, and each action POST returns `{ ok: true, refresh: true, toast, data }`, causing the app to fetch the page again and display the mutated state.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Create a couple of interesting examples that include actions within the examples for the widget-site, not just a simple trivial one."
+
+**Assistant interpretation:** Expand the xgoja widget-site example so it contains realistic, stateful Widget IR actions rather than only a minimal table or one trivial action.
+
+**Inferred user intent:** Make the example useful as a reference for future widget-site authors who need to see how server actions, DB state, table row selection, and refresh behavior fit together.
+
+**Commit (code):** <built-in function hash> — "Expand xgoja widget site action demo"
+
+### What I did
+
+- Rewrote `examples/xgoja/widget-site/verbs/sites.js` into a richer action dashboard.
+- Added a more detailed in-memory SQLite schema:
+  - `id`
+  - `name`
+  - `status`
+  - `priority`
+  - `owner`
+  - `notes`.
+- Added state outside the DB for UI-focused behavior:
+  - `appState.selectedId`
+  - `appState.audit`.
+- Added richer Widget IR page sections:
+  - summary dashboard cards for total/succeeded/running/failed counts
+  - queue controls panel
+  - data table with row selection action
+  - selected-query metadata panel
+  - action audit trail.
+- Added server action endpoints:
+  - `select-query`
+  - `cycle-status`
+  - `bump-priority`
+  - `archive-query`
+  - `add-query`
+  - `bulk-retry-failed`
+  - `reset-demo`.
+- Updated `examples/xgoja/widget-site/Makefile` smoke to exercise action endpoints with curl and verify refreshed page state.
+- Ran a Pi Playwright browser smoke against `/pages/actions` and clicked the `Add query` button.
+- Checked task 34 and updated ticket changelog/relations.
+
+### Why
+
+- The previous example proved that xgoja can serve a Widget IR page, but it did not show enough about action authoring.
+- Real widget sites need more than a button; they need to mutate state, update selected rows, expose table actions, and refresh derived summaries.
+- This example demonstrates the action contract directly from a generated xgoja binary instead of through a separate Go widgetserver smoke harness.
+
+### What worked
+
+- The generated-binary smoke passed:
+
+```text
+make -C examples/xgoja/widget-site smoke
+```
+
+- The smoke validates:
+  - `xgoja doctor`
+  - `xgoja list-modules`
+  - generated binary build
+  - health endpoint
+  - page endpoint
+  - root SPA page
+  - JS asset serving
+  - `add-query` action
+  - `cycle-status` action
+  - `bulk-retry-failed` action
+  - refreshed page state containing `Follow-up Query`
+  - refreshed page state containing `Bulk retry requested from Widget IR action`.
+- Manual action API checks returned successful action results, for example:
+
+```json
+{"data":{"message":"Added query #4"},"ok":true,"refresh":true,"toast":"Added query #4"}
+```
+
+- Pi Playwright browser smoke loaded:
+
+```text
+http://127.0.0.1:18796/pages/actions
+```
+
+- Browser validation evidence:
+  - page marker: `data-rag-page="RagEvaluationSiteApp"`
+  - page id: `actions`
+  - initial page showed `Rows: 3`
+  - clicked `Add query`
+  - network showed `POST /api/widget/actions/add-query => 200 OK`
+  - network showed refresh `GET /api/widget/pages/actions => 200 OK`
+  - refreshed UI showed `Rows: 4`
+  - refreshed UI showed `Follow-up Query 4`
+  - selected-query panel changed to the newly added query
+  - action audit trail showed `Added query #4`
+  - browser console messages: `0` errors, `0` warnings
+  - screenshot: `xgoja-widgetsite-actions-smoke-2026-06-05.png`.
+
+### What didn't work
+
+- The first Makefile action smoke failed on this assertion:
+
+```text
+grep -q 'status -> succeeded' /tmp/rag-widget-xgoja-action-cycle.json
+```
+
+- The action itself succeeded, but JSON encoding escaped the greater-than sign:
+
+```json
+{"data":{"message":"Query #2 status -\u003e succeeded"},"ok":true,"refresh":true,"toast":"Query #2 status -\u003e succeeded"}
+```
+
+- Fix: changed the smoke assertion to check separately for `status` and `succeeded` instead of the literal `->` sequence.
+
+### What I learned
+
+- The browser action path works in the xgoja example exactly like it does in `pkg/widgetserver`: Widget IR action specs trigger frontend POSTs, the server returns `refresh: true`, and `RagEvaluationSiteApp` refetches the page.
+- JSON escaping can make shell greps brittle. Smoke checks should assert stable semantic substrings or parse JSON when the exact encoded representation is not important.
+- Table row selection works as a useful action example because the renderer includes row data in the action context, and the server can use `ctx.row.id` to update local state.
+
+### What was tricky to build
+
+- The example has two layers of state: durable-ish in-memory SQLite rows and UI-local selected/audit state. Keeping them separate makes the demo easier to understand: table data lives in SQL, while selected row and recent action messages live in a small JavaScript object.
+- `DataTable` row selection sends action context rather than payload, while buttons generally send payload. The handlers therefore use both `req.body.context` and `req.body.payload` depending on which widget initiated the action.
+- The example needs to remain a reference, not a full application. I kept all actions in one jsverb file and used helper functions (`allRows`, `selectedRow`, `counts`, `widgetPage`, `actionResult`) to make the action flow readable.
+
+### What warrants a second pair of eyes
+
+- Review whether the example should keep all actions in one file or split page construction and action handlers into helper scripts once jsverb module boundaries are clearer.
+- Review the `danger` button variant on `archive-query`; if the packaged Button component does not style `danger`, this is harmless data but not visually distinct.
+- Review whether action response errors should use a consistent `{ ok: false, error }` shape across every handler. Only missing `cycle-status` currently returns a `404` JSON error.
+
+### What should be done in the future
+
+- Add a generated-binary browser smoke script if the repository standardizes Playwright in CI.
+- Add a second example page that demonstrates form controls and action payloads from text/select inputs once those components have editable action wiring.
+- Consider adding provider help documentation specifically for action authoring patterns.
+
+### Code review instructions
+
+- Start with `examples/xgoja/widget-site/verbs/sites.js` and read the helper functions before the action endpoints.
+- Review the action endpoints at the bottom of the file to see how `payload(req)` and `actionContext(req)` are used.
+- Review `examples/xgoja/widget-site/Makefile` `serve-smoke` to confirm action mutations are part of the generated-binary validation.
+- Validate with:
+
+```text
+make -C examples/xgoja/widget-site sync-app
+make -C examples/xgoja/widget-site smoke
+```
+
+- Optional browser validation: run the generated binary and open `/pages/actions`, then click `Add query` and verify the table grows and the selected-query panel changes.
+
+### Technical details
+
+- Example jsverb: `examples/xgoja/widget-site/verbs/sites.js`
+- Smoke target: `make -C examples/xgoja/widget-site smoke`
+- Browser smoke URL: `http://127.0.0.1:18796/pages/actions`
+- Action endpoints:
+  - `POST /api/widget/actions/select-query`
+  - `POST /api/widget/actions/cycle-status`
+  - `POST /api/widget/actions/bump-priority`
+  - `POST /api/widget/actions/archive-query`
+  - `POST /api/widget/actions/add-query`
+  - `POST /api/widget/actions/bulk-retry-failed`
+  - `POST /api/widget/actions/reset-demo`
