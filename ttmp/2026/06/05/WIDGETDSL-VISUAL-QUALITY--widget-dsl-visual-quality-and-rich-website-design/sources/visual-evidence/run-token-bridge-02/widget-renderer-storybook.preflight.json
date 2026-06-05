@@ -1,0 +1,47 @@
+[
+  {
+    "bounds": {
+      "height": 1100,
+      "width": 1408,
+      "x": 16,
+      "y": 16
+    },
+    "error": "",
+    "exists": true,
+    "name": "root",
+    "selector": "#storybook-root",
+    "source": "styles",
+    "textStart": "◉ RAG EvalSearchCorpusWorkflowsDSLSearchQuery▶ Searchhybridbm25vectorBM25 IndexStrategyThe Tree CenterArXiv RAG papers with a very long title-like source nameBr",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 182.1875,
+      "width": 280,
+      "x": 24,
+      "y": 59.390625
+    },
+    "error": "",
+    "exists": true,
+    "name": "first-panel",
+    "selector": "#storybook-root [data-rag-layout=\"Panel\"]",
+    "source": "styles",
+    "textStart": "SearchQuery▶ Searchhybridbm25vectorBM25 IndexStrategyThe Tree CenterArXiv RAG papers with a very long title-like source nameBroken import batch",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 91.75,
+      "width": 678,
+      "x": 321,
+      "y": 91.328125
+    },
+    "error": "",
+    "exists": true,
+    "name": "table",
+    "selector": "#storybook-root [data-rag-component=\"DataTable\"]",
+    "source": "styles",
+    "textStart": "#TitleScoreBM25VecPreview1Fast Growing Trees0.8421#3#1Crape myrtle grows quickly in warm climates and benefits from full sun exposure.2Arborvitae Spacing0.7130#",
+    "visible": true
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "bounds": {
+      "height": 101.75,
+      "width": 1408,
+      "x": 16,
+      "y": 16
+    },
+    "error": "",
+    "exists": true,
+    "name": "storybook-root",
+    "selector": "#storybook-root",
+    "source": "styles",
+    "textStart": "SourcesNameTypeCreatedTree Center Guidesweb_crawl2026-05-21T09:12:00ZProduct Pagessitemap2026-05-22T11:30:00ZDocumentsTitleStatusWordsFast Growing Trees for Pri",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 101.75,
+      "width": 700,
+      "x": 16,
+      "y": 16
+    },
+    "error": "",
+    "exists": true,
+    "name": "first-panel",
+    "selector": "#storybook-root [data-rag-layout=\"Panel\"]",
+    "source": "styles",
+    "textStart": "SourcesNameTypeCreatedTree Center Guidesweb_crawl2026-05-21T09:12:00ZProduct Pagessitemap2026-05-22T11:30:00Z",
+    "visible": true
+  },
+  {
+    "bounds": {
+      "height": 68.8125,
+      "width": 686,
+      "x": 23,
+      "y": 43.9375
+    },
+    "error": "",
+    "exists": true,
+    "name": "first-table",
+    "selector": "[data-rag-component=\"DataTable\"]",
+    "source": "styles",
+    "textStart": "NameTypeCreatedTree Center Guidesweb_crawl2026-05-21T09:12:00ZProduct Pagessitemap2026-05-22T11:30:00Z",
+    "visible": true
+  },
+  {
+    "error": "",
+    "exists": false,
+    "name": "first-button",
+    "selector": "[data-rag-atom=\"Button\"]",
+    "source": "styles",
+    "textStart": "",
+    "visible": false
+  }
+]

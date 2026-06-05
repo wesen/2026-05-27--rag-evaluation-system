@@ -10,3 +10,6 @@
 - [x] Analyze renderer/component gaps that make Widget DSL pages look worse than the original RAG site.
 - [x] Write intern-facing design and implementation guide with APIs, diagrams, pseudocode, and file references.
 - [x] Validate docmgr ticket and upload bundle to reMarkable.
+- [x] Implement Phase 1 token bridge in packages/rag-evaluation-site/src/theme.css so standalone components receive --mac, --font, and role font variables.
+- [x] Rebuild package app assets, sync xgoja widget-site assets, and run smoke tests after the token bridge.
+- [x] Re-run css-visual-diff evidence after the token bridge and compare computed CSS against run-02.

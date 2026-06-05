@@ -20,14 +20,15 @@ async function captureEvidence(values) {
       root: '[data-rag-page="RagEvaluationSiteApp"]',
       probes: [
         { name: "app-root", selector: '[data-rag-page="RagEvaluationSiteApp"]', props: ["background-color", "color", "font-family", "font-size", "padding", "max-width"] },
-        { name: "first-panel", selector: '[data-rag-page="RagEvaluationSiteApp"] section:first-of-type, [data-rag-page="RagEvaluationSiteApp"] article:first-of-type, [data-rag-page="RagEvaluationSiteApp"] > div:first-child', props: ["background-color", "border", "border-radius", "box-shadow", "padding"] },
-        { name: "first-table", selector: "table", props: ["border-collapse", "font-size", "background-color", "border-spacing"] },
-        { name: "first-button", selector: "button", props: ["height", "padding", "border-radius", "background-color", "color", "font-weight"] },
+        { name: "first-panel", selector: '[data-rag-layout="Panel"]', props: ["background-color", "border", "border-radius", "box-shadow", "padding"] },
+        { name: "first-table", selector: '[data-rag-component="DataTable"]', props: ["border-collapse", "font-size", "background-color", "border-spacing"] },
+        { name: "first-button", selector: '[data-rag-atom="Button"]', props: ["height", "padding", "border-radius", "background-color", "border", "color", "font-family", "font-weight"] },
       ],
       overlay: [
         ["App Root", '[data-rag-page="RagEvaluationSiteApp"]', "#0ea5e9"],
-        ["Data Table", "table", "#22c55e"],
-        ["Buttons", "button", "#f97316"],
+        ["Panels", '[data-rag-layout="Panel"]', "#a855f7"],
+        ["Data Table", '[data-rag-component="DataTable"]', "#22c55e"],
+        ["Buttons", '[data-rag-atom="Button"]', "#f97316"],
       ],
     },
     {
@@ -37,14 +38,15 @@ async function captureEvidence(values) {
       root: "#storybook-root",
       probes: [
         { name: "storybook-root", selector: "#storybook-root", props: ["background-color", "color", "font-family", "font-size", "padding"] },
-        { name: "first-panel", selector: "#storybook-root section:first-of-type, #storybook-root article:first-of-type, #storybook-root > div:first-child", props: ["background-color", "border", "border-radius", "box-shadow", "padding"] },
-        { name: "first-table", selector: "table", props: ["border-collapse", "font-size", "background-color", "border-spacing"] },
-        { name: "first-button", selector: "button", props: ["height", "padding", "border-radius", "background-color", "color", "font-weight"] },
+        { name: "first-panel", selector: '#storybook-root [data-rag-layout="Panel"]', props: ["background-color", "border", "border-radius", "box-shadow", "padding"] },
+        { name: "first-table", selector: '[data-rag-component="DataTable"]', props: ["border-collapse", "font-size", "background-color", "border-spacing"] },
+        { name: "first-button", selector: '[data-rag-atom="Button"]', props: ["height", "padding", "border-radius", "background-color", "border", "color", "font-family", "font-weight"] },
       ],
       overlay: [
         ["Story Root", "#storybook-root", "#0ea5e9"],
-        ["Data Table", "table", "#22c55e"],
-        ["Buttons", "button", "#f97316"],
+        ["Panels", '[data-rag-layout="Panel"]', "#a855f7"],
+        ["Data Table", '[data-rag-component="DataTable"]', "#22c55e"],
+        ["Buttons", '[data-rag-atom="Button"]', "#f97316"],
       ],
     },
     {
@@ -54,12 +56,13 @@ async function captureEvidence(values) {
       root: "#storybook-root",
       probes: [
         { name: "root", selector: "#storybook-root", props: ["background-color", "color", "font-family", "font-size", "padding"] },
-        { name: "panel", selector: "#storybook-root section:first-of-type, #storybook-root article:first-of-type, #storybook-root > div:first-child", props: ["background-color", "border", "border-radius", "box-shadow", "padding"] },
-        { name: "table", selector: "table", props: ["border-collapse", "font-size", "background-color", "border-spacing"] },
+        { name: "panel", selector: '#storybook-root [data-rag-layout="Panel"]', props: ["background-color", "border", "border-radius", "box-shadow", "padding"] },
+        { name: "table", selector: '#storybook-root [data-rag-component="DataTable"]', props: ["border-collapse", "font-size", "background-color", "border-spacing"] },
       ],
       overlay: [
         ["Story Root", "#storybook-root", "#0ea5e9"],
-        ["Result Table", "table", "#22c55e"],
+        ["Panels", '#storybook-root [data-rag-layout="Panel"]', "#a855f7"],
+        ["Result Table", '#storybook-root [data-rag-component="DataTable"]', "#22c55e"],
       ],
     },
     {
@@ -69,8 +72,8 @@ async function captureEvidence(values) {
       root: "#storybook-root",
       probes: [
         { name: "root", selector: "#storybook-root", props: ["background-color", "color", "font-family", "font-size", "padding"] },
-        { name: "first-panel", selector: "#storybook-root section:first-of-type, #storybook-root article:first-of-type, #storybook-root > div:first-child", props: ["background-color", "border", "border-radius", "box-shadow", "padding"] },
-        { name: "table", selector: "table", props: ["border-collapse", "font-size", "background-color", "border-spacing"] },
+        { name: "first-panel", selector: '#storybook-root [data-rag-layout="Panel"]', props: ["background-color", "border", "border-radius", "box-shadow", "padding"] },
+        { name: "table", selector: '#storybook-root [data-rag-component="DataTable"]', props: ["border-collapse", "font-size", "background-color", "border-spacing"] },
       ],
       overlay: [
         ["Story Root", "#storybook-root", "#0ea5e9"],

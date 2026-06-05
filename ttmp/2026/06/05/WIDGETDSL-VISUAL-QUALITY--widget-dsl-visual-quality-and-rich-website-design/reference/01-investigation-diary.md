@@ -16,22 +16,31 @@ RelatedFiles:
       Note: Ignores example-local devctl runtime state
     - Path: examples/xgoja/widget-site/README.devctl.md
       Note: Developer workflow instructions for devctl build/up/logs/down
+    - Path: examples/xgoja/widget-site/assets/public/index.html
+      Note: Synced rebuilt standalone app into generated xgoja example assets
     - Path: examples/xgoja/widget-site/devctl/widget-site.py
       Note: NDJSON devctl plugin for rebuilding and launching the generated widget-site binary
     - Path: packages/rag-evaluation-site/src/app/app.css
       Note: Standalone app shell currently provides only min-height and no page chrome/padding/container
     - Path: packages/rag-evaluation-site/src/theme.css
-      Note: Standalone package theme currently lacks mac/design-system tokens consumed by components
+      Note: |-
+        Standalone package theme currently lacks mac/design-system tokens consumed by components
+        Implemented standalone token bridge for --mac
     - Path: ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts/03-capture-visual-evidence.js
-      Note: css-visual-diff JS verb for capturing Widget DSL and Storybook visual evidence
+      Note: |-
+        css-visual-diff JS verb for capturing Widget DSL and Storybook visual evidence
+        Updated visual evidence script to target stable data-rag selectors
+    - Path: ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-token-bridge-02/01-visual-evidence-summary.md
+      Note: Post-token-bridge visual evidence summary
     - Path: web/src/styles/tokens.css
       Note: Original RAG app token source that defines --mac and font role variables
 ExternalSources: []
 Summary: ""
-LastUpdated: 2026-06-05T14:55:00-04:00
+LastUpdated: 2026-06-05T16:15:00-04:00
 WhatFor: ""
 WhenToUse: ""
 ---
+
 
 
 
@@ -655,3 +664,182 @@ docmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30
 
 - reMarkable destination: `/ai/2026/06/05/WIDGETDSL-VISUAL-QUALITY`
 - Uploaded PDF name: `Widget DSL Visual Quality Guide.pdf`
+
+## Step 6: Implement the Standalone Theme Token Bridge
+
+This step implemented Phase 1 from the visual-quality guide: restore the design-token contract that the standalone `@go-go-golems/rag-evaluation-site` package must provide to the copied RAG components. The implementation adds a bridge in `packages/rag-evaluation-site/src/theme.css` that defines the legacy/original `--mac-*`, `--font-*`, and `--rag-font-role-*` variables in terms of the package's canonical `--rag-*` tokens.
+
+The result is that the generated xgoja Widget DSL site no longer renders primary buttons and panels as transparent/default-looking controls. Smoke tests passed, and post-bridge visual evidence shows panel roots computing to a white surface with a black border and primary buttons computing to black background, white text, mono font, and a real border.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Add tasks, implement, commit at appropriate intervals, keep a diary, use smoke tests"
+
+**Assistant interpretation:** Add implementation tasks to the existing visual-quality ticket, implement the next recommended fix, validate with smoke tests and visual evidence, keep the diary current, and commit at focused checkpoints.
+
+**Inferred user intent:** Move from the analysis/design package into concrete implementation while preserving traceability and confidence.
+
+**Commit (code):** bc737b87f65f883cac35c49f3c93da1918992948 — "Add standalone widget site token bridge"
+
+### What I did
+
+- Added WIDGETDSL-VISUAL-QUALITY tasks for:
+  - implementing the Phase 1 token bridge,
+  - rebuilding/syncing assets and running smoke tests,
+  - rerunning css-visual-diff evidence.
+- Updated `packages/rag-evaluation-site/src/theme.css` with:
+  - canonical standalone tokens,
+  - `--mac-*` compatibility variables,
+  - `--font-body` / `--font-mono`,
+  - `--rag-font-role-*` role aliases.
+- Rebuilt the package:
+
+```text
+cd packages/rag-evaluation-site
+pnpm build
+pnpm build:app
+```
+
+- Synced app assets into the generated xgoja example:
+
+```text
+make -C examples/xgoja/widget-site sync-app
+```
+
+- Ran generated-site smoke:
+
+```text
+make -C examples/xgoja/widget-site smoke
+```
+
+- Ran devctl helper smoke:
+
+```text
+cd examples/xgoja/widget-site
+devctl smoke --timeout 10m
+```
+
+- Ran visual evidence capture:
+
+```text
+ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts/04-run-visual-evidence.sh \
+  ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-token-bridge-02
+```
+
+- Updated `scripts/03-capture-visual-evidence.js` to prefer stable runtime attributes:
+  - `[data-rag-layout="Panel"]`
+  - `[data-rag-component="DataTable"]`
+  - `[data-rag-atom="Button"]`.
+- Removed the intermediate `run-token-bridge-01` evidence directory and kept the cleaner `run-token-bridge-02` output.
+- Checked tasks 9, 10, and 11.
+- Updated changelog and related files.
+
+### Why
+
+- The visual guide identified missing token definitions as the first and most important root cause.
+- Component CSS already depended on original RAG tokens; adding the bridge is the smallest safe fix that restores component chrome without rewriting component styles.
+- Smoke tests ensure the theme change did not break package builds, generated xgoja builds, API actions, or embedded SPA serving.
+
+### What worked
+
+- `pnpm build` passed for the package build.
+- `pnpm build:app` passed for the standalone app build.
+- `make -C examples/xgoja/widget-site smoke` passed.
+- `devctl smoke --timeout 10m` passed.
+- `docmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30` passed after evidence capture.
+- Post-bridge computed CSS assertions passed:
+
+```text
+ASSERTIONS: token bridge visual CSS checks passed
+```
+
+- Key post-bridge computed CSS for the first Panel:
+
+```json
+{
+  "background-color": "rgb(255, 255, 255)",
+  "border": "1px solid rgb(0, 0, 0)",
+  "border-radius": "0px",
+  "box-shadow": "none",
+  "padding": "0px"
+}
+```
+
+- Key post-bridge computed CSS for the first primary Button:
+
+```json
+{
+  "background-color": "rgb(0, 0, 0)",
+  "border": "1px solid rgb(0, 0, 0)",
+  "color": "rgb(255, 255, 255)",
+  "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+  "height": "20.8438px",
+  "padding": "2px 12px"
+}
+```
+
+### What didn't work
+
+- The first comparison against `run-02` suggested the panel had not changed because the old visual script's `first-panel` selector matched the outer stack/root rather than an actual Panel.
+- Fix: inspected the runtime DOM with Playwright and found stable attributes already present, including:
+  - `data-rag-layout="Panel"`,
+  - `data-rag-component="DataTable"`,
+  - `data-rag-atom="Button"`.
+- I updated the visual script to use those attributes and reran evidence into `run-token-bridge-02`.
+
+### What I learned
+
+- The token bridge immediately fixes component chrome for panels and buttons, which confirms the root-cause analysis.
+- The app root still has `padding: 0px` and transparent background. That is expected after Phase 1; Phase 2 in the guide should add the default app shell/page chrome.
+- Runtime components already expose useful `data-rag-*` attributes, so visual tooling should use them instead of broad selectors.
+
+### What was tricky to build
+
+- The tricky part was distinguishing a real styling failure from a probe/selector failure. The component did get styled after the bridge, but the original css-visual-diff `first-panel` probe did not target the actual Panel element.
+- I used Playwright to inspect live DOM attributes and computed styles, then changed the evidence script so future runs are more reliable.
+- Asset sync produced new hashed app assets under `examples/xgoja/widget-site/assets/public/assets`, so old hashed assets appear as deleted and new hashed assets appear as added. This is expected after rebuilding the standalone app.
+
+### What warrants a second pair of eyes
+
+- Review the exact bridge values, especially `--mac-border: var(--rag-color-border-strong)` versus using the softer `--rag-color-border`.
+- Review whether the standalone package should preserve the classic black/white RAG look or move toward a softer modern theme after Phase 2.
+- Review the updated visual-evidence selectors for Storybook stories; some stories may not contain every `data-rag-*` target, but misses are recorded in preflight JSON.
+
+### What should be done in the future
+
+- Implement Phase 2 from the guide: add app shell/page chrome so the root no longer has `padding: 0px` and raw edge-to-edge layout.
+- Consider adding a small computed-style assertion script to CI after the visual selector cleanup settles.
+- Optionally regenerate the reMarkable bundle after Phase 2 or after a larger visual-polish pass.
+
+### Code review instructions
+
+- Start with `packages/rag-evaluation-site/src/theme.css` and review the token bridge block.
+- Check the rebuilt assets in `examples/xgoja/widget-site/assets/public` only for expected hashed asset replacement.
+- Review `scripts/03-capture-visual-evidence.js` to confirm stable `data-rag-*` selectors are used.
+- Validate with:
+
+```text
+cd packages/rag-evaluation-site && pnpm build && pnpm build:app
+make -C examples/xgoja/widget-site sync-app
+make -C examples/xgoja/widget-site smoke
+cd examples/xgoja/widget-site && devctl smoke --timeout 10m
+```
+
+- Validate visual evidence with:
+
+```text
+docmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30
+```
+
+### Technical details
+
+- Theme file changed:
+  - `packages/rag-evaluation-site/src/theme.css`
+- Synced xgoja embedded app files changed:
+  - `examples/xgoja/widget-site/assets/public/index.html`
+  - `examples/xgoja/widget-site/assets/public/assets/index-*.css`
+  - `examples/xgoja/widget-site/assets/public/assets/index-*.js`
+- Visual evidence script changed:
+  - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts/03-capture-visual-evidence.js`
+- Post-bridge evidence path:
+  - `ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-token-bridge-02`
