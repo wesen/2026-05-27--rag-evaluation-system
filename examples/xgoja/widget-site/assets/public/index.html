@@ -1,32 +1,13 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>rag-widget-xgoja-site</title>
-    <style>
-      body { margin: 2rem; font-family: system-ui, sans-serif; color: #17202a; background: #f6f7f8; }
-      main { max-width: 960px; margin: 0 auto; background: #fff; border: 1px solid #d8dde3; border-radius: 12px; padding: 1.25rem; }
-      pre { white-space: pre-wrap; background: #111827; color: #d1fae5; padding: 1rem; border-radius: 8px; overflow: auto; }
-      .ok { color: #14883e; font-weight: 700; }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG Evaluation Site</title>
+    <script type="module" crossorigin src="/static/assets/index-6um6l9-d.js"></script>
+    <link rel="stylesheet" crossorigin href="/static/assets/index-BtEaK3GV.css">
   </head>
   <body>
-    <main>
-      <h1>rag-widget-xgoja-site</h1>
-      <p class="ok">Embedded static app loaded from the generated xgoja binary.</p>
-      <p>This tiny app fetches Widget IR produced by a JavaScript verb through <code>widget.dsl</code>.</p>
-      <pre id="out">loading /api/widget/pages/demo ...</pre>
-    </main>
-    <script>
-      fetch('/api/widget/pages/demo')
-        .then((response) => response.json())
-        .then((page) => {
-          document.getElementById('out').textContent = JSON.stringify(page, null, 2);
-        })
-        .catch((error) => {
-          document.getElementById('out').textContent = String(error);
-        });
-    </script>
+    <div id="root"></div>
   </body>
 </html>

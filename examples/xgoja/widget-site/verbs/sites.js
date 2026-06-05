@@ -19,14 +19,16 @@ function demo() {
 
   const app = express.app()
   app.staticFromAssetsModule("/static", assets, "/app/public")
-  app.get("/", (_req, res) => res.redirect("/static/"))
+  app.get("/", (_req, res) => res.redirect("/static/?page=demo"))
+  app.get("/favicon.ico", (_req, res) => res.status(204).end())
   app.get("/healthz", (_req, res) => res.json({ ok: true, site: "rag-widget-xgoja-site" }))
   app.get("/api/widget/schema", (_req, res) => res.json({ schemaVersion: "0.1.0", components: ["Panel", "StatusText", "DataTable"] }))
-  app.get("/api/widget/pages/demo", (_req, res) => {
+
+  function widgetPage(id) {
     const rows = db.query("SELECT id, name, status FROM queries ORDER BY id")
-    res.json({
+    return {
       schemaVersion: "0.1.0",
-      id: "demo",
+      id,
       title: "xgoja widget demo",
       root: rag.panel({ title: "xgoja widget demo" },
         rag.statusText({ status: "success", icon: true }, "Rows: " + rows.length),
@@ -40,6 +42,9 @@ function demo() {
           ]
         })
       )
-    })
-  })
+    }
+  }
+
+  app.get("/api/widget/pages/index", (_req, res) => res.json(widgetPage("index")))
+  app.get("/api/widget/pages/demo", (_req, res) => res.json(widgetPage("demo")))
 }
