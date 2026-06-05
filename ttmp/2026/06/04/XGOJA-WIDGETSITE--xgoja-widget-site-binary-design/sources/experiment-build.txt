@@ -1,0 +1,15 @@
+validated 16 check(s) for xgoja.yaml
+generated build workspace: /tmp/xgoja-build-3852342619
+Error: go mod tidy failed: exit status 1
+go: downloading github.com/go-go-golems/go-go-goja v0.0.0
+go: example.com/generated/xgoja-widgetsite-experiment imports
+	github.com/go-go-golems/go-go-goja/pkg/xgoja/app: reading github.com/go-go-golems/go-go-goja/go.mod at revision v0.0.0: unknown revision v0.0.0
+go: example.com/generated/xgoja-widgetsite-experiment imports
+	github.com/go-go-golems/go-go-goja/pkg/xgoja/providerapi: reading github.com/go-go-golems/go-go-goja/go.mod at revision v0.0.0: unknown revision v0.0.0
+go: example.com/generated/xgoja-widgetsite-experiment imports
+	github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/host: reading github.com/go-go-golems/go-go-goja/go.mod at revision v0.0.0: unknown revision v0.0.0
+go: example.com/generated/xgoja-widgetsite-experiment imports
+	github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/http: reading github.com/go-go-golems/go-go-goja/go.mod at revision v0.0.0: unknown revision v0.0.0
+go: example.com/generated/xgoja-widgetsite-experiment imports
+	github.com/go-go-golems/rag-evaluation-system/ttmp/2026/06/04/XGOJA-WIDGETSITE--xgoja-widget-site-binary-design/scripts/01-current-xgoja-widgetsite-experiment/widgetprovider: github.com/go-go-golems/go-go-goja@v0.0.0: reading github.com/go-go-golems/go-go-goja/go.mod at revision v0.0.0: unknown revision v0.0.0
+

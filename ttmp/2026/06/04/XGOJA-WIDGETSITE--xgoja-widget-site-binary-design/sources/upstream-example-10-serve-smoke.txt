@@ -1,0 +1,6 @@
+make: Entering directory '/home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja/examples/xgoja/10-embedded-assets-fs'
+cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja && GOWORK=off go run ./cmd/xgoja build -f /home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja/examples/xgoja/10-embedded-assets-fs/xgoja.yaml --output /home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja/examples/xgoja/10-embedded-assets-fs/dist/embedded-assets-fs --xgoja-replace /home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja --keep-work
+validated 13 check(s) for /home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja/examples/xgoja/10-embedded-assets-fs/xgoja.yaml
+generated build workspace: /tmp/xgoja-build-2312156398
+xgoja build ok: /home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja/examples/xgoja/10-embedded-assets-fs/dist/embedded-assets-fs
+make: Leaving directory '/home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja/examples/xgoja/10-embedded-assets-fs'

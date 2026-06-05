@@ -1,0 +1,8 @@
++------------+-----------------+------------+------------+
+| file       | package         | module     | alias      |
++------------+-----------------+------------+------------+
+| xgoja.yaml | go-go-goja-http | express    | express    |
+| xgoja.yaml | go-go-goja-host | fs         | fs:assets  |
+| xgoja.yaml | go-go-goja-host | db         | db         |
+| xgoja.yaml | rag-widget      | widget.dsl | widget.dsl |
++------------+-----------------+------------+------------+

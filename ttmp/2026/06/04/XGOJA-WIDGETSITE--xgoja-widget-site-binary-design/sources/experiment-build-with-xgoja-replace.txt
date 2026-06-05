@@ -1,0 +1,13 @@
+validated 16 check(s) for xgoja.yaml
+generated build workspace: /tmp/xgoja-build-3993832018
+Error: go mod tidy failed: exit status 1
+go: module /home/manuel/workspaces/2026-05-27/rag-evaluation-system/go-go-goja requires go >= 1.26.1; switching to go1.26.4
+go: finding module for package github.com/go-go-golems/rag-evaluation-system/ttmp/2026/06/04/XGOJA-WIDGETSITE--xgoja-widget-site-binary-design/scripts/01-current-xgoja-widgetsite-experiment/widgetprovider
+go: example.com/generated/xgoja-widgetsite-experiment imports
+	github.com/go-go-golems/rag-evaluation-system/ttmp/2026/06/04/XGOJA-WIDGETSITE--xgoja-widget-site-binary-design/scripts/01-current-xgoja-widgetsite-experiment/widgetprovider: module github.com/go-go-golems/rag-evaluation-system/ttmp/2026/06/04/XGOJA-WIDGETSITE--xgoja-widget-site-binary-design/scripts/01-current-xgoja-widgetsite-experiment/widgetprovider: git ls-remote -q --end-of-options https://github.com/go-go-golems/rag-evaluation-system in /home/manuel/go/pkg/mod/cache/vcs/c2557cf5665009332365859cbf047abc04956febc6ffe4b9b030f49f36c0f449: exit status 128:
+	ERROR: Repository not found.
+	fatal: Could not read from remote repository.
+	
+	Please make sure you have the correct access rights
+	and the repository exists.
+

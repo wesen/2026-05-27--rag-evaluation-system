@@ -1,0 +1,34 @@
+# Tasks
+
+## Documentation and research deliverable
+
+- [x] Create docmgr ticket `XGOJA-WIDGETSITE`.
+- [x] Capture `xgoja help --all`.
+- [x] Capture `xgoja help tutorial-http-serve-jsverbs`.
+- [x] Capture `xgoja help tutorial-generated-runtime-package`.
+- [x] Capture `xgoja help tutorial-static-assets-http-server`.
+- [x] Inspect xgoja provider, host-service, asset, generated go.mod, HTTP, Express, and database source code.
+- [x] Inspect RAG WidgetRenderer `widget.dsl` and frontend package sources relevant to xgoja integration.
+- [x] Run upstream embedded-assets and HTTP-jsverbs example smoke targets.
+- [x] Create ticket-local combined xgoja experiment under `scripts/`.
+- [x] Record experiment validation and build failure outputs under `sources/`.
+- [x] Write intern-facing design/implementation guide.
+- [x] Write research logbook with usefulness/staleness/update notes for each resource.
+- [x] Keep diary while working.
+- [x] Relate key files to ticket documents.
+- [x] Run `docmgr doctor --ticket XGOJA-WIDGETSITE --stale-after 30`.
+- [x] Upload design bundle to reMarkable.
+- [x] Commit ticket materials.
+
+## Future implementation tasks
+
+- [ ] Add real provider package `pkg/xgoja/providers/widgetsite` registering `widget.dsl` and `rag.dsl`.
+- [ ] Add provider unit tests for module registration and runtime `require("widget.dsl")` behavior.
+- [ ] Add `examples/xgoja/widget-site` with tiny static webapp, jsverb, xgoja.yaml, and Makefile smoke.
+- [ ] Build generated binary with `--xgoja-replace` and `packages[].replace` for local development.
+- [ ] Add curl smoke for `/healthz`, `/static/`, and `/api/widget/pages/demo`.
+- [ ] Replace tiny webapp with `packages/rag-evaluation-site/app-dist` once the xgoja path is stable.
+- [ ] Add Playwright smoke for the generated xgoja binary with embedded WidgetRenderer app.
+- [ ] Decide whether to implement preconfigured database host-service contribution or use `db.configure()` only for demo.
+- [ ] Consider adding Express `spaFromAssetsModule` helper for React client-side route fallback.
+- [ ] Reconcile or restore the missing `examples/xgoja/14-generated-runtime-package` referenced by help.
