@@ -151,3 +151,14 @@ Added ContextStackDiagram, ContextTreemap, and ContextDiagramPanel to complete t
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.tsx — Treemap molecule
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.tsx — View-switching diagram organism
 
+
+## 2026-06-07
+
+Improved context diagram label readability on patterned backgrounds without changing solid/grey labels.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.module.css — Pattern-only label backing
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.module.css — Opaque strip labels
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.module.css — Pattern-only label backing
+

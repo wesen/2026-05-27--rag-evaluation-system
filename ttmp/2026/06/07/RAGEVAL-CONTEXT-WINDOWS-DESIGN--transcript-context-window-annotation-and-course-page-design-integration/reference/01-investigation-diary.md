@@ -848,3 +848,53 @@ This completes the first full atom → molecule → organism slice for context w
 
 ### Technical details
 - Storybook build output used for validation: `/tmp/rag-package-storybook-context-panel`.
+
+## Step 13: Improve Patterned Diagram Label Readability
+
+The first diagram panel review found that labels over striped and dotted fills were hard to read. I updated the diagram CSS so text over patterned backgrounds gets an opaque white backing, while plain white and grey/solid backgrounds retain their original treatment.
+
+This keeps the Classic Mac pattern language but prevents the pattern from fighting with the text. I validated the package typecheck and build after the CSS-only change.
+
+### Prompt Context
+
+**User prompt (verbatim):** "when overlaid on striped background, use a white background on the text. as it;'s hard to read. /tmp/pi-clipboard-b79b407d-b400-4e3f-a799-d5cf5a9d3b86.png"
+
+**Assistant interpretation:** Improve context diagram label contrast specifically where labels sit on striped/patterned fills.
+
+**Inferred user intent:** Preserve the patterned visual vocabulary while making labels readable in Storybook and future app pages.
+
+### What I did
+- Updated `ContextStripDiagram.module.css` so strip labels use an opaque white backing.
+- Updated `ContextStackDiagram.module.css` so only patterned kind rows add white text backing.
+- Updated `ContextTreemap.module.css` so only patterned kind tiles add white text backing.
+- Ran `pnpm --dir packages/rag-evaluation-site typecheck`.
+- Ran `pnpm --dir packages/rag-evaluation-site build`.
+
+### Why
+- Labels over diagonal/stipple fills had low contrast.
+- Applying the backing only to patterned kinds avoids reducing legibility on grey/solid contexts.
+
+### What worked
+- Package typecheck passed.
+- Package build passed.
+
+### What didn't work
+- My first attempt put a white backing on all stack/treemap labels, including grey/solid backgrounds. The user pointed out that grey backgrounds were fine before and that white-on-white/white backing was unnecessary there. I narrowed the CSS selectors to patterned kinds only.
+
+### What I learned
+- Label backing should be conditional by visual treatment, not global by component.
+
+### What was tricky to build
+- The CSS has separate class names per context kind, so the fix had to enumerate pattern-bearing kinds instead of styling `.label` universally.
+
+### What warrants a second pair of eyes
+- Confirm whether strip labels should also become conditional later. The strip labels are small and can sit on many patterns, so for now they keep the stronger white backing.
+
+### What should be done in the future
+- Include this readability state in visual sweep review before moving to transcript/annotation work.
+
+### Code review instructions
+- Review CSS diffs in `ContextStripDiagram.module.css`, `ContextStackDiagram.module.css`, and `ContextTreemap.module.css`.
+
+### Technical details
+- The pattern-backed kind selectors include system, instruction, summary, annotation, retrieval, tool, result, and generated.
