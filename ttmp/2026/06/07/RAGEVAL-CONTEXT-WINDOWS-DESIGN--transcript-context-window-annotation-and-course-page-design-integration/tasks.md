@@ -9,7 +9,25 @@
 - [x] Map requirements for transcript, context-window, annotation, and course pages
 - [x] Write phased integration plan with related files and validation steps
 - [x] Add package context DTOs and fixtures
-- [ ] Build package context-window diagram components with Storybook stories
-- [ ] Build package transcript and annotation components with Storybook stories
-- [ ] Compose web context-viewer pages from package components
-- [ ] Add Widget IR and Goja recipes after React components stabilize
+- [x] Define context component taxonomy and export style helpers for context kinds
+- [ ] Add ContextKindSwatch atom with Storybook states
+- [ ] Add ContextLegend molecule with pattern/tone/outline stories
+- [ ] Add ContextBudgetBar molecule with under/near/over-budget stories
+- [ ] Add ContextStripDiagram molecule with dense and selected segment stories
+- [ ] Add ContextStackDiagram molecule with grouped context-window stories
+- [ ] Add ContextTreemap molecule with proportional token stories
+- [ ] Compose ContextDiagramPanel organism for switching diagram views
+- [ ] Run package Storybook build and capture visual sweep for context diagram components
+- [ ] Ask for human Storybook feedback on context diagram visuals before transcript work
+- [ ] Add TranscriptMessageCard atom/molecule split and stories
+- [ ] Add AnnotationBadge/AnnotationNoteCard molecules and stories
+- [ ] Add TranscriptReaderPanel and AnnotationRailPanel organisms with controlled selection stories
+- [ ] Add AnchoredCommentCard/Rail components and stories from prototype comment states
+- [ ] Add CourseStepNav/CourseLessonPanel/CourseSlidePanel components and stories
+- [ ] Compose web ContextVisualizerPage from package components using fixtures
+- [ ] Compose web TranscriptAnnotationPage from package components using fixtures
+- [ ] Compose web ContextCoursePage from package components using fixtures
+- [ ] Wire optional web navigation entries and route/page state after page stories pass
+- [ ] Add Widget IR component types for stable context components
+- [ ] Add Goja widget.dsl recipes for contextWindowStudio and annotatedTranscript
+- [ ] Run final package/web typecheck, builds, Storybook builds, visual sweeps, and ticket closeout

@@ -569,3 +569,53 @@ I updated the post-unification integration plan with an explicit atomic layer sp
 
 ### Technical details
 - Source provenance docs reread: `sources/index.md` and `sources/01-recovered-design-docs.md`.
+
+## Step 8: Add Detailed Handoff Tasks and Context Kind Taxonomy
+
+I replaced the remaining broad context-viewer implementation tasks with a detailed handoff checklist that tracks the work through package atoms, molecules, organisms, Storybook validation, web pages, and eventual Widget IR/Goja recipes. This makes progress auditable at a component-layer level instead of leaving a single vague “build diagrams” task.
+
+I then completed the first implementation task by adding a typed context-kind taxonomy and visual style helpers. These helpers capture the prototype's `patterns.jsx` vocabulary in a React/package-safe form without yet adding rendering components.
+
+### Prompt Context
+
+**User prompt (verbatim):** "ok, add detailed tasks to the ticket so that we can exactly keep track of our progress and potentially hand off the work to somoeone else. then work on them one by one, committing at appropriate intervals, and feel free to ask me for feedback so i can verify the looks in the storybook when you think it's appropriate."
+
+**Assistant interpretation:** Expand the ticket into granular implementation tasks, then start working through them sequentially with commits at sensible boundaries and ask for visual feedback when Storybook output is ready.
+
+**Inferred user intent:** Make the context-viewer implementation handoff-safe and reviewable, especially for visual components.
+
+### What I did
+- Removed broad open tasks for diagrams/transcript/web/Widget IR and added detailed layer-by-layer tasks.
+- Added `packages/rag-evaluation-site/src/context/kinds.ts`.
+- Exported the kind helpers from `packages/rag-evaluation-site/src/context/index.ts`.
+- Ran `pnpm --dir packages/rag-evaluation-site typecheck`.
+
+### Why
+- The prototype's context kind map is a shared dependency for swatches, legends, budget bars, diagrams, transcript annotations, and future Widget IR recipes.
+- Capturing it as pure typed helpers avoids copying prototype globals or JSX before component APIs are designed.
+
+### What worked
+- Package typecheck passed.
+- The taxonomy preserves the prototype vocabulary while adding production kinds needed by the DTOs: `instruction`, `conversation`, `retrieval`, `tool`, `annotation`, `course`, and `other`.
+
+### What didn't work
+- N/A.
+
+### What I learned
+- The production taxonomy needs to be slightly broader than the prototype's `KIND` object because the normalized DTOs distinguish transcript/course concepts that the diagram prototype collapsed into broader buckets.
+
+### What was tricky to build
+- The style helpers need to support pattern, tone, and outline modes without depending on SVG IDs yet. I represented patterns as semantic names and CSS-variable-like fills so rendering components can decide whether to use SVG patterns, CSS backgrounds, or both.
+
+### What warrants a second pair of eyes
+- Review the exact `ContextPartKind` names and labels before they become visible in diagrams and Widget IR.
+
+### What should be done in the future
+- Implement `ContextKindSwatch` as the first visual atom using these helpers.
+
+### Code review instructions
+- Start with `packages/rag-evaluation-site/src/context/kinds.ts`.
+- Validate with `pnpm --dir packages/rag-evaluation-site typecheck`.
+
+### Technical details
+- Prototype source: `sources/03-context-viewer-design-iteration/patterns.jsx`.

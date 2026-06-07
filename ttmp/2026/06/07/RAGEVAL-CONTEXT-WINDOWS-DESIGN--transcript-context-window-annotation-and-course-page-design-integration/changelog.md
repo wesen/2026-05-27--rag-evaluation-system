@@ -94,3 +94,14 @@ Clarified post-unification plan with explicit atoms/molecules/organisms/pages/co
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/design-doc/03-context-viewer-integration-plan-after-design-system-unification.md — Adds atomic layer split for context-viewer implementation
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/reference/01-investigation-diary.md — Records source reread and clarified layer guidance
 
+
+## 2026-06-07
+
+Expanded context-viewer tasks into a handoff checklist and added typed context-kind style helpers.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/context/index.ts — Exports context kind helpers
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/context/kinds.ts — Context kind taxonomy and visual style helpers
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/tasks.md — Detailed handoff task list
+
