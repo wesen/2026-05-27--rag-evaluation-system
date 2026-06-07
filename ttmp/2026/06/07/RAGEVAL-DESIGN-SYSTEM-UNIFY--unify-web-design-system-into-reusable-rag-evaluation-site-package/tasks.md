@@ -11,4 +11,5 @@
 - [x] Add or preserve Storybook stories for shared components
 - [x] Run typecheck/build and css-visual-diff visual parity checks
 - [ ] Audit and remove remaining direct imports of duplicated local shared component files
-- [ ] Move package-owned Storybook coverage into the package or make web stories package-import only
+- [x] Move package-owned Storybook coverage into the package or make web stories package-import only
+- [ ] Run css-visual-diff sweeps against package-owned Storybook stories

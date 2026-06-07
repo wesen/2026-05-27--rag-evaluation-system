@@ -9,6 +9,13 @@
     "outDir": "dist",
     "allowImportingTsExtensions": false
   },
-  "include": ["src"],
-  "exclude": ["src/app/main.tsx"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "src/app/main.tsx",
+    "src/**/*.stories.tsx",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.module.css"
+  ]
 }

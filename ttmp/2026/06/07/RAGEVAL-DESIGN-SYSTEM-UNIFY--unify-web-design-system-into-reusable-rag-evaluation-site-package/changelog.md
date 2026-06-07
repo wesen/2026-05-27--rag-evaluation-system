@@ -37,3 +37,13 @@ Redirected shared web barrels/widgets to package exports, added Storybook packag
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-parity/compare-shared-components/01-compare.md — Visual parity report
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/components/PackageParity.stories.tsx — New visual parity Storybook fixture
 
+
+## 2026-06-07
+
+Moved reusable component and WidgetRenderer stories into the package, added package Storybook wiring, and added missing web-owned view/retro stories with a mock API provider.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/.storybook/main.ts — Package Storybook configuration
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/storybook/MockApiProvider.tsx — Mocked Storybook API provider for app stories
+

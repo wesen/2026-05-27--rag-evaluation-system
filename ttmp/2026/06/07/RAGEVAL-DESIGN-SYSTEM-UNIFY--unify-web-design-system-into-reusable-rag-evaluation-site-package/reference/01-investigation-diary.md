@@ -221,3 +221,76 @@ I added a Storybook parity story that renders representative local `web/src` com
 ### Technical details
 - css-visual-diff report: `sources/visual-parity/package-parity/compare-shared-components/01-compare.md`.
 - Pixel diff result: `0 changed pixels / 0%`.
+
+## Step 4: Move Shared Storybook Coverage into the Package and Add Missing Web View Stories
+
+I moved the Storybook ownership boundary to match the new component ownership boundary. Shared atoms, foundation primitives, layout primitives, shared molecules, and the WidgetRenderer story now live inside `packages/rag-evaluation-site`, while `web` keeps app-specific stories and the temporary package-parity fixture used for migration review.
+
+I also filled in Storybook gaps for web-owned views that were previously missing direct stories. Backend-connected view stories use a lightweight Storybook mock API/provider so they render without a live Go backend and without moving RTK Query containers into the reusable package.
+
+### Prompt Context
+
+**User prompt (verbatim):** "move all stories related to components now in the package into the package, yes. then add stories to the components that are missing some."
+
+**Assistant interpretation:** Move shared component and WidgetRenderer stories from `web` into `packages/rag-evaluation-site`, add package Storybook wiring, and add missing stories for remaining web-owned components/views.
+
+**Inferred user intent:** Make the package independently reviewable in Storybook and ensure app-specific components still have visual coverage after moving shared stories out of `web`.
+
+### What I did
+- Added package Storybook config under `packages/rag-evaluation-site/.storybook/`.
+- Added `storybook` and `build-storybook` scripts plus Storybook dev dependencies to `packages/rag-evaluation-site/package.json`.
+- Moved shared stories from `web/src/components/{atoms,foundation,layout,molecules}` to the matching package component folders.
+- Moved `web/src/widgets/WidgetRenderer.stories.tsx` to `packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx`.
+- Excluded `*.stories.*` from `packages/rag-evaluation-site/tsconfig.build.json` so package declaration builds do not publish story declarations.
+- Added `web/src/storybook/MockApiProvider.tsx` for app/container stories that need RTK Query and mocked `/api/v1` responses.
+- Added missing web-owned stories for `CorpusExplorerView`, `EmbeddingsView`, `EvaluationView`, `PipelineView`, `SearchView`, `WorkflowsView`, `DslPreviewPage`, `SearchWorkbenchPage`, `MacButton`, `MacMenuBar`, and `MacWindow`.
+- Updated the design guide with the accepted Storybook ownership decision.
+
+### Why
+- The reusable package should be reviewable without relying on web-local duplicate component implementations.
+- Web containers should remain in `web`, but they still need Storybook coverage for visual review and regression discovery.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir web typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-evaluation-site-storybook` passed.
+- `pnpm --dir web exec storybook build --output-dir /tmp/rag-web-storybook` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed, confirming stories are excluded from the production package declaration build.
+
+### What didn't work
+- Running `pnpm --dir packages/rag-evaluation-site build-storybook -- --output-dir /tmp/rag-evaluation-site-storybook` failed with:
+  - `error: too many arguments for 'build'. Expected 0 arguments but got 2.`
+- I reran Storybook through `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-evaluation-site-storybook`, which passed.
+- The first `web` typecheck failed because `MacMenuBar.stories.tsx` had no default `args`, and `MockApiProvider.tsx` used `Array.prototype.at` despite the repo targeting `ES2020`. I added default args and replaced `.at(-1)` with `.pop()`.
+
+### What I learned
+- Package Storybook can build cleanly with the existing package CSS import (`src/styles.css`) and does not need web `index.css`.
+- The app-level missing stories need mocked API responses rather than moving backend-connected containers into the package.
+
+### What was tricky to build
+- Storybook ownership is now split: package Storybook owns reusable components, while web Storybook owns backend-connected application containers. The tricky part was avoiding accidental package coupling to `web/src/services/api` while still giving `web` view stories realistic data.
+- The build config also needed a separate guard: package typecheck may include stories, but package declaration build should exclude them to avoid shipping Storybook artifacts.
+
+### What warrants a second pair of eyes
+- The `MockApiProvider` response shapes should be reviewed against backend API contracts. They are intentionally small, but if they drift too far from production responses, view stories can become misleading.
+- The temporary `PackageParity.stories.tsx` still imports web-local duplicate component files directly for comparison. That is useful during migration, but it should be deleted once local duplicates are removed.
+
+### What should be done in the future
+- Add css-visual-diff sweeps over package Storybook stories, not only the package parity fixture.
+- Decide when to delete the local duplicated web component implementations now that package stories no longer depend on them.
+- Consider moving `CoveragePanel` and `QueryPresetList` into the package once their ownership is decided.
+
+### Code review instructions
+- Start with `packages/rag-evaluation-site/.storybook/main.ts` and `packages/rag-evaluation-site/.storybook/preview.ts`.
+- Review one moved story per layer, for example `packages/rag-evaluation-site/src/components/atoms/Button/Button.stories.tsx`, `packages/rag-evaluation-site/src/components/layout/Panel/Panel.stories.tsx`, and `packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx`.
+- Review `web/src/storybook/MockApiProvider.tsx` and the new web view stories.
+- Validate with:
+  - `pnpm --dir packages/rag-evaluation-site typecheck`
+  - `pnpm --dir web typecheck`
+  - `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-evaluation-site-storybook`
+  - `pnpm --dir web exec storybook build --output-dir /tmp/rag-web-storybook`
+  - `pnpm --dir packages/rag-evaluation-site build`
+
+### Technical details
+- Package stories moved: atoms (6), foundation/overview (7 files plus CSS module), layout (8), shared molecules (3), WidgetRenderer (1).
+- New web-owned stories added: corpus, embeddings, evaluation, pipeline, search, workflows, DSL preview, search workbench, and retro Mac components.

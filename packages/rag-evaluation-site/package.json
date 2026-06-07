@@ -39,7 +39,9 @@
     "build:app": "vite build --config vite.app.config.ts",
     "sync:defaultspa": "node scripts/sync-defaultspa.mjs",
     "pack:smoke": "npm pack --dry-run ./dist",
-    "consumer:smoke": "node scripts/consumer-smoke.mjs"
+    "consumer:smoke": "node scripts/consumer-smoke.mjs",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
@@ -50,7 +52,9 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "typescript": "~6.0.2",
-    "vite": "^8.0.12"
+    "vite": "^8.0.12",
+    "@storybook/react-vite": "^10.4.1",
+    "storybook": "^10.4.1"
   },
   "dependencies": {}
 }
