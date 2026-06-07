@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "full-app-shell",
+  "url": "http://127.0.0.1:7071/sources/03-context-viewer-design-iteration/index.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "full-app-shell",
+  "selector": "#root",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:33:24.839888089Z"
+}

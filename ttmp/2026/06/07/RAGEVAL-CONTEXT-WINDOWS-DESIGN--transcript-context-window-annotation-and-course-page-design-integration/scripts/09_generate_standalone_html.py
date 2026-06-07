@@ -2,31 +2,58 @@
 """Generate standalone HTML files from context-viewer prototype JSX screens.
 
 Each screen gets its own HTML file that loads React/Babel from CDN,
-imports the prototype JSX files, and renders a single screen component.
+loads the original prototype CSS/JSX files, and renders a single screen
+component. The standalone HTML is only the browser harness; data-rag-* selectors
+inside the prototype are the extraction handles for screenshots/comparison.
 
-Follows the Pyxis pattern from prototype-design/-deprecated/visual-diff-scripts/15-generate-standalone-full-app-html.mjs
+This follows the Pyxis standalone prototype pattern.
 """
 
-import os
-import sys
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 TICKET_ROOT = SCRIPT_DIR.parent
-SRC_DIR = TICKET_ROOT / "sources" / "03-context-viewer-design-iteration"
 OUT_DIR = TICKET_ROOT / "prototype-design" / "standalone" / "full-app"
+WIDGET_OUT_DIR = TICKET_ROOT / "prototype-design" / "standalone" / "widgets"
 INDEX_DIR = TICKET_ROOT / "prototype-design" / "standalone"
 
-# Screen definitions: (html_slug, component_name, label, required_jsx_deps)
+# Paths are relative from prototype-design/standalone/full-app/*.html.
+SRC_BASE = "../../../sources/03-context-viewer-design-iteration"
+
+COMMON_DEPS = [
+    "ds",
+    "patterns",
+    "diagrams",
+    "data",
+    "data2",
+    "screens",
+    "screens2",
+    "screens3",
+    "tweaks-panel",
+]
+
+# Direct-render screen definitions: (html_slug, component_name, label).
+# The full app shell already exists as sources/03-context-viewer-design-iteration/index.html;
+# do not regenerate it here. These pages are only per-screen harnesses for
+# selector-based screenshot extraction.
 SCREENS = [
-    ("app", "App", "Full App Shell", ["patterns", "data", "tweaks-panel", "screens", "screens2", "screens3", "app"]),
-    ("landing", "LandingScreen", "Landing / Course", ["patterns", "data", "tweaks-panel", "screens"]),
-    ("visualize", "Visualize", "Visualize / Context Window", ["patterns", "data", "tweaks-panel", "screens"]),
-    ("transcript", "Transcript", "Transcript / Annotation", ["patterns", "data", "tweaks-panel", "screens2"]),
-    ("comments", "Comments", "Comments / Review", ["patterns", "data", "tweaks-panel", "screens3"]),
-    ("slides", "SlideViewer", "Slides / Presentation", ["patterns", "data", "tweaks-panel", "screens3"]),
-    ("handout", "Handout", "Handout / Downloads", ["patterns", "data", "tweaks-panel", "screens2"]),
-    ("upload", "Upload", "Upload Context Window", ["patterns", "data", "tweaks-panel", "screens"]),
+    ("landing", "LandingScreen", "Landing / Course"),
+    ("visualize", "Visualize", "Visualize / Context Window"),
+    ("transcript", "Transcript", "Transcript / Annotation"),
+    ("comments", "Comments", "Comments / Review"),
+    ("slides", "SlideViewer", "Slides / Presentation"),
+    ("handout", "Handout", "Handout / Downloads"),
+    ("upload", "Upload", "Upload Context Window"),
+]
+
+# Widget harnesses render prototype components directly so css-visual-diff can
+# capture original atoms/molecules that are otherwise hidden behind interaction
+# state (for example non-default diagram views).
+WIDGETS = [
+    ("strip-diagram", "Context Strip Diagram", 'const d = adapt(SNAPSHOTS[1], "strip"); return <div style={{ width: 720, padding: 24 }}><DiagramRenderer d={d} /><div style={{ marginTop: 18 }}><Legend /></div></div>;'),
+    ("stack-diagram", "Context Stack Diagram", 'const d = adapt(SNAPSHOTS[1], "stack"); return <div style={{ width: 720, padding: 24 }}><DiagramRenderer d={d} /><div style={{ marginTop: 18 }}><Legend /></div></div>;'),
+    ("budget-bar", "Context Budget Bar", 'const d = adapt(SNAPSHOTS[2], "budget"); return <div style={{ width: 720, padding: 24 }}><DiagramRenderer d={d} /><div style={{ marginTop: 18 }}><Legend /></div></div>;'),
+    ("treemap", "Context Treemap", 'const d = adapt(SNAPSHOTS[1], "treemap"); return <div style={{ width: 720, padding: 24 }}><DiagramRenderer d={d} /><div style={{ marginTop: 18 }}><Legend /></div></div>;'),
 ]
 
 HTML_TEMPLATE = '''<!doctype html>
@@ -35,9 +62,43 @@ HTML_TEMPLATE = '''<!doctype html>
 <meta charset="utf-8" />
 <title>RAG Evaluation · {label}</title>
 <meta name="viewport" content="width=1240" />
+<link rel="stylesheet" href="{src_base}/styles.css" />
 <style>
   html, body {{ margin: 0; padding: 0; background: #fff; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }}
-  #root {{ width: 1240px; min-height: 760px; background: #fff; overflow: visible; }}
+  #root {{ width: 1240px; height: 760px; min-height: 760px; background: #fff; overflow: hidden; }}
+  body.standalone-direct #root > .grow {{ height: 760px; }}
+</style>
+</head>
+<body class="standalone-direct">
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+
+{deps}
+{app_dep}
+
+<script type="text/babel" data-presets="react">
+  function StandaloneScreen() {{
+    return <{component} />;
+  }}
+  {render_code}
+</script>
+</body>
+</html>
+'''
+
+WIDGET_HTML_TEMPLATE = '''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>RAG Evaluation Prototype Widget · {label}</title>
+<meta name="viewport" content="width=760" />
+<link rel="stylesheet" href="{src_base}/styles.css" />
+<style>
+  html, body {{ margin: 0; padding: 0; background: #fff; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }}
+  #root {{ width: 760px; min-height: 520px; background: #fff; overflow: visible; }}
 </style>
 </head>
 <body>
@@ -50,10 +111,10 @@ HTML_TEMPLATE = '''<!doctype html>
 {deps}
 
 <script type="text/babel" data-presets="react">
-  function StandaloneScreen() {{
-    return <{component} />;
+  function StandaloneWidget() {{
+    {body}
   }}
-  ReactDOM.createRoot(document.getElementById("root")).render(<StandaloneScreen />);
+  ReactDOM.createRoot(document.getElementById("root")).render(<StandaloneWidget />);
 </script>
 </body>
 </html>
@@ -78,7 +139,7 @@ CATALOG_TEMPLATE = '''<!doctype html>
 </head>
 <body>
 <h1>RAG Evaluation — Context Viewer prototype pages</h1>
-<p>Standalone HTML entrypoints for baseline screenshot/CSS extraction. These load the prototype JSX via CDN and render each screen at a fixed viewport.</p>
+<p>Standalone HTML entrypoints for baseline screenshot/CSS extraction. These load the prototype JSX and render each screen at a fixed viewport.</p>
 <ul>
 {links}
 </ul>
@@ -87,46 +148,64 @@ CATALOG_TEMPLATE = '''<!doctype html>
 '''
 
 
-def generate_html(slug, component, label, deps):
-    """Generate standalone HTML for one screen."""
+def generate_html(slug: str, component: str, label: str) -> str:
     deps_html = "".join(
-        f'<script type="text/babel" src="../../sources/03-context-viewer-design-iteration/{d}.jsx"></script>'
-        for d in deps
+        f'<script type="text/babel" src="{SRC_BASE}/{d}.jsx"></script>\n'
+        for d in COMMON_DEPS
     )
+    app_dep = ""
+    render_code = 'ReactDOM.createRoot(document.getElementById("root")).render(<StandaloneScreen />);'
     return HTML_TEMPLATE.format(
         label=label,
         component=component,
         deps=deps_html,
+        app_dep=app_dep,
+        src_base=SRC_BASE,
+        render_code=render_code,
     )
 
 
-def generate_catalog():
-    """Generate the prototype page catalog index."""
-    links = "".join(
-        f'  <li><a href="full-app/{slug}.html">{label}</a><span class="label">{label}</span></li>\n'
-        for slug, component, label, deps in SCREENS
+def generate_widget_html(label: str, body: str) -> str:
+    deps_html = "".join(
+        f'<script type="text/babel" src="{SRC_BASE}/{d}.jsx"></script>\n'
+        for d in COMMON_DEPS
     )
-    return CATALOG_TEMPLATE.format(links=links)
+    return WIDGET_HTML_TEMPLATE.format(label=label, body=body, deps=deps_html, src_base=SRC_BASE)
 
 
-def main():
-    out_dir = OUT_DIR
-    out_dir.mkdir(parents=True, exist_ok=True)
+def generate_catalog() -> str:
+    screen_links = "".join(
+        f'  <li><a href="full-app/{slug}.html">{label}</a><span class="label">Screen harness</span></li>\n'
+        for slug, component, label in SCREENS
+    )
+    widget_links = "".join(
+        f'  <li><a href="widgets/{slug}.html">{label}</a><span class="label">Widget harness</span></li>\n'
+        for slug, label, body in WIDGETS
+    )
+    source_link = '  <li><a href="../../sources/03-context-viewer-design-iteration/index.html">Original full app shell</a><span class="label">Existing prototype index.html</span></li>\n'
+    return CATALOG_TEMPLATE.format(links=source_link + screen_links + widget_links)
 
-    # Index catalog
+
+def main() -> None:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    WIDGET_OUT_DIR.mkdir(parents=True, exist_ok=True)
+    INDEX_DIR.mkdir(parents=True, exist_ok=True)
+
     index_path = INDEX_DIR / "index.html"
     index_path.write_text(generate_catalog())
     print(f"Written: {index_path}")
 
-    count = 0
-    for slug, component, label, deps in SCREENS:
-        html = generate_html(slug, component, label, deps)
-        path = out_dir / f"{slug}.html"
-        path.write_text(html)
-        count += 1
-        print(f"Written: {path} (deps: {', '.join(deps)})")
+    for slug, component, label in SCREENS:
+        path = OUT_DIR / f"{slug}.html"
+        path.write_text(generate_html(slug, component, label))
+        print(f"Written: {path} ({component})")
 
-    print(f"\nDone — generated {count} standalone HTML files")
+    for slug, label, body in WIDGETS:
+        path = WIDGET_OUT_DIR / f"{slug}.html"
+        path.write_text(generate_widget_html(label, body))
+        print(f"Written: {path} (widget)")
+
+    print(f"\nDone — generated {len(SCREENS)} screen HTML files and {len(WIDGETS)} widget HTML files")
 
 
 if __name__ == "__main__":

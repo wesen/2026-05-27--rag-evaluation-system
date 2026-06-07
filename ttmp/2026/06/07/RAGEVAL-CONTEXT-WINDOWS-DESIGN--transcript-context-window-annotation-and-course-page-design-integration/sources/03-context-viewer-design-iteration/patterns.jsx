@@ -124,7 +124,7 @@ function Legend({ kinds, compact = false }) {
   const mode = React.useContext(DiagramStyleContext);
   const list = kinds || ["system", "context", "summary", "result", "generated", "evicted", "active", "empty"];
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: compact ? "4px 14px" : "6px 18px" }}>
+    <div data-rag-molecule="ContextLegend" style={{ display: "flex", flexWrap: "wrap", gap: compact ? "4px 14px" : "6px 18px" }}>
       {list.map((k) => {
         const spec = resolveKind(k, mode);
         return (

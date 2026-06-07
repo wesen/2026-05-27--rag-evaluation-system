@@ -83,7 +83,7 @@ function StripDiagram({ d }) {
   const bandBot = y0 + bandH;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+    <svg data-rag-molecule="ContextStripDiagram" viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
       <PatternDefs />
       {segLabels.map((s, i) => {
         const c = cx(s.label);
@@ -135,7 +135,7 @@ function StackDiagram({ d }) {
   const labelX = x0 + stackW + 20;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+    <svg data-rag-molecule="ContextStackDiagram" viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
       <PatternDefs />
       {placed.map((l, i) => (
         <g key={i}>
@@ -185,7 +185,7 @@ function BudgetBar({ d }) {
   const H = y0 + barH + 56;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+    <svg data-rag-molecule="ContextBudgetBar" viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
       <PatternDefs />
       {/* readout */}
       <text x={pad} y={20} fontFamily={DMONO} fontSize={13} fontWeight={700} fill="#000">{used.toLocaleString()} / {limit.toLocaleString()} tokens</text>
@@ -269,7 +269,7 @@ function Treemap({ d }) {
   const cells = squarify(segs, pad, pad + 4, W - pad * 2, H - pad * 2);
   const total = segs.reduce((s, x) => s + x.value, 0);
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+    <svg data-rag-molecule="ContextTreemap" viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
       <PatternDefs />
       {d.caption && <text x={pad} y={16} fontFamily={DFONT} fontSize={12} fontWeight={700} fill="#000">{d.caption}</text>}
       {cells.map((c, i) => {

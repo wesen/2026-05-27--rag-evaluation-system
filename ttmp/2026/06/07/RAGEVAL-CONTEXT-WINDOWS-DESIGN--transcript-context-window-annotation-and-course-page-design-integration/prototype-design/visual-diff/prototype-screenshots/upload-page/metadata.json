@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "upload-page",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/upload.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "upload-page",
+  "selector": "[data-rag-organism=\"Upload\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:34:39.690172115Z"
+}

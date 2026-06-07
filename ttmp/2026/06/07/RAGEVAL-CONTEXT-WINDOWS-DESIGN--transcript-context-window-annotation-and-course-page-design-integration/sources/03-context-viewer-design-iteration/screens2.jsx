@@ -76,7 +76,7 @@ function Handout() {
   const doc = HANDOUT.docs.find((d) => d.id === sel);
   const fmtIcon = (f) => f === "PDF" ? "▤" : f === "JSON" ? "{ }" : "¶";
   return (
-    <div className="grow" style={{ display: "flex", minHeight: 0, background: "#fff" }}>
+    <div className="grow" data-rag-organism="Handout" style={{ display: "flex", minHeight: 0, background: "#fff" }}>
       {/* doc list */}
       <div className="mac-scroll" style={{ flex: "0 0 268px", borderRight: "1px solid #000", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "14px 16px", borderBottom: "1px solid #000" }}>
@@ -97,7 +97,7 @@ function Handout() {
         </div>
       </div>
       {/* preview */}
-      <div className="grow mac-scroll" data-rag-organism="TranscriptReaderPanel" style={{ minWidth: 0 }}>
+      <div className="grow mac-scroll" style={{ minWidth: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 18px", borderBottom: "1px solid #000", background: "#fafafa", position: "sticky", top: 0, zIndex: 2 }}>
           <div style={{ display: "flex", gap: 10, alignItems: "baseline" }}>
             <span className="mono" style={{ fontSize: 11, color: "#666" }}>{doc.file}</span>
@@ -129,7 +129,7 @@ function Transcript() {
   const total = cumulative[cumulative.length - 1];
 
   return (
-    <div className="grow" style={{ display: "flex", minHeight: 0, background: "#fff" }}>
+    <div className="grow" data-rag-organism="TranscriptReaderPanel" style={{ display: "flex", minHeight: 0, background: "#fff" }}>
       {/* transcript */}
       <div className="grow mac-scroll" style={{ minWidth: 0, display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "10px 18px", borderBottom: "1px solid #000", background: "#fafafa", position: "sticky", top: 0, zIndex: 2 }}>
@@ -150,7 +150,7 @@ function Transcript() {
             const num = annoNum[i];
             const isActive = active === i;
             return (
-              <div key={i} onClick={() => m.anno && setActive(i)}
+              <div key={i} data-rag-molecule="TranscriptMessageCard" onClick={() => m.anno && setActive(i)}
                 style={{ border: "1px solid", borderColor: m.anno && isActive ? "var(--mac-accent)" : "#000", boxShadow: m.anno && isActive ? "0 0 0 1px var(--mac-accent)" : "none", cursor: m.anno ? "pointer" : "default", background: "#fff", maxWidth: m.role === "user" ? 520 : 580, alignSelf: m.role === "user" ? "flex-end" : "flex-start", width: "100%" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 8px", borderBottom: "1px solid #000", background: m.role === "user" ? "#eee" : "#fff" }}>
                   <span style={{ color: rm.color, fontWeight: 700 }}>{rm.glyph}</span>
@@ -166,7 +166,7 @@ function Transcript() {
         </div>
       </div>
       {/* annotations rail */}
-      <div className="mac-scroll" data-rag-organism="Handout" style={{ flex: "0 0 280px", borderLeft: "1px solid #000", background: "#fafafa", display: "flex", flexDirection: "column" }}>
+      <div className="mac-scroll" data-rag-organism="AnnotationRailPanel" style={{ flex: "0 0 280px", borderLeft: "1px solid #000", background: "#fafafa", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #000" }}>
           <SectionLabel>CONTEXT-ENGINEERING NOTES</SectionLabel>
           <Caption style={{ display: "block", marginTop: 3 }}>What each message costs the window. Click a note or a message to focus it.</Caption>

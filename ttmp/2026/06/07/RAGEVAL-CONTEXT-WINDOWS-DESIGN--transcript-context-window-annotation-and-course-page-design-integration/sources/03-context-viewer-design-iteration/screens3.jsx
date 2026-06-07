@@ -117,14 +117,14 @@ function Comments({ commentUI }) {
 
       {/* rail (rail + popover modes show list; sticky hides full list) */}
       {commentUI !== "sticky" && (
-        <div className="mac-scroll" style={{ flex: "0 0 270px", borderLeft: "1px solid #000", background: "#fafafa", display: "flex", flexDirection: "column" }}>
+        <div className="mac-scroll" data-rag-organism="AnchoredCommentRail" style={{ flex: "0 0 270px", borderLeft: "1px solid #000", background: "#fafafa", display: "flex", flexDirection: "column" }}>
           <div style={{ padding: "10px 14px", borderBottom: "1px solid #000" }}>
             <SectionLabel>COMMENTS</SectionLabel>
           </div>
           <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 10 }}>
             {comments.length === 0 && <Caption>No comments yet. Click ＋ Add comment.</Caption>}
             {comments.map((c, i) => (
-              <div key={c.id} onClick={() => setActive(c.id)} style={{ border: "1px solid", borderColor: active === c.id ? "var(--mac-accent)" : "#000", background: "#fff", cursor: "pointer", boxShadow: active === c.id ? "2px 2px 0 0 rgba(0,0,0,0.4)" : "none" }}>
+              <div key={c.id} data-rag-molecule="AnchoredCommentCard" onClick={() => setActive(c.id)} style={{ border: "1px solid", borderColor: active === c.id ? "var(--mac-accent)" : "#000", background: "#fff", cursor: "pointer", boxShadow: active === c.id ? "2px 2px 0 0 rgba(0,0,0,0.4)" : "none" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 8px", borderBottom: "1px solid #000", background: active === c.id ? "var(--mac-accent)" : "#000", color: "#fff" }}>
                   <span style={{ width: 16, height: 16, border: "1px solid #fff", display: "grid", placeItems: "center", font: "700 10px/1 var(--font-mono)" }}>{i + 1}</span>
                   <span className="mono" style={{ fontSize: 10, fontWeight: 700 }}>{c.author.toUpperCase()}</span>
@@ -170,7 +170,7 @@ function SlideViewer() {
   return (
     <div className="grow" data-rag-organism="SlideViewer" style={{ display: "flex", flexDirection: "column", minHeight: 0, background: "#fff" }}>
       <div ref={hostRef} className="grow desktop-bg" style={{ display: "grid", placeItems: "center", minHeight: 0, overflow: "hidden", position: "relative" }}>
-        <div style={{ width: SLIDE_W, height: SLIDE_H, transform: `scale(${scale})`, transformOrigin: "center", background: "#fff", border: "1px solid #000", boxShadow: "3px 3px 0 0 rgba(0,0,0,0.5)", display: "flex", flexDirection: "column" }}>
+        <div data-rag-organism="CourseSlidePanel" style={{ width: SLIDE_W, height: SLIDE_H, transform: `scale(${scale})`, transformOrigin: "center", background: "#fff", border: "1px solid #000", boxShadow: "3px 3px 0 0 rgba(0,0,0,0.5)", display: "flex", flexDirection: "column" }}>
           {/* slide titlebar */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 36px 14px", borderBottom: "2px solid #000" }}>
             <div>

@@ -2,16 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>RAG Evaluation · Slides / Presentation</title>
-<meta name="viewport" content="width=1240" />
+<title>RAG Evaluation Prototype Widget · Context Stack Diagram</title>
+<meta name="viewport" content="width=760" />
 <link rel="stylesheet" href="../../../sources/03-context-viewer-design-iteration/styles.css" />
 <style>
   html, body { margin: 0; padding: 0; background: #fff; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  #root { width: 1240px; height: 760px; min-height: 760px; background: #fff; overflow: hidden; }
-  body.standalone-direct #root > .grow { height: 760px; }
+  #root { width: 760px; min-height: 520px; background: #fff; overflow: visible; }
 </style>
 </head>
-<body class="standalone-direct">
+<body>
 <div id="root"></div>
 
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
@@ -29,12 +28,11 @@
 <script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/tweaks-panel.jsx"></script>
 
 
-
 <script type="text/babel" data-presets="react">
-  function StandaloneScreen() {
-    return <SlideViewer />;
+  function StandaloneWidget() {
+    const d = adapt(SNAPSHOTS[1], "stack"); return <div style={{ width: 720, padding: 24 }}><DiagramRenderer d={d} /><div style={{ marginTop: 18 }}><Legend /></div></div>;
   }
-  ReactDOM.createRoot(document.getElementById("root")).render(<StandaloneScreen />);
+  ReactDOM.createRoot(document.getElementById("root")).render(<StandaloneWidget />);
 </script>
 </body>
 </html>

@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "widget-stack-diagram",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/widgets/stack-diagram.html",
+  "viewport": {
+    "width": 760,
+    "height": 520
+  },
+  "name": "widget-stack-diagram",
+  "selector": "[data-rag-molecule=\"ContextStackDiagram\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:33:53.177792707Z"
+}

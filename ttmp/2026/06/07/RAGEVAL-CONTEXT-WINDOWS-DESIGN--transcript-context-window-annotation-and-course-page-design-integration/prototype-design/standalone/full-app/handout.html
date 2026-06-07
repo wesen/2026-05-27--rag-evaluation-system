@@ -2,21 +2,33 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>RAG Evaluation · Handout</title>
+<title>RAG Evaluation · Handout / Downloads</title>
 <meta name="viewport" content="width=1240" />
+<link rel="stylesheet" href="../../../sources/03-context-viewer-design-iteration/styles.css" />
 <style>
   html, body { margin: 0; padding: 0; background: #fff; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  #root { width: 1240px; min-height: 760px; background: #fff; overflow: visible; }
+  #root { width: 1240px; height: 760px; min-height: 760px; background: #fff; overflow: hidden; }
+  body.standalone-direct #root > .grow { height: 760px; }
 </style>
 </head>
-<body>
+<body class="standalone-direct">
 <div id="root"></div>
 
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
 
-<script type="text/babel" src="../../sources/03-context-viewer-design-iteration/patterns.jsx"></script><script type="text/babel" src="../../sources/03-context-viewer-design-iteration/data.jsx"></script><script type="text/babel" src="../../sources/03-context-viewer-design-iteration/tweaks-panel.jsx"></script><script type="text/babel" src="../../sources/03-context-viewer-design-iteration/screens2.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/ds.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/patterns.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/diagrams.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/data.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/data2.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/screens.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/screens2.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/screens3.jsx"></script>
+<script type="text/babel" src="../../../sources/03-context-viewer-design-iteration/tweaks-panel.jsx"></script>
+
+
 
 <script type="text/babel" data-presets="react">
   function StandaloneScreen() {

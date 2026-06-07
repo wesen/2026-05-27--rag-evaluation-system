@@ -1232,3 +1232,72 @@ This gives us a repeatable way to compare the original design prototype against 
 - Standalone HTML output: `prototype-design/standalone/full-app/{app,landing,visualize,transcript,comments,slides,handout,upload}.html`
 - Visual-diff spec: `visual-diff/userland-specs.desktop.visual.yml`
 - Screenshot output: `prototype-design/visual-diff/prototype-screenshots/`
+
+## Step 21: Capture Original Prototype Screenshots with css-visual-diff JS Verbs
+
+I corrected the prototype screenshot extraction pipeline to use `css-visual-diff`'s JavaScript verb runtime instead of importing Playwright directly. The standalone HTML files now serve as render harnesses, while `data-rag-*` attributes are the extraction handles for page and widget screenshots.
+
+The capture pass succeeded for 22 targets: full app shell, page-level surfaces, core diagram widgets, transcript/comment widgets, and annotation/comment rails. Contact-sheet review confirmed that the captures render real prototype UI rather than blank or script-broken pages.
+
+### Prompt Context
+
+**User prompt (verbatim):** "go ahead"
+
+**Assistant interpretation:** Proceed with the prototype capture work using the corrected css-visual-diff/jsverb approach.
+
+**Inferred user intent:** Produce actual screenshot artifacts from the original prototype that can later be compared against package Storybook components.
+
+### What I did
+- Replaced direct Node Playwright usage in `scripts/08_capture_prototype_screenshots.sh` with a css-visual-diff jsverb workflow.
+- Added `scripts/10_rag_prototype_cssvd.js`, a project-local css-visual-diff verb repository with `rag prototype list-targets`, `capture-target`, and `capture-all` commands.
+- Corrected standalone generation to use the existing original full-app index at `sources/03-context-viewer-design-iteration/index.html` and only generate per-screen/widget harnesses.
+- Added widget harness pages for strip, stack, budget, and treemap diagram variants.
+- Added prototype `data-rag-molecule` annotations for diagram SVGs, legends, transcript message cards, and anchored comment cards.
+- Fixed misplaced prototype annotations in `screens2.jsx` so Handout, TranscriptReaderPanel, and AnnotationRailPanel have correct selectors.
+- Ran `scripts/08_capture_prototype_screenshots.sh` successfully.
+- Captured 22 prototype screenshots and generated page/widget contact sheets.
+
+### Why
+- css-visual-diff already owns the browser runtime and jsverb API, so importing Playwright directly was unnecessary and failed in this repo.
+- The original prototype has a valid `index.html`; duplicating it as generated `app.html` would introduce a second source of truth.
+- Widget harnesses are needed for non-default prototype states such as stack, budget, and treemap diagrams.
+
+### What worked
+- `css-visual-diff verbs --repository <ticket>/scripts rag prototype list-targets --output json` discovered the new commands.
+- `scripts/08_capture_prototype_screenshots.sh` captured 22 targets with zero failures.
+- Contact sheets rendered pages and widgets correctly.
+- Screenshot artifacts are under `prototype-design/visual-diff/prototype-screenshots/`.
+
+### What didn't work
+- The earlier direct Node/Playwright script failed with `ERR_MODULE_NOT_FOUND: Cannot find package 'playwright'` because this repo does not install Playwright as a local Node dependency.
+- The first generated standalone pages missed `styles.css`, `ds.jsx`, `diagrams.jsx`, and `data2.jsx`; the generator now mirrors the original prototype dependency order.
+
+### What I learned
+- The Pyxis pattern's current form is a css-visual-diff jsverb repository, not ad hoc Playwright scripting.
+- The standalone HTML pages are just render harnesses; selector capture should remain `data-rag-*` based.
+
+### What was tricky to build
+- Some prototype screens expose widgets only behind local state (diagram tabs). I added direct widget harnesses for the diagram variants so the original strip/stack/budget/treemap visuals can be captured without driving UI interaction.
+- Existing annotations from the previous attempt had landed on the wrong `screens2.jsx` elements; I corrected those before capture.
+
+### What warrants a second pair of eyes
+- The target list in `scripts/10_rag_prototype_cssvd.js` should be reviewed before using these as canonical parity baselines.
+- The next comparison pass should decide whether to compare full pages or only like-for-like component regions.
+
+### What should be done in the future
+- Run prototype-vs-package css-visual-diff comparisons using the captured target list and package Storybook story URLs.
+- Write a visual parity gap report from the comparison artifacts.
+
+### Code review instructions
+- Start with `scripts/10_rag_prototype_cssvd.js` and `scripts/08_capture_prototype_screenshots.sh`.
+- Inspect `prototype-design/visual-diff/prototype-screenshots/summary.json` and the two contact sheets.
+- Verify selectors in the modified prototype JSX files.
+
+### Technical details
+- Capture command: `scripts/08_capture_prototype_screenshots.sh`
+- jsverb repository command: `css-visual-diff verbs --repository <ticket>/scripts rag prototype capture-all`
+- Captured targets: 22
+- Failures: 0
+- Contact sheets:
+  - `prototype-design/visual-diff/prototype-screenshots/00-page-contact-sheet.png`
+  - `prototype-design/visual-diff/prototype-screenshots/00-widget-contact-sheet.png`

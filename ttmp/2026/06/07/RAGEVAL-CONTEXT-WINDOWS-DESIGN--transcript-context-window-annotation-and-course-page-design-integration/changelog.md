@@ -235,3 +235,17 @@ Phase 2: prototype-to-design visual comparison — standalone HTML generation, d
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../sources/03-context-viewer-design-iteration/screens2.jsx — data-rag-organism annotations
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../sources/03-context-viewer-design-iteration/screens3.jsx — data-rag-organism annotations
 
+
+## 2026-06-07
+
+Captured 22 original prototype page/widget screenshots using css-visual-diff jsverbs and added contact sheets.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/00-page-contact-sheet.png — Page capture contact sheet
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/00-widget-contact-sheet.png — Widget capture contact sheet
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/summary.json — Capture results summary
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/scripts/08_capture_prototype_screenshots.sh — Runs css-visual-diff jsverb capture over original prototype pages/widgets
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/scripts/09_generate_standalone_html.py — Generates per-screen and widget standalone harnesses
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/scripts/10_rag_prototype_cssvd.js — Project-local css-visual-diff jsverb capture commands
+
