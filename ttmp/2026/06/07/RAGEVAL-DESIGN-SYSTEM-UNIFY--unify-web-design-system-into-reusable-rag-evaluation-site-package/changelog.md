@@ -77,3 +77,12 @@ Prepared css-visual-diff review-site data for the package Storybook sweep and se
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/scripts/05_prepare_package_storybook_review_site.py — Review-site data converter
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/summary.json — Review-site manifest
 
+
+## 2026-06-07
+
+Trimmed review-site left/right screenshots so package Storybook cards are human-readable instead of viewport-wide strips.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/scripts/05_prepare_package_storybook_review_site.py — Trims review-site display images
+

@@ -7,6 +7,7 @@ import csv
 import json
 import os
 import shutil
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +30,27 @@ def link_or_copy(src: Path, dst: Path) -> None:
         rel = os.path.relpath(src, start=dst.parent)
         dst.symlink_to(rel)
     except OSError:
+        shutil.copy2(src, dst)
+
+
+def trim_for_review(src: Path, dst: Path) -> None:
+    """Create a review-friendly image crop from a css-visual-diff screenshot.
+
+    Storybook's #storybook-root often spans the whole viewport even when the
+    story content is a small control. The raw screenshots are correct for pixel
+    comparison but too wide/tiny in the review UI, so trim whitespace and add a
+    small white border for human review.
+    """
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    if dst.exists() or dst.is_symlink():
+        dst.unlink()
+    result = subprocess.run(
+        ["convert", str(src), "-trim", "+repage", "-bordercolor", "white", "-border", "12", str(dst)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
         shutil.copy2(src, dst)
 
 
@@ -64,17 +86,23 @@ def main() -> None:
             section = story_id
             dst_dir = REVIEW / PAGE / "artifacts" / section
 
-            file_map = {
+            link_map = {
                 "compare.json": compare_src,
-                "left_region.png": src_dir / "url1_screenshot.png",
-                "right_region.png": src_dir / "url2_screenshot.png",
                 "diff_only.png": src_dir / "diff_only.png",
                 "diff_comparison.png": src_dir / "diff_comparison.png",
             }
-            for dst_name, src in file_map.items():
+            for dst_name, src in link_map.items():
                 if not src.exists():
                     raise SystemExit(f"missing artifact for {story_id}: {src}")
                 link_or_copy(src, dst_dir / dst_name)
+
+            left_src = src_dir / "url1_screenshot.png"
+            right_src = src_dir / "url2_screenshot.png"
+            for src in [left_src, right_src]:
+                if not src.exists():
+                    raise SystemExit(f"missing artifact for {story_id}: {src}")
+            trim_for_review(left_src, dst_dir / "left_region.png")
+            trim_for_review(right_src, dst_dir / "right_region.png")
 
             changed_percent = float(pixel.get("changed_percent", 0) or 0)
             changed_pixels = int(pixel.get("changed_pixels", 0) or 0)
@@ -91,11 +119,11 @@ def main() -> None:
                 "totalPixels": int(pixel.get("total_pixels", 0) or 0),
                 "threshold": int(pixel.get("threshold", 30) or 30),
                 "variant": "desktop",
-                "leftRegionPath": str((dst_dir / "left_region.png").resolve()),
-                "rightRegionPath": str((dst_dir / "right_region.png").resolve()),
-                "diffOnlyPath": str((dst_dir / "diff_only.png").resolve()),
-                "diffComparisonPath": str((dst_dir / "diff_comparison.png").resolve()),
-                "artifactJson": str((dst_dir / "compare.json").resolve()),
+                "leftRegionPath": str((dst_dir / "left_region.png").absolute()),
+                "rightRegionPath": str((dst_dir / "right_region.png").absolute()),
+                "diffOnlyPath": str((dst_dir / "diff_only.png").absolute()),
+                "diffComparisonPath": str((dst_dir / "diff_comparison.png").absolute()),
+                "artifactJson": str((dst_dir / "compare.json").absolute()),
                 "leftSelector": data.get("inputs", {}).get("selector1", "#storybook-root"),
                 "rightSelector": data.get("inputs", {}).get("selector2", "#storybook-root"),
                 "styleChangeCount": len(style_diffs),

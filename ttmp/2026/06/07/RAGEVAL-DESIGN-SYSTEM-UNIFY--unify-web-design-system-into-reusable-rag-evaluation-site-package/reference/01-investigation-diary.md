@@ -491,3 +491,54 @@ This step did not rerun browser comparisons; it reorganized the already-captured
 - Review site data root: `sources/visual-parity/package-story-sweep-review/`.
 - tmux session: `cssvd-package-review`.
 - URL: `http://127.0.0.1:8097`.
+
+## Step 8: Make Review-Site Screenshots Human-Readable
+
+The first review-site conversion technically served images, but the card images were hard to inspect because many Storybook screenshots were as wide as the viewport while their content was only a small control. I updated the converter so the review-site `left_region.png` and `right_region.png` files are whitespace-trimmed copies with a small white border, while the raw sweep artifacts remain unchanged for traceability.
+
+I verified the fix in the browser: the first review card now shows readable side-by-side button screenshots instead of tiny wide strips. The labels still say `Prototype` and `React` because that is css-visual-diff review-site terminology, but in this baseline both sides are package Storybook captures.
+
+### Prompt Context
+
+**User prompt (verbatim):** "oh they're super small for some reason it looks like? can we make them not so wide?"
+
+**Assistant interpretation:** Fix the review-site presentation so screenshot crops are not dominated by Storybook root whitespace.
+
+**Inferred user intent:** Make the interactive review UI usable for human visual inspection, not just technically serveable.
+
+### What I did
+- Updated `scripts/05_prepare_package_storybook_review_site.py` to run ImageMagick `convert -trim +repage -bordercolor white -border 12` for review-site left/right region images.
+- Regenerated `sources/visual-parity/package-story-sweep-review/`.
+- Restarted `css-visual-diff serve` in tmux session `cssvd-package-review`.
+- Opened the page with Playwright, clicked the first review card, and captured `cssvd-review-trimmed.png` for verification.
+
+### Why
+- The raw `#storybook-root` crops are correct for measurement but often too wide for review because Storybook root spans the viewport.
+- The review site is for human inspection, so it should use tighter display crops.
+
+### What worked
+- The first card now shows clear, readable side-by-side images for the button variants.
+- `docmgr doctor --ticket RAGEVAL-DESIGN-SYSTEM-UNIFY --stale-after 30` passed.
+
+### What didn't work
+- N/A after the trimming update.
+
+### What I learned
+- The review site labels are generic (`Prototype`/`React`) and cannot be interpreted literally for this self-baseline use case.
+- For small Storybook controls, whitespace trimming is necessary for usable review cards.
+
+### What was tricky to build
+- I kept raw sweep artifacts unchanged and only trimmed the serve-layout copies, so future machine comparisons can still refer back to the original css-visual-diff outputs.
+
+### What warrants a second pair of eyes
+- Spot-check larger stories to ensure trimming does not remove meaningful whitespace that designers care about.
+
+### What should be done in the future
+- If true baseline-vs-current comparisons are added, use raw captures for diff computation and trimmed copies only for human review presentation.
+
+### Code review instructions
+- Review `trim_for_review` in `scripts/05_prepare_package_storybook_review_site.py`.
+- Open `http://127.0.0.1:8097`, expand the first few cards, and confirm the images are readable.
+
+### Technical details
+- Requires ImageMagick `convert`; if unavailable, the converter falls back to copying the raw image.
