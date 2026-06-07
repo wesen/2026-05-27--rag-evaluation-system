@@ -1,0 +1,52 @@
+d3ef42d	2026-06-07 15:51:54 -0400	fix(widget): address PR review feedback
+837c8ab	2026-06-07 14:15:56 -0400	Fix design reference CSS extraction and docs
+95895aa	2026-06-07 12:56:17 -0400	Add SSR design system reference renderer
+e80f1ab	2026-06-05 13:59:18 -0400	Add go-go-golems lint and logcopter plumbing
+ac3ea44	2026-06-05 12:32:56 -0400	Add semantic widget DSL recipes
+94c9701	2026-06-05 12:22:18 -0400	Add default shell for widget site app
+f65e7a6	2026-06-05 10:11:45 -0400	Add standalone widget site token bridge
+70f30b1	2026-06-04 23:37:31 -0400	Add xgoja widget site provider and example
+9c2d1bf	2026-06-04 21:22:53 -0400	:sparkles: Add UI DSL
+ad9592c	2026-06-02 09:48:37 -0400	fix: use defined RAG color tokens
+e6d7c24	2026-06-01 21:32:04 -0400	feat: extract RAG app navigation
+826ed52	2026-06-01 21:26:04 -0400	feat: remove leftover RAG global utilities
+2a98180	2026-06-01 21:17:28 -0400	feat: atomize RAG form controls
+30f4c66	2026-06-01 20:53:19 -0400	feat: remove RAG legacy global CSS
+e09259a	2026-06-01 20:20:22 -0400	feat: add RAG evaluation page story
+0841784	2026-06-01 20:07:42 -0400	feat: add RAG icon button atom
+3a20db7	2026-06-01 19:52:44 -0400	feat: migrate RAG buttons to atom
+efe6b3e	2026-06-01 19:42:51 -0400	feat: add RAG button atom and timeline stories
+c6dfcbc	2026-06-01 19:36:00 -0400	feat: refactor RAG artifact identity bars
+2ed581b	2026-06-01 19:32:52 -0400	feat: refactor RAG corpus identity bar
+1cb51dd	2026-06-01 19:29:34 -0400	docs: audit RAG design system guidelines
+af207b0	2026-06-01 19:03:28 -0400	feat: add RAG pipeline page stories
+7e48c28	2026-06-01 18:27:36 -0400	feat: refactor RAG embeddings view layout
+2f06a06	2026-06-01 17:43:38 -0400	feat: clean up RAG search support molecules
+3d5f279	2026-06-01 17:40:32 -0400	feat: refactor RAG intake modal layout
+b5c73f5	2026-06-01 17:38:02 -0400	feat: extract RAG workflow op result panel
+302e5c2	2026-06-01 17:32:07 -0400	feat: extract RAG workflow op inspector
+f5cd822	2026-06-01 17:29:01 -0400	feat: extract RAG workflow detail panels
+85b8cc1	2026-06-01 17:22:20 -0400	feat: organize RAG workflow and corpus organisms
+d911953	2026-06-01 17:15:06 -0400	test: add RAG corpus Storybook stories
+c187c46	2026-06-01 17:11:14 -0400	feat: adopt RAG design system in corpus views
+599ca6e	2026-06-01 17:05:54 -0400	feat: extract RAG search workbench page
+b20eec7	2026-06-01 17:02:41 -0400	feat: adopt RAG reusable panels in search workbench
+d9c2c70	2026-06-01 16:59:18 -0400	feat: expand RAG design system primitives
+f50181c	2026-06-01 16:45:13 -0400	feat: extract RAG result inspector panel
+e893396	2026-06-01 16:36:44 -0400	feat: extract RAG search workbench components
+4f07074	2026-06-01 16:29:06 -0400	feat: add RAG web design system foundations
+0cccb74	2026-05-30 21:48:35 -0400	feat: artifact identity selector + op result detail
+3216dc2	2026-05-29 20:02:22 -0400	feat(devctl): add plugin with dynamic port allocation
+4cbf0cb	2026-05-29 18:33:08 -0400	feat(corpus): add reverse cross-link from Artifacts tab to Workflows tab
+164aded	2026-05-29 18:31:47 -0400	feat(corpus): wire artifact endpoints into Corpus Explorer (RAGEVAL-006 Phase 6)
+5e97f11	2026-05-29 18:00:05 -0400	refactor(ui): drop inspectedSampleRef — use key-based lookup instead of useRef hack
+1851167	2026-05-29 17:29:06 -0400	feat(ui): Phase 7 polish — progress bar, proper CSS classes, styled modal, op inspector fix
+387713d	2026-05-29 16:55:06 -0400	feat(ui): add Workflows tab with list, detail, op graph, submit modal, queue health
+0b3957b	2026-05-28 21:58:23 -0400	feat(search): add retrieval inspection workbench with BM25/vector/hybrid search
+f078e91	2026-05-28 20:14:30 -0400	fix(web): use all:dist embed pattern to ensure assets directory is included
+67b9a4a	2026-05-28 19:48:10 -0400	fix(corpus): handle null chunks array from API, add source maps
+32f7d71	2026-05-28 18:33:51 -0400	refactor(corpus): split CorpusExplorerView into components, add search/pagination and tests
+96847da	2026-05-28 18:01:31 -0400	feat(corpus): add Corpus Explorer UI with retro macOS 1 monochrome theme
+39c4d5a	2026-05-27 16:36:45 -0400	feat: add embedding inspector first slice
+14a4620	2026-05-27 14:39:28 -0400	feat: add React frontend with retro macOS theme and RTK Query
+308752e	2026-05-27 14:33:37 -0400	feat: scaffold Go server with SQLite, API handlers, and SPA embedding

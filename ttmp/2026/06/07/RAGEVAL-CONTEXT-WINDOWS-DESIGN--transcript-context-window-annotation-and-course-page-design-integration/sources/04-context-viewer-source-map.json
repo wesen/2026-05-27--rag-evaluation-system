@@ -1,0 +1,277 @@
+[
+  {
+    "file": "app.jsx",
+    "lines": 114,
+    "functions": [
+      "NavIcon",
+      "App"
+    ],
+    "top_level_constants": [
+      "TWEAK_DEFAULTS",
+      "NAV",
+      "TITLES"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "data.jsx",
+    "lines": 236,
+    "functions": [
+      "cwTotal",
+      "toStrip",
+      "toStack",
+      "toBudget",
+      "toTreemap",
+      "adapt"
+    ],
+    "top_level_constants": [
+      "LIMIT",
+      "SNAPSHOTS",
+      "TRANSCRIPT",
+      "COURSE",
+      "HANDOUT"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "data2.jsx",
+    "lines": 59,
+    "functions": [],
+    "top_level_constants": [
+      "SLIDES"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "diagrams.jsx",
+    "lines": 319,
+    "functions": [
+      "wrapText",
+      "Txt",
+      "Arrow",
+      "placeSegments",
+      "StripDiagram",
+      "StackDiagram",
+      "BudgetBar",
+      "squarify",
+      "Treemap",
+      "DiagramRenderer"
+    ],
+    "top_level_constants": [
+      "DFONT",
+      "DMONO",
+      "FIXED_W"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "ds-overview.jsx",
+    "lines": 429,
+    "functions": [
+      "Section",
+      "Sub",
+      "Note",
+      "Spec",
+      "Grid",
+      "Render",
+      "DSOverview"
+    ],
+    "top_level_constants": [],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "ds.jsx",
+    "lines": 143,
+    "functions": [
+      "MenuBar",
+      "MacWindow",
+      "Panel",
+      "Button",
+      "LinkButton",
+      "Tabs",
+      "MetadataGrid",
+      "StatusText",
+      "Caption",
+      "SectionLabel",
+      "TextInput",
+      "TextArea",
+      "Select",
+      "FormRow",
+      "Checkbox",
+      "Chip",
+      "ErrorCallout"
+    ],
+    "top_level_constants": [
+      "STATUS_GLYPH"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "patterns.jsx",
+    "lines": 145,
+    "functions": [
+      "PatternDefs",
+      "kindOf",
+      "resolveKind",
+      "KindRect",
+      "Legend"
+    ],
+    "top_level_constants": [
+      "INK",
+      "ACCENT",
+      "RED",
+      "KIND",
+      "TONE",
+      "OUTLINE",
+      "DiagramStyleContext"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "screens.jsx",
+    "lines": 277,
+    "functions": [
+      "LandingScreen",
+      "Visualize",
+      "Upload"
+    ],
+    "top_level_constants": [
+      "VIEWS",
+      "SAMPLE_JSON"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "screens2.jsx",
+    "lines": 198,
+    "functions": [
+      "mdInline",
+      "Markdown",
+      "Handout",
+      "Transcript"
+    ],
+    "top_level_constants": [
+      "ROLE_META"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "screens3.jsx",
+    "lines": 217,
+    "functions": [
+      "Comments",
+      "SlideViewer"
+    ],
+    "top_level_constants": [
+      "SEED_COMMENTS",
+      "COMMENT_VIEWS",
+      "SLIDE_W"
+    ],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "tweaks-panel.jsx",
+    "lines": 542,
+    "functions": [
+      "useTweaks",
+      "TweaksPanel",
+      "TweakSection",
+      "TweakRow",
+      "TweakSlider",
+      "TweakToggle",
+      "TweakRadio",
+      "TweakSelect",
+      "TweakText",
+      "TweakNumber",
+      "__twkIsLight",
+      "TweakColor",
+      "TweakButton"
+    ],
+    "top_level_constants": [],
+    "css_variables": [],
+    "css_classes": []
+  },
+  {
+    "file": "styles.css",
+    "lines": 316,
+    "functions": [],
+    "top_level_constants": [],
+    "css_variables": [
+      "--desktop",
+      "--font-body",
+      "--font-display",
+      "--font-mono",
+      "--mac-accent",
+      "--mac-accent-2",
+      "--mac-amber",
+      "--mac-bg",
+      "--mac-bg-dark",
+      "--mac-border",
+      "--mac-green",
+      "--mac-mono",
+      "--mac-stripe",
+      "--mac-surface",
+      "--mac-surface-2",
+      "--mac-surface-3",
+      "--mac-text",
+      "--mac-text-dim",
+      "--mac-text-inv",
+      "--rag-font-role-body",
+      "--rag-font-role-code",
+      "--rag-font-role-compact",
+      "--rag-font-role-label",
+      "--rag-font-role-metadata",
+      "--rag-font-role-metric"
+    ],
+    "css_classes": [
+      "center",
+      "col",
+      "desktop-bg",
+      "dim",
+      "divider",
+      "divider-dim",
+      "gap2",
+      "grow",
+      "mac-btn",
+      "mac-caption",
+      "mac-checkbox",
+      "mac-chip",
+      "mac-error",
+      "mac-flabel",
+      "mac-formrow",
+      "mac-input",
+      "mac-link",
+      "mac-menubar",
+      "mac-meta",
+      "mac-navgroup",
+      "mac-navitem",
+      "mac-panel",
+      "mac-panel-body",
+      "mac-panel-header",
+      "mac-scroll",
+      "mac-sectionlabel",
+      "mac-sidebar",
+      "mac-status",
+      "mac-tab",
+      "mac-table",
+      "mac-tablist",
+      "mac-textarea",
+      "mac-titlebar",
+      "mac-window",
+      "mono",
+      "row",
+      "spread",
+      "wrap"
+    ]
+  }
+]

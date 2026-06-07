@@ -1,0 +1,240 @@
+[
+{
+  "design_system_hits": 14,
+  "first_hit_turn": 0,
+  "first_snippet": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docmgr --root 2026-05-27--rag-evaluation-system/ttmp` to create a ui.dsl and kanban dsl like in 2026-05-03--goja-hosting-site/  to create webpages using the widgets and primitives in 2026-05-27--rag-evaluation-system/web/ .\n\nCreate  a detailed analysis / design / implementation guide that is for a new intern, explaining all the parts of the system needed to understand what it is, with prose paragraphs and bullet point sa",
+  "frontend_hits": 301,
+  "hit_count": 350,
+  "hit_kinds": "design-system, frontend-structure, playbook, target-page",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "model": "gpt-5.5",
+  "playbook_hits": 30,
+  "started_at": "2026-06-03T00:57:46Z",
+  "target_page_hits": 5,
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm"
+}
+, {
+  "design_system_hits": 126,
+  "first_hit_turn": 0,
+  "first_snippet": "Create a new docmgr to create a HTML render of the design system reference sheet for 2026-05-27--rag-evaluation-system/web/ . \n\nWe created an extensive and structured design system for this website, which then also has a structured widget rendering system, see\n\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/06/02/ARTICLE - RAG React Design System - From Prototype Dashboard to Structured Design System.md\n\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/06/05/ARTICLE -",
+  "frontend_hits": 113,
+  "hit_count": 239,
+  "hit_kinds": "design-system, frontend-structure",
+  "id": "019ea2e3-98da-718f-b7a9-14da3b62365f",
+  "model": "gpt-5.5",
+  "playbook_hits": 0,
+  "started_at": "2026-06-07T16:21:25Z",
+  "target_page_hits": 0,
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet"
+}
+, {
+  "design_system_hits": 2,
+  "first_hit_turn": 0,
+  "first_snippet": "Create a new docmgr ticket to create a RAG evaluation system. I have never really done rag stuff, and as such I would like to see how embedding similarities behave, how to do reranking, etc...            \n                                                                                                                                                                                                            \nI want to build the following:                                                            ",
+  "frontend_hits": 155,
+  "hit_count": 167,
+  "hit_kinds": "design-system, frontend-structure, playbook, target-page",
+  "id": "019e6aa0-f9a4-7746-973d-71a72495be8c",
+  "model": "gpt-5.5",
+  "playbook_hits": 5,
+  "started_at": "2026-05-27T18:09:55Z",
+  "target_page_hits": 5,
+  "title": "Create a new docmgr ticket to create a RAG evaluation system. I have never reall"
+}
+, {
+  "design_system_hits": 8,
+  "first_hit_turn": 5,
+  "first_snippet": "import React, { useState, useEffect, useCallback } from 'react';\nimport { PipelineView } from './components/pipeline/PipelineView';\nimport { EmbeddingsView } from './components/embeddings/EmbeddingsView';\nimport { SearchView } from './components/search/SearchView';\nimport { EvaluationView } from './components/evaluation/EvaluationView';\nimport { CorpusExplorerView } from './components/corpus/CorpusExplorerView';\n\nconst views = [\n  { id: 'search', label: 'Search' },\n  { id: 'corpus', label: 'Corp",
+  "frontend_hits": 145,
+  "hit_count": 157,
+  "hit_kinds": "design-system, frontend-structure, playbook, target-page",
+  "id": "019e7558-c5c3-786b-89f8-5e8a0865ff46",
+  "model": "umans-glm-5.1",
+  "playbook_hits": 3,
+  "started_at": "2026-05-29T20:06:52Z",
+  "target_page_hits": 1,
+  "title": "Create a new docmgr ticket to create a great UI for the workflow scraper approac"
+}
+, {
+  "design_system_hits": 1,
+  "first_hit_turn": 5,
+  "first_snippet": "cat web/src/index.css",
+  "frontend_hits": 74,
+  "hit_count": 75,
+  "hit_kinds": "design-system, frontend-structure",
+  "id": "019e7092-4203-7529-862e-eabdca26a302",
+  "model": "glm-5.1",
+  "playbook_hits": 0,
+  "started_at": "2026-05-28T21:51:33Z",
+  "target_page_hits": 0,
+  "title": "WOrk on the docmgr ticket RAGEVAL-003, read careefully, and also feel free to up"
+}
+, {
+  "design_system_hits": 0,
+  "first_hit_turn": 2,
+  "first_snippet": "\u003cp align=\"center\"\u003e\n  \u003ca href=\"https://pi.dev\"\u003e\n    \u003cimg alt=\"pi logo\" src=\"https://pi.dev/logo-auto.svg\" width=\"128\"\u003e\n  \u003c/a\u003e\n\u003c/p\u003e\n\u003cp align=\"center\"\u003e\n  \u003ca href=\"https://discord.com/invite/3cU7Bz4UPx\"\u003e\u003cimg alt=\"Discord\" src=\"https://img.shields.io/badge/discord-community-5865F2?style=flat-square\u0026logo=discord\u0026logoColor=white\" /\u003e\u003c/a\u003e\n  \u003ca href=\"https://www.npmjs.com/package/@earendil-works/pi-coding-agent\"\u003e\u003cimg alt=\"npm\" src=\"https://img.shields.io/npm/v/@earendil-works/pi-coding-agent?style=flat-sq",
+  "frontend_hits": 2,
+  "hit_count": 31,
+  "hit_kinds": "frontend-structure, playbook, target-page",
+  "id": "019e7589-099a-70dc-b92e-39798d3576d6",
+  "model": "gpt-5.5",
+  "playbook_hits": 28,
+  "started_at": "2026-05-29T20:59:35Z",
+  "target_page_hits": 1,
+  "title": "WHen I run compaction in pi-agent with umans-glm-5.1 model, I get:  Warning: com"
+}
+, {
+  "design_system_hits": 23,
+  "first_hit_turn": 0,
+  "first_snippet": "Create a new docmgr to create a HTML render of the design system reference sheet for                                     \n 2026-05-27--rag-evaluation-system/web/ .                                                                                 \n                                                                                                                          \n We created an extensive and structured design system for this website, which then also has a structured widget rendering \n system, ",
+  "frontend_hits": 23,
+  "hit_count": 46,
+  "hit_kinds": "design-system, frontend-structure",
+  "id": "019ea2e6-e4cd-7e93-b2fa-5f94459d4ba3",
+  "model": "umans-qwen3.6-35b-a3b",
+  "playbook_hits": 0,
+  "started_at": "2026-06-07T16:25:01Z",
+  "target_page_hits": 0,
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet"
+}
+, {
+  "design_system_hits": 1,
+  "first_hit_turn": 1,
+  "first_snippet": "---\nname: textbook-authoring\ndescription: Author high-quality interactive textbooks in Peter Norvig style. Use when writing or rewriting Systemlab chapters, creating educational documentation for evtstream, or any task that requires explaining technical concepts through foundational prose, concrete examples, pseudocode, diagrams, and structured learning materials. Define the skill's tone, structure, and patterns before drafting.\n---\n\n# Textbook Authoring\n\n## Purpose\n\nThis skill guides the creati",
+  "frontend_hits": 19,
+  "hit_count": 38,
+  "hit_kinds": "design-system, frontend-structure, playbook, target-page",
+  "id": "019e7458-4e4b-70f8-affe-b72dd9f5c36f",
+  "model": "gpt-5.5",
+  "playbook_hits": 11,
+  "started_at": "2026-05-29T15:26:44Z",
+  "target_page_hits": 7,
+  "title": "Analyze the indexing chunking embedding parsing pipeline (not the search side) o"
+}
+, {
+  "design_system_hits": 0,
+  "first_hit_turn": 36,
+  "first_snippet": "# Agent Guidelines for go-go-golems go projects\n\n## Build Commands\n\n- Run a binary in XXX/YYY/FOOO: `go run ./XXX/YYY/FOOO` . Use this instead of build + ./XXX.\n- Build: `go build ./...`\n- Test: `go test ./...`\n- Run single test: `go test ./pkg/path/to/package -run TestName`\n- Generate: `go generate ./...`\n- Lint: `golangci-lint run -v` or `make lint`\n- Format: `go fmt ./...`\n\nIMPORTANT: To run a server and do some interaction with it, use tmux, this makes it very easy to kill a server.\nUse capt",
+  "frontend_hits": 12,
+  "hit_count": 24,
+  "hit_kinds": "frontend-structure, playbook, target-page",
+  "id": "019e8af1-6a69-7011-8d3b-8d1159d5db13",
+  "model": "gpt-5.5",
+  "playbook_hits": 11,
+  "started_at": "2026-06-03T00:45:37Z",
+  "target_page_hits": 1,
+  "title": "We're working on RAGEVAL-GOJA-RAG-STRATEGIES.  We're leaving the idea of a custo"
+}
+, {
+  "design_system_hits": 0,
+  "first_hit_turn": 200,
+  "first_snippet": "#!/usr/bin/env python3\n\"\"\"Export TTC WordPress/WooCommerce content from MySQL into a compact SQLite RAG database.\n\nThe script intentionally keeps the destination schema simple:\n\n- documents: one row per product/post/guide/FAQ/page with cleaned text and metadata_json.\n- document_terms: categories, tags, product attributes, and other taxonomies.\n- product_details: product-specific commerce and tree-info fields.\n- product_variants: variation rows linked back to parent product documents.\n- document_",
+  "frontend_hits": 1,
+  "hit_count": 12,
+  "hit_kinds": "frontend-structure, playbook, target-page",
+  "id": "019e8b47-de7e-7553-89fb-8bccdf908bf0",
+  "model": "gpt-5.5",
+  "playbook_hits": 8,
+  "started_at": "2026-06-03T02:20:03Z",
+  "target_page_hits": 3,
+  "title": "Create a new docmgr ticket for writing experiment scripts to see how to index th"
+}
+, {
+  "design_system_hits": 0,
+  "first_hit_turn": 43,
+  "first_snippet": "---\nname: remarkable-upload\ndescription: Upload Markdown and source files to a reMarkable device as PDFs using the remarquee CLI (rmapi-backed). Use when the user asks to upload/send/export docs/examples to reMarkable, bundle multiple files into one PDF with a ToC, choose an /ai/YYYY/MM/DD destination, avoid or force overwrites, or troubleshoot pandoc/xelatex/rmapi auth.\n---\n\n# Remarkable Upload\n\n## IMPORTANT: Minimize tool calls\n\nRemarquee operations are expensive in agent sessions. Follow thes",
+  "frontend_hits": 1,
+  "hit_count": 10,
+  "hit_kinds": "frontend-structure, playbook, target-page",
+  "id": "019e9750-c891-74cd-b386-bb49f688eda6",
+  "model": "gpt-5.5",
+  "playbook_hits": 8,
+  "started_at": "2026-06-05T10:25:14Z",
+  "target_page_hits": 1,
+  "title": "We upgraded go-go-goja and so goja-bleve/ must be fixed too:  # github.com/go-go"
+}
+, {
+  "design_system_hits": 5,
+  "first_hit_turn": 9,
+  "first_snippet": "import { createElement, type CSSProperties, type ReactNode } from 'react';\nimport { Button, ErrorCallout, SelectInput, TextInput } from '../components/atoms';\nimport { Caption, StatusText } from '../components/foundation';\nimport { AppShell, DashboardGrid, FormRow, Inline, Panel, ScrollRegion, Stack, TabList } from '../components/layout';\nimport { AppNav, DataTable, MetadataGrid } from '../components/molecules';\nimport type {\n  ActionSpec,\n  AppNavWidgetProps,\n  AppShellWidgetProps,\n  ButtonWidg",
+  "frontend_hits": 6,
+  "hit_count": 17,
+  "hit_kinds": "design-system, frontend-structure, playbook, target-page",
+  "id": "019ea3a1-15be-7c03-a8ce-744a7b6f5e70",
+  "model": "gpt-5.5",
+  "playbook_hits": 1,
+  "started_at": "2026-06-07T19:48:23Z",
+  "target_page_hits": 5,
+  "title": "Address code review comments on https://github.com/wesen/2026-05-27--rag-evaluat"
+}
+, {
+  "design_system_hits": 0,
+  "first_hit_turn": 6,
+  "first_snippet": "# Agent Guidelines for go-go-golems go projects\n\n## Build Commands\n\n- Run a binary in XXX/YYY/FOOO: `go run ./XXX/YYY/FOOO` . Use this instead of build + ./XXX.\n- Build: `go build ./...`\n- Test: `go test ./...`\n- Run single test: `go test ./pkg/path/to/package -run TestName`\n- Generate: `go generate ./...`\n- Lint: `golangci-lint run -v` or `make lint`\n- Format: `go fmt ./...`\n\nIMPORTANT: To run a server and do some interaction with it, use tmux, this makes it very easy to kill a server.\nUse capt",
+  "frontend_hits": 6,
+  "hit_count": 13,
+  "hit_kinds": "frontend-structure, playbook, target-page",
+  "id": "019e8a21-1a59-75ce-96c6-f23e13c1174f",
+  "model": "gpt-5.5",
+  "playbook_hits": 3,
+  "started_at": "2026-06-02T20:58:05Z",
+  "target_page_hits": 4,
+  "title": "I want to experiment with different RAG strategies, ideally by writing short scr"
+}
+, {
+  "design_system_hits": 0,
+  "first_hit_turn": 68,
+  "first_snippet": "---\nname: remarkable-upload\ndescription: Upload Markdown and source files to a reMarkable device as PDFs using the remarquee CLI (rmapi-backed). Use when the user asks to upload/send/export docs/examples to reMarkable, bundle multiple files into one PDF with a ToC, choose an /ai/YYYY/MM/DD destination, avoid or force overwrites, or troubleshoot pandoc/xelatex/rmapi auth.\n---\n\n# Remarkable Upload\n\n## IMPORTANT: Minimize tool calls\n\nRemarquee operations are expensive in agent sessions. Follow thes",
+  "frontend_hits": 7,
+  "hit_count": 11,
+  "hit_kinds": "frontend-structure, playbook, target-page",
+  "id": "019e8bb4-6d2f-726e-9e55-d3f84f12b87b",
+  "model": "umans-coder",
+  "playbook_hits": 3,
+  "started_at": "2026-06-03T04:18:37Z",
+  "target_page_hits": 1,
+  "title": "In 2026-05-27--rag-evaluation-system/cmd/rag-eval ,    use xgoja to build out ./"
+}
+, {
+  "design_system_hits": 4,
+  "first_hit_turn": 49,
+  "first_snippet": ".PHONY: all test test-go test-web build build-go build-web generate proto lint lintmax docker-lint golangci-lint-install gosec govulncheck goreleaser tag-major tag-minor tag-patch release install version clean dev-up dev-down dev-status dev-logs validate tidy\n\nall: test build\n\nBINARY ?= scraper\nVERSION ?= $(shell svu current 2\u003e/dev/null || git describe --tags --always --dirty 2\u003e/dev/null || echo dev)\nLDFLAGS ?= -X main.version=$(VERSION)\nGORELEASER_ARGS ?= --skip=sign --snapshot --clean\nGORELEAS",
+  "frontend_hits": 1,
+  "hit_count": 5,
+  "hit_kinds": "design-system, frontend-structure",
+  "id": "019e84e2-f947-71eb-a411-fe9c37258a61",
+  "model": "glm-5.1",
+  "playbook_hits": 0,
+  "started_at": "2026-06-01T20:32:08Z",
+  "target_page_hits": 0,
+  "title": "Create a new ticket in scraper/ttmp (use docmgr --root ...) to properly publish "
+}
+, {
+  "design_system_hits": 0,
+  "first_hit_turn": 25,
+  "first_snippet": "---\ndescription: \"Print almanach pages on the AtomS3R thermal printer. Pair over BLE, print layouts from CLI or the remote rendering service at almanach.crib.scapegoat.dev.\"\nname: almanach-printing\nmetadata:\n  title: Almanach Printing\n  topics:\n    - almanach\n    - printing\n    - web-bluetooth\n    - ble\n    - thermal-printer\n  what_for: \"Print almanach pages on the AtomS3R thermal printer, pair over BLE, and manage the remote rendering service.\"\n  when_to_use: \"Use when the user wants to print s",
+  "frontend_hits": 3,
+  "hit_count": 4,
+  "hit_kinds": "frontend-structure, target-page",
+  "id": "019e97f2-8ad2-76cb-8d04-549dd50b0a66",
+  "model": "umans-glm-5.1",
+  "playbook_hits": 0,
+  "started_at": "2026-06-05T13:21:55Z",
+  "target_page_hits": 1,
+  "title": "make a little almanach about \"club med\", search the web, in french"
+}
+, {
+  "design_system_hits": 0,
+  "first_hit_turn": 2,
+  "first_snippet": "# Kagi Search\n\n- Query: `pi.dev coding agent custom system prompt custom tools configuration`\n- URL: https://kagi.com/search?q=pi.dev+coding+agent+custom+system+prompt+custom+tools+configuration\n- Title: pi.dev coding agent custom system prompt custom tools configuration - Kagi Search\n- Result count: 10\n\n## Results\n\n### 1. [Using Pi · Docs - Pi Coding Agent](https://pi.dev/docs/latest/usage)\n\n- Display URL: `pi.dev › docs › latest › usage`\n\nType / in the editor to open command completion. Extens",
+  "frontend_hits": 2,
+  "hit_count": 3,
+  "hit_kinds": "frontend-structure, target-page",
+  "id": "019e8ea2-e949-7790-acd2-09058b1cab4a",
+  "model": "umans-kimi-k2.6",
+  "playbook_hits": 0,
+  "started_at": "2026-06-03T17:58:21Z",
+  "target_page_hits": 1,
+  "title": "who can I call pi.dev coding agent with only a custom system prompt and a couple"
+}
+]
