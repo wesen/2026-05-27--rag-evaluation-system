@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { WidgetNode } from '../widgets/ir';
+import type { WidgetNode } from '@go-go-golems/rag-evaluation-site/ir';
 
 export interface DslPageResponse {
   id: string;

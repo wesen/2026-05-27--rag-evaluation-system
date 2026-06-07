@@ -47,3 +47,13 @@ Moved reusable component and WidgetRenderer stories into the package, added pack
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/.storybook/main.ts — Package Storybook configuration
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/storybook/MockApiProvider.tsx — Mocked Storybook API provider for app stories
 
+
+## 2026-06-07
+
+Removed duplicated web-local shared component and WidgetRenderer implementations, leaving package-owned implementations plus thin web compatibility barrels.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/reference-pages/css-entry.ts — Package CSS module imports for reference rendering
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/vite.config.ts — Alias fix for package subpaths
+

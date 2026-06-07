@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { ragApi } from '../services/api';
-import type { WidgetNode } from '../widgets/ir';
-import { component, text } from '../widgets/ir';
+import type { WidgetNode } from '@go-go-golems/rag-evaluation-site/ir';
+import { component, text } from '@go-go-golems/rag-evaluation-site/ir';
 
 interface MockApiProviderProps {
   children: ReactNode;

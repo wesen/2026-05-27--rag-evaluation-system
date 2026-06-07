@@ -294,3 +294,69 @@ I also filled in Storybook gaps for web-owned views that were previously missing
 ### Technical details
 - Package stories moved: atoms (6), foundation/overview (7 files plus CSS module), layout (8), shared molecules (3), WidgetRenderer (1).
 - New web-owned stories added: corpus, embeddings, evaluation, pipeline, search, workflows, DSL preview, search workbench, and retro Mac components.
+
+## Step 5: Remove Remaining Duplicated Web Shared Component Implementations
+
+I removed the now-unneeded local `web/src` copies of package-owned atoms, foundation primitives, layout primitives, shared molecules, and WidgetRenderer implementation files. The web app now keeps only thin compatibility barrels plus web-owned components such as `CoveragePanel`, `QueryPresetList`, corpus/workflow organisms, pages, and views.
+
+The one non-obvious migration surface was the standalone design-reference CSS extraction entry. It previously imported CSS modules from the web-local component copies so Vite would emit CSS matching server-rendered component class names. After deleting the copies, that entry imports the package source CSS modules instead, keeping the reference renderer aligned with the package-owned components.
+
+### Prompt Context
+
+**User prompt (verbatim):** "go ahead"
+
+**Assistant interpretation:** Continue with the next unification step: delete remaining local duplicate component/widget implementations now that package Storybook ownership is in place.
+
+**Inferred user intent:** Finish making `packages/rag-evaluation-site` the canonical implementation layer and leave `web` with app-specific code only.
+
+### What I did
+- Deleted web-local duplicate directories for package-owned atoms, foundation primitives, layout primitives, and shared molecules (`AppNav`, `DataTable`, `MetadataGrid`).
+- Deleted web-local duplicate widget implementation files: `actions.ts`, `cellRenderers.tsx`, `ir.ts`, and `WidgetRenderer.tsx`.
+- Deleted the temporary `web/src/components/PackageParity.stories.tsx` fixture because it depended on the local duplicate component files being removed.
+- Updated `web/src/services/api.ts` and `web/src/storybook/MockApiProvider.tsx` to import Widget IR types/helpers from `@go-go-golems/rag-evaluation-site/ir`.
+- Updated `web/src/reference-pages/css-entry.ts` to import package source CSS modules for the standalone design-reference CSS extraction path.
+- Updated `web/src/components/molecules/CoveragePanel/CoveragePanel.tsx` to import package-owned `DataTable`, `MetadataGrid`, and `DataTableColumn` directly from the package.
+- Fixed `web/vite.config.ts` package aliases so the `/app` and `/ir` subpath aliases resolve before the root package alias.
+
+### Why
+- Leaving duplicate implementations behind would keep ambiguity about which component version is canonical.
+- Deleting duplicates after moving stories into the package ensures package Storybook remains the visual review surface for reusable components.
+
+### What worked
+- `pnpm --dir web typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir web build` passed.
+- `pnpm --dir web exec storybook build --output-dir /tmp/rag-web-storybook-dedup` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-dedup` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+
+### What didn't work
+- The first web Storybook build after deletion failed because Vite resolved `@go-go-golems/rag-evaluation-site/ir` through the root package alias, producing `../packages/rag-evaluation-site/src/index.ts/ir`.
+- I changed `web/vite.config.ts` from an object alias map to an ordered alias array with `/app` and `/ir` before the root alias.
+- The first web typecheck failed after deleting local `DataTable`/`MetadataGrid` because `CoveragePanel` imported those components by relative sibling paths. I changed it to import them from `@go-go-golems/rag-evaluation-site`.
+
+### What I learned
+- Thin compatibility barrels are enough for existing app imports; the actual duplicated implementation directories can be removed once direct imports are gone.
+- Vite alias ordering matters for package subpaths when the root package alias is also present.
+
+### What was tricky to build
+- The design-reference CSS extraction entry was easy to miss because it does not render components directly; it imports CSS module objects to force Vite to include CSS for server-rendered reference pages. Deleting local CSS modules required redirecting those imports to package source CSS modules rather than removing the entry.
+- The temporary parity story was intentionally useful before deletion, but became a liability once local component files were removed.
+
+### What warrants a second pair of eyes
+- Review `web/src/reference-pages/css-entry.ts` to confirm importing package source CSS modules is acceptable for the design-reference build path.
+- Review whether the thin `web/src/components/{atoms,foundation,layout}/index.ts` and `web/src/widgets/index.ts` barrels should remain as app compatibility shims or whether imports should be rewritten directly to package imports in a later cleanup.
+
+### What should be done in the future
+- Run a css-visual-diff sweep against package Storybook stories as the new canonical reusable-component visual baseline.
+- Consider moving `CoveragePanel` and `QueryPresetList` to the package if they are reusable outside the app.
+
+### Code review instructions
+- Start with deleted paths under `web/src/components/{atoms,foundation,layout}` and `web/src/widgets` to verify only compatibility barrels remain.
+- Review `web/vite.config.ts` alias ordering.
+- Review `web/src/reference-pages/css-entry.ts` package CSS module imports.
+- Validate with the commands listed in `What worked`.
+
+### Technical details
+- Remaining web shared-layer files are compatibility barrels plus web-only molecules.
+- Package-owned implementation and Storybook files now live under `packages/rag-evaluation-site/src/components` and `packages/rag-evaluation-site/src/widgets`.

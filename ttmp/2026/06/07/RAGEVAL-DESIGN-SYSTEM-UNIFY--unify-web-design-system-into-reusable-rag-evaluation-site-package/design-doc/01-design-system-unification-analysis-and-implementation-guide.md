@@ -47,31 +47,42 @@ RelatedFiles:
     - Path: web/src/components/PackageParity.stories.tsx
       Note: Storybook fixture comparing local and package shared component rendering
     - Path: web/src/components/atoms/index.ts
-      Note: Redirects web atom barrel to package-canonical atom exports
+      Note: |-
+        Redirects web atom barrel to package-canonical atom exports
+        Thin compatibility barrel after deleting local atom implementations
     - Path: web/src/components/corpus/CorpusExplorerView.stories.tsx
       Note: New missing story for backend-connected corpus view
     - Path: web/src/components/foundation/index.ts
       Note: Redirects web foundation barrel to package-canonical exports
     - Path: web/src/components/layout/index.ts
       Note: Redirects web layout barrel to package-canonical exports
+    - Path: web/src/components/molecules/CoveragePanel/CoveragePanel.tsx
+      Note: Web-owned molecule now imports shared DataTable/MetadataGrid from the package
     - Path: web/src/components/molecules/index.ts
       Note: Keeps web-only molecules while re-exporting package-canonical shared molecules
     - Path: web/src/components/pages/SearchWorkbenchPage/SearchWorkbenchPage.stories.tsx
       Note: New missing story for backend-connected search page
+    - Path: web/src/reference-pages/css-entry.ts
+      Note: Design-reference CSS extraction now imports package source CSS modules
     - Path: web/src/storybook/MockApiProvider.tsx
       Note: Mock RTK Query provider for web-owned app/container stories
     - Path: web/src/widgets/index.ts
-      Note: Redirects web Widget IR public barrel to package-canonical widget APIs
+      Note: |-
+        Redirects web Widget IR public barrel to package-canonical widget APIs
+        Thin compatibility barrel for package-owned Widget IR APIs after deleting local widget files
     - Path: web/tsconfig.json
       Note: TypeScript paths for package source entrypoints
     - Path: web/vite.config.ts
-      Note: Development aliases from package imports to package source
+      Note: |-
+        Development aliases from package imports to package source
+        Ordered package aliases so /app and /ir resolve before the root package alias
 ExternalSources: []
 Summary: Evidence-backed guide for making packages/rag-evaluation-site the canonical reusable design-system and Widget IR package while keeping web focused on app-specific pages and containers.
 LastUpdated: 2026-06-07T00:00:00Z
 WhatFor: Use before and during the design-system unification migration.
 WhenToUse: When moving shared React components, Widget IR types, Storybook stories, or package development wiring.
 ---
+
 
 
 

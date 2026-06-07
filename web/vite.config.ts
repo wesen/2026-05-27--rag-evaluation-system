@@ -8,11 +8,20 @@ const backendPort = parseInt(process.env.RAG_EVAL_BACKEND_PORT || '8772', 10);
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
-    alias: {
-      '@go-go-golems/rag-evaluation-site': fileURLToPath(new URL('../packages/rag-evaluation-site/src/index.ts', import.meta.url)),
-      '@go-go-golems/rag-evaluation-site/app': fileURLToPath(new URL('../packages/rag-evaluation-site/src/app/index.ts', import.meta.url)),
-      '@go-go-golems/rag-evaluation-site/ir': fileURLToPath(new URL('../packages/rag-evaluation-site/src/widgets/ir.ts', import.meta.url)),
-    },
+    alias: [
+      {
+        find: '@go-go-golems/rag-evaluation-site/app',
+        replacement: fileURLToPath(new URL('../packages/rag-evaluation-site/src/app/index.ts', import.meta.url)),
+      },
+      {
+        find: '@go-go-golems/rag-evaluation-site/ir',
+        replacement: fileURLToPath(new URL('../packages/rag-evaluation-site/src/widgets/ir.ts', import.meta.url)),
+      },
+      {
+        find: '@go-go-golems/rag-evaluation-site',
+        replacement: fileURLToPath(new URL('../packages/rag-evaluation-site/src/index.ts', import.meta.url)),
+      },
+    ],
   },
   server: {
     port: 5173,
