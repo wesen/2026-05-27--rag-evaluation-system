@@ -140,6 +140,19 @@ export interface ContextHandoutDocument {
   body: string;
 }
 
+export type AnchoredCommentStatus = 'open' | 'resolved';
+
+export interface AnchoredComment {
+  id: string;
+  anchorX: number;
+  anchorY: number;
+  author: string;
+  text: string;
+  time?: string;
+  status?: AnchoredCommentStatus;
+  metadata?: ContextJsonRecord;
+}
+
 export interface ContextHandoutBundle {
   intro: string;
   docs: ContextHandoutDocument[];

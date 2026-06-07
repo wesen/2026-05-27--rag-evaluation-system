@@ -1,5 +1,6 @@
 import type {
   ContextCourse,
+  AnchoredComment,
   ContextHandoutBundle,
   ContextSlide,
   ContextWindowSnapshot,
@@ -293,6 +294,36 @@ export const contextSlides: ContextSlide[] = [
       'Summarize resolved results, evict stale turns, retrieve on demand.',
       'Rebuild the window every turn around what matters now.',
     ],
+  },
+];
+
+export const anchoredCommentFixtures: AnchoredComment[] = [
+  {
+    id: 'comment-file-reads',
+    anchorX: 0.3,
+    anchorY: 0.52,
+    author: 'you',
+    text: 'This file-reads block is 38k tokens — biggest single tenant. Candidate to summarize once the bug is found.',
+    time: '2m',
+    status: 'open',
+  },
+  {
+    id: 'comment-scratchpad',
+    anchorX: 0.74,
+    anchorY: 0.5,
+    author: 'Priya',
+    text: 'Why is the scratchpad carried forward? Drop it after the step completes.',
+    time: 'just now',
+    status: 'open',
+  },
+  {
+    id: 'comment-summary',
+    anchorX: 0.18,
+    anchorY: 0.3,
+    author: 'Manuel',
+    text: 'Resolved tool output can collapse into the rolling summary after the assertion is understood.',
+    time: 'resolved',
+    status: 'resolved',
   },
 ];
 

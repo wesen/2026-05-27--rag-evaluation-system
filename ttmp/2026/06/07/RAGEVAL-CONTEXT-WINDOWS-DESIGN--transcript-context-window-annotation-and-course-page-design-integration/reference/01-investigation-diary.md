@@ -1062,3 +1062,58 @@ This completes the transcript reader/rail organism task and gives the next work 
 
 ### Technical details
 - Storybook build output used for validation: `/tmp/rag-package-storybook-transcript-panels`.
+
+## Step 17: Add Anchored Comment Card and Rail
+
+I implemented the anchored comment presentation layer from the context-viewer prototype's comment review states. The package now has an `AnchoredComment` DTO fixture, an `AnchoredCommentCard` molecule, and an `AnchoredCommentRail` organism with controlled selected-comment state.
+
+This preserves the prototype's review/comment idea without copying the full canvas interaction workflow yet. The current package components are reusable presentation pieces; diagram click-to-place, draft editors, and persistence can remain web/page concerns later.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue with the next ticket task, anchored comments from the prototype comment states.
+
+**Inferred user intent:** Keep moving through the planned component layers after transcript reader organisms.
+
+### What I did
+- Added `AnchoredComment` and `AnchoredCommentStatus` DTOs.
+- Added `anchoredCommentFixtures` derived from the prototype `SEED_COMMENTS` plus a resolved example.
+- Added `packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/*`.
+- Added `packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/*`.
+- Exported the new molecule and organism from package barrels.
+- Ran package typecheck, package build, and package Storybook build.
+- Opened `AnchoredCommentRail / Rail` and captured `anchored-comment-rail.png`.
+
+### Why
+- Anchored comments are distinct from transcript annotations: they attach to visual/canvas positions rather than transcript messages.
+- The reusable card/rail can be used by future diagram review pages without taking on placement/persistence behavior.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-anchored-comments` passed.
+- Browser sanity check showed readable anchored comment cards and rail.
+
+### What didn't work
+- N/A.
+
+### What I learned
+- The prototype comment workflow should be split into reusable presentation components now and canvas interaction/persistence later.
+
+### What was tricky to build
+- The prototype had three UI variants (rail, sticky, popover). I implemented the rail/card foundation first because sticky and popover positioning need a visual anchor surface, which should be composed later with diagram review components.
+
+### What warrants a second pair of eyes
+- Decide whether sticky/popover variants need their own package components or should be page-level compositions using `AnchoredCommentCard`.
+
+### What should be done in the future
+- Build course/slide components next, or compose web pages if we want app integration before course surfaces.
+
+### Code review instructions
+- Review `AnchoredCommentCard.tsx`, `AnchoredCommentRail.tsx`, and the new anchored comment fixture data.
+- Open Storybook story `Component Library / Organisms / AnchoredCommentRail / Rail`.
+
+### Technical details
+- Prototype source: `sources/03-context-viewer-design-iteration/screens3.jsx` (`SEED_COMMENTS`, rail/sticky/popover variants).

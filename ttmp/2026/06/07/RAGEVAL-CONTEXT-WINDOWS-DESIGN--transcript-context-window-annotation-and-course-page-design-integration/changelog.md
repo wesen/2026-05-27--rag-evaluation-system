@@ -195,3 +195,15 @@ Added TranscriptReaderPanel and AnnotationRailPanel organisms with controlled se
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.tsx — Transcript reader organism
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/index.ts — Exports transcript organisms
 
+
+## 2026-06-07
+
+Added anchored comment DTOs, card molecule, and rail organism from prototype comment states.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/AnchoredCommentCard.tsx — Anchored comment card molecule
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/AnchoredCommentRail.tsx — Anchored comment rail organism
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/context/fixtures.ts — Anchored comment fixtures
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/context/types.ts — Anchored comment DTO
+
