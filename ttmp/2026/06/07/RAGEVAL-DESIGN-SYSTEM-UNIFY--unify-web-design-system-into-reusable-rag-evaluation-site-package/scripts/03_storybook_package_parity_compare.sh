@@ -34,6 +34,8 @@ css-visual-diff compare \
   --selector2 '[data-cvd="package-shared-components"]' \
   --viewport-w 1440 \
   --viewport-h 1000 \
+  --wait-ms1 1500 \
+  --wait-ms2 1500 \
   --threshold 30 \
   --out "$COMPARE_DIR"
 

@@ -2,10 +2,10 @@
   "inputs": {
     "url1": "http://127.0.0.1:18607/iframe.html?id=design-system-package-parity--shared-components",
     "selector1": "[data-cvd=\"local-shared-components\"]",
-    "wait_ms1": 0,
+    "wait_ms1": 1500,
     "url2": "http://127.0.0.1:18607/iframe.html?id=design-system-package-parity--shared-components",
     "selector2": "[data-cvd=\"package-shared-components\"]",
-    "wait_ms2": 0,
+    "wait_ms2": 1500,
     "viewport_w": 1440,
     "viewport_h": 1000,
     "props": [
