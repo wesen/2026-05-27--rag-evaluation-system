@@ -172,3 +172,15 @@ Captured css-visual-diff visual sweep for 18 context Storybook stories; all self
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/scripts/07_context_storybook_visual_sweep.sh — Reproducible context Storybook visual sweep script
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/sources/visual-parity/context-story-sweep/summary.tsv — Visual sweep summary
 
+
+## 2026-06-07
+
+Added transcript/annotation atoms and molecules with Storybook coverage after context diagram review.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/atoms/AnnotationBadge/AnnotationBadge.tsx — Annotation badge atom
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/atoms/TranscriptRoleBadge/TranscriptRoleBadge.tsx — Transcript role badge atom
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx — Annotation note molecule
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx — Transcript message molecule
+

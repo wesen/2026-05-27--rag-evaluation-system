@@ -5,3 +5,5 @@ export * from './IconButton';
 export * from './SelectInput';
 export * from './TextInput';
 export * from './ContextKindSwatch';
+export * from './TranscriptRoleBadge';
+export * from './AnnotationBadge';

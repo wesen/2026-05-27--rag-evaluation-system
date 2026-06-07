@@ -950,3 +950,60 @@ The sweep captured 18 context stories and every self-compare reported zero chang
 ### Technical details
 - Sweep output: `sources/visual-parity/context-story-sweep/`.
 - Story count: 18.
+
+## Step 15: Start Transcript/Annotation Atoms and Molecules
+
+After the context diagram slice passed visual review and the user approved continuing, I started the transcript/annotation layer with small atoms first: `TranscriptRoleBadge` for message roles/tool names and `AnnotationBadge` for labeled annotation chips. I then composed those atoms into `TranscriptMessageCard` and `AnnotationNoteCard` molecules.
+
+This keeps the same atomic split as the diagram work: atoms own the small markers, molecules own reusable message/note presentation, and later organisms will compose a transcript reader and annotation rail with controlled selection state.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 14)
+
+**Assistant interpretation:** Continue past the diagram sweep into the next ticket tasks, starting the transcript/annotation slice.
+
+**Inferred user intent:** Keep implementing the package-first component layers in order, with Storybook validation.
+
+### What I did
+- Added `TranscriptRoleBadge` atom and stories.
+- Added `AnnotationBadge` atom and stories.
+- Added `TranscriptMessageCard` molecule and stories.
+- Added `AnnotationNoteCard` molecule and stories.
+- Exported the new atoms and molecules from package barrels.
+- Ran package typecheck, package build, and package Storybook build.
+- Opened `TranscriptMessageCard / Roles` in Storybook and captured `transcript-message-card-roles.png`.
+
+### Why
+- Transcript/annotation work needs atom-level role and annotation markers before building larger reader/rail organisms.
+- The new molecules consume the normalized transcript fixtures added earlier.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-transcript-atoms` passed.
+- Browser sanity check showed readable transcript cards and badges with no blank/broken UI.
+
+### What didn't work
+- N/A.
+
+### What I learned
+- The transcript role badge can also carry tool names (`read_file`, `run_test`) without needing a separate tool-call atom yet.
+
+### What was tricky to build
+- `TranscriptMessageCard` must accept both message-local `annotationIds` and a shared annotation list. This keeps the message DTO simple while letting the future reader organism own annotation selection state.
+
+### What warrants a second pair of eyes
+- Review whether the transcript role styling is visually distinct enough for long transcripts.
+- Review whether `AnnotationBadge` should stay an atom or become a very small molecule because it composes `ContextKindSwatch`.
+
+### What should be done in the future
+- Build `TranscriptReaderPanel` and `AnnotationRailPanel` organisms with controlled selection props.
+
+### Code review instructions
+- Start with `TranscriptRoleBadge.tsx` and `AnnotationBadge.tsx`.
+- Then review `TranscriptMessageCard.tsx` and `AnnotationNoteCard.tsx`.
+- Open Storybook story `Component Library / Molecules / TranscriptMessageCard / Roles`.
+
+### Technical details
+- Storybook build output used for validation: `/tmp/rag-package-storybook-transcript-atoms`.
