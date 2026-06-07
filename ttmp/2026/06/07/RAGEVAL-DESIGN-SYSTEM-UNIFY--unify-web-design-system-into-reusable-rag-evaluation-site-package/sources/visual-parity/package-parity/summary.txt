@@ -1,0 +1,2 @@
+Storybook URL: http://127.0.0.1:18607/iframe.html?id=design-system-package-parity--shared-components
+Compare output: /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-parity/compare-shared-components

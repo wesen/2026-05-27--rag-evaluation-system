@@ -1,0 +1,39 @@
+# Changelog
+
+## 2026-06-07
+
+- Initial workspace created
+
+
+## 2026-06-07
+
+Initialized design-system unification ticket, captured css-visual-diff help, generated duplication inventory, and wrote the analysis/implementation guide with granular task plan.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/design-doc/01-design-system-unification-analysis-and-implementation-guide.md — Unification guide and task plan
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/reference/01-investigation-diary.md — Step 1 diary
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/01-duplication-inventory.md — Duplication evidence
+
+
+## 2026-06-07
+
+Added pnpm workspace wiring so web depends on the local rag-evaluation-site package for development; typecheck passes for both frontend packages.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pnpm-workspace.yaml — New workspace file
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/package.json — Workspace dependency
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/tsconfig.json — Package source path mapping
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/vite.config.ts — Package source aliasing
+
+
+## 2026-06-07
+
+Redirected shared web barrels/widgets to package exports, added Storybook package parity story, and captured css-visual-diff evidence with 0 changed pixels.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-parity/compare-shared-components/01-compare.md — Visual parity report
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/components/PackageParity.stories.tsx — New visual parity Storybook fixture
+
