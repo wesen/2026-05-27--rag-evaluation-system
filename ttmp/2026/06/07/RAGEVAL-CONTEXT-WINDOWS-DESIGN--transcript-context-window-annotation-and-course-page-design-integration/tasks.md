@@ -31,3 +31,12 @@
 - [ ] Add Widget IR component types for stable context components
 - [ ] Add Goja widget.dsl recipes for contextWindowStudio and annotatedTranscript
 - [ ] Run final package/web typecheck, builds, Storybook builds, visual sweeps, and ticket closeout
+
+## Phase 2: Prototype-to-Design Visual Comparison
+
+- [ ] Generate standalone HTML pages from prototype JSX (screens.jsx, screens2.jsx, screens3.jsx)
+- [ ] Add data-* annotations to prototype widgets for css-visual-diff section matching
+- [ ] Create visual-diff spec mapping prototype screens to package Storybook stories
+- [ ] Capture prototype baseline screenshots with Playwright
+- [ ] Run css-visual-diff comparison: prototype vs package components
+- [ ] Document visual parity gaps and tuning priorities

@@ -1177,3 +1177,58 @@ This completes the package-side course component task and gives the future web p
 
 ### Technical details
 - Storybook build output used for validation: `/tmp/rag-package-storybook-course`.
+
+## Step 20: Prototype-to-Design Visual Comparison Phase
+
+Set up the full prototype-to-design comparison pipeline, following the Pyxis pattern. The pipeline generates standalone HTML from prototype JSX, adds data-* annotations for section matching, creates a visual-diff spec, and provides a capture script to screenshot both sides.
+
+This gives us a repeatable way to compare the original design prototype against the package Storybook components — identifying visual parity gaps and tuning priorities before composing web pages.
+
+### Prompt Context
+
+**User prompt (verbatim):** "ok, create a new phase + tasks for that phase in the ticket tasks.md, and extract screenshots for all pages and widgets from the original, in the same we did for pyxis"
+
+**Assistant interpretation:** Create a new phase in the ticket's tasks.md for prototype-to-design visual comparison, and generate the standalone HTML + capture infrastructure to extract screenshots from the original prototype JSX.
+
+**Inferred user intent:** Establish the same prototype screenshot extraction pipeline that Pyxis used, but adapted for the RAG context-viewer prototype.
+
+### What I did
+- Added **Phase 2: Prototype-to-Design Visual Comparison** with 6 tasks in tasks.md.
+- Generated 8 standalone HTML files under `prototype-design/standalone/full-app/` (one per screen: app, landing, visualize, transcript, comments, slides, handout, upload).
+- Added `data-rag-organism` annotations to prototype JSX root containers in screens.jsx, screens2.jsx, screens3.jsx, and app.jsx.
+- Created `visual-diff/userland-specs.desktop.visual.yml` spec mapping prototype paths and selectors to package Storybook story IDs.
+- Created `scripts/08_capture_prototype_screenshots.sh` — Playwright-based capture script following the Pyxis workflow.
+- Created `scripts/09_generate_standalone_html.py` — Python script to generate standalone HTML from prototype JSX (the generation pipeline Pyxis had, now implemented for RAG).
+
+### Why
+- The Pyxis project established a proven pattern: standalone HTML → Playwright capture → css-visual-diff comparison → diff artifacts.
+- The RAG prototype JSX files (`screens*.jsx`, `patterns.jsx`, `data.jsx`) contain the original design intent. Capturing them as screenshots gives us a baseline to measure package component visual parity against.
+- Adding `data-*` annotations to prototype containers enables section-level comparison, just like Pyxis uses `data-pyxis-component` on prototype widgets.
+
+### What worked
+- Standalone HTML generation is straightforward: CDN-loaded React + Babel + prototype JSX files.
+- `data-rag-organism` annotations already exist on all package components; adding matching annotations to prototype JSX enables direct css-visual-diff section comparison.
+- The visual-diff spec YAML follows the Pyxis pattern exactly.
+
+### What didn't work
+- None yet. The infrastructure is in place; actual screenshot capture and css-visual-diff comparison will be tested in the next turn.
+
+### What was tricky
+- Mapping prototype sections to package components isn't always one-to-one. For example, the `LandingScreen` prototype renders a course landing that maps to `CourseLessonPanel` in the package, but the internal structure differs (inline styles vs. CSS Modules, different DOM hierarchy). The spec's section selectors handle this by targeting the top-level container on both sides.
+
+### What should be done in the future
+- Run `scripts/08_capture_prototype_screenshots.sh` to capture actual screenshots.
+- Run css-visual-diff comparison against Storybook.
+- Document visual gaps and create a tuning plan.
+
+### Code review instructions
+- Review `scripts/08_capture_prototype_screenshots.sh` for Playwright usage.
+- Review `scripts/09_generate_standalone_html.py` for HTML generation.
+- Review `visual-diff/userland-specs.desktop.visual.yml` for section mapping.
+- Open any standalone HTML in a browser to verify React renders correctly.
+
+### Technical details
+- Prototype JSX source files: `sources/03-context-viewer-design-iteration/screens.jsx`, `screens2.jsx`, `screens3.jsx`, `patterns.jsx`, `data.jsx`, `app.jsx`, `tweaks-panel.jsx`
+- Standalone HTML output: `prototype-design/standalone/full-app/{app,landing,visualize,transcript,comments,slides,handout,upload}.html`
+- Visual-diff spec: `visual-diff/userland-specs.desktop.visual.yml`
+- Screenshot output: `prototype-design/visual-diff/prototype-screenshots/`

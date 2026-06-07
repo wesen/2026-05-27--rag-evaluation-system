@@ -69,7 +69,7 @@ function App() {
           <MacWindow title={TITLES[screen]} style={{ flex: 1, minHeight: 0 }} onClose={() => go("course")}>
             <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
               {/* sidebar */}
-              <div className="mac-sidebar">
+              <div className="mac-sidebar" data-rag-organism="AppSidebar">
                 {NAV.map((n, i) => n.group
                   ? <div key={"g" + i} className="mac-navgroup">{n.group}</div>
                   : (

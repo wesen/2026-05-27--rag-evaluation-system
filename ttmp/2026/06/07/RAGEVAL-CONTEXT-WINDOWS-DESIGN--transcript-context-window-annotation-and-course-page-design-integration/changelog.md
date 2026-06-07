@@ -218,3 +218,20 @@ Added course step navigation, lesson panel, and slide panel components with Stor
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/CourseLessonPanel/CourseLessonPanel.tsx — Course landing organism
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/CourseSlidePanel.tsx — Course slide organism
 
+
+## 2026-06-07
+
+Phase 2: prototype-to-design visual comparison — standalone HTML generation, data-* annotations, visual-diff spec, and Playwright capture scripts.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../prototype-design/standalone/full-app/*.html — Standalone HTML for 8 prototype screens
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../prototype-design/standalone/index.html — Prototype page catalog index
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../prototype-design/visual-diff/userland-specs.desktop.visual.yml — Visual diff spec YAML
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../scripts/08_capture_prototype_screenshots.sh — Playwright screenshot capture
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../scripts/09_generate_standalone_html.py — Standalone HTML generator
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../sources/03-context-viewer-design-iteration/app.jsx — data-rag-organism annotations
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../sources/03-context-viewer-design-iteration/screens.jsx — data-rag-organism annotations
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../sources/03-context-viewer-design-iteration/screens2.jsx — data-rag-organism annotations
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--.../sources/03-context-viewer-design-iteration/screens3.jsx — data-rag-organism annotations
+

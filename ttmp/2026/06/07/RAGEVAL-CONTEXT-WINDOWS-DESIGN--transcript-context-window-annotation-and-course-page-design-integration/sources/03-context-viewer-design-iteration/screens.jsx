@@ -6,7 +6,7 @@ function LandingScreen({ onNavigate }) {
   const c = COURSE;
   const heroDiagram = adapt(SNAPSHOTS[1], "strip");
   return (
-    <div className="mac-scroll grow" style={{ background: "#fff" }}>
+    <div className="mac-scroll grow" data-rag-organism="LandingScreen" style={{ background: "#fff" }}>
       {/* hero */}
       <div style={{ borderBottom: "1px solid #000", padding: "30px 34px 26px" }}>
         <div className="mono" style={{ fontSize: 11, letterSpacing: "0.18em", color: "#666", marginBottom: 14 }}>{c.kicker}</div>
@@ -108,8 +108,8 @@ function Visualize({ snapshot, externalCW }) {
   const visibleParts = cw.parts.filter((p) => p.kind !== "empty");
 
   return (
-    <div className="grow" style={{ display: "flex", minHeight: 0, background: "#fff" }}>
-      <div className="grow mac-scroll" style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+    <div className="grow" data-rag-organism="Visualize" style={{ display: "flex", minHeight: 0, background: "#fff" }}>
+      <div className="grow mac-scroll" data-rag-organism="Visualize" style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* snapshot selector */}
         {!externalCW && (
           <div style={{ display: "flex", gap: 0, borderBottom: "1px solid #000", flexWrap: "wrap" }}>
@@ -206,7 +206,7 @@ function Upload({ onLoad }) {
   };
 
   return (
-    <div className="mac-scroll grow" style={{ background: "#fff", padding: 18 }}>
+    <div className="mac-scroll grow" data-rag-organism="Upload" style={{ background: "#fff", padding: 18 }}>
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 16, alignItems: "start" }}>
         {/* left: input */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

@@ -97,7 +97,7 @@ function Handout() {
         </div>
       </div>
       {/* preview */}
-      <div className="grow mac-scroll" style={{ minWidth: 0 }}>
+      <div className="grow mac-scroll" data-rag-organism="TranscriptReaderPanel" style={{ minWidth: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 18px", borderBottom: "1px solid #000", background: "#fafafa", position: "sticky", top: 0, zIndex: 2 }}>
           <div style={{ display: "flex", gap: 10, alignItems: "baseline" }}>
             <span className="mono" style={{ fontSize: 11, color: "#666" }}>{doc.file}</span>
@@ -166,7 +166,7 @@ function Transcript() {
         </div>
       </div>
       {/* annotations rail */}
-      <div className="mac-scroll" style={{ flex: "0 0 280px", borderLeft: "1px solid #000", background: "#fafafa", display: "flex", flexDirection: "column" }}>
+      <div className="mac-scroll" data-rag-organism="Handout" style={{ flex: "0 0 280px", borderLeft: "1px solid #000", background: "#fafafa", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "10px 14px", borderBottom: "1px solid #000" }}>
           <SectionLabel>CONTEXT-ENGINEERING NOTES</SectionLabel>
           <Caption style={{ display: "block", marginTop: 3 }}>What each message costs the window. Click a note or a message to focus it.</Caption>

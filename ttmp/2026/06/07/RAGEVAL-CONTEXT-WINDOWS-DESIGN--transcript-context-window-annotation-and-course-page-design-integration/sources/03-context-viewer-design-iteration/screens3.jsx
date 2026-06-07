@@ -44,7 +44,7 @@ function Comments({ commentUI }) {
 
   return (
     <div className="grow" style={{ display: "flex", minHeight: 0, background: "#fff" }}>
-      <div className="grow mac-scroll" style={{ minWidth: 0, display: "flex", flexDirection: "column" }}>
+      <div className="grow mac-scroll" data-rag-organism="Comments" style={{ minWidth: 0, display: "flex", flexDirection: "column" }}>
         {/* toolbar */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 16px", borderBottom: "1px solid #000", background: "#fafafa" }}>
           <Tabs tabs={COMMENT_VIEWS} value={view} onChange={setView} />
@@ -168,7 +168,7 @@ function SlideViewer() {
   const d = adapt(snap, s.view);
 
   return (
-    <div className="grow" style={{ display: "flex", flexDirection: "column", minHeight: 0, background: "#fff" }}>
+    <div className="grow" data-rag-organism="SlideViewer" style={{ display: "flex", flexDirection: "column", minHeight: 0, background: "#fff" }}>
       <div ref={hostRef} className="grow desktop-bg" style={{ display: "grid", placeItems: "center", minHeight: 0, overflow: "hidden", position: "relative" }}>
         <div style={{ width: SLIDE_W, height: SLIDE_H, transform: `scale(${scale})`, transformOrigin: "center", background: "#fff", border: "1px solid #000", boxShadow: "3px 3px 0 0 rgba(0,0,0,0.5)", display: "flex", flexDirection: "column" }}>
           {/* slide titlebar */}
