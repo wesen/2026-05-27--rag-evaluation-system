@@ -360,3 +360,68 @@ The one non-obvious migration surface was the standalone design-reference CSS ex
 ### Technical details
 - Remaining web shared-layer files are compatibility barrels plus web-only molecules.
 - Package-owned implementation and Storybook files now live under `packages/rag-evaluation-site/src/components` and `packages/rag-evaluation-site/src/widgets`.
+
+## Step 6: Capture Package Storybook Visual Sweep Baselines
+
+I added a package Storybook visual sweep script and ran it across every package-owned story. The sweep builds the package Storybook, serves the static output locally, discovers stories from `index.json`, and runs `css-visual-diff compare` for each story against itself to produce a deterministic screenshot/report baseline for review.
+
+This is not a before/after parity comparison; it is a canonical package baseline now that the duplicated web implementations have been removed. It gives us per-story screenshots, compare JSON, markdown reports, and an aggregate summary TSV for future regression sweeps.
+
+### Prompt Context
+
+**User prompt (verbatim):** "go ahead"
+
+**Assistant interpretation:** Continue with the remaining visual QA task: run css-visual-diff across package-owned Storybook stories.
+
+**Inferred user intent:** Establish a broader visual baseline for the package components after moving stories and deleting web-local duplicates.
+
+### What I did
+- Added `scripts/04_package_storybook_visual_sweep.sh`.
+- The script builds `packages/rag-evaluation-site` Storybook to a ticket-local static directory, serves it on a local port, fetches `index.json`, and enumerates package stories.
+- The script runs `css-visual-diff compare` for each story using `#storybook-root` as the selector on both sides.
+- The script writes per-story artifacts under `sources/visual-parity/package-story-sweep/reports/<story-id>/` and an aggregate `summary.tsv`.
+- Removed generated `storybook-static` after the run so the committed ticket contains durable artifacts, not the whole build output.
+
+### Why
+- After deleting web-local duplicates, the package Storybook is the canonical reusable-component visual surface.
+- A full story sweep gives reviewers concrete screenshots for all exported package component/widget stories instead of only one parity fixture.
+
+### What worked
+- The sweep completed for 48 package stories.
+- `summary.tsv` contains 49 lines including the header.
+- All story self-comparisons reported `changed_pixels=0` and `changed_percent=0`.
+- `docmgr doctor --ticket RAGEVAL-DESIGN-SYSTEM-UNIFY --stale-after 30` passed after generating the artifacts.
+
+### What didn't work
+- N/A for this step. The script completed successfully on the first run.
+
+### What I learned
+- The package Storybook index currently exposes 48 stories across atoms, foundation, layout, molecules, and Widget IR.
+- The sweep output is about 8 MB after removing `storybook-static`, which is acceptable for a ticket visual baseline.
+
+### What was tricky to build
+- The css-visual-diff reports are Markdown files under the docmgr ticket tree, so the script prefixes each generated report with valid docmgr frontmatter and renames it to `01-compare.md` inside each story directory.
+- The script intentionally removes raw `compare.md` files without frontmatter to keep `docmgr doctor` clean.
+
+### What warrants a second pair of eyes
+- Review whether committing all per-story PNG baselines is the desired long-term storage strategy, or whether future sweeps should keep only summary JSON plus selected screenshots.
+- Spot-check a few generated screenshots in `sources/visual-parity/package-story-sweep/reports/` to confirm the stories render the intended states.
+
+### What should be done in the future
+- Convert this self-compare baseline into a true previous-vs-current regression workflow once there is a stored baseline from a prior commit/build.
+- Optionally add a review-site index for browsing the generated screenshots more comfortably.
+
+### Code review instructions
+- Review `scripts/04_package_storybook_visual_sweep.sh` first.
+- Inspect `sources/visual-parity/package-story-sweep/summary.tsv` for story count and changed-pixel results.
+- Spot-check reports such as:
+  - `sources/visual-parity/package-story-sweep/reports/design-system-atoms-button--variants/01-compare.md`
+  - `sources/visual-parity/package-story-sweep/reports/component-library-molecules-datatable--retrieval-rows/01-compare.md`
+  - `sources/visual-parity/package-story-sweep/reports/widget-ir-renderer--search-workbench-composition/01-compare.md`
+- Re-run with `scripts/04_package_storybook_visual_sweep.sh`.
+
+### Technical details
+- Storybook port used by the script: `${CSSVD_PACKAGE_STORYBOOK_PORT:-18617}`.
+- Viewport: `1440x1000`.
+- Wait: `1500ms` for both URL captures.
+- Selector: `#storybook-root`.

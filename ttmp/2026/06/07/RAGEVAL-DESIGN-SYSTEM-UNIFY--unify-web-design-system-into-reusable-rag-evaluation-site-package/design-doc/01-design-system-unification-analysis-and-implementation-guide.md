@@ -36,10 +36,16 @@ RelatedFiles:
       Note: Generates shared/different/web-only package inventory
     - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/scripts/03_storybook_package_parity_compare.sh
       Note: Builds Storybook and runs css-visual-diff package parity comparison
+    - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/scripts/04_package_storybook_visual_sweep.sh
+      Note: Builds package Storybook and captures per-story css-visual-diff baselines
     - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/01-duplication-inventory.md
       Note: Generated evidence for duplicated web/package component and widget files
     - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-parity/compare-shared-components/01-compare.md
       Note: css-visual-diff report showing zero changed pixels
+    - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep/reports/widget-ir-renderer--search-workbench-composition/01-compare.md
+      Note: Representative Widget IR visual baseline report
+    - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep/summary.tsv
+      Note: Aggregate visual sweep results for 48 package stories
     - Path: web/package.json
       Note: Web package now depends on the local rag-evaluation-site workspace package
     - Path: web/src/components
@@ -82,6 +88,7 @@ LastUpdated: 2026-06-07T00:00:00Z
 WhatFor: Use before and during the design-system unification migration.
 WhenToUse: When moving shared React components, Widget IR types, Storybook stories, or package development wiring.
 ---
+
 
 
 

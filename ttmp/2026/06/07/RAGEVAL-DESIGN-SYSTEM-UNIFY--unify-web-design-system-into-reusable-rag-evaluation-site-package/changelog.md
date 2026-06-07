@@ -57,3 +57,13 @@ Removed duplicated web-local shared component and WidgetRenderer implementations
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/reference-pages/css-entry.ts — Package CSS module imports for reference rendering
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/vite.config.ts — Alias fix for package subpaths
 
+
+## 2026-06-07
+
+Added and ran a package Storybook css-visual-diff sweep across 48 package-owned stories; all self-comparisons reported 0 changed pixels.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/scripts/04_package_storybook_visual_sweep.sh — Visual sweep automation
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep/summary.tsv — Visual sweep summary
+

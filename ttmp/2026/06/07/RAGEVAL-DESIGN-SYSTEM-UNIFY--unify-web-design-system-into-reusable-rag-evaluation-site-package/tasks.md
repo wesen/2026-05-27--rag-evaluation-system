@@ -12,4 +12,4 @@
 - [x] Run typecheck/build and css-visual-diff visual parity checks
 - [x] Audit and remove remaining direct imports of duplicated local shared component files
 - [x] Move package-owned Storybook coverage into the package or make web stories package-import only
-- [ ] Run css-visual-diff sweeps against package-owned Storybook stories
+- [x] Run css-visual-diff sweeps against package-owned Storybook stories
