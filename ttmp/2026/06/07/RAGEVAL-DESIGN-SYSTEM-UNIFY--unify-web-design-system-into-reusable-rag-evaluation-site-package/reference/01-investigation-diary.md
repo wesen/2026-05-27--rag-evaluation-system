@@ -425,3 +425,69 @@ This is not a before/after parity comparison; it is a canonical package baseline
 - Viewport: `1440x1000`.
 - Wait: `1500ms` for both URL captures.
 - Selector: `#storybook-root`.
+
+## Step 7: Convert Package Sweep Output into css-visual-diff Review Site Data
+
+I converted the package Storybook sweep artifacts into the directory and manifest format consumed by `css-visual-diff serve`. The review site is now running locally and exposes all 48 package Storybook baseline cards through the interactive UI.
+
+This step did not rerun browser comparisons; it reorganized the already-captured sweep artifacts into the review-site contract: a root `summary.json`, one `package-storybook` page, and per-story `artifacts/<story-id>/` directories with `compare.json`, `left_region.png`, `right_region.png`, `diff_only.png`, and `diff_comparison.png`.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Continue. is there anything left on th eunification of the design system?"
+
+**Assistant interpretation:** Finish wiring the css-visual-diff review-site serving flow and assess remaining design-system unification work.
+
+**Inferred user intent:** Make the visual baseline easy to review interactively and understand whether the core unification task is complete or still has important follow-ups.
+
+### What I did
+- Added `scripts/05_prepare_package_storybook_review_site.py`.
+- Generated `sources/visual-parity/package-story-sweep-review/summary.json` with 48 rows.
+- Created serve-compatible artifact paths under `package-storybook/artifacts/<story-id>/` using symlinks to the existing sweep artifacts.
+- Started `css-visual-diff serve` in tmux session `cssvd-package-review` on port `8097`.
+- Verified `GET /api/manifest` reports 48 accepted rows.
+- Fixed docmgr warnings by not creating `compare.md` symlinks in the serve-compatible artifact tree; the review site does not need Markdown reports.
+
+### Why
+- The existing sweep data was useful but inconvenient to browse manually.
+- `css-visual-diff serve` gives an interactive review interface for scanning all package-owned component/widget stories and annotating any visual concerns.
+
+### What worked
+- `css-visual-diff serve` is running at `http://127.0.0.1:8097`.
+- Manifest check passed:
+  - `sectionCount: 48`
+  - `classificationCounts.accepted: 48`
+  - `policy.ok: true`
+- `docmgr doctor --ticket RAGEVAL-DESIGN-SYSTEM-UNIFY --stale-after 30` passed.
+
+### What didn't work
+- The first generated review-site layout symlinked `compare.md` into every artifact directory. `docmgr doctor` warned about 48 unprefixed Markdown files.
+- I removed the `compare.md` symlinks from the serve layout and regenerated the review-site directory, because the serve UI only requires JSON and PNG artifacts.
+
+### What I learned
+- `css-visual-diff serve` expects a stricter layout than raw `compare` output: `summary.json` plus `<page>/artifacts/<section>/...`.
+- The review site can use symlinked artifacts, so we do not need to duplicate the PNGs already committed under `package-story-sweep/reports`.
+
+### What was tricky to build
+- The review UI rewrites absolute paths based on the `<page>/artifacts/<section>/<file>` pattern. The converter therefore needs to create that exact layout even though the source sweep used `reports/<story-id>/`.
+- Keeping docmgr clean required avoiding extra Markdown files in deep artifact directories.
+
+### What warrants a second pair of eyes
+- The converter script is intentionally tailored to package Storybook baselines. Review whether it should become a generic css-visual-diff utility or remain ticket-local.
+- Review whether symlinks in ticket artifacts are acceptable for long-term portability. If not, switch `link_or_copy` to always copy files.
+
+### What should be done in the future
+- If the review site annotations are valuable, export the review notes from the UI and attach them to the ticket.
+- Build a true baseline-vs-current comparison script using this review-site layout as the reporting target.
+
+### Code review instructions
+- Open `http://127.0.0.1:8097` while `tmux attach -t cssvd-package-review` is running.
+- Review `scripts/05_prepare_package_storybook_review_site.py`.
+- Validate with:
+  - `curl -fsS http://127.0.0.1:8097/api/manifest | jq '.sectionCount, .classificationCounts, .policy'`
+  - `docmgr doctor --ticket RAGEVAL-DESIGN-SYSTEM-UNIFY --stale-after 30`
+
+### Technical details
+- Review site data root: `sources/visual-parity/package-story-sweep-review/`.
+- tmux session: `cssvd-package-review`.
+- URL: `http://127.0.0.1:8097`.

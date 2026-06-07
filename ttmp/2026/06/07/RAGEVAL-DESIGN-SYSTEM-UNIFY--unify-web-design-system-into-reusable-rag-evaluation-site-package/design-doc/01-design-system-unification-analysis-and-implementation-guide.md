@@ -38,10 +38,16 @@ RelatedFiles:
       Note: Builds Storybook and runs css-visual-diff package parity comparison
     - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/scripts/04_package_storybook_visual_sweep.sh
       Note: Builds package Storybook and captures per-story css-visual-diff baselines
+    - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/scripts/05_prepare_package_storybook_review_site.py
+      Note: Converts package sweep artifacts into css-visual-diff serve-compatible review-site layout
     - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/01-duplication-inventory.md
       Note: Generated evidence for duplicated web/package component and widget files
     - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-parity/compare-shared-components/01-compare.md
       Note: css-visual-diff report showing zero changed pixels
+    - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/01-review-site.md
+      Note: How to serve and use the interactive visual review site
+    - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/summary.json
+      Note: Serve manifest for 48 package Storybook visual baseline cards
     - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep/reports/widget-ir-renderer--search-workbench-composition/01-compare.md
       Note: Representative Widget IR visual baseline report
     - Path: ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep/summary.tsv
@@ -88,6 +94,7 @@ LastUpdated: 2026-06-07T00:00:00Z
 WhatFor: Use before and during the design-system unification migration.
 WhenToUse: When moving shared React components, Widget IR types, Storybook stories, or package development wiring.
 ---
+
 
 
 
