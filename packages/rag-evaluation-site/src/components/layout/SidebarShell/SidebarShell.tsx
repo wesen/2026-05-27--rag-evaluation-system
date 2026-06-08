@@ -14,7 +14,7 @@ function toCssSize(value: number | string | undefined) {
   return value;
 }
 
-export function SidebarShell({ sidebar, sidebarWidth = 220, header, footer, className, children, style, ...rest }: SidebarShellProps) {
+export function SidebarShell({ sidebar, sidebarWidth = 188, header, footer, className, children, style, ...rest }: SidebarShellProps) {
   const shellStyle = {
     ...style,
     '--rag-sidebar-width': toCssSize(sidebarWidth),

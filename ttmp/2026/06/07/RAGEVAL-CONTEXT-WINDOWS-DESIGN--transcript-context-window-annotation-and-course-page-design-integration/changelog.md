@@ -307,3 +307,16 @@ Added package-owned global course sidebar shell with reusable SidebarShell, Side
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.tsx — Course/studio shell composition
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/courseStudioNav.ts — Default course navigation section config
 
+
+## 2026-06-07
+
+Added package GUIDELINES.md and re-aligned sidebar typography/spacing with foundation tokens and imported prototype source.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/GUIDELINES.md — Package design-system rules for reusable UI and future Widget IR work
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/README.md — Links package guidelines
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.tsx — Default sidebar width aligned with prototype
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/SidebarNav/SidebarNav.module.css — Sidebar typography now uses foundation token roles
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.tsx — Course shell width follows sidebar token language
+

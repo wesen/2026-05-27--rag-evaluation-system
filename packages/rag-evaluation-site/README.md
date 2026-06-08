@@ -4,7 +4,7 @@ React Widget IR renderer and default RAG evaluation site shell.
 
 ## Component ownership
 
-This package is the canonical reusable UI layer. Keep package components API-free and Storybook-first:
+This package is the canonical reusable UI layer. Read [`GUIDELINES.md`](./GUIDELINES.md) before changing package UI. Keep package components API-free and Storybook-first:
 
 - `components/foundation`: text, captions, status, code, dividers, accessibility helpers.
 - `components/atoms`: basic controls and semantic markers.

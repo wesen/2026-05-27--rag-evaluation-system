@@ -1616,3 +1616,74 @@ The thing on th eleft with Course / Slides / Visualize / etc..."
 
 ### Technical details
 - The new shell uses `data-rag-layout="SidebarShell"`, `data-rag-molecule="SidebarNav"`, and `data-rag-organism="CourseStudioShell"` for visual-diff and future IR/extraction handles.
+
+## Step 27: Add Package Design-System Guidelines and Re-align Sidebar Typography
+
+I added a strong package-level `GUIDELINES.md` so future component work has a local, unavoidable contract for layer placement, token usage, Storybook ownership, prototype-porting rules, and Widget IR sequencing. This file is now linked from the package README and should be read before changing reusable UI in `packages/rag-evaluation-site`.
+
+I also rechecked the original imported context-viewer JSX/CSS for the sidebar. The prototype used the established foundation roles directly: navigation rows use `--rag-font-role-compact`, group labels use `--rag-font-role-label`, and captions use `--rag-font-role-metadata`. I tuned the new sidebar shell toward that token language instead of the heavier custom body-font styling from the first pass.
+
+### Prompt Context
+
+**User prompt (verbatim):** "yes pelase stick to the typographic language established in the foundation, you can also look at the original imported jsx/html. 
+
+Make a strong set of GUIDELINES.md in the @2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/ base directory to avoid starting to stray fromt he tokens and the strict system we have in place"
+
+**Assistant interpretation:** Audit the new sidebar against the existing foundation typography/prototype source, correct drift, and create a durable package-level design-system guideline document.
+
+**Inferred user intent:** Prevent the reusable package from accumulating ad-hoc visual decisions as new course/context-viewer components are added, especially before exposing components through Widget IR/Goja.
+
+### What I did
+- Read package foundation typography primitives and theme tokens:
+  - `Text`, `Caption`, `Text.module.css`, `Caption.module.css`, `theme.css`.
+- Read original imported prototype source for the sidebar:
+  - `sources/03-context-viewer-design-iteration/app.jsx`
+  - `sources/03-context-viewer-design-iteration/ds.jsx`
+  - `sources/03-context-viewer-design-iteration/styles.css` sidebar rules.
+- Added `packages/rag-evaluation-site/GUIDELINES.md` with strict rules for package layer ownership, typography tokens, CSS modules, Storybook titles, prototype porting, `data-rag-*` handles, and Widget IR sequencing.
+- Linked `GUIDELINES.md` from `packages/rag-evaluation-site/README.md`.
+- Tuned `SidebarNav` to use `--rag-font-role-compact` for nav rows and `--rag-font-role-label` for group labels.
+- Tuned sidebar spacing/width/background closer to the imported prototype: 188px rail, `var(--mac-surface)` sidebar background, compact row padding, 16px icon slot, tokenized group label spacing.
+- Ran package typecheck, build, and Storybook build.
+
+### Why
+- Recent work was beginning to introduce ad-hoc typography (`700 13px`, `.16em` letter-spacing) instead of using the foundation roles.
+- The package is now the reusable foundation for future Widget IR, so drifting visual decisions would become expensive once encoded into DSL/IR recipes.
+- A local `GUIDELINES.md` is easier to discover than ticket documents when working directly inside the package.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-guidelines-sidebar` passed.
+- The original prototype confirmed the correct sidebar typography roles.
+
+### What didn't work
+- N/A
+
+### What I learned
+- The imported prototype is already aligned with the token roles for sidebar typography; the production package should preserve those roles rather than reinterpret them with larger/bolder body-font styles.
+- The package README alone was too brief; the guidelines need to be detailed enough to block future ambiguous placement decisions.
+
+### What was tricky to build
+- The guideline needed to be strict without freezing the system. I framed it around layer ownership, token usage, and review checklists, while still allowing deliberate new tokens/foundation roles when a repeated need emerges.
+
+### What warrants a second pair of eyes
+- Review whether `GUIDELINES.md` should also be referenced from root `web/README.md` or a future `AGENTS.md`/`CONTRIBUTING.md`.
+- Review whether the sidebar should exactly mirror the prototype row border behavior or stay slightly cleaner in the package implementation.
+
+### What should be done in the future
+- Use `GUIDELINES.md` as the first stop before adding Widget IR nodes for course/context components.
+- Consider adding a lint/check script later that flags raw `font:` declarations outside foundation/theme files.
+
+### Code review instructions
+- Start with `packages/rag-evaluation-site/GUIDELINES.md`.
+- Then review `SidebarNav.module.css`, `SidebarShell.module.css`, and `CourseStudioShell.tsx` for token alignment.
+- Validate with:
+  - `pnpm --dir packages/rag-evaluation-site typecheck`
+  - `pnpm --dir packages/rag-evaluation-site build`
+  - `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-guidelines-sidebar`
+
+### Technical details
+- Original prototype sidebar references:
+  - `app.jsx` `NAV`, `NavIcon`, `.mac-sidebar` composition.
+  - `styles.css` `.mac-navitem`, `.mac-navgroup`, `.mac-caption`, `.mac-sectionlabel`.

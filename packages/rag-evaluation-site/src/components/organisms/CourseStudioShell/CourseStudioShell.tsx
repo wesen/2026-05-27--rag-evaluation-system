@@ -35,7 +35,7 @@ export function CourseStudioShell({
   return (
     <SidebarShell
       className={className}
-      sidebarWidth={214}
+      sidebarWidth={188}
       header={header}
       footer={sidebarFooter}
       sidebar={<SidebarNav sections={sections} activeItemId={activeItemId} onItemSelect={onNavigate} />}
