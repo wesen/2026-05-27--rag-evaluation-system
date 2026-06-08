@@ -251,6 +251,11 @@ func (r *runtime) install(exports *goja.Object) {
 	setExport(recipes, "metrics", r.metricsRecipe)
 	setExport(recipes, "actionToolbar", r.actionToolbarRecipe)
 	setExport(recipes, "masterDetailTable", r.masterDetailTableRecipe)
+	setExport(recipes, "contextDiagram", r.contextDiagramRecipe)
+	setExport(recipes, "annotatedTranscript", r.annotatedTranscriptRecipe)
+	setExport(recipes, "courseStudio", r.courseStudioRecipe)
+	setExport(recipes, "courseSlide", r.courseSlideRecipe)
+	setExport(recipes, "handout", r.handoutRecipe)
 	setExport(exports, "recipes", recipes)
 }
 
@@ -413,6 +418,96 @@ func (r *runtime) actionToolbarRecipe(call goja.FunctionCall) goja.Value {
 			"children": inlineChildren,
 		}},
 	})
+}
+
+func (r *runtime) contextDiagramRecipe(call goja.FunctionCall) goja.Value {
+	options := firstObject(call.Arguments)
+	props := map[string]any{
+		"snapshot": valueOrDefault(options["snapshot"], map[string]any{"id": "empty", "title": "Context", "limit": 0, "parts": []any{}}),
+	}
+	if value := options["view"]; value != nil {
+		props["initialView"] = value
+	} else if value := options["initialView"]; value != nil {
+		props["initialView"] = value
+	}
+	copyIfPresent(props, options, "selectedPartId")
+	return r.vm.ToValue(componentNode("ContextDiagramPanel", props))
+}
+
+func (r *runtime) annotatedTranscriptRecipe(call goja.FunctionCall) goja.Value {
+	options := firstObject(call.Arguments)
+	transcript, _ := options["transcript"].(map[string]any)
+	props := map[string]any{
+		"title":       valueOrDefault(valueFromMap(transcript, "title"), stringFromMap(options, "title", "Transcript")),
+		"subtitle":    valueOrDefault(valueFromMap(transcript, "subtitle"), options["subtitle"]),
+		"messages":    anySlice(valueOrDefault(valueFromMap(transcript, "messages"), options["messages"])),
+		"annotations": anySlice(valueOrDefault(valueFromMap(transcript, "annotations"), options["annotations"])),
+		"showNotes":   boolFromMap(options, "showNotes", true),
+	}
+	if selected := valueOrDefault(options["selectedAnnotationId"], valueFromMap(transcript, "selectedAnnotationId")); selected != nil {
+		props["selectedAnnotationId"] = selected
+	}
+	if act, ok := normalizeActionSpec(options["onAnnotationSelect"], nil, nil); ok {
+		props["onAnnotationSelectAction"] = act
+	}
+	return r.vm.ToValue(componentNode("TranscriptWorkspacePanel", props))
+}
+
+func (r *runtime) courseStudioRecipe(call goja.FunctionCall) goja.Value {
+	options := firstObject(call.Arguments)
+	props := map[string]any{
+		"sections": valueOrDefault(options["sections"], []any{}),
+		"title":    stringFromMap(options, "title", "Context Window Engineering"),
+	}
+	copyIfPresent(props, options, "subtitle")
+	copyIfPresent(props, options, "activeItemId")
+	if act, ok := normalizeActionSpec(options["onNavigate"], nil, nil); ok {
+		props["onNavigateAction"] = act
+	}
+	children := []any{}
+	if main, ok := widgetNodeFromAny(options["main"]); ok {
+		children = append(children, main)
+	}
+	return r.vm.ToValue(componentNode("CourseStudioShell", props, children...))
+}
+
+func (r *runtime) courseSlideRecipe(call goja.FunctionCall) goja.Value {
+	options := firstObject(call.Arguments)
+	props := map[string]any{
+		"slide":    valueOrDefault(options["slide"], map[string]any{}),
+		"snapshot": valueOrDefault(options["snapshot"], map[string]any{"id": "empty", "title": "Context", "limit": 0, "parts": []any{}}),
+	}
+	copyIfPresent(props, options, "index")
+	copyIfPresent(props, options, "total")
+	copyIfPresent(props, options, "visualSide")
+	if act, ok := normalizeActionSpec(options["onPrevious"], nil, nil); ok {
+		props["onPreviousAction"] = act
+	}
+	if act, ok := normalizeActionSpec(options["onNext"], nil, nil); ok {
+		props["onNextAction"] = act
+	}
+	return r.vm.ToValue(componentNode("CourseSlidePanel", props))
+}
+
+func (r *runtime) handoutRecipe(call goja.FunctionCall) goja.Value {
+	options := firstObject(call.Arguments)
+	bundle, _ := options["bundle"].(map[string]any)
+	props := map[string]any{
+		"intro":     valueOrDefault(valueFromMap(bundle, "intro"), stringFromMap(options, "intro", "Handout")),
+		"documents": anySlice(valueOrDefault(valueFromMap(bundle, "docs"), options["documents"])),
+	}
+	copyIfPresent(props, options, "selectedDocumentId")
+	copyIfPresent(props, options, "title")
+	if act, ok := normalizeActionSpec(options["onSelect"], nil, nil); ok {
+		props["onDocumentSelectAction"] = act
+	}
+	if act, ok := normalizeActionSpec(options["onDownload"], nil, nil); ok {
+		props["onDownloadAction"] = act
+	}
+	if act, ok := normalizeActionSpec(options["onDownloadAll"], nil, nil); ok {
+		props["onDownloadAllAction"] = act
+	}
+	return r.vm.ToValue(componentNode("HandoutDocumentShell", props))
 }
 
 func (r *runtime) masterDetailTableRecipe(call goja.FunctionCall) goja.Value {
@@ -636,6 +731,35 @@ func valueOrDefault(value any, fallback any) any {
 		return fallback
 	}
 	return value
+}
+
+func valueFromMap(m map[string]any, key string) any {
+	if m == nil {
+		return nil
+	}
+	return m[key]
+}
+
+func copyIfPresent(dst map[string]any, src map[string]any, key string) {
+	if value, ok := src[key]; ok && value != nil {
+		dst[key] = value
+	}
+}
+
+func componentNode(componentType string, props map[string]any, children ...any) map[string]any {
+	out := map[string]any{"kind": "component", "type": componentType}
+	if len(props) > 0 {
+		out["props"] = props
+	}
+	if len(children) > 0 {
+		out["children"] = children
+	}
+	return out
+}
+
+func widgetNodeFromAny(value any) (map[string]any, bool) {
+	node, ok := value.(map[string]any)
+	return node, ok && isWidgetNodeExport(node)
 }
 
 func isWidgetNodeExport(exported map[string]any) bool {

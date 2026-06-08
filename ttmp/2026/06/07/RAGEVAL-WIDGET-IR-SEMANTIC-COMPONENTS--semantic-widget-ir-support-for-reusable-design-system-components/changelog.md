@@ -106,3 +106,14 @@ Added course, studio, handout, document, and content molecule Widget IR nodes wi
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetdsl/module_test.go — Course/handout JSON serialization test
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetschema/schema.go — Course/handout schema names
 
+
+## 2026-06-07
+
+Added semantic recipes for context diagrams, annotated transcripts, course studio/slides, and handouts.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetdsl/module.go — Semantic recipe implementations
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetdsl/module_test.go — Semantic recipe JSON serialization test
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS--semantic-widget-ir-support-for-reusable-design-system-components/reference/01-investigation-diary.md — Diary update for semantic recipes
+

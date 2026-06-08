@@ -332,6 +332,42 @@ func TestCourseAndHandoutHelpersAreJSONSerializable(t *testing.T) {
 	assertString(t, children[3].(map[string]any), "type", "SlideShell")
 }
 
+func TestContextCourseHandoutRecipesAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const snapshot = { id: "ctx", title: "Window", limit: 1000, parts: [{ id: "p", label: "Prompt", kind: "conversation", tokens: 300 }] };
+		const transcript = { title: "Session", messages: [{ id: "m1", role: "user", text: "hello" }], annotations: [] };
+		const slide = { id: "s1", number: "01", title: "Window", view: "budget", snapshotId: "ctx", notes: ["Budget"] };
+		const bundle = { intro: "Docs", docs: [{ id: "d1", title: "Guide", file: "guide.md", format: "markdown", description: "Guide", body: "# Guide" }] };
+		const sections = [{ id: "course", label: "Course", items: [{ id: "slides", label: "Slides" }] }];
+		const page = rag.page({ id: "recipes", title: "Recipes", sections: [
+			rag.recipes.contextDiagram({ snapshot, view: "budget" }),
+			rag.recipes.annotatedTranscript({ transcript, onAnnotationSelect: "select-annotation" }),
+			rag.recipes.courseStudio({ sections, activeItemId: "slides", main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 }) }),
+			rag.recipes.handout({ bundle, selectedDocumentId: "d1", onSelect: "select-doc" })
+		]});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build semantic recipe IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("semantic recipe page is not JSON: %v\n%s", err, value.String())
+	}
+	root := decoded["root"].(map[string]any)
+	children := root["children"].([]any)
+	assertString(t, children[0].(map[string]any), "type", "ContextDiagramPanel")
+	assertString(t, children[1].(map[string]any), "type", "TranscriptWorkspacePanel")
+	assertString(t, children[2].(map[string]any), "type", "CourseStudioShell")
+	assertString(t, children[3].(map[string]any), "type", "HandoutDocumentShell")
+}
+
 func TestSemanticRecipesAndActionsAreJSONSerializable(t *testing.T) {
 	vm := goja.New()
 	reg := require.NewRegistry()

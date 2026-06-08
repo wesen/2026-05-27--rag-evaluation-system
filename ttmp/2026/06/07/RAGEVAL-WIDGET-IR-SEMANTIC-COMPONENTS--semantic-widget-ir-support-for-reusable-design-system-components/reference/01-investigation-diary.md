@@ -562,3 +562,66 @@ The new `Widget IR/Renderer/Course Studio` story file includes course landing, s
 ### Technical details
 - New subgroup: `Widget IR/Renderer/Course Studio`.
 - `SlideShell` is now a direct IR node with `primary`, `secondary`, and `footer` slot props.
+
+## Step 8: Add Semantic Recipes for Context, Transcript, Course, and Handout
+
+I added the first semantic recipe layer on top of the expanded direct Widget IR nodes. These recipes keep the same architecture as the earlier `metrics`, `actionToolbar`, and `masterDetailTable` recipes: they are pure Goja-side expansions into plain JSON-compatible Widget IR, and the React `WidgetRenderer` still owns rendering.
+
+The new recipes cover context diagrams, annotated transcripts, course studio shells, course slides, and handout document shells. This gives authors a higher-level API for the most common product surfaces without forcing them to manually assemble every direct component node.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 4)
+
+**Assistant interpretation:** Continue executing the Widget IR implementation plan and move from direct nodes toward semantic recipes.
+
+**Inferred user intent:** Make the expanded Widget IR authoring surface ergonomic, not just technically complete.
+
+### What I did
+- Added recipe exports in `pkg/widgetdsl/module.go`:
+  - `rag.recipes.contextDiagram(...)`
+  - `rag.recipes.annotatedTranscript(...)`
+  - `rag.recipes.courseStudio(...)`
+  - `rag.recipes.courseSlide(...)`
+  - `rag.recipes.handout(...)`
+- Added helper functions:
+  - `valueFromMap`
+  - `copyIfPresent`
+  - `componentNode`
+  - `widgetNodeFromAny`
+- Added `TestContextCourseHandoutRecipesAreJSONSerializable` in `pkg/widgetdsl/module_test.go`.
+
+### Why
+- Direct helpers are flexible but verbose for common product screens.
+- Recipes let scripts speak in domain terms while still producing the same direct nodes that WidgetRenderer already supports.
+
+### What worked
+- `go test ./pkg/widgetdsl ./pkg/widgetrunner ./pkg/widgetserver ./pkg/widgetschema -count=1` passed.
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+
+### What didn't work
+- N/A
+
+### What I learned
+- The recipe layer can stay small by expanding to high-level organisms such as `TranscriptWorkspacePanel`, `ContextDiagramPanel`, `CourseStudioShell`, `CourseSlidePanel`, and `HandoutDocumentShell`.
+- `normalizeActionSpec` remains useful for recipe options such as `onAnnotationSelect`, `onNavigate`, and `onSelect`.
+
+### What was tricky to build
+- Recipes need to accept both direct option fields and bundled DTO-like objects. For example, `annotatedTranscript` accepts a `transcript` object but also allows override fields such as `selectedAnnotationId`.
+- `courseStudio` needs to accept a `main` Widget IR node and put it into `children`, so the helper validates that `main` is actually a WidgetNode export.
+
+### What warrants a second pair of eyes
+- Review recipe option names for final author ergonomics: `view` maps to `initialView`, `onSelect` maps to `onDocumentSelectAction`, and `onAnnotationSelect` maps to `onAnnotationSelectAction`.
+- Review whether default empty snapshot/page fallbacks should be permissive or should throw errors.
+
+### What should be done in the future
+- Add example xgoja pages using these recipes.
+- Add bundled documentation for the new recipe API.
+
+### Code review instructions
+- Review `pkg/widgetdsl/module.go` recipe functions and helper functions.
+- Review `pkg/widgetdsl/module_test.go` recipe serialization test.
+- Validate with targeted Go tests.
+
+### Technical details
+- Recipes are pure expansions and do not call APIs, mutate state, or render HTML.
