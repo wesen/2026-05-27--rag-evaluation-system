@@ -1,0 +1,199 @@
+# rag-evaluation-system
+
+A workflow-driven RAG (Retrieval-Augmented Generation) evaluation toolkit — document indexing, retrieval search, and an interactive Widget IR frontend, all backed by SQLite.
+
+## Overview
+
+This project provides:
+
+- **Document ingestion** — source loading, chunking with multiple strategies, and embedding generation.
+- **Dual-index retrieval** — BM25 via Bleve, vector search via Geppetto/Pinocchio, and hybrid RRF fusion.
+- **Workflow orchestration** — durable, scraper-backed intake pipelines that coordinate chunking, embedding, and indexing.
+- **Interactive playground** — a React-based WidgetRenderer frontend that renders structured Widget IR, with semantic panels for context windows, transcripts, annotations, slides, and handouts.
+
+## Quick start
+
+```bash
+# Build the CLI and run the HTTP server
+make build-full
+./rag-eval serve --db data/rag-eval.db
+```
+
+Open `http://127.0.0.1:8772` in your browser. The server serves the React UI and provides REST API endpoints at `/api/v1/*`.
+
+## CLI reference
+
+The `rag-eval` binary is a Glazed Cobra application. Every subcommand produces structured table output by default and supports JSON, CSV, YAML, and other formats.
+
+### Chunking
+
+```bash
+rag-eval chunk apply --doc-id <ID> --strategy fixed --chunk-size 500 --overlap 50
+rag-eval chunk strategies --db data/rag-eval.db
+```
+
+### Document management
+
+```bash
+rag-eval source add --name <name> --type pdf <path>
+rag-eval document list --db data/rag-eval.db
+```
+
+### Embeddings
+
+```bash
+rag-eval embedding apply --doc-id <ID> --profile openai-embedding-small \
+  --profile-registries ~/.config/pinocchio/profiles.yaml
+```
+
+### Search
+
+```bash
+# BM25
+rag-eval search query --index-id bm25-my-index --query "search text"
+
+# Vector
+rag-eval search vector --query "search text" --strategy-id fixed-1200-150 \
+  --profile openai-embedding-small
+
+# Hybrid
+rag-eval search hybrid --query "search text" --index-id bm25-my-index \
+  --strategy-id fixed-1200-150 --profile openai-embedding-small
+```
+
+### Workflows
+
+Submit a complete intake pipeline (chunk → embed → BM25):
+
+```bash
+rag-eval workflow submit-intake \
+  --document-ids doc-1,doc-2 \
+  --strategy fixed --chunk-size 1200 --overlap 150 \
+  --embeddings-type openai --profile openai-embedding-small
+```
+
+Run the local scheduler:
+
+```bash
+rag-eval workflow run-worker
+rag-eval workflow status
+```
+
+### HTTP server
+
+```bash
+rag-eval serve --address 127.0.0.1:8772 --log-level debug
+```
+
+The server exposes:
+
+| Route | Purpose |
+| --- | --- |
+| `/` | React WidgetRenderer SPA |
+| `/api/v1/*` | REST API endpoints |
+| `/api/v1/health` | Health check |
+
+## Architecture
+
+```
+cmd/rag-eval/         Glazed Cobra CLI commands
+  cmds/chunk/         Document chunking
+  cmds/document/      Document CRUD
+  cmds/embedding/     Embedding generation
+  cmds/search/        BM25, vector, hybrid search
+  cmds/serve/         HTTP server + embedded SPA
+  cmds/workflow/      Scraper-backed durable workflows
+  cmds/source/        Source document management
+
+internal/services/    Business logic
+  chunking/           Chunking strategies
+  embedding/          Provider resolution (Geppetto/Pinocchio)
+  search/             Bleve BM25 + vector retrieval
+  corpus/             Corpus metadata
+  document/           Document lifecycle
+  documentprocessing/ Preprocessing artifacts
+
+pkg/                  Reusable libraries
+  defaultspa/         Embedded WidgetRenderer SPA (Go embed.FS)
+  widgetdsl/          Goja Widget IR DSL
+  widgetrunner/       WidgetRenderer pipeline (Goja + JSON)
+  widgetschema/       Widget IR schema validation
+  widgetserver/       Widget server with API + frontend modes
+  xgoja/providers/widgetsite/  xgoja Widget DSL provider + help docs
+
+packages/rag-evaluation-site/  React component library
+  components/        Foundation atoms, molecules, organisms
+  widgets/           Widget IR types and WidgetRenderer
+```
+
+## Widget IR frontend
+
+The frontend uses a Widget IR (Interchange Representation) — a JSON-compatible data format that describes pages as trees of component nodes. The Go backend emits Widget IR at `/api/widget/pages/{id}`, and the React `WidgetRenderer` renders it in the browser.
+
+### Programming models
+
+| Model | How the frontend is bundled |
+| --- | --- |
+| **Go embedded** | `pkg/defaultspa.Handler()` serves the prebuilt SPA via `embed.FS` |
+| **xgoja embedded** | Build the React app, copy `app-dist` into `assets/`, mount with `fs:assets` and `app.spaFromAssetsModule(...)` |
+| **Development proxy** | Proxy to the Vite dev server during frontend changes |
+| **API-only** | Host app renders Widget IR in its own React shell |
+
+See the provider documentation for full bundling instructions:
+
+- [Widget DSL Getting Started](pkg/xgoja/providers/widgetsite/doc/01-widget-dsl-getting-started.md)
+- [Bundling the WidgetRenderer SPA](pkg/xgoja/providers/widgetsite/doc/03-widget-dsl-spa-bundling.md)
+
+### Semantic recipes
+
+The Goja `widget.dsl` provider includes semantic helpers for common RAG views:
+
+```js
+const rag = require("widget.dsl")
+
+// Returns Widget IR for a context window diagram
+rag.recipes.contextDiagram({ snapshot, view: "budget" })
+
+// Returns Widget IR for a teaching page with sidebar navigation
+rag.recipes.courseStudio({
+  sections: [{ id: "course", label: "Course", items: [{ id: "slides", label: "Slides" }] }],
+  main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 })
+})
+
+// Returns Widget IR for an annotated transcript
+rag.recipes.annotatedTranscript({ transcript, annotations })
+```
+
+## Build
+
+```bash
+# Build Go binary with embedded SPA
+make build-full
+
+# Build Go binary only
+make build-bin
+
+# Run tests
+make test
+
+# Run linters
+make lint
+```
+
+## GoReleaser
+
+Releases are built with GoReleaser:
+
+```bash
+make goreleaser
+```
+
+The config targets Linux amd64 with CGO enabled (required for `github.com/mattn/go-sqlite3`). Release builds produce:
+
+```
+dist/rag-evaluation-system_0.0.0-snapshot_linux_amd64.tar.gz
+```
+
+## License
+
+MIT
