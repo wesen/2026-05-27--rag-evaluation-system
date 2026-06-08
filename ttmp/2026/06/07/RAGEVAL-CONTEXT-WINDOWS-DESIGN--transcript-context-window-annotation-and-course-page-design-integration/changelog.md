@@ -286,3 +286,12 @@ Removed faint horizontal divider rules from KeyPointList slide content.
 
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.module.css — Slide key-point visual tuning
 
+
+## 2026-06-07
+
+Aligned KeyPointList numeric markers to the text baseline for slide typography polish.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.module.css — Baseline alignment for slide key-point markers
+

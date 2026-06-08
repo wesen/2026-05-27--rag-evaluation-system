@@ -1497,3 +1497,51 @@ The `KeyPointList` molecule now keeps the numbered-point rhythm but removes the 
 
 ### Technical details
 - The molecule still exposes `data-rag-molecule="KeyPointList"`; only separator styling changed.
+
+## Step 25: Align Slide Key-Point Numbers to Text Baseline
+
+I made a follow-up typography adjustment to the generic slide key-point list. After removing the horizontal rules, the remaining mismatch was that the blue numeric marker sat slightly high relative to the first line of point text.
+
+`KeyPointList` now uses baseline alignment for each row and a matching marker line height so the number and first text line read as one horizontal typographic unit.
+
+### Prompt Context
+
+**User prompt (verbatim):** "align blue number to the baseline of the text, to align horizontally"
+
+**Assistant interpretation:** Adjust `KeyPointList` marker alignment so the blue number aligns with the first line of text.
+
+**Inferred user intent:** Improve slide typography polish so the numbered points feel deliberately typeset rather than loosely grid-aligned.
+
+### What I did
+- Changed `KeyPointList.module.css` row alignment from `start` to `baseline`.
+- Matched the marker line height to the text rhythm.
+- Ran package typecheck.
+
+### Why
+- Grid start alignment made the marker visually float above the prose baseline.
+- Baseline alignment is the right CSS-level expression for this typographic relationship.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+
+### What didn't work
+- N/A
+
+### What I learned
+- The slide shell needs lighter, more typographic defaults than navigation/agenda list components.
+
+### What was tricky to build
+- N/A; this was a targeted CSS alignment fix.
+
+### What warrants a second pair of eyes
+- Confirm visually in Storybook that baseline alignment still looks good for items with optional titles and metadata.
+
+### What should be done in the future
+- Include the baseline-aligned key-point list in the slide visual parity pass.
+
+### Code review instructions
+- Review `packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.module.css`.
+- Validate the `SlideShell` and `CourseSlidePanel` stories.
+
+### Technical details
+- Only CSS alignment changed; no API changes.
