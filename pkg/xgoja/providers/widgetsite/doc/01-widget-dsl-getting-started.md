@@ -292,6 +292,7 @@ The browser asks the React app to render `demo`. The app calls `/api/widget/page
 ## See Also
 
 - `widget-dsl-js-api-reference`
+- `widget-dsl-spa-bundling`
 - `tutorial-http-serve-jsverbs`
 - `tutorial-static-assets-http-server`
 - `buildspec-reference`

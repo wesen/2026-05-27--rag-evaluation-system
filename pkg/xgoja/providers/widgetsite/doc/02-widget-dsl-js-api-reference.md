@@ -677,6 +677,7 @@ Component helper calls are permissive. Unknown props are passed through as data.
 ## See Also
 
 - `widget-dsl-getting-started`
+- `widget-dsl-spa-bundling`
 - `tutorial-http-serve-jsverbs`
 - `tutorial-static-assets-http-server`
 - `buildspec-reference`

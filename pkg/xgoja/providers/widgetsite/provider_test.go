@@ -51,10 +51,10 @@ func TestRegisterExposesWidgetDSLHelpSource(t *testing.T) {
 	if err != nil {
 		t.Fatalf("glob help entries: %v", err)
 	}
-	if len(entries) != 2 {
-		t.Fatalf("expected two help entries, got %v", entries)
+	if len(entries) != 3 {
+		t.Fatalf("expected three help entries, got %v", entries)
 	}
-	for _, want := range []string{"widget-dsl-getting-started", "widget-dsl-js-api-reference"} {
+	for _, want := range []string{"widget-dsl-getting-started", "widget-dsl-js-api-reference", "widget-dsl-spa-bundling"} {
 		found := false
 		for _, entry := range entries {
 			data, err := fs.ReadFile(source.FS, entry)
