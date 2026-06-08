@@ -1,37 +1,108 @@
 version: 2
-
 project_name: rag-evaluation-system
 
 dist: dist
 
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
 builds:
-  - id: rag-eval
-    main: ./cmd/rag-eval
-    binary: rag-eval
+  - id: rag-eval-linux
     env:
       - CGO_ENABLED=1
+      - CC_linux_amd64=gcc
+      - CXX_linux_amd64=g++
+      - CC_linux_arm64=aarch64-linux-gnu-gcc
+      - CXX_linux_arm64=aarch64-linux-gnu-g++
+      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
+      - 'CXX={{ index .Env (print "CXX_" .Os "_" .Arch) }}'
+    main: ./cmd/rag-eval
+    binary: rag-eval
     goos:
       - linux
     goarch:
       - amd64
+      - arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+  - id: rag-eval-darwin
+    env:
+      - CGO_ENABLED=1
+    main: ./cmd/rag-eval
+    binary: rag-eval
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
     flags:
       - -trimpath
     ldflags:
       - -s -w -X main.version={{ .Version }}
 
 archives:
-  - id: rag-eval
-    ids:
-      - rag-eval
+  - ids:
+      - rag-eval-linux
+      - rag-eval-darwin
     name_template: >-
       {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
 
 checksum:
-  name_template: "checksums.txt"
+  name_template: checksums.txt
 
 snapshot:
-  version_template: "{{ .Version }}-snapshot"
+  name_template: "{{ incpatch .Version }}-next"
 
 changelog:
   use: git
   sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+signs:
+  - artifacts: checksum
+    args: ["--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}"]
+
+brews:
+  - name: rag-eval
+    description: "RAG evaluation system CLI and web server"
+    homepage: "https://github.com/go-go-golems/rag-evaluation-system"
+    repository:
+      owner: go-go-golems
+      name: homebrew-go-go-go
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+
+nfpms:
+  - id: packages
+    vendor: GO GO GOLEMS
+    homepage: https://github.com/go-go-golems/rag-evaluation-system
+    maintainer: Manuel Odendahl <wesen@ruinwesen.com>
+    description: |-
+      RAG evaluation system CLI and web server.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    release: 1
+    section: default
+    priority: extra
+    deb:
+      lintian_overrides:
+        - statically-linked-binary
+        - changelog-file-missing-in-native-package
+
+publishers:
+  - name: fury.io
+    ids:
+      - packages
+    dir: "{{ dir .ArtifactPath }}"
+    cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/go-go-golems/
+
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj

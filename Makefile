@@ -1,4 +1,4 @@
-.PHONY: build run test clean web-build web-dev bleve-knn-experiment docker-lint lint lintmax golangci-lint-install glazed-lint-build glazed-lint gosec govulncheck logcopter-generate logcopter-check goreleaser
+.PHONY: build run test clean web-build web-dev bleve-knn-experiment docker-lint lint lintmax golangci-lint-install glazed-lint-build glazed-lint gosec govulncheck logcopter-generate logcopter-check goreleaser tag-major tag-minor tag-patch release bump-go-go-golems install
 
 BINARY := rag-eval
 MODULE := github.com/go-go-golems/rag-evaluation-system
@@ -86,11 +86,11 @@ lintmax: golangci-lint-install glazed-lint-build
 
 gosec:
 	GOWORK=off go install github.com/securego/gosec/v2/cmd/gosec@latest
-	gosec -exclude-generated -exclude=G101,G304,G301,G306 -exclude-dir=.history ./...
+	gosec -exclude-generated -exclude=G101,G304,G301,G306 -exclude-dir=.history $(GO_PACKAGES)
 
 govulncheck:
 	GOWORK=off go install golang.org/x/vuln/cmd/govulncheck@latest
-	govulncheck ./...
+	govulncheck $(GO_PACKAGES)
 
 logcopter-generate:
 	GOWORK=off go generate ./...
@@ -100,6 +100,19 @@ logcopter-check:
 
 goreleaser:
 	GOWORK=off goreleaser release $(GORELEASER_ARGS) $(GORELEASER_TARGET)
+
+tag-major:
+	git tag $$(svu major)
+
+tag-minor:
+	git tag $$(svu minor)
+
+tag-patch:
+	git tag $$(svu patch)
+
+release:
+	git push origin --tags
+	GOWORK=off GOPROXY=proxy.golang.org go list -m $(MODULE)@$$(svu current)
 
 bump-go-go-golems:
 	@deps="$$(awk '/^require[[:space:]]+github\.com\/go-go-golems\// { print $$2 } /^[[:space:]]*github\.com\/go-go-golems\// { print $$1 }' go.mod | sort -u)"; \
