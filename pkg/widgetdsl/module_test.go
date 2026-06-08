@@ -310,6 +310,7 @@ func TestCourseAndHandoutHelpersAreJSONSerializable(t *testing.T) {
 		const docs = [{ id: "d1", title: "Guide", file: "guide.md", format: "markdown", description: "Guide", body: "# Guide\n\nRead me." }];
 		const sections = [{ id: "course", label: "Course", items: [{ id: "slides", label: "Slides", icon: rag.contextStudioNavIcon({ id: "slides" }) }] }];
 		const page = rag.page({ id: "course", title: "Course", sections: [
+			rag.contextUploadDropArea({ title: "Drop a .json file here", onFilesSelectedAction: rag.action.event("files-selected") }),
 			rag.courseStudioShell({ sections, activeItemId: "slides", title: "Studio" }, rag.courseSlidePanel({ slide, snapshot, index: 0, total: 1 })),
 			rag.courseLessonPanel({ course, activeAgendaItemId: "intro", onAgendaItemSelectAction: rag.action.server("select-agenda") }),
 			rag.handoutDocumentShell({ intro: "Docs", documents: docs, selectedDocumentId: "d1", onDocumentSelectAction: rag.action.server("select-doc") }),
@@ -326,11 +327,12 @@ func TestCourseAndHandoutHelpersAreJSONSerializable(t *testing.T) {
 	}
 	root := decoded["root"].(map[string]any)
 	children := root["children"].([]any)
-	assertString(t, children[0].(map[string]any), "type", "CourseStudioShell")
-	assertString(t, children[1].(map[string]any), "type", "CourseLessonPanel")
-	assertString(t, children[2].(map[string]any), "type", "HandoutDocumentShell")
-	assertString(t, children[3].(map[string]any), "type", "SlideShell")
-	studioProps := children[0].(map[string]any)["props"].(map[string]any)
+	assertString(t, children[0].(map[string]any), "type", "ContextUploadDropArea")
+	assertString(t, children[1].(map[string]any), "type", "CourseStudioShell")
+	assertString(t, children[2].(map[string]any), "type", "CourseLessonPanel")
+	assertString(t, children[3].(map[string]any), "type", "HandoutDocumentShell")
+	assertString(t, children[4].(map[string]any), "type", "SlideShell")
+	studioProps := children[1].(map[string]any)["props"].(map[string]any)
 	sections := studioProps["sections"].([]any)
 	items := sections[0].(map[string]any)["items"].([]any)
 	icon := items[0].(map[string]any)["icon"].(map[string]any)

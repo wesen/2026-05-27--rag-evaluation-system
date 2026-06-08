@@ -9,6 +9,7 @@ var ComponentTypes = []string{
 	"Caption",
 	"CodeText",
 	"ContextKindSwatch",
+	"ContextStudioNavIcon",
 	"AnnotationBadge",
 	"ContextLegend",
 	"ContextBudgetBar",
@@ -58,6 +59,7 @@ var ComponentTypes = []string{
 	"CourseSlidePanel",
 	"CourseStudioShell",
 	"HandoutDocumentShell",
+	"ContextUploadDropArea",
 }
 
 var CellKinds = []string{"field", "number", "status", "caption", "template", "link", "constant"}

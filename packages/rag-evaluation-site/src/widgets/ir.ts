@@ -77,7 +77,8 @@ export type RagWidgetType =
   | 'CourseLessonPanel'
   | 'CourseSlidePanel'
   | 'CourseStudioShell'
-  | 'HandoutDocumentShell';
+  | 'HandoutDocumentShell'
+  | 'ContextUploadDropArea';
 
 export interface ComponentNode {
   kind: 'component';
@@ -317,6 +318,7 @@ export interface CourseLessonPanelWidgetProps extends BaseWidgetProps { course: 
 export interface CourseSlidePanelWidgetProps extends BaseWidgetProps { slide: ContextSlide; snapshot: ContextWindowSnapshot; index?: number; total?: number; visualSide?: 'left' | 'right'; onPreviousAction?: ActionSpec; onNextAction?: ActionSpec; }
 export interface CourseStudioShellWidgetProps extends BaseWidgetProps { sections: SidebarNavSectionWidgetSpec[]; activeItemId?: string; onNavigateAction?: ActionSpec; title?: RenderableValue; subtitle?: RenderableValue; sidebarFooter?: WidgetNode; }
 export interface HandoutDocumentShellWidgetProps extends BaseWidgetProps { intro: RenderableValue; documents: ContextHandoutDocument[]; selectedDocumentId?: string; onDocumentSelectAction?: ActionSpec; onDownloadAction?: ActionSpec; onDownloadAllAction?: ActionSpec; title?: RenderableValue; emptyMessage?: RenderableValue; }
+export interface ContextUploadDropAreaWidgetProps extends BaseWidgetProps { title?: RenderableValue; description?: RenderableValue; accept?: string; disabled?: boolean; active?: boolean; onFilesSelectedAction?: ActionSpec; }
 
 export interface CaptionWidgetProps extends BaseWidgetProps {
   tone?: CaptionTone;
@@ -560,6 +562,7 @@ export type WidgetProps =
   | CourseSlidePanelWidgetProps
   | CourseStudioShellWidgetProps
   | HandoutDocumentShellWidgetProps
+  | ContextUploadDropAreaWidgetProps
   | CaptionWidgetProps
   | DashboardGridWidgetProps
   | DataTableWidgetProps

@@ -3,7 +3,7 @@ import { AnnotationBadge, Button, ContextKindSwatch, ContextStudioNavIcon, Error
 import { Caption, CodeText, Divider, StatusText, Text } from '../components/foundation';
 import { AppShell, DashboardGrid, FormRow, Inline, Panel, ScrollRegion, SectionBlock, SidebarShell, SlideShell, SplitPane, Stack, TabList } from '../components/layout';
 import { AnnotationNoteCard, AnchoredCommentCard, AppNav, CheckList, ContextBudgetBar, ContextLegend, ContextStackDiagram, ContextStripDiagram, ContextTreemap, CourseStepNav, DataTable, DocumentListPanel, DocumentPreviewToolbar, FigureBlock, KeyPointList, KeyValueStrip, MarkdownArticle, MetadataGrid, PersonSummary, SidebarNav, StepList, TranscriptMessageCard, TranscriptSessionHeader } from '../components/molecules';
-import { AnnotationRailPanel, AnchoredCommentRail, ContextDiagramPanel, CourseLessonPanel, CourseSlidePanel, CourseStudioShell, HandoutDocumentShell, TranscriptReaderPanel, TranscriptWorkspacePanel } from '../components/organisms';
+import { AnnotationRailPanel, AnchoredCommentRail, ContextDiagramPanel, ContextUploadDropArea, CourseLessonPanel, CourseSlidePanel, CourseStudioShell, HandoutDocumentShell, TranscriptReaderPanel, TranscriptWorkspacePanel } from '../components/organisms';
 import type {
   ActionSpec,
   AnchoredCommentCardWidgetProps,
@@ -26,6 +26,7 @@ import type {
   ContextStackDiagramWidgetProps,
   ContextStripDiagramWidgetProps,
   ContextTreemapWidgetProps,
+  ContextUploadDropAreaWidgetProps,
   CourseLessonPanelWidgetProps,
   CourseSlidePanelWidgetProps,
   CourseStepNavWidgetProps,
@@ -183,6 +184,8 @@ function renderComponentNode(node: ComponentNode, onAction?: WidgetActionHandler
       return renderCourseStudioShell(node, onAction);
     case 'HandoutDocumentShell':
       return renderHandoutDocumentShell(node, onAction);
+    case 'ContextUploadDropArea':
+      return renderContextUploadDropArea(node, onAction);
     case 'Caption':
       return renderCaption(node, onAction);
     case 'DashboardGrid':
@@ -445,6 +448,11 @@ function renderCourseStudioShell(node: ComponentNode, onAction?: WidgetActionHan
 function renderHandoutDocumentShell(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
   const props = (node.props ?? {}) as HandoutDocumentShellWidgetProps;
   return <HandoutDocumentShell className={props.className} intro={renderRenderableValue(props.intro, onAction)} documents={props.documents} selectedDocumentId={props.selectedDocumentId} onDocumentSelect={itemSelectHandler('HandoutDocumentShell', props.onDocumentSelectAction, 'documentId', onAction)} onDownload={props.onDownloadAction ? (documentId) => bindAndRun(props.onDownloadAction!, { documentId, value: documentId, componentType: 'HandoutDocumentShell' }, onAction) : undefined} onDownloadAll={props.onDownloadAllAction ? () => bindAndRun(props.onDownloadAllAction!, { componentType: 'HandoutDocumentShell' }, onAction) : undefined} title={renderRenderableValue(props.title, onAction)} emptyMessage={renderRenderableValue(props.emptyMessage, onAction)} />;
+}
+
+function renderContextUploadDropArea(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+  const props = (node.props ?? {}) as ContextUploadDropAreaWidgetProps;
+  return <ContextUploadDropArea className={props.className} title={renderRenderableValue(props.title, onAction)} description={renderRenderableValue(props.description, onAction)} accept={props.accept} disabled={props.disabled} active={props.active} onFilesSelected={props.onFilesSelectedAction ? (files) => bindAndRun(props.onFilesSelectedAction!, { componentType: 'ContextUploadDropArea', files, fileNames: files.map((file) => file.name), fileCount: files.length }, onAction) : undefined} />;
 }
 
 function isChecklistObject(value: unknown): value is { id?: string; text: unknown } {

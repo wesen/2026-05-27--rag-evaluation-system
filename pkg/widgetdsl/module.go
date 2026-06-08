@@ -72,6 +72,7 @@ var componentNames = []string{
 	"courseSlidePanel",
 	"courseStudioShell",
 	"handoutDocumentShell",
+	"contextUploadDropArea",
 }
 
 var componentTypes = map[string]string{
@@ -131,6 +132,7 @@ var componentTypes = map[string]string{
 	"courseSlidePanel":         "CourseSlidePanel",
 	"courseStudioShell":        "CourseStudioShell",
 	"handoutDocumentShell":     "HandoutDocumentShell",
+	"contextUploadDropArea":    "ContextUploadDropArea",
 }
 
 type module struct{}

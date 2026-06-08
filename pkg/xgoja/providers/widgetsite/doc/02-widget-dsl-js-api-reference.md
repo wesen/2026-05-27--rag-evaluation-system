@@ -174,6 +174,7 @@ The first argument is props when it is a plain object. Otherwise, it is treated 
 | `courseSlidePanel` | `CourseSlidePanel` | Course slide with context visual. |
 | `courseStudioShell` | `CourseStudioShell` | Sidebar course studio shell. |
 | `handoutDocumentShell` | `HandoutDocumentShell` | Full handout document browser/reader. |
+| `contextUploadDropArea` | `ContextUploadDropArea` | Context JSON drag/drop upload area. |
 
 Example:
 
@@ -321,6 +322,19 @@ widget.courseSlidePanel({ slide, snapshot, index: 0, total: 3, visualSide: "righ
 ```
 
 Use `widget.contextStudioNavIcon(...)` for course-studio sidebar icons. Do not pass React elements from Storybook fixtures into Widget IR; xgoja pages must remain JSON-compatible.
+
+The upload drop-zone visual can also be authored from xgoja:
+
+```js
+widget.contextUploadDropArea({
+  title: "Drop a .json file here",
+  description: "or paste below · max 200k tokens",
+  accept: "application/json,.json",
+  onFilesSelectedAction: widget.action.event("context-upload:selected")
+})
+```
+
+`onFilesSelectedAction` receives browser-only file context (`files`, `fileNames`, and `fileCount`) when handled by the React renderer. Prefer event/custom handlers for file uploads; a server action receives JSON and cannot serialize raw `File` objects directly.
 
 For custom slides, use `slideShell` with slot props:
 
