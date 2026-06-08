@@ -17,3 +17,6 @@ export * from './PersonSummary';
 export * from './FigureBlock';
 export * from './KeyPointList';
 export * from './SidebarNav';
+export * from './MarkdownArticle';
+export * from './DocumentListPanel';
+export * from './DocumentPreviewToolbar';

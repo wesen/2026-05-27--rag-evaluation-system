@@ -328,25 +328,81 @@ export const anchoredCommentFixtures: AnchoredComment[] = [
 ];
 
 export const contextHandoutFixture: ContextHandoutBundle = {
-  intro: 'Everything from the workshop, to take home. Slides, the diagram source, and a one-page field guide.',
+  intro: 'Everything from tonight, to take home. Slides, the diagram source, and a one-page field guide.',
   docs: [
     {
       id: 'fieldguide',
-      title: 'Field Guide — The Context Window',
+      title: 'The Context Window — Field Guide',
       file: 'context-window-field-guide.md',
       format: 'Markdown',
       size: '11 KB',
       description: 'One-page reference: the six ideas, the four diagrams, and the reclaim checklist.',
-      body: 'A model call is a window of fixed size. Everything the model can use must fit inside it.',
+      body: `# The Context Window — Field Guide
+
+Every model call is a **fixed-size document**. The model can only reason over the instructions, history, retrieved context, tool results, summaries, and task framing that fit in that document.
+
+## The one idea
+
+Treat the context window as a workbench, not a filing cabinet. Everything on the workbench must earn its place right now.
+
+- **Pin the current task** — requirements and acceptance criteria stay visible.
+- **Keep exact evidence only while it is active** — resolved tool output becomes summary plus source pointer.
+- **Rebuild every turn** — choose the next window deliberately instead of appending forever.
+
+## Budget table
+
+| Tenant | Keep verbatim when | Reclaim strategy |
+| --- | --- | --- |
+| System instructions | Always relevant | Keep pinned |
+| Tool output | It contains an unresolved error | Summarize after resolution |
+| File reads | The next patch depends on exact lines | Keep excerpts with paths |
+| Conversation | It changes requirements | Summarize decisions |
+
+## The four views
+
+1. Strip — read the whole window left to right.
+2. Stack — compare durable and volatile layers.
+3. Budget — check headroom and overflow.
+4. Treemap — find the biggest token tenants.
+
+> If it is not in the prompt, the model cannot use it. Saved files matter only after retrieval.
+
+### Minimal instrumentation
+
+Track \`tokens_by_kind\` for system, context, conversation, results, generated text, active task, evicted text, and empty space.`,
+    },
+    {
+      id: 'slides-pdf',
+      title: 'Slide Deck',
+      file: 'context-window-engineering.pdf',
+      format: 'PDF',
+      size: '1.4 MB',
+      description: 'Printable deck for the six workshop modules.',
+      body: 'PDF preview is not available in this static Storybook fixture.',
+    },
+    {
+      id: 'diagram-json',
+      title: 'Diagram source (JSON)',
+      file: 'context-window-diagram.json',
+      format: 'JSON',
+      size: '6 KB',
+      description: 'Token segment data used by the visualizer examples.',
+      body: '{ "limit": 200000, "parts": [] }',
     },
     {
       id: 'checklist',
-      title: 'Reclaim Checklist (printable)',
+      title: 'Reclaim Checklist',
       file: 'reclaim-checklist.md',
       format: 'Markdown',
       size: '3 KB',
       description: 'The order to cut things when the window fills.',
-      body: '- Is the current task pinned?\n- Have resolved tool results been summarized?\n- Is the rolling summary still accurate?',
+      body: `# Reclaim Checklist
+
+- [ ] Is the current task pinned?
+- [ ] Have resolved tool results been summarized?
+- [ ] Is the rolling summary still accurate?
+- [ ] Are stale file reads replaced by path + line references?
+- [ ] Did the next action survive compaction?`,
     },
   ],
 };

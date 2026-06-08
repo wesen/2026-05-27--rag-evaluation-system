@@ -165,6 +165,8 @@ The current visual language is intentionally compact and tokenized. Use these ro
 | Purpose | Use |
 |---|---|
 | Body prose | `Text size="body"` or `font: var(--rag-font-role-body)` |
+| Readable article prose | `font: var(--rag-font-role-readable-body)` inside document/article renderers |
+| Article/display heading | `font: var(--rag-font-role-display)` or `font: var(--rag-font-role-heading)` in document/article renderers |
 | Dense labels / navigation rows | `Text size="compact"` or `font: var(--rag-font-role-compact)` |
 | Metadata / captions / side notes | `Caption` or `font: var(--rag-font-role-metadata)` |
 | Uppercase section labels | `Text size="label"` or `font: var(--rag-font-role-label)` plus tokenized uppercase behavior |

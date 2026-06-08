@@ -1,0 +1,144 @@
+.root {
+  max-width: 640px;
+  color: var(--mac-text);
+}
+
+.h1,
+.h2,
+.h3,
+.p,
+.ul,
+.ol,
+.blockquote,
+.table,
+.codeBlock {
+  margin-top: 0;
+}
+
+.h1 {
+  margin-bottom: 10px;
+  color: var(--mac-text);
+  font: var(--rag-font-role-display);
+  letter-spacing: -0.01em;
+}
+
+.h2 {
+  margin: 20px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--mac-border);
+  color: var(--mac-text);
+  font: var(--rag-font-role-heading);
+}
+
+.h3 {
+  margin: 16px 0 6px;
+  color: var(--mac-text);
+  font: var(--rag-font-role-label);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.p {
+  margin: 8px 0;
+  color: var(--mac-text);
+  font: var(--rag-font-role-readable-body);
+}
+
+.ul,
+.ol {
+  margin: 8px 0;
+  padding-left: 20px;
+  color: var(--mac-text);
+  font: var(--rag-font-role-readable-body);
+}
+
+.ul li,
+.ol li {
+  margin: 2px 0;
+}
+
+.checkList {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font: var(--rag-font-role-readable-body);
+}
+
+.checkList li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.check {
+  font: var(--rag-font-role-metadata);
+  color: var(--mac-text);
+}
+
+.blockquote {
+  margin: 12px 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--mac-border);
+  color: var(--mac-text-dim);
+  font: var(--rag-font-role-readable-body);
+  font-style: italic;
+}
+
+.table {
+  width: 100%;
+  margin: 12px 0;
+  border-collapse: collapse;
+  border: 1px solid var(--mac-border);
+  font: var(--rag-font-role-compact);
+}
+
+.table th,
+.table td {
+  padding: 6px 8px;
+  border: 1px solid var(--mac-border);
+  vertical-align: top;
+  text-align: left;
+}
+
+.table th {
+  background: var(--mac-surface-2);
+  font: var(--rag-font-role-label);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.hr {
+  margin: 14px 0;
+  border: 0;
+  border-top: 1px solid var(--mac-border);
+}
+
+.inlineCode {
+  padding: 0 3px;
+  background: var(--mac-surface-2);
+  border: 1px solid var(--mac-border-subtle);
+  font: var(--rag-font-role-code);
+}
+
+.codeBlock {
+  margin: 10px 0;
+  padding: 10px;
+  overflow: auto;
+  border: 1px solid var(--mac-border-subtle);
+  background: var(--mac-surface-2);
+  font: var(--rag-font-role-code);
+}
+
+.codeBlock code {
+  font: inherit;
+}
+
+.link {
+  color: var(--mac-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

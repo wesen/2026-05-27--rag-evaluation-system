@@ -320,3 +320,16 @@ Added package GUIDELINES.md and re-aligned sidebar typography/spacing with found
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/SidebarNav/SidebarNav.module.css — Sidebar typography now uses foundation token roles
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.tsx — Course shell width follows sidebar token language
 
+
+## 2026-06-07
+
+Added handout document-list shell, preview toolbar, and markdown article renderer with package Storybook coverage.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/DocumentListPanel.tsx — Handout document menu/list molecule
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/DocumentPreviewToolbar.tsx — Handout preview toolbar molecule
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/MarkdownArticle.tsx — Markdown rendering fundamentals
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.tsx — Document list plus markdown preview organism
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/context/fixtures.ts — Expanded handout fixtures
+

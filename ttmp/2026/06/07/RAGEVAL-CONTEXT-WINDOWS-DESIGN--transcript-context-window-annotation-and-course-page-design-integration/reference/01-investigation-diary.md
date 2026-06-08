@@ -1687,3 +1687,83 @@ Make a strong set of GUIDELINES.md in the @2026-05-27--rag-evaluation-system/pac
 - Original prototype sidebar references:
   - `app.jsx` `NAV`, `NavIcon`, `.mac-sidebar` composition.
   - `styles.css` `.mac-navitem`, `.mac-navgroup`, `.mac-caption`, `.mac-sectionlabel`.
+
+## Step 28: Add Handout Document Shell and Markdown Renderer
+
+I added the package-first handout document surface: a left document list, a sticky preview toolbar, and a markdown article renderer for the selected handout. This ports the prototype's handout structure without copying its global classes or inline styles, and it keeps the implementation split into reusable molecules plus a domain organism.
+
+The markdown renderer is intentionally small and dependency-free for now. It supports the handout shapes visible in the prototype/reference screenshots: headings, paragraphs, unordered and ordered lists, task lists, blockquotes, horizontal rules, inline code, bold text, links, fenced code blocks, and compact bordered tables.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Ok, now let's tackle the /tmp/pi-clipboard-02c038ea-84b4-4cfc-8654-2a5a9da941ce.png markdown view for the handouts, and the document list shell.  /tmp/pi-clipboard-4444fda0-dcd2-412f-a683-b340af9146b2.png
+
+We will need to build the shell and the menu molecules / organisms, and then also the necessary fundamentals for properly rendering the markdown document."
+
+**Assistant interpretation:** Build the reusable package components needed for the handout/document-list view: document menu/list shell, preview toolbar, and markdown rendering fundamentals.
+
+**Inferred user intent:** Make the take-home/handout page a reusable, Storybook-covered package surface before wiring it into the web app or future Widget IR recipes.
+
+### What I did
+- Read the imported prototype handout and markdown renderer in `screens2.jsx`.
+- Compared the two reference screenshots for the document list and markdown preview structure.
+- Added `MarkdownArticle` molecule with tokenized markdown element styles and a small parser.
+- Added `DocumentListPanel` molecule for the handout document menu/list with active state and optional download-all footer.
+- Added `DocumentPreviewToolbar` molecule for filename, format/size badges, and download action.
+- Added `HandoutDocumentShell` organism that composes the document list, toolbar, and markdown preview for `ContextHandoutDocument` DTOs.
+- Expanded `contextHandoutFixture` with realistic markdown content, PDF/JSON entries, reference-like order, and markdown table/list/blockquote coverage.
+- Added Storybook stories for the new molecules and organism.
+- Added new article typography tokens in `theme.css`: display, heading, and readable-body roles.
+- Updated `GUIDELINES.md` to document the article typography roles.
+- Ran typecheck, build, Storybook build, and browser sanity check.
+
+### Why
+- The markdown view needs real rendering fundamentals, not a one-off string dump.
+- The document list is a reusable menu pattern distinct from the global course sidebar.
+- The organism stays presentational and API-free: it receives documents and callbacks but owns no downloads or persistence.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-handout-tuned` passed.
+- Storybook loaded `Component Library / Organisms / HandoutDocumentShell / Field Guide Selected` with no console errors.
+- Visual review confirmed the shell structure, active list state, toolbar, and markdown article render are in place.
+
+### What didn't work
+- Initial typecheck failed because `DocumentListPanelProps` and `HandoutDocumentShellProps` used a ReactNode `title` while extending native HTML attributes that already define `title?: string`. I fixed both with `Omit<..., 'title'>`.
+- Initial typecheck also failed because `Text` does not support `as="h2"`; I changed the document list header to use `Text as="div"` while keeping the role visual.
+- First visual comparison showed mismatches: extra list descriptions, document order, title wording, and not enough table coverage. I hid item descriptions by default, reordered the fixture, and adjusted markdown content to include the expected table/list/blockquote structure.
+
+### What I learned
+- The prototype's handout shell naturally splits into three reusable surfaces: document list, preview toolbar, and markdown article.
+- Markdown article typography needs explicit article roles rather than borrowing dashboard row typography.
+- The package can stay dependency-free for now, but a full CommonMark renderer may be warranted later if handouts grow beyond this subset.
+
+### What was tricky to build
+- The renderer needed enough markdown coverage to validate typography and tables while not pretending to be a complete Markdown implementation. I kept it deliberately small and documented by its Storybook coverage.
+- The left document list is visually similar to navigation but has different semantics: it is a document listbox/menu, not app navigation. It therefore became `DocumentListPanel` rather than another `SidebarNav` variant.
+
+### What warrants a second pair of eyes
+- Review whether `MarkdownArticle` should remain a homegrown small parser or switch to a vetted markdown library before production user-authored markdown is supported.
+- Review keyboard behavior for `DocumentListPanel`; it uses button/listbox semantics now but does not implement roving tabindex.
+- Review exact visual parity for table borders, toolbar chip spacing, and document-list footer placement against prototype captures.
+
+### What should be done in the future
+- Add prototype-vs-package css-visual-diff for the handout screen.
+- Wire `HandoutDocumentShell` into the course/studio shell once web page composition starts.
+- Consider future Widget IR semantic nodes for `MarkdownArticle` and `HandoutDocumentShell` only after the React API is accepted.
+
+### Code review instructions
+- Start with `MarkdownArticle.tsx` and `MarkdownArticle.module.css` for rendering scope and typography.
+- Then review `DocumentListPanel`, `DocumentPreviewToolbar`, and `HandoutDocumentShell` composition.
+- Validate Storybook stories:
+  - `Component Library / Molecules / MarkdownArticle / Field Guide`
+  - `Component Library / Molecules / DocumentListPanel / Documents`
+  - `Component Library / Molecules / DocumentPreviewToolbar / Markdown Document`
+  - `Component Library / Organisms / HandoutDocumentShell / Field Guide Selected`
+
+### Technical details
+- `MarkdownArticle` emits `data-rag-molecule="MarkdownArticle"`.
+- `DocumentListPanel` emits `data-rag-molecule="DocumentListPanel"`.
+- `DocumentPreviewToolbar` emits `data-rag-molecule="DocumentPreviewToolbar"`.
+- `HandoutDocumentShell` emits `data-rag-organism="HandoutDocumentShell"`.
