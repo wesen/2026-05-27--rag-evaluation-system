@@ -929,3 +929,69 @@ Unknown widget: TranscriptWorkspacePanel"
 
 ### Technical details
 - The old embedded asset hash was replaced by the current app bundle hash after `build:app`.
+
+## Step 14: Make xgoja Demo Navigation Pages Distinct and Verify Row Switching
+
+I browsed the generated xgoja site and confirmed the user-reported issue: `/pages/index`, `/pages/demo`, and `/pages/actions` all rendered the same dashboard because all three routes returned `widgetPage(...)`. The row-selection interaction actually worked once clicked, but the page copy and repeated routes made it look like panes were not switching.
+
+I split the three default pages into distinct pages and added an expanded top navigation that also exposes the semantic examples. The overview page now introduces the example set, the queue page focuses on the master-detail table and explicitly says that clicking rows switches the detail pane, and the actions page focuses on server-action buttons plus audit output.
+
+### Prompt Context
+
+**User prompt (verbatim):** "after clicking on the xgoja widget actions demo, all three pages are the same (/pages/index, /pages/demo, /pages/actions), i can't switch panes in the demo page either. you browse around and check things a bit."
+
+**Assistant interpretation:** Inspect the running xgoja site in the browser, verify the navigation and interaction behavior, then fix the repeated default pages and make the demo clearer.
+
+**Inferred user intent:** Make the generated xgoja demo feel like a real multi-page example site and ensure interactive panes/actions are discoverable.
+
+### What I did
+- Added shared `navItems` and `pageMeta(...)` in `examples/xgoja/widget-site/verbs/sites.js`.
+- Added distinct pages:
+  - `overviewPage("index")`
+  - `widgetPage("demo")` for the queue/master-detail table
+  - `actionsPage("actions")` for server action controls and audit trail
+- Updated all semantic example pages to use shared nav metadata.
+- Updated the Makefile smoke assertion from `Queue controls` to `Query queue` for the queue demo page.
+- Browsed the local xgoja site and verified:
+  - `/pages/index` shows overview/browse content.
+  - `/pages/demo` shows queue-specific content.
+  - `/pages/actions` shows actions-specific content.
+  - Clicking the `Arborvitae Spacing` row changes the selected detail pane to ID `2` / `Arborvitae Spacing`.
+  - Clicking `Add query` on the actions page refreshes and shows `Follow-up Query`.
+
+### Why
+- Reusing the same page for index/demo/actions was technically valid but made the demo confusing.
+- The expanded semantic examples need visible navigation so users can discover them from the embedded site.
+
+### What worked
+- `node --check examples/xgoja/widget-site/verbs/sites.js` passed.
+- `go test ./pkg/widgetdsl ./pkg/xgoja/providers/widgetsite ./pkg/widgetrunner ./pkg/widgetserver ./pkg/widgetschema -count=1` passed.
+- `cd examples/xgoja/widget-site && make smoke` passed.
+- Browser navigation and row/action interactions worked on the restarted xgoja site.
+
+### What didn't work
+- The original `/pages/index`, `/pages/demo`, and `/pages/actions` were indistinguishable because they all called the same page builder.
+- Waiting for audit text on the queue page was the wrong browser assertion after splitting pages; the queue page intentionally no longer shows the audit panel.
+
+### What I learned
+- Page metadata is important for xgoja examples: custom `navItems` and `activeNavItemId` make the default React app shell much more useful.
+- Interaction was functioning, but unclear page boundaries made it hard to tell.
+
+### What was tricky to build
+- The split needed to preserve existing smoke tests and action endpoints while changing the page shape. Keeping the action handlers shared allowed the queue page and actions page to exercise the same backend state.
+
+### What warrants a second pair of eyes
+- Review whether the top nav now has too many items for narrow widths.
+- Review whether `/pages/context`, `/pages/course`, and `/pages/handout` should remain as compatibility aliases or be removed in favor of the richer pages.
+
+### What should be done in the future
+- Add browser smoke that clicks nav items and verifies page-specific text.
+- Add browser smoke that clicks a row and asserts selected detail text changes.
+
+### Code review instructions
+- Review `examples/xgoja/widget-site/verbs/sites.js`, especially `overviewPage`, `widgetPage`, `actionsPage`, `navItems`, and route handlers.
+- Rebuild/run the xgoja site and browse `/pages/index`, `/pages/demo`, and `/pages/actions`.
+
+### Technical details
+- The queue page still uses `rag.recipes.masterDetailTable` with `onRowSelect: "select-query"`.
+- The actions page uses the same server state and exposes toolbar buttons plus a compact row table.

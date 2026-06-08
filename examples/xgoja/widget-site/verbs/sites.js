@@ -220,11 +220,27 @@ function demo() {
     ]
   }
 
+  const navItems = [
+    { id: "index", label: "Overview" },
+    { id: "demo", label: "Queue" },
+    { id: "actions", label: "Actions" },
+    { id: "semantic", label: "Semantic" },
+    { id: "transcripts", label: "Transcripts" },
+    { id: "slides", label: "Slides" },
+    { id: "handouts", label: "Handouts" },
+    { id: "course-examples", label: "Course" }
+  ]
+
+  function pageMeta(activeNavItemId, maxWidth) {
+    return { activeNavItemId, navItems, maxWidth: maxWidth || "wide" }
+  }
+
   function semanticPage(id) {
     return rag.page({
       schemaVersion: "0.1.0",
       id,
       title: "xgoja semantic Widget IR demo",
+      meta: pageMeta(id),
       sections: [
         rag.panel({ title: "Semantic recipes from xgoja" },
           rag.caption({ tone: "muted" }, "This page is authored in JavaScript with widget.dsl recipes and rendered by the React package.")),
@@ -251,6 +267,7 @@ function demo() {
       schemaVersion: "0.1.0",
       id,
       title: "xgoja transcript examples",
+      meta: pageMeta(id),
       sections: [
         rag.panel({ title: "Transcript components" },
           rag.caption({ tone: "muted" }, "This page mixes direct transcript components with the annotatedTranscript recipe.")),
@@ -307,6 +324,7 @@ function demo() {
       schemaVersion: "0.1.0",
       id,
       title: "xgoja slide examples",
+      meta: pageMeta(id),
       sections: [
         rag.panel({ title: "Slide examples" },
           rag.caption({ tone: "muted" }, "CourseSlidePanel is useful for standard teaching slides; SlideShell is useful for custom compositions.")),
@@ -340,6 +358,7 @@ function demo() {
       schemaVersion: "0.1.0",
       id,
       title: "xgoja handout examples",
+      meta: pageMeta(id),
       sections: [
         rag.panel({ title: "Handout components" },
           rag.caption({ tone: "muted" }, "The full shell and the molecule-level list/toolbar/article composition are both authored from xgoja.")),
@@ -384,6 +403,7 @@ function demo() {
       schemaVersion: "0.1.0",
       id,
       title: "xgoja course examples",
+      meta: pageMeta(id),
       sections: [
         rag.courseLessonPanel({ course, activeAgendaItemId: "agenda-annotate", onAgendaItemSelectAction: rag.action.server("agenda-selected") }),
         rag.courseStudioShell({
@@ -397,20 +417,49 @@ function demo() {
     })
   }
 
+  function overviewPage(id) {
+    return rag.page({
+      schemaVersion: "0.1.0",
+      id,
+      title: "xgoja Widget IR examples",
+      meta: pageMeta(id),
+      sections: [
+        rag.panel({ title: "xgoja Widget IR examples" },
+          rag.statusText({ status: "succeeded", icon: true }, "Generated xgoja server is running"),
+          rag.caption({ tone: "muted" }, "Each top-nav item now serves a distinct Widget IR page from the jsverb.")),
+        rag.keyValueStrip({ items: [
+          { key: "Dashboard rows", value: String(allRows().length) },
+          { key: "Transcript messages", value: String(transcript.messages.length) },
+          { key: "Slides", value: String(slides.length) },
+          { key: "Handouts", value: String(handoutBundle.docs.length) }
+        ]}),
+        rag.panel({ title: "Browse examples" },
+          rag.inline({ gap: "sm", wrap: true },
+            rag.button({ action: rag.action.navigate("/pages/demo") }, "Queue demo"),
+            rag.button({ action: rag.action.navigate("/pages/actions") }, "Actions lab"),
+            rag.button({ action: rag.action.navigate("/pages/transcripts") }, "Transcripts"),
+            rag.button({ action: rag.action.navigate("/pages/slides") }, "Slides"),
+            rag.button({ action: rag.action.navigate("/pages/handouts") }, "Handouts"),
+            rag.button({ action: rag.action.navigate("/pages/course-examples") }, "Course"))),
+        rag.recipes.contextDiagram({ snapshot, view: "budget" })
+      ]
+    })
+  }
+
   function widgetPage(id) {
     const rows = allRows()
     const selected = selectedRow()
     return rag.page({
       schemaVersion: "0.1.0",
       id,
-      title: "xgoja widget actions demo",
+      title: "xgoja queue demo",
+      meta: pageMeta(id),
       sections: [
-        rag.panel({ title: "xgoja widget actions demo" },
+        rag.panel({ title: "Queue demo" },
           rag.statusText({ status: "succeeded", icon: true }, "Rows: " + rows.length),
-          rag.caption({ tone: "muted" }, "This page is authored by a jsverb. Buttons and table row selection call /api/widget/actions/{name} and refresh the React app.")
+          rag.caption({ tone: "muted" }, "This page focuses on the master-detail table. Click a row to switch the selected detail pane.")
         ),
         pageSummary(id),
-        toolbar(),
         rag.recipes.masterDetailTable({
           title: "Query queue",
           rows,
@@ -418,8 +467,33 @@ function demo() {
           selectedKey: appState.selectedId,
           onRowSelect: "select-query",
           detail: () => selectedPanel(selected)
+        })
+      ]
+    })
+  }
+
+  function actionsPage(id) {
+    const rows = allRows()
+    const selected = selectedRow()
+    return rag.page({
+      schemaVersion: "0.1.0",
+      id,
+      title: "xgoja actions lab",
+      meta: pageMeta(id),
+      sections: [
+        rag.panel({ title: "Actions lab" },
+          rag.caption({ tone: "muted" }, "This page focuses on buttons and server actions. Use Queue for row-selection pane switching.")),
+        pageSummary(id),
+        toolbar(),
+        rag.splitPane({
+          ratio: "rightNarrow",
+          divider: true,
+          gutter: "lg",
+          left: selectedPanel(selected),
+          right: auditPanel()
         }),
-        auditPanel()
+        rag.panel({ title: "Current rows", density: "condensed" },
+          rag.dataTable({ rows, getRowKey: "id", columns: queryColumns(), selectedKey: appState.selectedId, onRowSelect: rag.action.server("select-query") }))
       ]
     })
   }
@@ -441,17 +515,17 @@ function demo() {
     return { ok: true, refresh: true, toast: message, data: { message } }
   }
 
-  app.get("/api/widget/pages/index", (_req, res) => res.json(widgetPage("index")))
+  app.get("/api/widget/pages/index", (_req, res) => res.json(overviewPage("index")))
   app.get("/api/widget/pages/demo", (_req, res) => res.json(widgetPage("demo")))
-  app.get("/api/widget/pages/actions", (_req, res) => res.json(widgetPage("actions")))
+  app.get("/api/widget/pages/actions", (_req, res) => res.json(actionsPage("actions")))
   app.get("/api/widget/pages/semantic", (_req, res) => res.json(semanticPage("semantic")))
   app.get("/api/widget/pages/transcripts", (_req, res) => res.json(transcriptExamplesPage("transcripts")))
   app.get("/api/widget/pages/slides", (_req, res) => res.json(slideExamplesPage("slides")))
   app.get("/api/widget/pages/handouts", (_req, res) => res.json(handoutExamplesPage("handouts")))
   app.get("/api/widget/pages/course-examples", (_req, res) => res.json(courseExamplesPage("course-examples")))
-  app.get("/api/widget/pages/context", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "context", title: "Context recipe", sections: [rag.recipes.contextDiagram({ snapshot, view: "treemap" })] })))
-  app.get("/api/widget/pages/course", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "course", title: "Course recipe", sections: [rag.recipes.courseStudio({ sections: courseSections, activeItemId: "slides", main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 }) })] })))
-  app.get("/api/widget/pages/handout", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "handout", title: "Handout recipe", sections: [rag.recipes.handout({ bundle: handoutBundle, selectedDocumentId: "guide" })] })))
+  app.get("/api/widget/pages/context", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "context", title: "Context recipe", meta: pageMeta("semantic"), sections: [rag.recipes.contextDiagram({ snapshot, view: "treemap" })] })))
+  app.get("/api/widget/pages/course", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "course", title: "Course recipe", meta: pageMeta("course-examples"), sections: [rag.recipes.courseStudio({ sections: courseSections, activeItemId: "slides", main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 }) })] })))
+  app.get("/api/widget/pages/handout", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "handout", title: "Handout recipe", meta: pageMeta("handouts"), sections: [rag.recipes.handout({ bundle: handoutBundle, selectedDocumentId: "guide" })] })))
 
   app.post("/api/widget/actions/note-selected", (req, res) => {
     const ctx = actionContext(req)

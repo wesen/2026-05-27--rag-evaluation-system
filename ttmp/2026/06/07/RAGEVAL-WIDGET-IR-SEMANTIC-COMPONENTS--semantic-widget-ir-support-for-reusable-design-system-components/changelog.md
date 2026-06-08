@@ -172,3 +172,14 @@ Refreshed embedded xgoja widget-site app assets so the browser bundle recognizes
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/assets/public/index.html — Updated embedded app entrypoint
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS--semantic-widget-ir-support-for-reusable-design-system-components/reference/01-investigation-diary.md — Diary entry for stale embedded app fix
 
+
+## 2026-06-07
+
+Split xgoja index/demo/actions into distinct navigable pages and browser-verified row selection/action refresh behavior.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/Makefile — Updated smoke assertion for renamed queue page content
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/verbs/sites.js — Distinct xgoja pages and nav metadata
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS--semantic-widget-ir-support-for-reusable-design-system-components/reference/01-investigation-diary.md — Diary entry for xgoja navigation/browser verification
+

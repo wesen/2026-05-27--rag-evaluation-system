@@ -44,7 +44,7 @@ serve-smoke: build
 	grep -q '"schemaVersion":"0.1.0"' /tmp/rag-widget-xgoja-page.json; \
 	grep -q '"type":"DataTable"' /tmp/rag-widget-xgoja-page.json; \
 	grep -q 'Fast Growing Trees' /tmp/rag-widget-xgoja-page.json; \
-	grep -q 'Queue controls' /tmp/rag-widget-xgoja-page.json; \
+	grep -q 'Query queue' /tmp/rag-widget-xgoja-page.json; \
 	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/semantic >/tmp/rag-widget-xgoja-semantic.json; \
 	grep -q 'ContextDiagramPanel' /tmp/rag-widget-xgoja-semantic.json; \
 	grep -q 'CourseStudioShell' /tmp/rag-widget-xgoja-semantic.json; \
