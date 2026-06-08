@@ -1,0 +1,19 @@
+{
+  "exists": true,
+  "computed": {
+    "background-color": "rgb(0, 0, 0)",
+    "border": "1px solid rgb(0, 0, 0)",
+    "border-radius": "0px",
+    "color": "rgb(255, 255, 255)",
+    "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+    "font-weight": "400",
+    "height": "20.8438px",
+    "padding": "2px 12px"
+  },
+  "bounds": {
+    "x": 9,
+    "y": 338.6875,
+    "width": 85.421875,
+    "height": 20.84375
+  }
+}

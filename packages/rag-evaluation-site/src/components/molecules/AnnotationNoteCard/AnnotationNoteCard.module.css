@@ -1,0 +1,49 @@
+.root {
+  border: 1px solid var(--mac-border);
+  background: var(--mac-surface);
+  color: var(--mac-text);
+  display: flex;
+  flex-direction: column;
+}
+
+.selected {
+  border-color: var(--mac-accent);
+  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, .35);
+}
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--mac-border);
+  background: var(--mac-bg-dark);
+  color: var(--mac-text-inv);
+}
+
+.selected .titleBar {
+  background: var(--mac-accent);
+}
+
+.noteLabel {
+  font: var(--rag-font-role-label);
+  letter-spacing: 0.5px;
+}
+
+.body {
+  padding: 7px 9px;
+}
+
+.title {
+  margin-bottom: 3px;
+  color: var(--mac-text);
+  font: var(--rag-font-role-compact);
+  font-weight: 700;
+}
+
+.text {
+  margin: 0;
+  color: var(--mac-text);
+  font: var(--rag-font-role-body);
+}

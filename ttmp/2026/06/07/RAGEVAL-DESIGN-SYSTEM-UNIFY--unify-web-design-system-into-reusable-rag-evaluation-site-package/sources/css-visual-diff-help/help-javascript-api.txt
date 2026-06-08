@@ -1,0 +1,715 @@
+
+  # JavaScript API: require("css-visual-diff"):                               
+                                                                              
+  Use the Promise-first css-visual-diff JavaScript module for browsers, pages,
+  locators, extraction, snapshots, overlays, diffs, catalogs, and config      
+  loading.                                                                    
+                                                                              
+  css-visual-diff exposes a Promise-first JavaScript API for repository-      
+  scanned                                                                     
+  verbs. Scripts use it to drive Chromium pages, prepare targets, preflight   
+  selectors, inspect artifacts, generate annotated overlay screenshots, and   
+  write visual catalog manifests.                                             
+                                                                              
+  This API is available inside scripts executed by:                           
+                                                                              
+    css-visual-diff verbs ...                                                 
+                                                                              
+  It is intentionally asynchronous from day one. Any operation that touches   
+  Chromium, timers, files, or catalog writes returns a Promise.               
+                                                                              
+  ## Quick example                                                            
+                                                                              
+    async function inspect(url, selector, outDir) {                           
+      const cvd = require("css-visual-diff")                                  
+      const browser = await cvd.browser()                                     
+                                                                              
+      try {                                                                   
+        const page = await browser.page(url, {                                
+          viewport: { width: 1280, height: 720 },                             
+          waitMs: 250,                                                        
+          name: "homepage",                                                   
+        })                                                                    
+                                                                              
+        const probes = [{                                                     
+          name: "cta",                                                        
+          selector,                                                           
+          props: ["display", "color", "background-color", "font-size"],       
+          attributes: ["class"],                                              
+        }]                                                                    
+                                                                              
+        const preflight = await page.preflight(probes)                        
+        if (!preflight[0].exists) {                                           
+          throw new cvd.SelectorError(`selector did not match: ${selector}`)  
+        }                                                                     
+                                                                              
+        const result = await page.inspectAll(probes, {                        
+          outDir,                                                             
+          artifacts: "css-json",                                              
+        })                                                                    
+                                                                              
+        return {                                                              
+          ok: true,                                                           
+          outputDir: result.outputDir,                                        
+          resultCount: result.results.length,                                 
+        }                                                                     
+      } finally {                                                             
+        await browser.close()                                                 
+      }                                                                       
+    }                                                                         
+                                                                              
+  ## Module exports                                                           
+                                                                              
+    const cvd = require("css-visual-diff")                                    
+                                                                              
+  Exports:                                                                    
+                                                                              
+  • cvd.browser(options?)                                                     
+  • cvd.catalog(options)                                                      
+  • cvd.viewport(width, height) and named viewport helpers                    
+  • cvd.target(name)                                                          
+  • cvd.probe(name)                                                           
+  • cvd.extractors.*                                                          
+  • cvd.extract(locator, extractors)                                          
+  • cvd.snapshot(page, probes, options?)                                      
+  • cvd.overlaySpec()                                                         
+  • cvd.overlayTarget(name)                                                   
+  • cvd.diff(before, after, options?)                                         
+  • cvd.report(diff)                                                          
+  • cvd.write.json(path, value)                                               
+  • cvd.write.markdown(path, markdown)                                        
+  • cvd.CvdError                                                              
+  • cvd.SelectorError                                                         
+  • cvd.PrepareError                                                          
+  • cvd.BrowserError                                                          
+  • cvd.ArtifactError                                                         
+                                                                              
+  ## Browser and page API                                                     
+                                                                              
+  ### await cvd.browser(options?)                                             
+                                                                              
+  Creates a Chromium-backed browser service.                                  
+                                                                              
+    const browser = await cvd.browser()                                       
+                                                                              
+  Current options are reserved for future use.                                
+                                                                              
+  ### await browser.page(url, options?)                                       
+                                                                              
+  Creates a new page, sets the viewport, navigates to url, waits if requested,
+  and applies no prepare step unless the target has one.                      
+                                                                              
+    const page = await browser.page("http://localhost:3000", {                
+      viewport: { width: 1280, height: 720 },                                 
+      waitMs: 500,                                                            
+      name: "prototype",                                                      
+    })                                                                        
+                                                                              
+  Options:                                                                    
+                                                                              
+  • viewport.width — viewport width, default 1280                             
+  • viewport.height — viewport height, default 720                            
+  • waitMs — wait after navigation in milliseconds                            
+  • name — target/page name used in metadata                                  
+                                                                              
+  ### await browser.newPage()                                                 
+                                                                              
+  Creates a blank page. Use page.goto(...) afterwards.                        
+                                                                              
+    const page = await browser.newPage()                                      
+    await page.goto(url, { viewport: { width: 800, height: 600 } })           
+                                                                              
+  ### await browser.close()                                                   
+                                                                              
+  Closes the browser service.                                                 
+                                                                              
+  Always close browsers in finally blocks.                                    
+                                                                              
+  ## Page methods                                                             
+                                                                              
+  ### await page.goto(url, options?)                                          
+                                                                              
+  Navigates an existing page.                                                 
+                                                                              
+    const target = await page.goto(url, {                                     
+      viewport: { width: 1024, height: 768 },                                 
+      waitMs: 200,                                                            
+      name: "target-name",                                                    
+    })                                                                        
+                                                                              
+  Returns:                                                                    
+                                                                              
+    {                                                                         
+      name: "target-name",                                                    
+      url: "...",                                                             
+      waitMs: 200,                                                            
+      viewport: { width: 1024, height: 768 }                                  
+    }                                                                         
+                                                                              
+  ### await page.css(cssText)                                                 
+                                                                              
+  Injects a CSS style tag into the loaded page. This is useful for stabilizing
+  captures by disabling animations, forcing scroll behavior, hiding cursors,  
+  or applying temporary capture-only styles.                                  
+                                                                              
+    await page.css(`                                                          
+      * { animation: none !important; transition: none !important; }          
+      html { scroll-behavior: auto !important; }                              
+    `)                                                                        
+                                                                              
+  Returns:                                                                    
+                                                                              
+    { id: "..." }                                                             
+                                                                              
+  ### page.overlay(spec).screenshot(path)                                     
+                                                                              
+  Creates an annotated overlay screenshot operation from a cvd.overlaySpec()  
+  builder or built spec. Call .screenshot(path) to capture and write the PNG. 
+                                                                              
+    const spec = cvd.overlaySpec()                                            
+      .legend(true)                                                           
+      .target(cvd.overlayTarget("Header").selector("header").                 
+  borderColor("#0096ff"))                                                     
+      .target(cvd.overlayTarget("Hero").selector(".hero").                    
+  borderColor("#ff6347"))                                                     
+      .build()                                                                
+                                                                              
+    const result = await page.overlay(spec).screenshot("/tmp/page-map.png")   
+                                                                              
+  Result:                                                                     
+                                                                              
+    {                                                                         
+      outputPath: "/tmp/page-map.png",                                        
+      width: 1280,                                                            
+      height: 2200,                                                           
+      colors: { Header: "#0096ff", Hero: "#ff6347" },                         
+      targets: [ /* overlay target specs that were drawn */ ]                 
+    }                                                                         
+                                                                              
+  Only fullPage overlay screenshots are currently supported. Raw object specs 
+  are rejected; use the overlay builders described below.                     
+                                                                              
+  ### await page.prepare(spec)                                                
+                                                                              
+  Runs a prepare step on the already-loaded page.                             
+                                                                              
+  Script prepare:                                                             
+                                                                              
+    await page.prepare({                                                      
+      type: "script",                                                         
+      waitFor: "window.React && window.ReactDOM",                             
+      waitForTimeoutMs: 5000,                                                 
+      script: `document.body.dataset.ready = "true"`,                         
+      afterWaitMs: 250,                                                       
+    })                                                                        
+                                                                              
+  Direct React global prepare:                                                
+                                                                              
+    await page.prepare({                                                      
+      type: "directReactGlobal",                                              
+      waitFor: "window.React && window.ReactDOM && window.PPXDesktop",        
+      component: "PPXDesktop",                                                
+      props: { page: "shows" },                                               
+      rootSelector: "#capture-root",                                          
+      width: 920,                                                             
+      minHeight: 1200,                                                        
+      background: "#fff",                                                     
+    })                                                                        
+                                                                              
+  directReactGlobal is a prepare/rendering mode, not a selector mode. It      
+  creates or targets a controlled root and renders a global React component   
+  into it before inspection.                                                  
+                                                                              
+  ### await page.preflight(probes)                                            
+                                                                              
+  Checks selectors before expensive extraction.                               
+                                                                              
+    const statuses = await page.preflight([                                   
+      { name: "cta", selector: "#cta", source: "styles", required: true },    
+    ])                                                                        
+                                                                              
+  Result entries are lowerCamel objects:                                      
+                                                                              
+    {                                                                         
+      name: "cta",                                                            
+      selector: "#cta",                                                       
+      source: "styles",                                                       
+      exists: true,                                                           
+      visible: true,                                                          
+      bounds: { x: 10, y: 20, width: 120, height: 40 },                       
+      textStart: "Book now",                                                  
+      error: ""                                                               
+    }                                                                         
+                                                                              
+  Use preflight to decide authoring vs CI policy:                             
+                                                                              
+  • authoring mode: record misses and continue,                               
+  • CI mode: throw or rethrow on missing selectors.                           
+                                                                              
+  ### await page.inspect(probe, options)                                      
+                                                                              
+  Inspects one probe and writes artifacts.                                    
+                                                                              
+    const artifact = await page.inspect(                                      
+      { name: "cta", selector: "#cta", props: ["color"] },                    
+      { outDir: "/tmp/cssvd/cta", artifacts: "css-json" }                     
+    )                                                                         
+                                                                              
+  Result:                                                                     
+                                                                              
+    {                                                                         
+      metadata: {                                                             
+        side: "script",                                                       
+        targetName: "prototype",                                              
+        url: "http://...",                                                    
+        viewport: { width: 1280, height: 720 },                               
+        name: "cta",                                                          
+        selector: "#cta",                                                     
+        selectorSource: "styles",                                             
+        rootSelector: "",                                                     
+        prepareType: "",                                                      
+        format: "css-json",                                                   
+        createdAt: "2026-04-24T...Z"                                          
+      },                                                                      
+      style: {                                                                
+        exists: true,                                                         
+        computed: { color: "rgb(255, 0, 0)" },                                
+        bounds: { x: 0, y: 0, width: 100, height: 32 },                       
+        attributes: { class: "button" }                                       
+      },                                                                      
+      screenshot: "",                                                         
+      html: "",                                                               
+      inspectJson: ""                                                         
+    }                                                                         
+                                                                              
+  ### await page.inspectAll(probes, options)                                  
+                                                                              
+  Inspects multiple probes against one already-loaded/prepared page.          
+                                                                              
+    const result = await page.inspectAll(probes, {                            
+      outDir: "/tmp/cssvd/catalog/artifacts/homepage",                        
+      artifacts: "bundle",                                                    
+    })                                                                        
+                                                                              
+  Result:                                                                     
+                                                                              
+    {                                                                         
+      outputDir: "/tmp/cssvd/catalog/artifacts/homepage",                     
+      results: [ /* inspect artifacts */ ]                                    
+    }                                                                         
+                                                                              
+  For multiple probes, artifacts are written below per-probe subdirectories.  
+  For one probe, artifacts are written directly into outDir.                  
+                                                                              
+  ### page.locator(selector)                                                  
+                                                                              
+  Creates a synchronous page-bound locator handle. Creating a locator does not
+  query the browser. The async locator methods do.                            
+                                                                              
+    const cta = page.locator("#cta")                                          
+    const exists = await cta.exists()                                         
+                                                                              
+  Locator methods:                                                            
+                                                                              
+  • await locator.status() — returns selector status with existence,          
+  visibility, bounds, text start, and selector error.                         
+  • await locator.exists() — returns a boolean.                               
+  • await locator.visible() — returns a boolean.                              
+  • await locator.waitFor(options?) — polls until the selector exists and is  
+  visible by default.                                                         
+  • await locator.text(options?) — returns text content. Use {                
+  normalizeWhitespace: true, trim: true } for stable comparisons.             
+  • await locator.bounds() — returns { x, y, width, height } or null for a    
+  missing selector.                                                           
+  • await locator.computedStyle(props) — returns a map of CSS property values.
+  • await locator.attributes(names) — returns a map of attribute values.      
+                                                                              
+  Example:                                                                    
+                                                                              
+    const cta = page.locator("#cta")                                          
+    await cta.waitFor({ timeoutMs: 5000, pollIntervalMs: 100 })               
+    const [text, bounds, styles] = await Promise.all([                        
+      cta.text({ normalizeWhitespace: true, trim: true }),                    
+      cta.bounds(),                                                           
+      cta.computedStyle(["height", "color", "background-color"]),             
+    ])                                                                        
+                                                                              
+  waitFor options:                                                            
+                                                                              
+  • timeoutMs — maximum wait time in milliseconds, default 5000.              
+  • pollIntervalMs — polling interval in milliseconds, default 100.           
+  • visible — require visibility when omitted or true; set false to wait only 
+  for selector presence.                                                      
+  • afterWaitMs — extra stabilization wait after success, default 0.          
+                                                                              
+  waitFor returns the final selector status plus elapsedMs:                   
+                                                                              
+    {                                                                         
+      selector: "#cta",                                                       
+      exists: true,                                                           
+      visible: true,                                                          
+      bounds: { x: 10, y: 20, width: 120, height: 40 },                       
+      textStart: "Book now",                                                  
+      error: "",                                                              
+      elapsedMs: 124                                                          
+    }                                                                         
+                                                                              
+  Operations on one page are serialized internally, so Promise.all is safe for
+  page-bound reads.                                                           
+                                                                              
+  ### await page.close()                                                      
+                                                                              
+  Closes the page.                                                            
+                                                                              
+  ## Lower-level builders, extraction, snapshots, overlays, and diffs         
+                                                                              
+  The lower-level API is for script-native visual checks that do not always   
+  need                                                                        
+  inspect artifacts. Builder and handle objects are Go-backed values with     
+  controlled methods. If you call a method on the wrong object, the API       
+  reports which object owns that method.                                      
+                                                                              
+  ### cvd.viewport(...)                                                       
+                                                                              
+    cvd.viewport(1280, 720)                                                   
+    cvd.viewport({ width: 1280, height: 720 })                                
+    cvd.viewport.desktop()                                                    
+    cvd.viewport.tablet()                                                     
+    cvd.viewport.mobile()                                                     
+                                                                              
+  ### cvd.target(name)                                                        
+                                                                              
+  Builds a page target definition.                                            
+                                                                              
+    const target = cvd.target("homepage")                                     
+      .url("http://localhost:3000")                                           
+      .viewport(cvd.viewport.desktop())                                       
+      .waitMs(250)                                                            
+      .root("#app")                                                           
+      .build()                                                                
+                                                                              
+  ### cvd.probe(name)                                                         
+                                                                              
+  Builds a reusable inspection recipe.                                        
+                                                                              
+    const probe = cvd.probe("cta")                                            
+      .selector("#cta")                                                       
+      .required()                                                             
+      .text()                                                                 
+      .bounds()                                                               
+      .styles(["color", "font-size", "background-color"])                     
+      .attributes(["class"])                                                  
+                                                                              
+  Use probes with cvd.snapshot(...). Use locators when you want to inspect one
+  already-loaded page directly.                                               
+                                                                              
+  ### cvd.extractors.*                                                        
+                                                                              
+  Extractor handles describe which facts to read from a locator.              
+                                                                              
+    const extractors = [                                                      
+      cvd.extractors.exists(),                                                
+      cvd.extractors.visible(),                                               
+      cvd.extractors.text(),                                                  
+      cvd.extractors.bounds(),                                                
+      cvd.extractors.computedStyle(["color"]),                                
+      cvd.extractors.attributes(["id", "class"]),                             
+    ]                                                                         
+                                                                              
+  ### await cvd.extract(locator, extractors)                                  
+                                                                              
+  Strictly extracts facts from a page-bound locator. The first argument must  
+  be                                                                          
+  a locator returned by page.locator(...). The second argument must be an     
+  array of cvd.extractors.* handles.                                          
+                                                                              
+    const snapshot = await cvd.extract(page.locator("#cta"), [                
+      cvd.extractors.exists(),                                                
+      cvd.extractors.text(),                                                  
+      cvd.extractors.computedStyle(["color"]),                                
+    ])                                                                        
+                                                                              
+  Raw object locators are rejected. Use page.locator("#selector") instead.    
+                                                                              
+  ### await cvd.snapshot(page, probes, options?)                              
+                                                                              
+  Strictly evaluates probe builders against a page.                           
+                                                                              
+    const snapshot = await cvd.snapshot(page, [                               
+      cvd.probe("title").selector("h1").text().styles(["font-size", "color"]),
+      cvd.probe("cta").selector("#cta").text().bounds().styles(["background-  
+  color"]),                                                                   
+    ])                                                                        
+                                                                              
+  Raw object probes are rejected. Use cvd.probe("name").selector("...")       
+  builders.                                                                   
+                                                                              
+  ### cvd.overlayTarget(name) and cvd.overlaySpec()                           
+                                                                              
+  Build annotated screenshot specs for page.overlay(spec).screenshot(path).   
+  Overlay screenshots are communication artifacts: they draw labeled target   
+  boxes over a real full-page screenshot so page sections, components, and    
+  handoff regions are visible in context.                                     
+                                                                              
+    const spec = cvd.overlaySpec()                                            
+      .legend(true)                                                           
+      .screenshot("fullPage")                                                 
+      .style({                                                                
+        label: { fontSize: 13, radius: 3, padding: [4, 7] },                  
+        legend: {                                                             
+          position: "bottom-right",                                           
+          background: "rgba(255,255,255,0.92)",                               
+          color: "#27221b",                                                   
+        },                                                                    
+        targetDefaults: {                                                     
+          borderWidth: 2,                                                     
+          labelColor: "white",                                                
+        },                                                                    
+      })                                                                      
+      .target(                                                                
+        cvd.overlayTarget("Header")                                           
+          .selector(".site-header")                                           
+          .borderColor("#0096ff")                                             
+          .labelBackground("#0096ff")                                         
+      )                                                                       
+      .target(                                                                
+        cvd.overlayTarget("Hero")                                             
+          .selector(".hero")                                                  
+          .style({                                                            
+            borderColor: "#ff6347",                                           
+            contentBackground: "rgba(255, 99, 71, 0.10)",                     
+            label: { background: "#ff6347", position: "inside-start" },       
+          })                                                                  
+      )                                                                       
+      .build()                                                                
+                                                                              
+    await page.overlay(spec).screenshot("/tmp/annotated.png")                 
+                                                                              
+  Target builder methods:                                                     
+                                                                              
+  • .selector(selector) — required CSS selector for the target.               
+  • .label(text) — label text; defaults to the target name.                   
+  • .style(targetStyle) — merge a target style object.                        
+  • .borderColor(cssColor) — target border color.                             
+  • .contentBackground(cssColor) — fill inside the target rectangle.          
+  • .labelBackground(cssColor) — label background color.                      
+  • .labelColor(cssColor) — label text color.                                 
+  • .labelPosition(position) — label position.                                
+  • .build() — validate and freeze the target spec. Passing the builder       
+  directly to .target(...) is also accepted.                                  
+                                                                              
+  Overlay spec builder methods:                                               
+                                                                              
+  • .target(target) — add one target builder/spec.                            
+  • .targets(targets) — add an array of target builders/specs.                
+  • .legend(enabled) — show or hide the legend. Defaults to true.             
+  • .screenshot(mode) — screenshot mode. Currently only "fullPage" is         
+  supported.                                                                  
+  • .style(overlayStyle) — merge global overlay style.                        
+  • .cropTo(selector) — crop the final annotated PNG to a selector's bounds.  
+  • .cropPadding(padding) — add crop padding. Accepts a number, [vertical,    
+  horizontal], or [top, right, bottom, left].                                 
+  • .build() — validate and freeze the overlay spec. Passing the builder      
+  directly to page.overlay(...) is also accepted.                             
+                                                                              
+  Style object fields:                                                        
+                                                                              
+    {                                                                         
+      label: {                                                                
+        fontFamily: "system-ui, sans-serif",                                  
+        fontSize: 13,                                                         
+        radius: 3,                                                            
+        padding: [4, 7]                                                       
+      },                                                                      
+      legend: {                                                               
+        position: "bottom-right",                                             
+        background: "rgba(255,255,255,0.92)",                                 
+        color: "#27221b"                                                      
+      },                                                                      
+      targetDefaults: {                                                       
+        borderColor: "#0096ff",                                               
+        contentBackground: "rgba(0,150,255,0.10)",                            
+        paddingBackground: "rgba(255,191,0,0.10)",                            
+        marginBackground: "rgba(186,85,211,0.10)",                            
+        borderWidth: 2,                                                       
+        labelColor: "white",                                                  
+        label: { background: "#0096ff", color: "white", position: "above" }   
+      }                                                                       
+    }                                                                         
+                                                                              
+  Target-level .style(...) accepts the same targetDefaults fields without the 
+  targetDefaults wrapper. Supported CSS color strings include hex, rgb(...),  
+  rgba(...), and common named colors accepted by the Go parser.               
+                                                                              
+  Common positions:                                                           
+                                                                              
+  • Legend: "top-left", "top-right", "bottom-left", "bottom-right".           
+  • Labels: "above", "below", "inside-start", "inside-end".                   
+                                                                              
+  See examples/verbs/overlay-examples.js for a complete annotated PNG and     
+  component-gallery workflow.                                                 
+                                                                              
+  ### cvd.diff(...), cvd.report(...), and cvd.write.*                         
+                                                                              
+  Compare two plain snapshot-like values and write evidence.                  
+                                                                              
+    const diff = cvd.diff(before, after, {                                    
+      ignorePaths: ["results[0].snapshot.bounds.x"],                          
+    })                                                                        
+                                                                              
+    const markdown = cvd.report(diff).markdown()                              
+    await cvd.write.json("out/diff.json", diff)                               
+    await cvd.report(diff).writeMarkdown("out/diff.md")                       
+                                                                              
+  The current diff is a deterministic structural JSON diff. CSS-aware         
+  normalization and numeric tolerances can be layered on top later.           
+                                                                              
+  ## Artifact formats                                                         
+                                                                              
+  Supported artifacts / format values:                                        
+                                                                              
+  • bundle — metadata, screenshot, prepared HTML, CSS JSON/Markdown, DOM      
+  inspect JSON                                                                
+  • png — selector screenshot                                                 
+  • html — prepared HTML for selector/root                                    
+  • css-json — computed CSS JSON                                              
+  • css-md — computed CSS Markdown                                            
+  • inspect-json — DOM inspection JSON                                        
+  • metadata-json — metadata JSON only                                        
+                                                                              
+  ## Catalog API                                                              
+                                                                              
+  The catalog implementation is Go-backed. JavaScript orchestrates workflows, 
+  while Go owns schema versioning, path normalization, summaries, manifest    
+  writing, and index writing.                                                 
+                                                                              
+    const catalog = cvd.catalog({                                             
+      title: "Prototype Catalog",                                             
+      outDir: "/tmp/catalog",                                                 
+      artifactRoot: "artifacts",                                              
+      indexName: "index.md",                                                  
+    })                                                                        
+                                                                              
+  ### catalog.artifactDir(slug)                                               
+                                                                              
+  Returns a normalized artifact directory below outDir/artifactRoot.          
+                                                                              
+    catalog.artifactDir("../Prototype Public Shows!")                         
+    // /tmp/catalog/artifacts/prototype-public-shows                          
+                                                                              
+  ### catalog.addTarget(target)                                               
+                                                                              
+  Adds a target record.                                                       
+                                                                              
+    catalog.addTarget({                                                       
+      slug: "homepage",                                                       
+      name: "Homepage",                                                       
+      url: "http://localhost:3000",                                           
+      selector: "#root",                                                      
+      viewport: { width: 1280, height: 720 },                                 
+      metadata: { source: "storybook" },                                      
+    })                                                                        
+                                                                              
+  ### catalog.recordPreflight(target, statuses)                               
+                                                                              
+  Records selector preflight results.                                         
+                                                                              
+  ### catalog.addResult(target, inspectResult)                                
+                                                                              
+  Records a page.inspectAll(...)-shaped result.                               
+                                                                              
+  ### catalog.addFailure(target, error)                                       
+                                                                              
+  Records a failure. If passed a typed cvd.*Error, the catalog captures       
+  name/code/operation/message.                                                
+                                                                              
+  ### catalog.summary()                                                       
+                                                                              
+  Returns lowerCamel summary counts:                                          
+                                                                              
+    {                                                                         
+      targetCount: 1,                                                         
+      preflightCount: 1,                                                      
+      resultCount: 1,                                                         
+      failureCount: 0,                                                        
+      artifactCount: 1                                                        
+    }                                                                         
+                                                                              
+  ### catalog.manifest()                                                      
+                                                                              
+  Returns the current manifest object in lowerCamel form.                     
+                                                                              
+  ### await catalog.writeManifest()                                           
+                                                                              
+  Writes:                                                                     
+                                                                              
+    <outDir>/manifest.json                                                    
+                                                                              
+  Returns the manifest path.                                                  
+                                                                              
+  ### await catalog.writeIndex()                                              
+                                                                              
+  Writes:                                                                     
+                                                                              
+    <outDir>/<indexName>                                                      
+                                                                              
+  Returns the index path.                                                     
+                                                                              
+  ## Error model                                                              
+                                                                              
+  Promise rejections use JS-visible typed errors:                             
+                                                                              
+    try {                                                                     
+      await page.inspect({ name: "missing", selector: "#missing" }, { outDir, 
+  artifacts: "html" })                                                        
+    } catch (err) {                                                           
+      if (err instanceof cvd.SelectorError) {                                 
+        // selector/preflight failure                                         
+      }                                                                       
+      if (err instanceof cvd.CvdError) {                                      
+        console.error(err.code, err.operation, err.message)                   
+      }                                                                       
+    }                                                                         
+                                                                              
+  Classes:                                                                    
+                                                                              
+  • CvdError — base class                                                     
+  • SelectorError — selector/preflight failures                               
+  • PrepareError — prepare/wait failures                                      
+  • BrowserError — browser/page/navigation failures                           
+  • ArtifactError — inspect/artifact writing failures                         
+                                                                              
+  Each error has:                                                             
+                                                                              
+  • name                                                                      
+  • code                                                                      
+  • operation                                                                 
+  • details                                                                   
+  • message                                                                   
+                                                                              
+  ## Concurrency guidance                                                     
+                                                                              
+  Prefer coarse target/page-level parallelism. For example, process           
+  independent                                                                 
+  catalog targets with a worker limit and give each worker its own page.      
+                                                                              
+  Avoid assuming per-page CDP operations are meaningfully parallel. Operations
+  on one Chromium page are effectively serialized by chromedp/CDP and should  
+  be awaited in order:                                                        
+                                                                              
+    for (const target of targets) {                                           
+      const page = await browser.page(target.url, { viewport: target.viewport 
+  })                                                                          
+      try {                                                                   
+        await page.prepare(target.prepare)                                    
+        const preflight = await page.preflight(target.probes)                 
+        const result = await page.inspectAll(target.probes, { outDir: catalog.
+  artifactDir(target.slug) })                                                 
+        catalog.addResult(target, result)                                     
+      } finally {                                                             
+        await page.close()                                                    
+      }                                                                       
+    }                                                                         
+                                                                              
+  Add explicit worker limits before scaling this pattern to many pages.       
+

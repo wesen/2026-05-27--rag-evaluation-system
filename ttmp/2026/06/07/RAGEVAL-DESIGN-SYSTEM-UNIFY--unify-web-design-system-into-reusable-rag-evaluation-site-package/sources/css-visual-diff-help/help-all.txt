@@ -1,0 +1,45 @@
+
+  # css-visual-diff - Compare rendered HTML/CSS across browser targets        
+                                                                              
+  Compare rendered HTML/CSS across browser targets and generate visual        
+  evidence for frontend work.                                                 
+                                                                              
+  Start with: css-visual-diff help getting-started                            
+                                                                              
+  That guide walks through the smoke workflow, direct compare command, overlay
+  screenshot example, review-site workflow, and the repository-scanned        
+  JavaScript examples under examples/verbs.                                   
+                                                                              
+  To list all embedded docs, run: css-visual-diff help --list                 
+                                                                              
+  Run css-visual-diff help --ui to open the interactive help TUI.             
+                                                                              
+  ## General topics                                                           
+                                                                              
+  Run css-visual-diff help <topic> to view a topic's page.                    
+                                                                              
+  • getting-started - Getting Started with css-visual-diff                    
+  • javascript-api - JavaScript API: require("css-visual-diff")               
+  • javascript-verbs - JavaScript Verbs and Repository-Scanned Workflows      
+  • review-site-data-spec - Review Site Data Specification                    
+                                                                              
+  ## Examples                                                                 
+                                                                              
+  Run css-visual-diff help <example> to view an example in full.              
+                                                                              
+  • js-verb-review-sweep - JS verb review sweep example                       
+                                                                              
+  ## Applications                                                             
+                                                                              
+  Run css-visual-diff help <application> to view an application in full.      
+                                                                              
+  • review-site - Interactive Visual Review Site                              
+  • site-comparison-workflow - Site Comparison Review Workflow                
+                                                                              
+  ## Tutorials                                                                
+                                                                              
+  Run css-visual-diff help <tutorial> to view a tutorial in full.             
+                                                                              
+  • pixel-accuracy-scripting-guide - Building Pixel-Accurate Websites with css-
+  visual-diff Scripts                                                         
+

@@ -1,0 +1,54 @@
+name: xgoja-widgetsite-experiment
+target:
+  kind: xgoja
+  output: dist/xgoja-widgetsite-experiment
+packages:
+  - id: go-go-goja-host
+    import: github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/host
+  - id: go-go-goja-http
+    import: github.com/go-go-golems/go-go-goja/pkg/xgoja/providers/http
+  - id: rag-widget
+    import: github.com/go-go-golems/rag-evaluation-system/ttmp/2026/06/04/XGOJA-WIDGETSITE--xgoja-widget-site-binary-design/scripts/01-current-xgoja-widgetsite-experiment/widgetprovider
+assets:
+  - id: webapp
+    path: ./assets
+    embed: true
+modules:
+  - package: go-go-goja-http
+    name: express
+  - package: go-go-goja-host
+    name: fs
+    as: fs:assets
+    config:
+      embedded:
+        allow: true
+        mounts:
+          - asset: webapp
+            mount: /app
+  - package: go-go-goja-host
+    name: db
+    as: db
+    config:
+      allowConfigure: true
+  - package: rag-widget
+    name: widget.dsl
+    as: widget.dsl
+commands:
+  jsverbs:
+    enabled: true
+    name: verbs
+  eval:
+    enabled: false
+  run:
+    enabled: false
+  repl:
+    enabled: false
+commandProviders:
+  - id: http-serve
+    package: go-go-goja-http
+    name: serve
+    mount: serve
+jsverbs:
+  - id: local-sites
+    path: ./verbs
+    embed: true

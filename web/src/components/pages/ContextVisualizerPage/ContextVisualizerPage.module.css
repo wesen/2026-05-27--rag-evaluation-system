@@ -1,0 +1,4 @@
+.root { height: 100%; }
+.controls { max-width: 220px; }
+.diagramArea { min-width: 0; }
+.empty { display: flex; justify-content: center; align-items: center; height: 100%; }

@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "widget-budget-bar",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/widgets/budget-bar.html",
+  "viewport": {
+    "width": 760,
+    "height": 520
+  },
+  "name": "widget-budget-bar",
+  "selector": "[data-rag-molecule=\"ContextBudgetBar\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:33:56.746819671Z"
+}

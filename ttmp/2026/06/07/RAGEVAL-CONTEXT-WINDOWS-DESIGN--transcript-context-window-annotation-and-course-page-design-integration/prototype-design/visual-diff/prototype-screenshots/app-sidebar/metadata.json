@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "app-sidebar",
+  "url": "http://127.0.0.1:7071/sources/03-context-viewer-design-iteration/index.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "app-sidebar",
+  "selector": "[data-rag-organism=\"AppSidebar\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:33:28.381804954Z"
+}

@@ -1,0 +1,48 @@
+
+  # xgoja - Build custom goja binaries from declarative module specs          
+                                                                              
+  xgoja builds custom goja-powered binaries by generating a Go program that   
+  imports selected module provider packages and compiling it with the normal  
+  Go toolchain.                                                               
+                                                                              
+  The first implementation is intentionally staged. The CLI shape is available
+  first; buildspec validation and code generation are added in follow-up      
+  phases.                                                                     
+                                                                              
+  Run xgoja help --ui to open the interactive help TUI.                       
+                                                                              
+  ## General topics                                                           
+                                                                              
+  Run xgoja help <topic> to view a topic's page.                              
+                                                                              
+  • user-guide - xgoja user guide and buildspec reference                     
+  • buildspec-reference - xgoja buildspec quick reference                     
+  • migrating-runtime-context-api - Migrating runtime context APIs            
+  • migrating-xgoja-provider-engine-api - Migrating xgoja provider and engine 
+  APIs                                                                        
+  • provider-runtime-config-and-host-services - Provider runtime config and   
+  host-service contributions                                                  
+                                                                              
+  ## Applications                                                             
+                                                                              
+  Run xgoja help <application> to view an application in full.                
+                                                                              
+  • overview - xgoja overview                                                 
+                                                                              
+  ## Tutorials                                                                
+                                                                              
+  Run xgoja help <tutorial> to view a tutorial in full.                       
+                                                                              
+  • tutorial-using-xgoja-yaml - Tutorial: using xgoja.yaml                    
+  • tutorial-providing-package-and-modules - Tutorial: providing xgoja        
+  packages and modules                                                        
+  • tutorial-providing-commands - Tutorial: providing xgoja commands          
+  • playbook-adding-xgoja-support - Playbook: adding xgoja support to an      
+  existing repository                                                         
+  • tutorial-static-assets-http-server - Tutorial: embedded static asset HTTP 
+  server                                                                      
+  • tutorial-http-serve-jsverbs - Tutorial: HTTP serve commands for JavaScript
+  verbs                                                                       
+  • tutorial-generated-runtime-package - Tutorial: generated xgoja runtime    
+  package                                                                     
+

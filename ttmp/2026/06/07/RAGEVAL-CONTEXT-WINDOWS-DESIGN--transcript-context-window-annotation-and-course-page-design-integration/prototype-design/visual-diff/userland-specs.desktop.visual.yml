@@ -1,0 +1,104 @@
+schemaVersion: rag-evaluation.visual-suite.v1
+name: rag-context-visual-screens
+defaults:
+  prototypeBase: http://localhost:7071
+  storybookBase: http://localhost:6007
+  viewport:
+    width: 1240
+    height: 760
+  waitMs: 1500
+  threshold: 40
+  inspect: rich
+  variant: desktop
+policy:
+  bands:
+  - name: accepted
+    maxChangedPercent: 1
+  - name: review
+    maxChangedPercent: 15
+  - name: tune-required
+    maxChangedPercent: 40
+  - name: major-mismatch
+    maxChangedPercent: 100
+targets:
+  - page: landing
+    variant: desktop
+    priority: tune-first
+    prototypePath: /standalone/full-app/landing.html
+    storyId: rag-evaluation-site-organisms-courselessonpanel--workshop-landing
+    sections:
+      - name: hero
+        original: '[data-rag-organism="LandingScreen"]'
+        react: '[data-rag-organism="CourseLessonPanel"]'
+      - name: diagram
+        original: '[data-rag-organism="LandingScreen"] div[class*="heroDiagram"]'
+        react: '[data-rag-organism="CourseLessonPanel"] dl[class*="root"]'
+
+  - page: visualize
+    variant: desktop
+    priority: tune-first
+    prototypePath: /standalone/full-app/visualize.html
+    storyId: rag-evaluation-site-organisms-contextdiagrampanel--default
+    sections:
+      - name: panel
+        original: '[data-rag-organism="ContextDiagramPanel"]'
+        react: '[data-rag-organism="ContextDiagramPanel"]'
+      - name: body
+        original: '[data-rag-organism="Visualize"]'
+        react: '[data-rag-organism="ContextDiagramPanel"]'
+
+  - page: transcript
+    variant: desktop
+    priority: tune-first
+    prototypePath: /standalone/full-app/transcript.html
+    storyId: rag-evaluation-site-organisms-transcriptreaderpanel--default
+    sections:
+      - name: reader
+        original: '[data-rag-organism="TranscriptReaderPanel"]'
+        react: '[data-rag-organism="TranscriptReaderPanel"]'
+      - name: rail
+        original: '[data-rag-organism="TranscriptReaderPanel"] div[class*="rail"], [data-rag-organism="TranscriptReaderPanel"] div[class*="annotation"]'
+        react: '[data-rag-organism="AnnotationRailPanel"]'
+
+  - page: comments
+    variant: desktop
+    priority: tune-first
+    prototypePath: /standalone/full-app/comments.html
+    storyId: rag-evaluation-site-organisms-anchoredcommentrail--rail
+    sections:
+      - name: rail
+        original: '[data-rag-organism="Comments"]'
+        react: '[data-rag-organism="AnchoredCommentRail"]'
+      - name: cards
+        original: '[data-rag-organism="AnchoredCommentCard"]'
+        react: '[data-rag-organism="AnchoredCommentCard"]'
+
+  - page: slides
+    variant: desktop
+    priority: tune-first
+    prototypePath: /standalone/full-app/slides.html
+    storyId: rag-evaluation-site-organisms-coursedocumentpanel--anatomyslide
+    sections:
+      - name: slide
+        original: '[data-rag-organism="SlideViewer"]'
+        react: '[data-rag-organism="CourseSlidePanel"]'
+
+  - page: handout
+    variant: desktop
+    priority: tune-first
+    prototypePath: /standalone/full-app/handout.html
+    storyId: rag-evaluation-site-molecules-contextlegend--default
+    sections:
+      - name: docs
+        original: '[data-rag-organism="Handout"]'
+        react: '[data-rag-component="MetadataGrid"]'
+
+  - page: upload
+    variant: desktop
+    priority: tune-first
+    prototypePath: /standalone/full-app/upload.html
+    storyId: rag-evaluation-site-atoms-errorcallout--error
+    sections:
+      - name: upload
+        original: '[data-rag-organism="Upload"]'
+        react: '[data-rag-component="TextInput"]'

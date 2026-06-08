@@ -5,8 +5,8 @@ import { SearchView } from './components/search/SearchView';
 import { EvaluationView } from './components/evaluation/EvaluationView';
 import { CorpusExplorerView } from './components/corpus/CorpusExplorerView';
 import { WorkflowsView } from './components/workflows/WorkflowsView';
-import { AppShell } from './components/layout';
-import { AppNav } from './components/molecules';
+import { DslPreviewPage } from './components/pages';
+import { AppNav, AppShell } from '@go-go-golems/rag-evaluation-site';
 
 const views = [
   { id: 'search', label: 'Search' },
@@ -15,6 +15,7 @@ const views = [
   { id: 'pipeline', label: 'Pipeline' },
   { id: 'embeddings', label: 'Embeddings' },
   { id: 'evaluation', label: 'Evaluation' },
+  { id: 'dsl', label: 'DSL' },
 ];
 
 export interface ChunkNavigationTarget {
@@ -67,6 +68,8 @@ export const App: React.FC = () => {
         return <SearchView />;
       case 'evaluation':
         return <EvaluationView />;
+      case 'dsl':
+        return <DslPreviewPage pageId="demo" />;
       default:
         return <SearchView />;
     }

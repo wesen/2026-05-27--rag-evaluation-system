@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "context-visualize-page",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/visualize.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "context-visualize-page",
+  "selector": "[data-rag-organism=\"Visualize\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:33:39.207126135Z"
+}

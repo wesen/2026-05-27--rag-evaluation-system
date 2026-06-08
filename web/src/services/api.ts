@@ -1,4 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { WidgetNode } from '@go-go-golems/rag-evaluation-site/ir';
+
+export interface DslPageResponse {
+  id: string;
+  title: string;
+  root: WidgetNode;
+}
 
 export interface Source {
   id: string;
@@ -296,6 +303,9 @@ export const ragApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api/v1' }),
   tagTypes: ['Sources', 'Documents', 'Chunks', 'Strategies', 'Embeddings', 'Corpus', 'Workflows', 'Artifacts'],
   endpoints: (builder) => ({
+    getDslPage: builder.query<DslPageResponse, string>({
+      query: (id) => `dsl/pages/${encodeURIComponent(id)}`,
+    }),
     listSources: builder.query<Source[], void>({
       query: () => 'sources',
       transformResponse: (response: { items: Source[] }) => response.items ?? [],
@@ -707,6 +717,7 @@ export interface ChunkEnrichmentList {
 }
 
 export const {
+  useGetDslPageQuery,
   useListSourcesQuery,
   useCreateSourceMutation,
   useListDocumentsQuery,

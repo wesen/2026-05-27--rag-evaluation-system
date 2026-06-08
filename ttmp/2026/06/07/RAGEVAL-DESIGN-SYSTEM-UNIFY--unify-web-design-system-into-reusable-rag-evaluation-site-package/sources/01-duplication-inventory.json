@@ -1,0 +1,1012 @@
+[
+  {
+    "group": "components",
+    "path": "atoms/Button/Button.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/Button/Button.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/Button/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/CheckboxRow/CheckboxRow.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/CheckboxRow/CheckboxRow.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/CheckboxRow/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/ErrorCallout/ErrorCallout.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/ErrorCallout/ErrorCallout.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/ErrorCallout/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/IconButton/IconButton.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/IconButton/IconButton.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/IconButton/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/SelectInput/SelectInput.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/SelectInput/SelectInput.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/SelectInput/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/TextInput/TextInput.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/TextInput/TextInput.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/TextInput/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "atoms/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Caption/Caption.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Caption/Caption.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Caption/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/CodeText/CodeText.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/CodeText/CodeText.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/CodeText/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Divider/Divider.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Divider/Divider.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Divider/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/StatusText/StatusText.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/StatusText/StatusText.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/StatusText/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Text/Text.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Text/Text.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Text/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/VisuallyHidden/VisuallyHidden.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/VisuallyHidden/VisuallyHidden.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/VisuallyHidden/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "foundation/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "index.ts",
+    "status": "different"
+  },
+  {
+    "group": "components",
+    "path": "layout/AppShell/AppShell.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/AppShell/AppShell.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/AppShell/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/DashboardGrid/DashboardGrid.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/DashboardGrid/DashboardGrid.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/DashboardGrid/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/FormRow/FormRow.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/FormRow/FormRow.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/FormRow/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Inline/Inline.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Inline/Inline.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Inline/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Panel/Panel.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Panel/Panel.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Panel/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/ScrollRegion/ScrollRegion.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/ScrollRegion/ScrollRegion.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/ScrollRegion/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Stack/Stack.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Stack/Stack.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/Stack/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/TabList/TabList.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/TabList/TabList.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/TabList/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "layout/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/AppNav/AppNav.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/AppNav/AppNav.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/AppNav/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/DataTable/DataTable.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/DataTable/DataTable.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/DataTable/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/MetadataGrid/MetadataGrid.module.css",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/MetadataGrid/MetadataGrid.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/MetadataGrid/index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "components",
+    "path": "molecules/index.ts",
+    "status": "different"
+  },
+  {
+    "group": "components",
+    "path": "atoms/Button/Button.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "atoms/CheckboxRow/CheckboxRow.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "atoms/ErrorCallout/ErrorCallout.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "atoms/IconButton/IconButton.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "atoms/SelectInput/SelectInput.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "atoms/TextInput/TextInput.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/ArtifactIdentityBar/ArtifactIdentityBar.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/ArtifactIdentityBar/ArtifactIdentityBar.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/ArtifactIdentityBar/ArtifactIdentityBar.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/ArtifactIdentityBar/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/ChunkTimelineBar/ChunkTimelineBar.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/ChunkTimelineBar/ChunkTimelineBar.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/ChunkTimelineBar/ChunkTimelineBar.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/ChunkTimelineBar/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/CorpusExplorerView.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/DocumentBrowser/DocumentBrowser.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/DocumentBrowser/DocumentBrowser.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/DocumentBrowser/DocumentBrowser.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/DocumentInspector/DocumentInspector.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/DocumentInspector/DocumentInspector.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/DocumentInspector/DocumentInspector.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/IdentityBar/IdentityBar.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/IdentityBar/IdentityBar.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/IdentityBar/IdentityBar.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/IdentityBar/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/SourcePanel/SourcePanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/SourcePanel/SourcePanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "corpus/SourcePanel/SourcePanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "embeddings/EmbeddingsView.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "embeddings/EmbeddingsView.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "evaluation/EvaluationView.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Caption/Caption.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "foundation/CodeText/CodeText.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Divider/Divider.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Foundation.stories.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Foundation.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "foundation/StatusText/StatusText.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "foundation/Text/Text.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "foundation/VisuallyHidden/VisuallyHidden.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "layout/AppShell/AppShell.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "layout/DashboardGrid/DashboardGrid.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "layout/FormRow/FormRow.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "layout/Inline/Inline.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "layout/Panel/Panel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "layout/ScrollRegion/ScrollRegion.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "layout/Stack/Stack.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "layout/TabList/TabList.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/AppNav/AppNav.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/CoveragePanel/CoveragePanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/CoveragePanel/CoveragePanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/CoveragePanel/CoveragePanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/CoveragePanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/DataTable/DataTable.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/MetadataGrid/MetadataGrid.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/QueryPresetList/QueryPresetList.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/QueryPresetList/QueryPresetList.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/QueryPresetList/QueryPresetList.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "molecules/QueryPresetList/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/QueueHealthPanel/QueueHealthPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/QueueHealthPanel/QueueHealthPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/QueueHealthPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/ResultInspectorPanel/ResultInspectorPanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/ResultInspectorPanel/ResultInspectorPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/ResultInspectorPanel/ResultInspectorPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/ResultInspectorPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/RetrievalResultsPanel/RetrievalResultsPanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/RetrievalResultsPanel/RetrievalResultsPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/RetrievalResultsPanel/RetrievalResultsPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/RetrievalResultsPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/SearchControlsPanel/SearchControlsPanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/SearchControlsPanel/SearchControlsPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/SearchControlsPanel/SearchControlsPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/SearchControlsPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowListPanel/WorkflowListPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowListPanel/WorkflowListPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowListPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpGraphPanel/WorkflowOpGraphPanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpGraphPanel/WorkflowOpGraphPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpGraphPanel/WorkflowOpGraphPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpGraphPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpGroupsPanel/WorkflowOpGroupsPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpGroupsPanel/WorkflowOpGroupsPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpGroupsPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpInspectorPanel/WorkflowOpInspectorPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpInspectorPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpResultPanel/WorkflowOpResultPanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpResultPanel/WorkflowOpResultPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpResultPanel/WorkflowOpResultPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowOpResultPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowSummaryPanel/WorkflowSummaryPanel.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/WorkflowSummaryPanel/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "organisms/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/DslPreviewPage/DslPreviewPage.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/DslPreviewPage/DslPreviewPage.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/DslPreviewPage/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/EvaluationPage/EvaluationPage.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/EvaluationPage/EvaluationPage.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/EvaluationPage/EvaluationPage.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/EvaluationPage/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/PipelinePage/PipelinePage.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/PipelinePage/PipelinePage.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/PipelinePage/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/SearchWorkbenchPage/SearchWorkbenchPage.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/SearchWorkbenchPage/SearchWorkbenchPage.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/SearchWorkbenchPage/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pages/index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pipeline/PipelineOverview.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pipeline/PipelineOverview.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "pipeline/PipelineView.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "retro/MacButton.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "retro/MacMenuBar.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "retro/MacWindow.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "search/SearchView.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "workflows/WorkflowsView.module.css",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "workflows/WorkflowsView.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "components",
+    "path": "workflows/workflowFormat.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "widgets",
+    "path": "WidgetRenderer.tsx",
+    "status": "different"
+  },
+  {
+    "group": "widgets",
+    "path": "actions.ts",
+    "status": "different"
+  },
+  {
+    "group": "widgets",
+    "path": "cellRenderers.tsx",
+    "status": "identical"
+  },
+  {
+    "group": "widgets",
+    "path": "index.ts",
+    "status": "identical"
+  },
+  {
+    "group": "widgets",
+    "path": "ir.ts",
+    "status": "identical"
+  },
+  {
+    "group": "widgets",
+    "path": "WidgetRenderer.stories.tsx",
+    "status": "web_only"
+  },
+  {
+    "group": "hooks",
+    "path": "index.ts",
+    "status": "web_only"
+  },
+  {
+    "group": "hooks",
+    "path": "useWidgetPage.ts",
+    "status": "package_only"
+  }
+]

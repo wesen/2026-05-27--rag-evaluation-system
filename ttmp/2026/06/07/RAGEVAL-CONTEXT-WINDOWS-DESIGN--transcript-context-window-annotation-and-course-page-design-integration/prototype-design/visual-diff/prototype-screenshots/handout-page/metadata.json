@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "handout-page",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/handout.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "handout-page",
+  "selector": "[data-rag-organism=\"Handout\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:34:36.075657709Z"
+}

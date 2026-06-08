@@ -1,0 +1,357 @@
+{
+  "createdAt": "2026-06-07T23:34:39.779Z",
+  "results": [
+    {
+      "ok": true,
+      "name": "full-app-shell",
+      "page": "app",
+      "url": "http://127.0.0.1:7071/sources/03-context-viewer-design-iteration/index.html",
+      "selector": "#root",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/full-app-shell.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/full-app-shell",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/full-app-shell/screenshot.png",
+      "bounds": {
+        "width": 1240,
+        "height": 760,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "ok": true,
+      "name": "app-sidebar",
+      "page": "app",
+      "url": "http://127.0.0.1:7071/sources/03-context-viewer-design-iteration/index.html",
+      "selector": "[data-rag-organism=\"AppSidebar\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/app-sidebar.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/app-sidebar",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/app-sidebar/screenshot.png",
+      "bounds": {
+        "x": 17,
+        "y": 59,
+        "width": 188,
+        "height": 684
+      }
+    },
+    {
+      "ok": true,
+      "name": "course-landing-page",
+      "page": "landing",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/landing.html",
+      "selector": "[data-rag-organism=\"LandingScreen\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-landing-page.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-landing-page",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-landing-page/screenshot.png",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1240,
+        "height": 760
+      }
+    },
+    {
+      "ok": true,
+      "name": "course-landing-legend",
+      "page": "landing",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/landing.html",
+      "selector": "[data-rag-molecule=\"ContextLegend\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-landing-legend.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-landing-legend",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-landing-legend/screenshot.png",
+      "bounds": {
+        "width": 1172,
+        "height": 33.6875,
+        "x": 34,
+        "y": 607.65625
+      }
+    },
+    {
+      "ok": true,
+      "name": "context-visualize-page",
+      "page": "visualize",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/visualize.html",
+      "selector": "[data-rag-organism=\"Visualize\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-visualize-page.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-visualize-page",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-visualize-page/screenshot.png",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1240,
+        "height": 760
+      }
+    },
+    {
+      "ok": true,
+      "name": "context-strip-diagram",
+      "page": "visualize",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/visualize.html",
+      "selector": "[data-rag-molecule=\"ContextStripDiagram\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-strip-diagram.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-strip-diagram",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-strip-diagram/screenshot.png",
+      "bounds": {
+        "x": 168,
+        "y": 133.484375,
+        "width": 640,
+        "height": 181.328125
+      }
+    },
+    {
+      "ok": true,
+      "name": "context-legend",
+      "page": "visualize",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/visualize.html",
+      "selector": "[data-rag-molecule=\"ContextLegend\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-legend.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-legend",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/context-legend/screenshot.png",
+      "bounds": {
+        "height": 33.6875,
+        "x": 29,
+        "y": 341.8125,
+        "width": 918
+      }
+    },
+    {
+      "ok": true,
+      "name": "widget-strip-diagram",
+      "page": "widgets",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/widgets/strip-diagram.html",
+      "selector": "[data-rag-molecule=\"ContextStripDiagram\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-strip-diagram.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-strip-diagram",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-strip-diagram/screenshot.png",
+      "bounds": {
+        "height": 190.390625,
+        "x": 24,
+        "y": 24,
+        "width": 672
+      }
+    },
+    {
+      "ok": true,
+      "name": "widget-stack-diagram",
+      "page": "widgets",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/widgets/stack-diagram.html",
+      "selector": "[data-rag-molecule=\"ContextStackDiagram\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-stack-diagram.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-stack-diagram",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-stack-diagram/screenshot.png",
+      "bounds": {
+        "height": 735.96875,
+        "x": 24,
+        "y": 24,
+        "width": 672
+      }
+    },
+    {
+      "ok": true,
+      "name": "widget-budget-bar",
+      "page": "widgets",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/widgets/budget-bar.html",
+      "selector": "[data-rag-molecule=\"ContextBudgetBar\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-budget-bar.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-budget-bar",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-budget-bar/screenshot.png",
+      "bounds": {
+        "x": 24,
+        "y": 24,
+        "width": 672,
+        "height": 168
+      }
+    },
+    {
+      "ok": true,
+      "name": "widget-treemap",
+      "page": "widgets",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/widgets/treemap.html",
+      "selector": "[data-rag-molecule=\"ContextTreemap\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-treemap.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-treemap",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/widget-treemap/screenshot.png",
+      "bounds": {
+        "x": 24,
+        "y": 24,
+        "width": 672,
+        "height": 416.625
+      }
+    },
+    {
+      "ok": true,
+      "name": "transcript-page",
+      "page": "transcript",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/transcript.html",
+      "selector": "[data-rag-organism=\"TranscriptReaderPanel\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/transcript-page.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/transcript-page",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/transcript-page/screenshot.png",
+      "bounds": {
+        "height": 760,
+        "x": 0,
+        "y": 0,
+        "width": 1240
+      }
+    },
+    {
+      "ok": true,
+      "name": "transcript-message-card",
+      "page": "transcript",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/transcript.html",
+      "selector": "[data-rag-molecule=\"TranscriptMessageCard\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/transcript-message-card.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/transcript-message-card",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/transcript-message-card/screenshot.png",
+      "bounds": {
+        "x": 422,
+        "y": 70.5,
+        "width": 520,
+        "height": 64
+      }
+    },
+    {
+      "ok": true,
+      "name": "annotation-rail-panel",
+      "page": "transcript",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/transcript.html",
+      "selector": "[data-rag-organism=\"AnnotationRailPanel\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/annotation-rail-panel.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/annotation-rail-panel",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/annotation-rail-panel/screenshot.png",
+      "bounds": {
+        "x": 960,
+        "y": 0,
+        "width": 280,
+        "height": 760
+      }
+    },
+    {
+      "ok": true,
+      "name": "comments-page",
+      "page": "comments",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/comments.html",
+      "selector": "[data-rag-organism=\"Comments\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/comments-page.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/comments-page",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/comments-page/screenshot.png",
+      "bounds": {
+        "y": 0,
+        "width": 970,
+        "height": 760,
+        "x": 0
+      }
+    },
+    {
+      "ok": true,
+      "name": "anchored-comment-rail",
+      "page": "comments",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/comments.html",
+      "selector": "[data-rag-organism=\"AnchoredCommentRail\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/anchored-comment-rail.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/anchored-comment-rail",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/anchored-comment-rail/screenshot.png",
+      "bounds": {
+        "x": 970,
+        "y": 0,
+        "width": 270,
+        "height": 760
+      }
+    },
+    {
+      "ok": true,
+      "name": "anchored-comment-card",
+      "page": "comments",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/comments.html",
+      "selector": "[data-rag-molecule=\"AnchoredCommentCard\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/anchored-comment-card.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/anchored-comment-card",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/anchored-comment-card/screenshot.png",
+      "bounds": {
+        "width": 245,
+        "height": 94.671875,
+        "x": 983,
+        "y": 46.1875
+      }
+    },
+    {
+      "ok": true,
+      "name": "slides-page",
+      "page": "slides",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/slides.html",
+      "selector": "[data-rag-organism=\"SlideViewer\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/slides-page.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/slides-page",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/slides-page/screenshot.png",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1240,
+        "height": 760
+      }
+    },
+    {
+      "ok": true,
+      "name": "course-slide-panel",
+      "page": "slides",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/slides.html",
+      "selector": "[data-rag-organism=\"CourseSlidePanel\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-slide-panel.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-slide-panel",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/course-slide-panel/screenshot.png",
+      "bounds": {
+        "y": 16,
+        "width": 1116.381103515625,
+        "height": 692.15625,
+        "x": 61.8094482421875
+      }
+    },
+    {
+      "ok": true,
+      "name": "slide-diagram",
+      "page": "slides",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/slides.html",
+      "selector": "[data-rag-molecule^=\"Context\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/slide-diagram.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/slide-diagram",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/slide-diagram/screenshot.png",
+      "bounds": {
+        "x": 96.4172592163086,
+        "y": 307.5150146484375,
+        "width": 572.529052734375,
+        "height": 143.12353515625
+      }
+    },
+    {
+      "ok": true,
+      "name": "handout-page",
+      "page": "handout",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/handout.html",
+      "selector": "[data-rag-organism=\"Handout\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/handout-page.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/handout-page",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/handout-page/screenshot.png",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1240,
+        "height": 760
+      }
+    },
+    {
+      "ok": true,
+      "name": "upload-page",
+      "page": "upload",
+      "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/upload.html",
+      "selector": "[data-rag-organism=\"Upload\"]",
+      "outputFile": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/upload-page.png",
+      "inspectOutDir": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/upload-page",
+      "sourceArtifact": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/prototype-design/visual-diff/prototype-screenshots/upload-page/screenshot.png",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1240,
+        "height": 760
+      }
+    }
+  ]
+}

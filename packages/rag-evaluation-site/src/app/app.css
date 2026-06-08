@@ -1,0 +1,59 @@
+.rag-evaluation-site-root {
+  min-height: 100vh;
+  background: var(--mac-bg);
+  color: var(--mac-text);
+  font: var(--rag-font-role-body);
+  box-sizing: border-box;
+}
+
+.rag-evaluation-site-root *,
+.rag-evaluation-site-root *::before,
+.rag-evaluation-site-root *::after {
+  box-sizing: border-box;
+}
+
+.rag-evaluation-site-root--shell {
+  padding: 8px;
+}
+
+.rag-evaluation-site-root--raw {
+  padding: 0;
+}
+
+.rag-evaluation-site-shell {
+  min-height: calc(100vh - 16px);
+  border: 1px solid var(--mac-border);
+  background: var(--mac-surface);
+}
+
+.rag-evaluation-site-brand {
+  display: inline-block;
+  max-width: 42ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+.rag-evaluation-site-content {
+  min-width: 0;
+  width: 100%;
+}
+
+.rag-evaluation-site-content--none {
+  max-width: none;
+}
+
+.rag-evaluation-site-content--content {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.rag-evaluation-site-content--wide {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.rag-evaluation-site-state {
+  margin: 16px;
+}

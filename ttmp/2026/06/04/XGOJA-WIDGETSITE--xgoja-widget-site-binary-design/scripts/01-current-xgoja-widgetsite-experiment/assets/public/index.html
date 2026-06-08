@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>xgoja widget site experiment</title>
+  </head>
+  <body>
+    <h1>xgoja widget site experiment</h1>
+    <pre id="out">loading</pre>
+    <script>
+      fetch('/api/widget/pages/demo')
+        .then((response) => response.json())
+        .then((page) => { document.getElementById('out').textContent = JSON.stringify(page, null, 2); })
+        .catch((error) => { document.getElementById('out').textContent = String(error); });
+    </script>
+  </body>
+</html>

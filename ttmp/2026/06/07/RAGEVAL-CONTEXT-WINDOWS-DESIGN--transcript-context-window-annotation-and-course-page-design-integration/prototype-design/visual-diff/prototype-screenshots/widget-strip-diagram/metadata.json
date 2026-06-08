@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "widget-strip-diagram",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/widgets/strip-diagram.html",
+  "viewport": {
+    "width": 760,
+    "height": 520
+  },
+  "name": "widget-strip-diagram",
+  "selector": "[data-rag-molecule=\"ContextStripDiagram\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:33:49.706087904Z"
+}

@@ -1,0 +1,2223 @@
+{
+  "classificationCounts": {
+    "accepted": 48
+  },
+  "pageCount": 1,
+  "sectionCount": 48,
+  "maxChangedPercent": 0.0,
+  "policy": {
+    "ok": true,
+    "worstClassification": "accepted",
+    "failureCount": 0
+  },
+  "rows": [
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-button--variants",
+      "title": "Design System/Atoms/Button",
+      "name": "Variants",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 29568,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--variants/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--variants/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--variants/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--variants/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--variants/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 20.84375
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 20.84375
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 21
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-button--compact",
+      "title": "Design System/Atoms/Button",
+      "name": "Compact",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 26752,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--compact/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--compact/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--compact/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--compact/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-button--compact/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 18.84375
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 18.84375
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 19
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-checkboxrow--checked",
+      "title": "Design System/Atoms/CheckboxRow",
+      "name": "Checked",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 26752,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--checked/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--checked/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--checked/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--checked/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--checked/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 19
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 19
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 19
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-checkboxrow--unchecked",
+      "title": "Design System/Atoms/CheckboxRow",
+      "name": "Unchecked",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 26752,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--unchecked/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--unchecked/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--unchecked/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--unchecked/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-checkboxrow--unchecked/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 19
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 19
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 19
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-errorcallout--api-error",
+      "title": "Design System/Atoms/ErrorCallout",
+      "name": "Api Error",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 36608,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--api-error/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--api-error/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--api-error/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--api-error/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--api-error/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 26
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 26
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 26
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-errorcallout--preformatted",
+      "title": "Design System/Atoms/ErrorCallout",
+      "name": "Preformatted",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 70400,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--preformatted/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--preformatted/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--preformatted/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--preformatted/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-errorcallout--preformatted/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 50
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 50
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 50
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-iconbutton--actions",
+      "title": "Design System/Atoms/IconButton",
+      "name": "Actions",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 19712,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-iconbutton--actions/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-iconbutton--actions/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-iconbutton--actions/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-iconbutton--actions/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-iconbutton--actions/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 13.5
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 13.5
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 14
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-selectinput--basic",
+      "title": "Design System/Atoms/SelectInput",
+      "name": "Basic",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 32384,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-selectinput--basic/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-selectinput--basic/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-selectinput--basic/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-selectinput--basic/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-selectinput--basic/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 23
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 23
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 23
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-atoms-textinput--examples",
+      "title": "Design System/Atoms/TextInput",
+      "name": "Examples",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 94336,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-textinput--examples/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-textinput--examples/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-textinput--examples/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-textinput--examples/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-atoms-textinput--examples/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 67
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 67
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 67
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-caption--default",
+      "title": "Design System/Foundation/Caption",
+      "name": "Default",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 29568,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--default/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--default/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--default/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--default/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--default/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 20.5
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 20.5
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 21
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-caption--tones",
+      "title": "Design System/Foundation/Caption",
+      "name": "Tones",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 129536,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--tones/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--tones/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--tones/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--tones/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-caption--tones/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 91.5
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 91.5
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 92
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-codetext--identifiers",
+      "title": "Design System/Foundation/CodeText",
+      "name": "Identifiers",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 90112,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-codetext--identifiers/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-codetext--identifiers/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-codetext--identifiers/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-codetext--identifiers/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-codetext--identifiers/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 63.8125
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 63.8125
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 64
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-divider--horizontal",
+      "title": "Design System/Foundation/Divider",
+      "name": "Horizontal",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 102784,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--horizontal/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--horizontal/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--horizontal/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--horizontal/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--horizontal/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 32,
+          "width": 1408,
+          "height": 73
+        },
+        "right": {
+          "x": 16,
+          "y": 32,
+          "width": 1408,
+          "height": 73
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 73
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-divider--vertical",
+      "title": "Design System/Foundation/Divider",
+      "name": "Vertical",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 67584,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--vertical/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--vertical/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--vertical/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--vertical/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-divider--vertical/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 48
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 48
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 48
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-overview--colors",
+      "title": "Design System/Foundation/Overview",
+      "name": "Colors",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 459008,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--colors/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--colors/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--colors/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--colors/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--colors/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 325.5
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 325.5
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 326
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-overview--typography",
+      "title": "Design System/Foundation/Overview",
+      "name": "Typography",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 218240,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--typography/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--typography/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--typography/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--typography/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--typography/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 154.90625
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 154.90625
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 155
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-overview--status-tones",
+      "title": "Design System/Foundation/Overview",
+      "name": "Status Tones",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 122496,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--status-tones/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--status-tones/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--status-tones/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--status-tones/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--status-tones/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 87.0625
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 87.0625
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 87
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-overview--spacing",
+      "title": "Design System/Foundation/Overview",
+      "name": "Spacing",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 325248,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--spacing/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--spacing/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--spacing/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--spacing/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--spacing/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 230.6875
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 230.6875
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 231
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-overview--borders-and-radii",
+      "title": "Design System/Foundation/Overview",
+      "name": "Borders And Radii",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 239360,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--borders-and-radii/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--borders-and-radii/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--borders-and-radii/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--borders-and-radii/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--borders-and-radii/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 170.1875
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 170.1875
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 170
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-overview--accessibility",
+      "title": "Design System/Foundation/Overview",
+      "name": "Accessibility",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 163328,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--accessibility/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--accessibility/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--accessibility/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--accessibility/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-overview--accessibility/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 116.078125
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 116.078125
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 116
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-statustext--workflow-statuses",
+      "title": "Design System/Foundation/StatusText",
+      "name": "Workflow Statuses",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 22528,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-statustext--workflow-statuses/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-statustext--workflow-statuses/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-statustext--workflow-statuses/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-statustext--workflow-statuses/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-statustext--workflow-statuses/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 15.9375
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 15.9375
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 16
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-text--body",
+      "title": "Design System/Foundation/Text",
+      "name": "Body",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 23936,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--body/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--body/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--body/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--body/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--body/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 17.390625
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 17.390625
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 17
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-text--roles",
+      "title": "Design System/Foundation/Text",
+      "name": "Roles",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 152064,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--roles/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--roles/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--roles/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--roles/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--roles/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 107.8125
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 107.8125
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 108
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-text--tones",
+      "title": "Design System/Foundation/Text",
+      "name": "Tones",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 23936,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--tones/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--tones/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--tones/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--tones/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-text--tones/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 17.390625
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 17.390625
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 17
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-foundation-visuallyhidden--accessible-label",
+      "title": "Design System/Foundation/VisuallyHidden",
+      "name": "Accessible Label",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 33792,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-visuallyhidden--accessible-label/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-visuallyhidden--accessible-label/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-visuallyhidden--accessible-label/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-visuallyhidden--accessible-label/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-foundation-visuallyhidden--accessible-label/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 23.84375
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 23.84375
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 24
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-appshell--basic",
+      "title": "Design System/Layout/AppShell",
+      "name": "Basic",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 506880,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-appshell--basic/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-appshell--basic/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-appshell--basic/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-appshell--basic/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-appshell--basic/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 360
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 360
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 360
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-dashboardgrid--search-workbench",
+      "title": "Design System/Layout/DashboardGrid",
+      "name": "Search Workbench",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 68992,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--search-workbench/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--search-workbench/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--search-workbench/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--search-workbench/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--search-workbench/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 49
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 49
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 49
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-dashboardgrid--corpus-explorer",
+      "title": "Design System/Layout/DashboardGrid",
+      "name": "Corpus Explorer",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 68992,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--corpus-explorer/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--corpus-explorer/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--corpus-explorer/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--corpus-explorer/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-dashboardgrid--corpus-explorer/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 49
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 49
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 49
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-formrow--basic",
+      "title": "Design System/Layout/FormRow",
+      "name": "Basic",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 52096,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-formrow--basic/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-formrow--basic/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-formrow--basic/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-formrow--basic/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-formrow--basic/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 37
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 37
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 37
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-inline--toolbar",
+      "title": "Design System/Layout/Inline",
+      "name": "Toolbar",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 29568,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-inline--toolbar/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-inline--toolbar/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-inline--toolbar/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-inline--toolbar/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-inline--toolbar/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 20.84375
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 20.84375
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 21
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-panel--default",
+      "title": "Design System/Layout/Panel",
+      "name": "Default",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 80256,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--default/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--default/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--default/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--default/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--default/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 57
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 57
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 57
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-panel--with-actions",
+      "title": "Design System/Layout/Panel",
+      "name": "With Actions",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 83072,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--with-actions/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--with-actions/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--with-actions/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--with-actions/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-panel--with-actions/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 58.5
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 58.5
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 59
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-scrollregion--vertical",
+      "title": "Design System/Layout/ScrollRegion",
+      "name": "Vertical",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 168960,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-scrollregion--vertical/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-scrollregion--vertical/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-scrollregion--vertical/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-scrollregion--vertical/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-scrollregion--vertical/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 120
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 120
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 120
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-stack--panel-stack",
+      "title": "Design System/Layout/Stack",
+      "name": "Panel Stack",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 218240,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-stack--panel-stack/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-stack--panel-stack/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-stack--panel-stack/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-stack--panel-stack/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-stack--panel-stack/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 155
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 155
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 155
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "design-system-layout-tablist--interactive",
+      "title": "Design System/Layout/TabList",
+      "name": "Interactive",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 29568,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-tablist--interactive/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-tablist--interactive/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-tablist--interactive/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-tablist--interactive/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/design-system-layout-tablist--interactive/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 21
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 21
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 21
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "component-library-molecules-appnav--search-active",
+      "title": "Component Library/Molecules/AppNav",
+      "name": "Search Active",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 44640,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--search-active/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--search-active/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--search-active/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--search-active/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--search-active/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 31
+        },
+        "right": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 31
+        },
+        "normalizedWidth": 1440,
+        "normalizedHeight": 31
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "component-library-molecules-appnav--interactive",
+      "title": "Component Library/Molecules/AppNav",
+      "name": "Interactive",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 44640,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--interactive/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--interactive/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--interactive/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--interactive/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-appnav--interactive/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 31
+        },
+        "right": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 31
+        },
+        "normalizedWidth": 1440,
+        "normalizedHeight": 31
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "component-library-molecules-datatable--retrieval-rows",
+      "title": "Component Library/Molecules/DataTable",
+      "name": "Retrieval Rows",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 80256,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-datatable--retrieval-rows/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-datatable--retrieval-rows/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-datatable--retrieval-rows/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-datatable--retrieval-rows/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-datatable--retrieval-rows/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 57
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 57
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 57
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "component-library-molecules-metadatagrid--result-identity",
+      "title": "Component Library/Molecules/MetadataGrid",
+      "name": "Result Identity",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 67584,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-metadatagrid--result-identity/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-metadatagrid--result-identity/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-metadatagrid--result-identity/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-metadatagrid--result-identity/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/component-library-molecules-metadatagrid--result-identity/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 48
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 48
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 48
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--primitive-atoms",
+      "title": "Widget IR/Renderer",
+      "name": "Primitive Atoms",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 190080,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--primitive-atoms/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--primitive-atoms/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--primitive-atoms/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--primitive-atoms/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--primitive-atoms/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 134.84375
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 134.84375
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 135
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--foundation-statuses",
+      "title": "Widget IR/Renderer",
+      "name": "Foundation Statuses",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 87296,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--foundation-statuses/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--foundation-statuses/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--foundation-statuses/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--foundation-statuses/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--foundation-statuses/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 62.4375
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 62.4375
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 62
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--layout-recipes",
+      "title": "Widget IR/Renderer",
+      "name": "Layout Recipes",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 167552,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--layout-recipes/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--layout-recipes/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--layout-recipes/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--layout-recipes/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--layout-recipes/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 119
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 119
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 119
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--metadata-grid-variants",
+      "title": "Widget IR/Renderer",
+      "name": "Metadata Grid Variants",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 137984,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--metadata-grid-variants/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--metadata-grid-variants/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--metadata-grid-variants/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--metadata-grid-variants/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--metadata-grid-variants/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 98.4375
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 98.4375
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 98
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--data-table-cell-kinds",
+      "title": "Widget IR/Renderer",
+      "name": "Data Table Cell Kinds",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 164736,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-cell-kinds/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-cell-kinds/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-cell-kinds/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-cell-kinds/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-cell-kinds/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 116.8125
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 116.8125
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 117
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--data-table-empty-and-malformed",
+      "title": "Widget IR/Renderer",
+      "name": "Data Table Empty And Malformed",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 153472,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-empty-and-malformed/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-empty-and-malformed/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-empty-and-malformed/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-empty-and-malformed/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--data-table-empty-and-malformed/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 109
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 109
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 109
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--search-workbench-composition",
+      "title": "Widget IR/Renderer",
+      "name": "Search Workbench Composition",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 1408000,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--search-workbench-composition/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--search-workbench-composition/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--search-workbench-composition/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--search-workbench-composition/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--search-workbench-composition/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 0,
+          "width": 1408,
+          "height": 1000
+        },
+        "right": {
+          "x": 16,
+          "y": 0,
+          "width": 1408,
+          "height": 1000
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 1000
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--corpus-explorer-skeleton",
+      "title": "Widget IR/Renderer",
+      "name": "Corpus Explorer Skeleton",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 1408000,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--corpus-explorer-skeleton/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--corpus-explorer-skeleton/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--corpus-explorer-skeleton/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--corpus-explorer-skeleton/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--corpus-explorer-skeleton/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 0,
+          "width": 1408,
+          "height": 1000
+        },
+        "right": {
+          "x": 16,
+          "y": 0,
+          "width": 1408,
+          "height": 1000
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 1000
+      }
+    },
+    {
+      "page": "package-storybook",
+      "section": "widget-ir-renderer--workflow-dashboard-skeleton",
+      "title": "Widget IR/Renderer",
+      "name": "Workflow Dashboard Skeleton",
+      "classification": "accepted",
+      "changedPercent": 0.0,
+      "changedPixels": 0,
+      "totalPixels": 180224,
+      "threshold": 30,
+      "variant": "desktop",
+      "leftRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--workflow-dashboard-skeleton/left_region.png",
+      "rightRegionPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--workflow-dashboard-skeleton/right_region.png",
+      "diffOnlyPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--workflow-dashboard-skeleton/diff_only.png",
+      "diffComparisonPath": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--workflow-dashboard-skeleton/diff_comparison.png",
+      "artifactJson": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DESIGN-SYSTEM-UNIFY--unify-web-design-system-into-reusable-rag-evaluation-site-package/sources/visual-parity/package-story-sweep-review/package-storybook/artifacts/widget-ir-renderer--workflow-dashboard-skeleton/compare.json",
+      "leftSelector": "#storybook-root",
+      "rightSelector": "#storybook-root",
+      "styleChangeCount": 0,
+      "attributeChangeCount": 0,
+      "styleDiffs": [],
+      "attributeDiffs": [],
+      "bounds": {
+        "changed": false,
+        "delta": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.0,
+          "height": 0.0
+        },
+        "left": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 127.8125
+        },
+        "right": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 127.8125
+        },
+        "normalizedWidth": 1408,
+        "normalizedHeight": 128
+      }
+    }
+  ]
+}

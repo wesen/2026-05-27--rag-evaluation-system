@@ -1,0 +1,459 @@
+package widgetdsl
+
+import (
+	"context"
+	"encoding/json"
+	"testing"
+
+	"github.com/dop251/goja"
+	"github.com/dop251/goja_nodejs/require"
+	"github.com/go-go-golems/go-go-goja/modules"
+	"github.com/go-go-golems/go-go-goja/pkg/engine"
+)
+
+func TestRequireWidgetDSLExportsHelpers(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	modules.DefaultRegistry.Enable(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		({
+			text: typeof rag.text,
+			component: typeof rag.component,
+			element: typeof rag.element,
+			panel: typeof rag.panel,
+			dataTable: typeof rag.dataTable,
+			textBlock: typeof rag.textBlock,
+			codeText: typeof rag.codeText,
+			contextKindSwatch: typeof rag.contextKindSwatch,
+			sectionBlock: typeof rag.sectionBlock,
+			splitPane: typeof rag.splitPane,
+			sidebarShell: typeof rag.sidebarShell,
+			cellField: typeof rag.cell.field,
+			cellStatus: typeof rag.cell.status,
+		});
+	`)
+	if err != nil {
+		t.Fatalf("require widget.dsl: %v", err)
+	}
+	got := value.Export().(map[string]any)
+	for _, name := range []string{"text", "component", "element", "panel", "dataTable", "textBlock", "codeText", "contextKindSwatch", "sectionBlock", "splitPane", "sidebarShell", "cellField", "cellStatus"} {
+		if got[name] != "function" {
+			t.Fatalf("%s export = %#v, want function (all: %#v)", name, got[name], got)
+		}
+	}
+}
+
+func TestRagAliasRegistration(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("rag.dsl");
+		typeof rag.panel;
+	`)
+	if err != nil {
+		t.Fatalf("require rag.dsl: %v", err)
+	}
+	if got := value.String(); got != "function" {
+		t.Fatalf("typeof rag.panel = %s, want function", got)
+	}
+}
+
+func TestBuildsNestedWidgetIR(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		rag.panel({ title: "Demo", density: "condensed" },
+			rag.stack({ gap: "sm" }, [
+				rag.caption({ tone: "success" }, "Ready"),
+				rag.button({ variant: "primary" }, "Run"),
+			])
+		);
+	`)
+	if err != nil {
+		t.Fatalf("build widget IR: %v", err)
+	}
+	got := value.Export().(map[string]any)
+	assertString(t, got, "kind", "component")
+	assertString(t, got, "type", "Panel")
+	props := got["props"].(map[string]any)
+	if props["title"] != "Demo" || props["density"] != "condensed" {
+		t.Fatalf("props = %#v", props)
+	}
+	children := got["children"].([]any)
+	if len(children) != 1 {
+		t.Fatalf("children len = %d, want 1: %#v", len(children), children)
+	}
+	stack := children[0].(map[string]any)
+	assertString(t, stack, "type", "Stack")
+	stackChildren := stack["children"].([]any)
+	if len(stackChildren) != 2 {
+		t.Fatalf("stack children len = %d, want 2: %#v", len(stackChildren), stackChildren)
+	}
+}
+
+func TestEngineRegistrarRegistersWidgetAndRagAliases(t *testing.T) {
+	factory, err := engine.NewRuntimeFactoryBuilder().WithModules(NewRegistrar()).Build()
+	if err != nil {
+		t.Fatalf("build runtime factory: %v", err)
+	}
+	rt, err := factory.NewRuntime()
+	if err != nil {
+		t.Fatalf("create runtime: %v", err)
+	}
+	defer func() { _ = rt.Close(context.Background()) }()
+
+	value, err := rt.VM.RunString(`
+		const widget = require("widget.dsl");
+		const rag = require("rag.dsl");
+		({ widgetPanel: typeof widget.panel, ragPanel: typeof rag.panel });
+	`)
+	if err != nil {
+		t.Fatalf("require modules through engine registrar: %v", err)
+	}
+	got := value.Export().(map[string]any)
+	if got["widgetPanel"] != "function" || got["ragPanel"] != "function" {
+		t.Fatalf("registrar exports = %#v, want both aliases to expose panel()", got)
+	}
+}
+
+func TestDataTableAndCellHelpersAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const table = rag.dataTable({
+			rows: [{ id: "a", title: "Alpha", status: "done", score: 0.42 }],
+			getRowKey: { field: "id" },
+			columns: [
+				{ id: "title", header: "Title", cell: rag.cell.field("title") },
+				{ id: "score", header: "Score", align: "end", cell: rag.cell.number("score", { format: "fixed", digits: 2 }) },
+				{ id: "status", header: "Status", cell: rag.cell.status("status", { icon: true }) },
+			]
+		});
+		JSON.stringify(table);
+	`)
+	if err != nil {
+		t.Fatalf("build table IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("IR is not JSON: %v\n%s", err, value.String())
+	}
+	assertString(t, decoded, "kind", "component")
+	assertString(t, decoded, "type", "DataTable")
+}
+
+func TestFoundationAtomLayoutHelpersAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const page = rag.page({
+			id: "phase-1",
+			title: "Phase 1",
+			sections: [
+				rag.sectionBlock({ label: "Overview", caption: rag.caption({ tone: "muted" }, "Rendered through WidgetRenderer") },
+					rag.textBlock({ size: "body" }, "Text component node"),
+					rag.codeText({ tone: "accent" }, "ctx.window.parts[0]")
+				),
+				rag.splitPane({
+					ratio: "leftNarrow",
+					divider: true,
+					left: rag.panel({ title: "Kinds" },
+						rag.inline({ gap: "sm" },
+							rag.contextKindSwatch({ kind: "conversation", selected: true }),
+							rag.annotationBadge({ kind: "result", label: "tool result" }),
+							rag.transcriptRoleBadge({ role: "tool", name: "read_file" })
+						)
+					),
+					right: rag.panel({ title: "Details" }, rag.divider(), rag.caption({ tone: "success" }, "ok"))
+				}),
+				rag.sidebarShell({
+					sidebarWidth: 188,
+					sidebar: rag.stack({ gap: "sm" }, rag.button({ selected: true }, "Overview")),
+					header: rag.textBlock({ size: "metric", weight: "bold" }, "Header")
+				}, rag.caption({ tone: "muted" }, "Main content"))
+			]
+		});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build phase-1 widget IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("phase-1 page is not JSON: %v\n%s", err, value.String())
+	}
+	root := decoded["root"].(map[string]any)
+	children := root["children"].([]any)
+	if len(children) != 3 {
+		t.Fatalf("phase-1 sections len = %d, want 3: %#v", len(children), children)
+	}
+	assertString(t, children[0].(map[string]any), "type", "SectionBlock")
+	assertString(t, children[1].(map[string]any), "type", "SplitPane")
+	assertString(t, children[2].(map[string]any), "type", "SidebarShell")
+}
+
+func TestContextDiagramHelpersAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const snapshot = {
+			id: "ctx-1",
+			title: "Context window",
+			limit: 1000,
+			selectedPartId: "conversation",
+			parts: [
+				{ id: "system", label: "System", kind: "system", tokens: 100 },
+				{ id: "conversation", label: "Conversation", kind: "conversation", tokens: 650 },
+				{ id: "result", label: "Tool result", kind: "result", tokens: 200 }
+			]
+		};
+		const page = rag.page({
+			id: "context-diagrams",
+			title: "Context Diagrams",
+			sections: [
+				rag.contextDiagramPanel({ snapshot, initialView: "budget", selectedPartId: "conversation" }),
+				rag.dashboardGrid({ recipe: "twoColumn" },
+					rag.contextBudgetBar({ snapshot, showLegend: true }),
+					rag.contextStripDiagram({ snapshot }),
+					rag.contextStackDiagram({ snapshot }),
+					rag.contextTreemap({ snapshot })
+				),
+				rag.contextLegend({ compact: true, selectedKind: "conversation" })
+			]
+		});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build context diagram IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("context diagram page is not JSON: %v\n%s", err, value.String())
+	}
+	root := decoded["root"].(map[string]any)
+	children := root["children"].([]any)
+	assertString(t, children[0].(map[string]any), "type", "ContextDiagramPanel")
+	assertString(t, children[1].(map[string]any), "type", "DashboardGrid")
+	assertString(t, children[2].(map[string]any), "type", "ContextLegend")
+}
+
+func TestTranscriptAndCommentHelpersAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const messages = [{ id: "m1", role: "user", text: "hello", tokens: 3, annotationIds: ["a1"] }];
+		const annotations = [{ id: "a1", targetMessageId: "m1", kind: "context", label: "framing", text: "Important setup", confidence: 0.9 }];
+		const comments = [{ id: "c1", anchorX: 10, anchorY: 20, author: "Manuel", text: "Review this", status: "open" }];
+		const page = rag.page({
+			id: "transcript",
+			title: "Transcript",
+			sections: [
+				rag.transcriptWorkspacePanel({ title: "Session", messages, annotations, selectedAnnotationId: "a1", onAnnotationSelectAction: rag.action.server("select-annotation") }),
+				rag.transcriptMessageCard({ message: messages[0], annotations, selectedAnnotationId: "a1" }),
+				rag.annotationRailPanel({ annotations, selectedAnnotationId: "a1", onAnnotationSelectAction: rag.action.server("select-annotation") }),
+				rag.anchoredCommentRail({ comments, selectedCommentId: "c1", onCommentSelectAction: rag.action.server("select-comment") })
+			]
+		});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build transcript IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("transcript page is not JSON: %v\n%s", err, value.String())
+	}
+	root := decoded["root"].(map[string]any)
+	children := root["children"].([]any)
+	assertString(t, children[0].(map[string]any), "type", "TranscriptWorkspacePanel")
+	assertString(t, children[2].(map[string]any), "type", "AnnotationRailPanel")
+	assertString(t, children[3].(map[string]any), "type", "AnchoredCommentRail")
+}
+
+func TestCourseAndHandoutHelpersAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const course = { id: "course", title: "Context", tagline: "Learn windows", outcomes: ["Trace tokens"], agenda: [{ id: "intro", number: "01", title: "Intro", description: "Start", duration: "10m" }] };
+		const snapshot = { id: "ctx", title: "Window", limit: 1000, parts: [{ id: "p", label: "Prompt", kind: "conversation", tokens: 300 }] };
+		const slide = { id: "s1", number: "01", title: "Window shape", view: "budget", snapshotId: "ctx", notes: ["Budget matters"] };
+		const docs = [{ id: "d1", title: "Guide", file: "guide.md", format: "markdown", description: "Guide", body: "# Guide\n\nRead me." }];
+		const sections = [{ id: "course", label: "Course", items: [{ id: "slides", label: "Slides", icon: "▣" }] }];
+		const page = rag.page({ id: "course", title: "Course", sections: [
+			rag.courseStudioShell({ sections, activeItemId: "slides", title: "Studio" }, rag.courseSlidePanel({ slide, snapshot, index: 0, total: 1 })),
+			rag.courseLessonPanel({ course, activeAgendaItemId: "intro", onAgendaItemSelectAction: rag.action.server("select-agenda") }),
+			rag.handoutDocumentShell({ intro: "Docs", documents: docs, selectedDocumentId: "d1", onDocumentSelectAction: rag.action.server("select-doc") }),
+			rag.slideShell({ title: "Custom", primary: rag.figureBlock({ caption: "Budget" }, rag.contextBudgetBar({ snapshot })), secondary: rag.keyPointList({ items: ["One", "Two"] }) })
+		]});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build course/handout IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("course/handout page is not JSON: %v\n%s", err, value.String())
+	}
+	root := decoded["root"].(map[string]any)
+	children := root["children"].([]any)
+	assertString(t, children[0].(map[string]any), "type", "CourseStudioShell")
+	assertString(t, children[1].(map[string]any), "type", "CourseLessonPanel")
+	assertString(t, children[2].(map[string]any), "type", "HandoutDocumentShell")
+	assertString(t, children[3].(map[string]any), "type", "SlideShell")
+}
+
+func TestContextCourseHandoutRecipesAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const snapshot = { id: "ctx", title: "Window", limit: 1000, parts: [{ id: "p", label: "Prompt", kind: "conversation", tokens: 300 }] };
+		const transcript = { title: "Session", messages: [{ id: "m1", role: "user", text: "hello" }], annotations: [] };
+		const slide = { id: "s1", number: "01", title: "Window", view: "budget", snapshotId: "ctx", notes: ["Budget"] };
+		const bundle = { intro: "Docs", docs: [{ id: "d1", title: "Guide", file: "guide.md", format: "markdown", description: "Guide", body: "# Guide" }] };
+		const sections = [{ id: "course", label: "Course", items: [{ id: "slides", label: "Slides" }] }];
+		const page = rag.page({ id: "recipes", title: "Recipes", sections: [
+			rag.recipes.contextDiagram({ snapshot, view: "budget" }),
+			rag.recipes.annotatedTranscript({ transcript, onAnnotationSelect: "select-annotation" }),
+			rag.recipes.courseStudio({ sections, activeItemId: "slides", main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 }) }),
+			rag.recipes.handout({ bundle, selectedDocumentId: "d1", onSelect: "select-doc" })
+		]});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build semantic recipe IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("semantic recipe page is not JSON: %v\n%s", err, value.String())
+	}
+	root := decoded["root"].(map[string]any)
+	children := root["children"].([]any)
+	assertString(t, children[0].(map[string]any), "type", "ContextDiagramPanel")
+	assertString(t, children[1].(map[string]any), "type", "TranscriptWorkspacePanel")
+	assertString(t, children[2].(map[string]any), "type", "CourseStudioShell")
+	assertString(t, children[3].(map[string]any), "type", "HandoutDocumentShell")
+}
+
+func TestSemanticRecipesAndActionsAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const rows = [{ id: 1, name: "Alpha", status: "running" }];
+		const page = rag.page({
+			id: "actions",
+			title: "Actions",
+			meta: { shell: "app", maxWidth: "wide" },
+			sections: [
+				rag.recipes.metrics({ items: [
+					{ label: "Total", value: rows.length, status: "ready" },
+					{ label: "Running", value: 1, status: "running" }
+				]}),
+				rag.recipes.actionToolbar({ title: "Controls", actions: [
+					{ label: "Add", action: "add-query", variant: "primary", payload: { owner: "test" } },
+					{ label: "Reset", action: rag.action.server("reset-demo") }
+				]}),
+				rag.recipes.masterDetailTable({
+					title: "Rows",
+					rows,
+					columns: [{ id: "name", header: "Name", cell: rag.cell.field("name") }],
+					selectedKey: 1,
+					onRowSelect: "select-query",
+					detail: row => rag.panel({ title: "Selected" }, row.name)
+				})
+			]
+		});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build recipe page: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("recipe page is not JSON: %v\n%s", err, value.String())
+	}
+	assertString(t, decoded, "id", "actions")
+	root := decoded["root"].(map[string]any)
+	assertString(t, root, "type", "Stack")
+	children := root["children"].([]any)
+	if len(children) != 3 {
+		t.Fatalf("recipe page children len = %d, want 3: %#v", len(children), children)
+	}
+	toolbar := children[1].(map[string]any)
+	assertString(t, toolbar, "type", "Panel")
+}
+
+func TestMasterDetailTableUsesConfiguredRowKeyForDetails(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const table = rag.recipes.masterDetailTable({
+			rows: [{ id: 1, slug: "alpha", name: "Alpha" }],
+			getRowKey: "slug",
+			columns: [{ id: "name", header: "Name", cell: rag.cell.field("name") }],
+			selectedKey: "alpha",
+			detail: row => rag.panel({ title: "Selected" }, row.name)
+		});
+		JSON.stringify(table);
+	`)
+	if err != nil {
+		t.Fatalf("build master-detail recipe: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("master-detail table is not JSON: %v\n%s", err, value.String())
+	}
+	children := decoded["children"].([]any)
+	detail := children[1].(map[string]any)
+	detailChildren := detail["children"].([]any)
+	text := detailChildren[0].(map[string]any)
+	assertString(t, text, "text", "Alpha")
+}
+
+func assertString(t *testing.T, m map[string]any, key, want string) {
+	t.Helper()
+	if got, _ := m[key].(string); got != want {
+		t.Fatalf("%s = %#v, want %q (map=%#v)", key, m[key], want, m)
+	}
+}

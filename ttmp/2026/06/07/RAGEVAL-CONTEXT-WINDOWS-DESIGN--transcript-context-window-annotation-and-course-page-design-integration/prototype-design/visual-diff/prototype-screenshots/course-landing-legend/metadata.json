@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "course-landing-legend",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/landing.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "course-landing-legend",
+  "selector": "[data-rag-molecule=\"ContextLegend\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:33:35.70650063Z"
+}

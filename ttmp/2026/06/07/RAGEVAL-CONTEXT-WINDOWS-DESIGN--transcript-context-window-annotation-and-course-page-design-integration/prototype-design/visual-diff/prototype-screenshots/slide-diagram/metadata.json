@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "slide-diagram",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/slides.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "slide-diagram",
+  "selector": "[data-rag-molecule^=\"Context\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:34:32.411364551Z"
+}

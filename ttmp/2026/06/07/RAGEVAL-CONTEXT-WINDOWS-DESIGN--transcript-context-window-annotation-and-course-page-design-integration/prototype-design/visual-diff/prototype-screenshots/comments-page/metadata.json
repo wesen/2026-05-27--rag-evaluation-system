@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "comments-page",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/comments.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "comments-page",
+  "selector": "[data-rag-organism=\"Comments\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:34:14.438169369Z"
+}

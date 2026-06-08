@@ -14,36 +14,51 @@ DocType: index
 Intent: long-term
 Owners: []
 RelatedFiles:
-    - Path: ../../../../../../2026-05-03--goja-hosting-site/pkg/kanbanddsl/builder.go
-      Note: Reference Kanban DSL builder pattern with fluent JavaScript API
-    - Path: ../../../../../../2026-05-03--goja-hosting-site/pkg/kanbanddsl/types.go
-      Note: Reference Kanban DSL type definitions and configuration structs
-    - Path: ../../../../../../go-go-goja/modules/uidsl/module.go
-      Note: UI DSL native module registration and tag constructors
-    - Path: ../../../../../../go-go-goja/modules/uidsl/node.go
-      Note: UI DSL AST node type definitions
-    - Path: ../../../../../../go-go-goja/modules/uidsl/render.go
-      Note: UI DSL safe HTML renderer with attribute escaping
     - Path: cmd/rag-eval/cmds/serve/server.go
       Note: HTTP server wiring with database
+    - Path: internal/api/dsl_handlers.go
+      Note: Static API demo endpoint for Phase 4
+    - Path: internal/api/dsl_handlers_test.go
+      Note: Smoke tests for static Widget IR demo endpoint and 404 behavior
     - Path: internal/api/handlers.go
       Note: Go HTTP handler registration and API implementation
+    - Path: internal/dsl/widgetdsl/module.go
+      Note: Initial Goja widget.dsl module emitting Widget IR maps
+    - Path: internal/dsl/widgetdsl/module_test.go
+      Note: Tests requiring widget.dsl and rag.dsl aliases and verifying JSON-serializable IR
     - Path: internal/web/spa.go
       Note: SPA static file serving with index.html fallback
     - Path: ttmp/2026/06/02/RAGEVAL-UI-DSL--ui-dsl-and-kanban-dsl-for-rag-evaluation-system-web-interface/design-doc/02-rag-widget-dsl-design-component-to-html-mapping.md
       Note: Detailed widget DSL mapping every React component to a JS constructor
+    - Path: ttmp/2026/06/02/RAGEVAL-UI-DSL--ui-dsl-and-kanban-dsl-for-rag-evaluation-system-web-interface/design-doc/03-review-and-revised-implementation-guide-for-the-rag-widget-dsl.md
+      Note: Review and corrected implementation plan for the RAG widget DSL
     - Path: web/src/App.tsx
-      Note: Main React app entry point showing view routing
+      Note: |-
+        Main React app entry point showing view routing
+        Navigation and view switch wiring for DSL preview
     - Path: web/src/components/molecules/DataTable/DataTable.tsx
       Note: Generic typed DataTable component demonstrating component contract patterns
+    - Path: web/src/components/pages/DslPreviewPage/DslPreviewPage.tsx
+      Note: React page that fetches and renders Widget IR
     - Path: web/src/services/api.ts
       Note: Complete RTK Query API with all backend endpoints
+    - Path: web/src/widgets/WidgetRenderer.stories.tsx
+      Note: Storybook coverage for Widget IR renderer combinations
+    - Path: web/src/widgets/WidgetRenderer.tsx
+      Note: Implemented React WidgetRenderer for phase 2
+    - Path: web/src/widgets/ir.ts
+      Note: Implemented Widget IR schema for phase 1
 ExternalSources: []
 Summary: ""
 LastUpdated: 2026-06-02T21:00:30.291950342-04:00
 WhatFor: ""
 WhenToUse: ""
 ---
+
+
+
+
+
 
 
 

@@ -1,0 +1,332 @@
+[
+{
+  "command": "cd 2026-05-27--rag-evaluation-system \u0026\u0026 find . -maxdepth 4 \\( -iname '*handbook*' -o -iname '*playbook*' -o -iname 'CONTRIBUTING*' -o -iname 'README.md' \\) -print | sort | head -200 \u0026\u0026 rg -n \"design system|atoms|molecules|web/|React|contribut|component\" README.md docs packages internal/web cmd -S --glob '*.md' --glob '*.tsx' --glob '*.ts' | head -120",
+  "id": "019ea3a1-15be-7c03-a8ce-744a7b6f5e70",
+  "input_path": "",
+  "output_snippet": "./cmd/rag-eval/README.md\n./dmeta-ir/README.md\n./docs/guides/ttc-data-handbook.md\n./packages/rag-evaluation-site/dist/README.md\n./packages/rag-evaluation-site/README.md\n./ttmp/_guidelines/playbook.md\n./ttmp/_templates/playbook.md\nrg: README.md: No such file or directory (os error 2)\npackages/rag-evaluation-site/README.md:3:React Widget IR renderer and default RAG evaluation site shell.\npackages/rag-evaluation-site/src/index.ts:5:export * from './components';\npackages/rag-evaluation-site/src/app/App.tsx:1:import type { ReactNode } from 'react';\npackages/rag-evaluation-site/src/app/App.tsx:2:import { ErrorCallout } from '../components/atoms';\npackages/rag-evaluation-site/src/app/App.tsx:3:impor",
+  "score": 22,
+  "started_at": "2026-06-07T19:48:23Z",
+  "title": "Address code review comments on https://github.com/wesen/2026-05-27--rag-evaluat",
+  "tool_name": "bash",
+  "turn_index": 47
+}
+, {
+  "command": "cd 2026-05-27--rag-evaluation-system \u0026\u0026 docmgr vocab list | head -120 \u0026\u0026 docmgr ticket list | tail -30",
+  "id": "019ea3a1-15be-7c03-a8ce-744a7b6f5e70",
+  "input_path": "",
+  "output_snippet": "root=/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp config=/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/.ttmp.yaml vocabulary=/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/vocabulary.yaml\ntopics: chat — Chat backend and frontend surfaces\ntopics: backend — Backend services\ntopics: websocket — WebSocket lifecycle \u0026 events\ntopics: embeddings — Vector embedding computation and similarity\ntopics: evaluation — Retrieval evaluation metrics and benchmarking\ntopics: playground — Interactive web playground for exploring system behavior\ntopics: rag — Retrieval",
+  "score": 22,
+  "started_at": "2026-06-07T19:48:23Z",
+  "title": "Address code review comments on https://github.com/wesen/2026-05-27--rag-evaluat",
+  "tool_name": "bash",
+  "turn_index": 54
+}
+, {
+  "command": "cd 2026-05-27--rag-evaluation-system \u0026\u0026 docmgr ticket list | head -80",
+  "id": "019ea3a1-15be-7c03-a8ce-744a7b6f5e70",
+  "input_path": "",
+  "output_snippet": "Docs root: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp`\nPaths are relative to this root.\n\n## Tickets (21)\n\n### RAGEVAL-DS-RAGEVAL-QWEN36-HIGH — RAG Design System Reference Sheet — Styling/Design + Widget/Interaction Hierarchy\n- Status: **active**\n- Topics: design-system, frontend-architecture, react, storybook\n- Tasks: 4 open / 1 done\n- Updated: 2026-06-07 16:26\n- Path: `2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierarchy`\n\n### DESIGN-REF-001 — RAG Evaluation Design System Reference\n- Status: **active**\n- Topics: design-system, widget-dsl, widget-ir\n- Tasks: 1 open / 0 do",
+  "score": 22,
+  "started_at": "2026-06-07T19:48:23Z",
+  "title": "Address code review comments on https://github.com/wesen/2026-05-27--rag-evaluat",
+  "tool_name": "bash",
+  "turn_index": 55
+}
+, {
+  "command": "cd 2026-05-27--rag-evaluation-system \u0026\u0026 docmgr ticket create-ticket --ticket RAGEVAL-CONTEXT-WINDOWS-DESIGN --title \"Transcript, Context Window, Annotation, and Course Page Design Integration\" --topics design-system,frontend-architecture,react,rag,ui-dsl \u0026\u0026 docmgr doc add --ticket RAGEVAL-CONTEXT-WINDOWS-DESIGN --doc-type design-doc --title \"Design Integration Research and Implementation Plan\" \u0026\u0026 docmgr doc add --ticket RAGEVAL-CONTEXT-WINDOWS-DESIGN --doc-type reference --title \"Investigation Diary\" \u0026\u0026 docmgr task add --ticket RAGEVAL-CONTEXT-WINDOWS-DESIGN --text \"Use go-minitrace to discover prior design-system and web playbooks from Pi sessions\" \u0026\u0026 docmgr task add --ticket RAGEVAL-CONTEXT-WINDOWS-DESIGN --text \"Extract concrete frontend design-system conventions for web/ contribution\" \u0026\u0026 docmgr task add --ticket RAGEVAL-CONTEXT-WINDOWS-DESIGN --text \"Map requirements for transcript, context-window, annotation, and course pages\" \u0026\u0026 docmgr task add --ticket RAGEVAL-CONTEXT-WINDOWS-DESIGN --text \"Write phased integration plan with related files and validation steps\"",
+  "id": "019ea3a1-15be-7c03-a8ce-744a7b6f5e70",
+  "input_path": "",
+  "output_snippet": "Docs root: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp`\n\n## Ticket Workspace Created\n\n- Ticket: RAGEVAL-CONTEXT-WINDOWS-DESIGN\n- Title: Transcript, Context Window, Annotation, and Course Page Design Integration\n- Path: `2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration`\n- Directories: 9\n- Files: 4\n\n### Created Directories\n- `2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration`\n- `2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/design`\n- `2026/06/07",
+  "score": 22,
+  "started_at": "2026-06-07T19:48:23Z",
+  "title": "Address code review comments on https://github.com/wesen/2026-05-27--rag-evaluat",
+  "tool_name": "bash",
+  "turn_index": 56
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 docmgr ticket create-ticket \\\n  --ticket RAGEVAL-DS-RAGEVAL-QWEN36-HIGH \\\n  --title \"RAG Design System Reference Sheet — Styling/Design + Widget/Interaction Hierarchy\" \\\n  --topics frontend-architecture,design-system,react,storybook",
+  "id": "019ea2e6-e4cd-7e93-b2fa-5f94459d4ba3",
+  "input_path": "",
+  "output_snippet": "Docs root: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp`\n\n## Ticket Workspace Created\n\n- Ticket: RAGEVAL-DS-RAGEVAL-QWEN36-HIGH\n- Title: RAG Design System Reference Sheet — Styling/Design + Widget/Interaction Hierarchy\n- Path: `2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierarchy`\n- Directories: 9\n- Files: 4\n\n### Created Directories\n- `2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierarchy`\n- `2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierar",
+  "score": 22,
+  "started_at": "2026-06-07T16:25:01Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 8
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 docmgr doc add --ticket RAGEVAL-DS-RAGEVAL-QWEN36-HIGH --doc-type design-doc --title \"Widget Hierarchy and Interaction Reference\"",
+  "id": "019ea2e6-e4cd-7e93-b2fa-5f94459d4ba3",
+  "input_path": "",
+  "output_snippet": "Docs root: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp`\nConfig: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/.ttmp.yaml`\nVocabulary: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/vocabulary.yaml`\n\n## Document Created\n\n- Ticket: RAGEVAL-DS-RAGEVAL-QWEN36-HIGH\n- Doc type: design-doc\n- Title: Widget Hierarchy and Interaction Reference\n- Status: active\n- Intent: long-term\n- Topics: frontend-architecture, design-system, react, storybook\n- Owners: —\n- Path: `2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-",
+  "score": 22,
+  "started_at": "2026-06-07T16:25:01Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 9
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 docmgr doc add --ticket RAGEVAL-DS-RAGEVAL-QWEN36-HIGH --doc-type reference --title \"Investigation Diary\"",
+  "id": "019ea2e6-e4cd-7e93-b2fa-5f94459d4ba3",
+  "input_path": "",
+  "output_snippet": "Docs root: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp`\nConfig: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/.ttmp.yaml`\nVocabulary: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/vocabulary.yaml`\n\n## Document Created\n\n- Ticket: RAGEVAL-DS-RAGEVAL-QWEN36-HIGH\n- Doc type: reference\n- Title: Investigation Diary\n- Status: active\n- Intent: long-term\n- Topics: frontend-architecture, design-system, react, storybook\n- Owners: —\n- Path: `2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hiera",
+  "score": 22,
+  "started_at": "2026-06-07T16:25:01Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 9
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 docmgr doc add --ticket RAGEVAL-DS-RAGEVAL-QWEN36-HIGH --doc-type design-doc --title \"Styling and Design Reference\"",
+  "id": "019ea2e6-e4cd-7e93-b2fa-5f94459d4ba3",
+  "input_path": "",
+  "output_snippet": "Docs root: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp`\nConfig: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/.ttmp.yaml`\nVocabulary: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/vocabulary.yaml`\n\n## Document Created\n\n- Ticket: RAGEVAL-DS-RAGEVAL-QWEN36-HIGH\n- Doc type: design-doc\n- Title: Styling and Design Reference\n- Status: active\n- Intent: long-term\n- Topics: frontend-architecture, design-system, react, storybook\n- Owners: —\n- Path: `2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interac",
+  "score": 22,
+  "started_at": "2026-06-07T16:25:01Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 9
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 docmgr doctor --ticket RAGEVAL-DS-RAGEVAL-QWEN36-HIGH --stale-after 30",
+  "id": "019ea2e6-e4cd-7e93-b2fa-5f94459d4ba3",
+  "input_path": "",
+  "output_snippet": "1) [warning] Unknown vocabulary value for Topics\nFile: /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierarchy/index.md\nField: Topics\nValue: \"frontend-architecture,storybook\"\nKnown values: chat, backend, websocket, embeddings, evaluation, playground, rag, search, workflow, ingestion, database, corpus, design, intake, scraper, ui, npm, publishing, security, release, react, css, design-system, dmeta, chunking, geppetto, goja, xgoja, goja-text, markdown, extract, sanitize, kanban, javascript, dsl, go, mysql, sqlite, ttc, wordpress, inte",
+  "score": 22,
+  "started_at": "2026-06-07T16:25:01Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 15
+}
+, {
+  "command": "",
+  "id": "019ea2e6-e4cd-7e93-b2fa-5f94459d4ba3",
+  "input_path": "~/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierarchy/index.md",
+  "output_snippet": "---\nTitle: RAG Design System Reference Sheet — Styling/Design + Widget/Interaction Hierarchy\nTicket: RAGEVAL-DS-RAGEVAL-QWEN36-HIGH\nStatus: active\nTopics:\n    - frontend-architecture\n    - design-system\n    - react\n    - storybook\nDocType: index\nIntent: long-term\nOwners: []\nRelatedFiles:\n    - Path: web/src/index.css\n      Note: 'Global CSS: Tailwind import'\n    - Path: web/src/styles/tokens.css\n      Note: All design tokens (Mac palette + font role aliases)\n    - Path: web/src/widgets/WidgetRenderer.tsx\n      Note: WidgetRenderer — maps IR nodes to React components\n    - Path: web/src/widgets/cellRenderers.tsx\n      Note: CellSpec → ReactNode conversion pipeline\n    - Path: web/src/widgets/",
+  "score": 22,
+  "started_at": "2026-06-07T16:25:01Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "read",
+  "turn_index": 16
+}
+, {
+  "command": "find /home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/06 -type f -name \"*.md\" | head -20",
+  "id": "019ea2e3-98da-718f-b7a9-14da3b62365f",
+  "input_path": "",
+  "output_snippet": "/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/06/01/ARTICLE - LDCK-API-001 - Building a Loupedeck HTTP API with xgoja.md\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/06/01/ARTICLE - XGOJA-016 - Embedded Assets in Generated xgoja Binaries.md\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/06/01/ARTICLE - ESP32-P4-WIFI6 as PicoCalc MCU - Deep Technical Dive.md\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/06/01/ARTICLE - Trusted npm Publishing for Go Go Golems React Packages.md\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/06/01/ARTICLE - Pinocchio Web Chat Cleanup - Engineering Playbook and Technical Report.md\n/hom",
+  "score": 22,
+  "started_at": "2026-06-07T16:21:25Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 3
+}
+, {
+  "command": "find /home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/05/ -name \"*DMETA*\" -o -name \"*Design*\" -o -name \"*design system*\" 2\u003e/dev/null | head -20",
+  "id": "019ea2e3-98da-718f-b7a9-14da3b62365f",
+  "input_path": "",
+  "output_snippet": "/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/05/24/ARTICLE - DMETA Compiler Refactor - Hard Cut to Interaction IR Web MetaDesignSystem and React Target.md\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/05/24/ARTICLE - DMETA as a Design System Compiler - Layered IRs and MetaDesignSystems.md\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/05/31/ARTICLE - DMETA Language Cleanup - Multi-IR Architecture and Web Component System.md\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/05/20/ARTICLE - Presentation Based User Interfaces - AITR-794 and DMETA Implementation Guide.md\n/home/manuel/code/wesen/go-go-golems/go-go-parc/Projects/2026/05/2",
+  "score": 22,
+  "started_at": "2026-06-07T16:21:25Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 7
+}
+, {
+  "command": "",
+  "id": "019ea2e3-98da-718f-b7a9-14da3b62365f",
+  "input_path": "~/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierarchy/index.md",
+  "output_snippet": "---\nTitle: RAG Design System Reference Sheet — Styling/Design + Widget/Interaction Hierarchy\nTicket: RAGEVAL-DS-RAGEVAL-QWEN36-HIGH\nStatus: active\nTopics:\n    - frontend-architecture\n    - design-system\n    - react\n    - storybook\nDocType: index\nIntent: long-term\nOwners: []\nRelatedFiles:\n    - Path: ttmp/2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierarchy/reference/01-investigation-diary.md\n      Note: Investigation diary with evidence-gathering and document authoring steps\n    - Path: web/src/index.css\n      Note: 'Global CSS: Tailwind import'\n    - Path: web/src/styles/tokens.css\n      Note: All design tokens (Mac palette",
+  "score": 22,
+  "started_at": "2026-06-07T16:21:25Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "read",
+  "turn_index": 309
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 git log --oneline --decorate --all --max-count=40 \u0026\u0026 git status --short \u0026\u0026 find ttmp/2026/06 -maxdepth 4 -type f \\( -name '*diary*.md' -o -name '*implementation*.md' -o -name '*guide*.md' \\) | sort",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "input_path": "",
+  "output_snippet": "abfea25 (HEAD -\u003e task/add-ui-dsl) Diary: record widget DSL help docs\n5cdcf5b Add widget DSL xgoja help docs\n68eb553 :art: Update page\nfef6781 Diary: record xgoja React app embed\n36cd6ea Embed React app in xgoja widget site example\n439d92c (origin/task/add-ui-dsl) Diary: record xgoja widget site implementation\n70f30b1 Add xgoja widget site provider and example\nee457fd Docs: design xgoja widget site binary\n9c2d1bf :sparkles: Add UI DSL\nc17e3ce (origin/main, task/rag-evaluation-system) Add TTC export research logbook\nf29c232 :art: Add documents\n174c697 Add TTC WordPress SQLite export ticket\n16a5016 Add Bleve KNN vector experiment\n6b83eb1 :art: Add ticket\nd74a16e Merge remote-tracking branch 'or",
+  "score": 22,
+  "started_at": "2026-06-03T00:57:46Z",
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm",
+  "tool_name": "bash",
+  "turn_index": 741
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 cat \u003e\u003e ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/reference/01-investigation-diary.md \u003c\u003c'MD'\n\n## Step 3: Capture Visual Evidence and Identify the Token Boundary Failure\n\nThis step created the first visual evidence set for the Widget DSL visual-quality investigation. I used the new devctl workflow to rebuild and launch the generated xgoja widget-site, served the existing static Storybook build, and ran a ticket-local `css-visual-diff` JavaScript verb that captures overlay screenshots, selector preflight JSON, and computed CSS JSON for the generated page and several Storybook references.\n\nThe most important finding is that the generated page is not merely a weak composition; the standalone package is missing the original design-system token contract that the copied components expect. The component CSS uses `--mac-*`, `--font-body`, `--font-mono`, and `--rag-font-role-*` variables, but `packages/rag-evaluation-site/src/theme.css` only defines `--rag-*` tokens. As a result, CSS declarations such as `background: var(--mac-surface)` and `border: 1px solid var(--mac-border)` become invalid at computed-style time, making buttons, panels, and tables appear transparent or browser-default-like.\n\n### Prompt Context\n\n**User prompt (verbatim):** (same as Step 1 and Step 2)\n\n**Assistant interpretation:** Gather visual evidence with screenshots and css-visual-diff, compare the generated Widget DSL page against Storybook/original RAG references, and keep the evidence and scripts in the ticket.\n\n**Inferred user intent:** Move from subjective “looks bad” feedback to file-backed, screenshot-backed causes and an actionable implementation guide.\n\n**Commit (code):** Pending in this step.\n\n### What I did\n\n- Read `css-visual-diff help --all` plus relevant help pages:\n  - `getting-started`\n  - `javascript-api`\n  - `javascript-verbs`\n  - `pixel-accuracy-scripting-guide`.\n- Enumerated Storybook stories and selected visual references:\n  - `pages-pipelinepage--populated`\n  - `component-library-organisms-retrievalresultspanel--hybrid-results`\n  - `widget-ir-renderer--search-workbench-composition`.\n- Added ticket-local scripts:\n  - `scripts/01-start-widget-and-storybook.sh`\n  - `scripts/02-stop-widget-and-storybook.sh`\n  - `scripts/03-capture-visual-evidence.js`\n  - `scripts/04-run-visual-evidence.sh`.\n- Ran the visual evidence workflow twice:\n  - `run-01`: failed during a Storybook table selector screenshot.\n  - `run-02`: succeeded after switching probe artifacts from full bundles to `css-json`.\n- Attempted to use the image QA tool twice with fresh context and all comparison images.\n- Inspected generated CSS JSON and source files to identify token mismatch and shell/app layout issues.\n\n### Why\n\n- The visual-quality guide needs evidence beyond subjective screenshot review.\n- css-visual-diff artifacts can show both the visible page structure and the browser-computed styles that explain why the page looks wrong.\n- The intern guide should explain root causes in terms of architecture boundaries: authoring DSL, renderer, component CSS, theme tokens, app shell, and example composition.\n\n### What worked\n\n- The devctl-managed widget-site startup worked inside the evidence script:\n\n```text\nexamples/xgoja/widget-site devctl up --force --timeout 10m\n```\n\n- Static Storybook served successfully from `web/storybook-static` on port `6007`.\n- The successful evidence run wrote artifacts under:\n\n```text\nttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-02\n```\n\n- Captured targets:\n  - generated Widget DSL action page: `widget-actions.overlay.png`\n  - original RAG PipelinePage story: `storybook-pipeline-page.overlay.png`\n  - original RetrievalResultsPanel story: `storybook-retrieval-results.overlay.png`\n  - WidgetRenderer Storybook composition: `widget-renderer-storybook.overlay.png`.\n- Computed CSS evidence for the generated widget page showed:\n\n```json\n{\n  \"app-root\": {\n    \"background-color\": \"rgba(0, 0, 0, 0)\",\n    \"max-width\": \"none\",\n    \"padding\": \"0px\"\n  },\n  \"first-button\": {\n    \"background-color\": \"rgba(0, 0, 0, 0)\",\n    \"border-radius\": \"0px\",\n    \"height\": \"24px\",\n    \"padding\": \"2px 12px\"\n  },\n  \"first-table\": {\n    \"background-color\": \"rgba(0, 0, 0, 0)\",\n    \"font-size\": \"11px\"\n  }\n}\n```\n\n- Source inspection found the token mismatch:\n  - `packages/rag-evaluation-site/src/theme.css` defines only `--rag-*` tokens.\n  - component CSS such as `Button.module.css`, `Panel.module.css`, and `DataTable.module.css` consumes `--mac-*`, `--font-mono`, and role font tokens.\n  - `web/src/styles/tokens.css` is the original source defining those variables.\n\n### What didn't work\n\n- The image QA tool failed twice with the same remote TLS error:\n\n```text\npinocchio exited with code 1:\nError: inference failed: Post \"https://api.openai.com/v1/responses\": remote error: tls: bad record MAC\n```\n\n- I continued with direct artifact inspection rather than waiting on the remote service.\n- `run-01` failed while trying to capture a selector screenshot for a Storybook `table` probe:\n\n```text\nError: promise rejected: ArtifactError: context canceled\n```\n\n- Fix: changed `scripts/03-capture-visual-evidence.js` from `artifacts: \"bundle\"` to `artifacts: \"css-json\"`. Overlay screenshots still provide full-page visual evidence, and CSS JSON is enough for token/layout root-cause analysis.\n- Generic Storybook selectors such as `table` and `button` sometimes hit hidden Storybook control elements instead of visible story content. The preflight output recorded this as `visible=false` and `bounds={width:0,height:0}` for some Storybook probes.\n\n### What I learned\n\n- The generated page looks bad primarily because copied component CSS depends on design tokens that are absent from the standalone package theme.\n- A correct implementation guide must start with the design-token contract before discussing fancier DSL composition improvements.\n- `RagEvaluationSiteApp` currently renders only a raw root div around `WidgetRenderer`; it does not provide app-shell chrome, page padding, sidebar/navigation, or a constrained content surface unless the Widget IR author explicitly emits `AppShell`.\n- The generated example uses many raw layout widgets (`Stack`, `DashboardGrid`, `Panel`, `Button`, `DataTable`) but no high-level page template. That puts too much visual composition responsibility on the DSL author.\n\n### What was tricky to build\n\n- The tricky part was separating three causes that all contribute to the poor screenshot:\n  1. missing CSS variables in the standalone package,\n  2. lack of a default app shell/page template,\n  3. example composition that uses low-level primitives without visual presets.\n- css-visual-diff was useful because the computed CSS exposed missing token symptoms directly: transparent backgrounds, zero panel borders, and root padding of `0px`.\n- Storybook iframes include Storybook-managed DOM, so broad selectors can accidentally hit hidden controls. Future scripts should prefer stable `data-rag-*` attributes in components and stories.\n\n### What warrants a second pair of eyes\n\n- Confirm whether the standalone package should import the exact original `web/src/styles/tokens.css` token set or define a cleaner package-local token bridge that maps `--mac-*` to `--rag-*` aliases.\n- Review whether `RagEvaluationSiteApp` should always wrap pages in `AppShell`, or whether the server/DSL author should choose a page template explicitly.\n- Review whether high-level DSL recipes should be implemented in JS (`rag.dsl`) or React (`WidgetRenderer`/template registry).\n\n### What should be done in the future\n\n- Add `data-rag-component` / `data-rag-layout` attributes to component roots so visual tooling can target visible RAG widgets reliably.\n- Add a package-level theme contract test that renders representative components and verifies critical computed values are not transparent/default due to missing variables.\n- Build higher-level DSL page recipes for search, corpus explorer, workflow dashboard, and action dashboard so authors can create rich pages without hand-composing every panel.\n\n### Code review instructions\n\n- Start with `packages/rag-evaluation-site/src/theme.css` and compare it with `web/src/styles/tokens.css`.\n- Inspect `packages/rag-evaluation-site/src/components/atoms/Button/Button.module.css`, `Panel.module.css`, and `DataTable.module.css` to see the missing token consumers.\n- Inspect `packages/rag-evaluation-site/src/app/App.tsx` to see the raw `rag-evaluation-site-root` wrapper around `WidgetRenderer`.\n- Inspect `examples/xgoja/widget-site/verbs/sites.js` to see how much low-level layout composition the example author currently writes.\n- Re-run evidence with:\n\n```text\nttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts/04-run-visual-evidence.sh \\\n  ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-N\n```\n\n### Technical details\n\n- `css-visual-diff` command shape:\n\n```text\ncss-visual-diff verbs \\\n  --repository ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/scripts \\\n  widget-dsl visual capture-evidence \\\n  ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-02 \\\n  --widgetUrl http://127.0.0.1:18791 \\\n  --storybookUrl http://127.0.0.1:6007 \\\n  --output json\n```\n\n- Key source files:\n  - `packages/rag-evaluation-site/src/theme.css`\n  - `packages/rag-evaluation-site/src/styles.css`\n  - `packages/rag-evaluation-site/src/app/app.css`\n  - `packages/rag-evaluation-site/src/app/App.tsx`\n  - `packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx`\n  - `web/src/styles/tokens.css`\n  - `examples/xgoja/widget-site/verbs/sites.js`\nMD\npython3 - \u003c\u003c'PY'\nfrom pathlib import Path\np=Path('ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/reference/01-investigation-diary.md')\ns=p.read_text().replace('LastUpdated: 2026-06-05T12:58:00-04:00', 'LastUpdated: 2026-06-05T13:40:00-04:00')\np.write_text(s)\nPY\n\ndocmgr doctor --ticket WIDGETDSL-VISUAL-QUALITY --stale-after 30",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "input_path": "",
+  "output_snippet": "1) [error] YAML/frontmatter syntax error\nFile: /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-01/artifacts/storybook-pipeline-page/first-panel/computed-css.md\nProblem: frontmatter delimiters '---' not found\n\nFor more guidance, run: docmgr help yaml-frontmatter-validation\nActions:\n- Validate frontmatter: docmgr validate frontmatter --doc /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual",
+  "score": 22,
+  "started_at": "2026-06-03T00:57:46Z",
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm",
+  "tool_name": "bash",
+  "turn_index": 843
+}
+, {
+  "command": "",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "input_path": "~/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-02/01-visual-evidence-summary.md",
+  "output_snippet": "---\nTitle: Visual Evidence Capture Summary\nDocType: reference\nTicket: WIDGETDSL-VISUAL-QUALITY\nStatus: active\nIntent: short-term\nTopics:\n  - frontend\n  - ui-dsl\n  - design-system\n---\n\n# Widget DSL Visual Evidence Capture\n\n- Widget URL: http://127.0.0.1:18791\n- Storybook URL: http://127.0.0.1:6007\n- Viewport: 1440x1100\n- Wait: 800ms\n\n## Captured targets\n\n- **Generated Widget DSL action page** (widget-actions) — http://127.0.0.1:18791/pages/actions\n  - overlay: `widget-actions.overlay.png`\n  - preflight: `widget-actions.preflight.json`\n- **Original RAG PipelinePage Storybook page** (storybook-pipeline-page) — http://127.0.0.1:6007/iframe.html?id=pages-pipelinepage--populated\u0026viewMode=story\n  -",
+  "score": 22,
+  "started_at": "2026-06-03T00:57:46Z",
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm",
+  "tool_name": "read",
+  "turn_index": 863
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 docmgr task list --ticket WIDGETDSL-VISUAL-QUALITY \u0026\u0026 docmgr doc relate --doc ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/design-doc/01-widget-dsl-visual-quality-analysis-and-implementation-guide.md --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/theme.css:Standalone package token contract root cause\" --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/web/src/styles/tokens.css:Original RAG design-system token source\" --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/app/App.tsx:Standalone WidgetRenderer app shell boundary\" --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:Widget IR to React component mapping\" --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetdsl/module.go:Goja widget.dsl authoring helpers\" --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetrunner/runner.go:Widget page/action runtime contracts\" --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetserver/server.go:Widget HTTP endpoints and embedded frontend modes\" --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/verbs/sites.js:Current low-level stateful action demo composition\" \u0026\u0026 docmgr changelog update --ticket WIDGETDSL-VISUAL-QUALITY --entry \"Wrote the intern-facing Widget DSL visual quality analysis and implementation guide, covering architecture, evidence, root causes, design decisions, phased fixes, testing, and API/file references.\" --file-note \"/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/design-doc/01-widget-dsl-visual-quality-analysis-and-implementation-guide.md:Primary guide\"",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "input_path": "",
+  "output_snippet": "[1] [x] Create ticket workspace, design document, and diary.\n[2] [x] Commit the previous xgoja widget-site action demo work.\n[3] [x] Add devctl workflow in `examples/xgoja/widget-site` for rebuild, launch, logs, and smoke.\n[4] [x] Capture visual evidence from current widget-site and original RAG/Storybook components.\n[5] [x] Store screenshot/comparison scripts in the ticket `scripts/` directory.\n[6] [x] Analyze renderer/component gaps that make Widget DSL pages look worse than the original RAG site.\n[7] [x] Write intern-facing design and implementation guide with APIs, diagrams, pseudocode, and file references.\n[8] [ ] Validate docmgr ticket and upload bundle to reMarkable.\nRelated files upd",
+  "score": 22,
+  "started_at": "2026-06-03T00:57:46Z",
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm",
+  "tool_name": "bash",
+  "turn_index": 892
+}
+, {
+  "command": "",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "input_path": "~/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/reference/01-investigation-diary.md",
+  "output_snippet": "---\nTitle: Investigation Diary\nTicket: WIDGETDSL-VISUAL-QUALITY\nStatus: active\nTopics:\n    - frontend\n    - ui-dsl\n    - design-system\nDocType: reference\nIntent: long-term\nOwners: []\nRelatedFiles:\n    - Path: examples/xgoja/widget-site/.devctl.yaml\n      Note: Example-local devctl plugin wiring\n    - Path: examples/xgoja/widget-site/.gitignore\n      Note: Ignores example-local devctl runtime state\n    - Path: examples/xgoja/widget-site/README.devctl.md\n      Note: Developer workflow instructions for devctl build/up/logs/down\n    - Path: examples/xgoja/widget-site/assets/public/index.html\n      Note: Synced rebuilt standalone app into generated xgoja example assets\n    - Path: examples/xgoja/",
+  "score": 22,
+  "started_at": "2026-06-03T00:57:46Z",
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm",
+  "tool_name": "read",
+  "turn_index": 1136
+}
+, {
+  "command": "",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "input_path": "~/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/design-doc/01-widget-dsl-visual-quality-analysis-and-implementation-guide.md",
+  "output_snippet": "---\nTitle: Widget DSL Visual Quality Analysis and Implementation Guide\nTicket: WIDGETDSL-VISUAL-QUALITY\nStatus: active\nTopics:\n    - frontend\n    - ui-dsl\n    - design-system\nDocType: design-doc\nIntent: long-term\nOwners: []\nRelatedFiles:\n    - Path: examples/xgoja/widget-site/verbs/sites.js\n      Note: Current low-level stateful action demo composition\n    - Path: packages/rag-evaluation-site/src/app/App.tsx\n      Note: Standalone WidgetRenderer app shell boundary\n    - Path: packages/rag-evaluation-site/src/theme.css\n      Note: Standalone package token contract root cause\n    - Path: packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx\n      Note: Widget IR to React component mappin",
+  "score": 22,
+  "started_at": "2026-06-03T00:57:46Z",
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm",
+  "tool_name": "read",
+  "turn_index": 1137
+}
+, {
+  "command": "",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "input_path": "~/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-token-bridge-02/01-visual-evidence-summary.md",
+  "output_snippet": "---\nTitle: Visual Evidence Capture Summary\nDocType: reference\nTicket: WIDGETDSL-VISUAL-QUALITY\nStatus: active\nIntent: short-term\nTopics:\n  - frontend\n  - ui-dsl\n  - design-system\n---\n\n# Widget DSL Visual Evidence Capture\n\n- Widget URL: http://127.0.0.1:18791\n- Storybook URL: http://127.0.0.1:6007\n- Viewport: 1440x1100\n- Wait: 800ms\n\n## Captured targets\n\n- **Generated Widget DSL action page** (widget-actions) — http://127.0.0.1:18791/pages/actions\n  - overlay: `widget-actions.overlay.png`\n  - preflight: `widget-actions.preflight.json`\n- **Original RAG PipelinePage Storybook page** (storybook-pipeline-page) — http://127.0.0.1:6007/iframe.html?id=pages-pipelinepage--populated\u0026viewMode=story\n  -",
+  "score": 22,
+  "started_at": "2026-06-03T00:57:46Z",
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm",
+  "tool_name": "read",
+  "turn_index": 1139
+}
+, {
+  "command": "",
+  "id": "019e8afc-89d8-7f43-95d0-e7f6be234ee4",
+  "input_path": "~/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/05/WIDGETDSL-VISUAL-QUALITY--widget-dsl-visual-quality-and-rich-website-design/sources/visual-evidence/run-shell-01/01-visual-evidence-summary.md",
+  "output_snippet": "---\nTitle: Visual Evidence Capture Summary\nDocType: reference\nTicket: WIDGETDSL-VISUAL-QUALITY\nStatus: active\nIntent: short-term\nTopics:\n  - frontend\n  - ui-dsl\n  - design-system\n---\n\n# Widget DSL Visual Evidence Capture\n\n- Widget URL: http://127.0.0.1:18791\n- Storybook URL: http://127.0.0.1:6007\n- Viewport: 1440x1100\n- Wait: 800ms\n\n## Captured targets\n\n- **Generated Widget DSL action page** (widget-actions) — http://127.0.0.1:18791/pages/actions\n  - overlay: `widget-actions.overlay.png`\n  - preflight: `widget-actions.preflight.json`\n- **Original RAG PipelinePage Storybook page** (storybook-pipeline-page) — http://127.0.0.1:6007/iframe.html?id=pages-pipelinepage--populated\u0026viewMode=story\n  -",
+  "score": 22,
+  "started_at": "2026-06-03T00:57:46Z",
+  "title": "Create a new docmgr ticket in 2026-05-27--rag-evaluation-system/ttmp using `docm",
+  "tool_name": "read",
+  "turn_index": 1139
+}
+, {
+  "command": "find /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp -type f | grep -i \"faiss\\|vector\\|bleve\\|search\" | head -20",
+  "id": "019e8af1-6a69-7011-8d3b-8d1159d5db13",
+  "input_path": "",
+  "output_snippet": "/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/28/RAGEVAL-004--end-to-end-search-retrieval-foundation/README.md\n/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/28/RAGEVAL-004--end-to-end-search-retrieval-foundation/design-doc/01-end-to-end-search-retrieval-implementation-guide.md\n/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/28/RAGEVAL-004--end-to-end-search-retrieval-foundation/design-doc/02-retrieval-status-measurements-and-ux-implementation-guide.md\n/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag",
+  "score": 22,
+  "started_at": "2026-06-03T00:45:37Z",
+  "title": "We're working on RAGEVAL-GOJA-RAG-STRATEGIES.  We're leaving the idea of a custo",
+  "tool_name": "bash",
+  "turn_index": 108
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system \u0026\u0026 rg -n \"RRF|Reciprocal|Hybrid|hybrid\" 2026-05-27--rag-evaluation-system -S | head -80",
+  "id": "019e8af1-6a69-7011-8d3b-8d1159d5db13",
+  "input_path": "",
+  "output_snippet": "2026-05-27--rag-evaluation-system/dmeta-ir/core-model/archetypes/10-search-workbench.yaml:14:      Represents the semantic request that drives BM25, vector, or hybrid\n2026-05-27--rag-evaluation-system/dmeta-ir/core-model/archetypes/10-search-workbench.yaml:67:      - Hybrid rank #1 result with BM25 rank #1 and vector rank #3.\n2026-05-27--rag-evaluation-system/dmeta-ir/core-model/capabilities/10-search-workbench.yaml:12:      Allows a caller to construct a RetrievalQuery for BM25, vector, or hybrid\n2026-05-27--rag-evaluation-system/dmeta-ir/meta-design-systems/web/widgets/search-workbench.yaml:67:      - populated_hybrid_result\n2026-05-27--rag-evaluation-system/dmeta-ir/meta-design-systems/we",
+  "score": 22,
+  "started_at": "2026-06-03T00:45:37Z",
+  "title": "We're working on RAGEVAL-GOJA-RAG-STRATEGIES.  We're leaving the idea of a custo",
+  "tool_name": "bash",
+  "turn_index": 558
+}
+, {
+  "command": "cd /home/manuel/code/wesen/go-go-golems/go-go-parc \u0026\u0026 git status --short \u0026\u0026 find Projects/2026/06 -maxdepth 3 -type f | sort | tail -30",
+  "id": "019e8af1-6a69-7011-8d3b-8d1159d5db13",
+  "input_path": "",
+  "output_snippet": " M \"Projects/2026/06/02/ARTICLE - Building FAISS for Bleve Vector Search.md\"\nProjects/2026/06/01/ARTICLE - DMETA React Design System - Layout Primitives Storybook and Cleanup.md\nProjects/2026/06/01/ARTICLE - ESP32-P4 PicoCalc Display Optimization - Queued SPI and Dirty Rectangles.md\nProjects/2026/06/01/ARTICLE - ESP32-P4-WIFI6 as PicoCalc MCU - Deep Technical Dive.md\nProjects/2026/06/01/ARTICLE - Generic ChatProvider - From Overlay Runtime to Provider Backed Web Chat.md\nProjects/2026/06/01/ARTICLE - Geppetto JS Bindings - Wrapper First Hard Cutover.md\nProjects/2026/06/01/ARTICLE - GitHub App Tokens for GitOps PR Automation.md\nProjects/2026/06/01/ARTICLE - LDCK-API-001 - Building a Loupedeck ",
+  "score": 22,
+  "started_at": "2026-06-03T00:45:37Z",
+  "title": "We're working on RAGEVAL-GOJA-RAG-STRATEGIES.  We're leaving the idea of a custo",
+  "tool_name": "bash",
+  "turn_index": 686
+}
+, {
+  "command": "for d in 2026-05-27--rag-evaluation-system goja-text geppetto scraper go-go-goja; do echo ===$d===; git -C $d status --short 2\u003e/dev/null || true; done\nrg -n \"documentProcessing|chunkEnrichment|chunk enrichment|processing\\.document|rag\\.\" 2026-05-27--rag-evaluation-system goja-text geppetto scraper go-go-goja -S --glob '!**/ttmp/**' --glob '!**/.git/**' --glob '!**/node_modules/**'",
+  "id": "019e8a21-1a59-75ce-96c6-f23e13c1174f",
+  "input_path": "",
+  "output_snippet": "===2026-05-27--rag-evaluation-system===\n M ttmp/2026/06/02/RAGEVAL-GOJA-RAG-STRATEGIES--goja-driven-rag-indexing-strategies-js-extension-points-for-pipeline-experimentation/changelog.md\n M ttmp/2026/06/02/RAGEVAL-GOJA-RAG-STRATEGIES--goja-driven-rag-indexing-strategies-js-extension-points-for-pipeline-experimentation/design/01-goja-rag-strategy-architecture-and-intern-implementation-guide.md\n M ttmp/2026/06/02/RAGEVAL-GOJA-RAG-STRATEGIES--goja-driven-rag-indexing-strategies-js-extension-points-for-pipeline-experimentation/index.md\n M ttmp/2026/06/02/RAGEVAL-GOJA-RAG-STRATEGIES--goja-driven-rag-indexing-strategies-js-extension-points-for-pipeline-experimentation/reference/01-investigation-dia",
+  "score": 22,
+  "started_at": "2026-06-02T20:58:05Z",
+  "title": "I want to experiment with different RAG strategies, ideally by writing short scr",
+  "tool_name": "bash",
+  "turn_index": 198
+}
+, {
+  "command": "",
+  "id": "019e6aa0-f9a4-7746-973d-71a72495be8c",
+  "input_path": "~/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/05/27/RAGEVAL-001--rag-evaluation-system-workflow-driven-document-indexing-with-interactive-playground/reference/01-investigation-diary.md",
+  "output_snippet": "- Start with the design doc: `ttmp/2026/05/27/RAGEVAL-001--.../design-doc/01-rag-evaluation-system-architecture-and-implementation-guide.md`\n- Key sections to review: Section 4 (data model), Section 6 (search service), Section 11 (reranking)\n- Validate that the SQL schema composite keys support the intended multi-configuration comparison workflow\n- Check that the API contracts (Section 7) are consistent with the frontend components (Section 8)\n\n### Technical details\n\n- Document size: ~83KB, 18 major sections\n- SQLite tables designed: 9 (sources, documents, chunks, chunking_strategies, chunk_embeddings, chunk_enrichments, search_indexes, eval_queries, eval_runs, eval_results)\n- API endpoints ",
+  "score": 22,
+  "started_at": "2026-05-27T18:09:55Z",
+  "title": "Create a new docmgr ticket to create a RAG evaluation system. I have never reall",
+  "tool_name": "read",
+  "turn_index": 289
+}
+, {
+  "command": "cd /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system \u0026\u0026 find . -maxdepth 3 -type d | head -80 \u0026\u0026 ls -la",
+  "id": "019e8af1-6a69-7011-8d3b-8d1159d5db13",
+  "input_path": "",
+  "output_snippet": ".\n./.playwright-mcp\n./plugins\n./eval\n./state\n./data\n./data/indexes\n./data/indexes/bm25\n./data/corpus\n./data/corpus/ttc-dump\n./data/corpus/thetreecenter\n./internal\n./internal/services\n./internal/services/embedding\n./internal/services/chunkenrichment\n./internal/services/document\n./internal/services/source\n./internal/services/documentprocessing\n./internal/services/corpus\n./internal/services/search\n./internal/services/chunking\n./internal/api\n./internal/web\n./internal/web/dist\n./internal/chunking\n./internal/workflow\n./internal/ingest\n./internal/db\n./.devctl\n./.devctl/logs\n./ttmp\n./ttmp/2026\n./ttmp/2026/05\n./ttmp/2026/06\n./ttmp/_templates\n./ttmp/_guidelines\n./web\n./web/public\n./web/src\n./web/src/c",
+  "score": 19,
+  "started_at": "2026-06-03T00:45:37Z",
+  "title": "We're working on RAGEVAL-GOJA-RAG-STRATEGIES.  We're leaving the idea of a custo",
+  "tool_name": "bash",
+  "turn_index": 212
+}
+, {
+  "command": "ls /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-DS-RAGEVAL-QWEN36-HIGH--rag-design-system-reference-sheet-styling-design-widget-interaction-hierarchy/",
+  "id": "019ea2e6-e4cd-7e93-b2fa-5f94459d4ba3",
+  "input_path": "",
+  "output_snippet": "archive\nchangelog.md\ndesign\nindex.md\nplaybooks\nREADME.md\nreference\nscripts\nsources\ntasks.md\nvarious\n",
+  "score": 17,
+  "started_at": "2026-06-07T16:25:01Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 9
+}
+, {
+  "command": "docmgr ticket create-ticket --ticket DESIGN-REF-001 --title \"RAG Evaluation Design System Reference\" --topics design-system,widget-ir,widget-dsl",
+  "id": "019ea2e3-98da-718f-b7a9-14da3b62365f",
+  "input_path": "",
+  "output_snippet": "Docs root: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp`\n\n## Ticket Workspace Created\n\n- Ticket: DESIGN-REF-001\n- Title: RAG Evaluation Design System Reference\n- Path: `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference`\n- Directories: 9\n- Files: 4\n\n### Created Directories\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference`\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference/design`\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference/reference`\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference/playbooks`\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-",
+  "score": 17,
+  "started_at": "2026-06-07T16:21:25Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 28
+}
+, {
+  "command": "docmgr ticket create-ticket --ticket DESIGN-REF-001 --title \"RAG Evaluation Design System Reference\"",
+  "id": "019ea2e3-98da-718f-b7a9-14da3b62365f",
+  "input_path": "",
+  "output_snippet": "Docs root: `/home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp`\n\n## Ticket Workspace Created\n\n- Ticket: DESIGN-REF-001\n- Title: RAG Evaluation Design System Reference\n- Path: `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference`\n- Directories: 9\n- Files: 4\n\n### Created Directories\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference`\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference/design`\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference/reference`\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-system-reference/playbooks`\n- `2026/06/07/DESIGN-REF-001--rag-evaluation-design-",
+  "score": 17,
+  "started_at": "2026-06-07T16:21:25Z",
+  "title": "Create a new docmgr to create a HTML render of the design system reference sheet",
+  "tool_name": "bash",
+  "turn_index": 30
+}
+]

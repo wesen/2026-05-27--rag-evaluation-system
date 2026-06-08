@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "transcript-message-card",
+  "url": "http://127.0.0.1:7071/prototype-design/standalone/full-app/transcript.html",
+  "viewport": {
+    "width": 1240,
+    "height": 760
+  },
+  "name": "transcript-message-card",
+  "selector": "[data-rag-molecule=\"TranscriptMessageCard\"]",
+  "selector_source": "",
+  "format": "png",
+  "created_at": "2026-06-07T23:34:07.474266204Z"
+}
