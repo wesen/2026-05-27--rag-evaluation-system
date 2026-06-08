@@ -441,8 +441,9 @@ export interface SectionBlockWidgetProps extends BaseWidgetProps {
 export interface SplitPaneWidgetProps extends BaseWidgetProps {
   left: WidgetNode;
   right: WidgetNode;
-  ratio?: 'balanced' | 'leftNarrow' | 'rightNarrow' | 'course';
+  ratio?: 'balanced' | 'leftNarrow' | 'rightNarrow' | 'course' | 'sidebar';
   divider?: boolean;
+  gutter?: 'none' | 'md' | 'lg';
 }
 
 export interface SidebarShellWidgetProps extends BaseWidgetProps {

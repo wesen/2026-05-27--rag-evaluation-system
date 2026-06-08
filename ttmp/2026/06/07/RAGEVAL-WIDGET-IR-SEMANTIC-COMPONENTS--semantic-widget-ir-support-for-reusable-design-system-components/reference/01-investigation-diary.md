@@ -687,3 +687,59 @@ This final pass confirms that the expanded renderer, DSL helpers, schema entries
 
 ### Technical details
 - Final Storybook build output: `/tmp/rag-package-storybook-widget-ir-complete`.
+
+## Step 10: Tighten Course Handout Split-Pane Spacing
+
+I fixed the visual issue reported in the Storybook `DocumentListAndPreviewToolbar` composition: the handout/document list and preview were pressed directly against the split divider, and the document-list side could read as too wide for a sidebar-like pane. The fix adds explicit split-pane gutter support and a constrained `sidebar` ratio for sidebar-plus-preview layouts.
+
+The updated story now uses the new `sidebar` split ratio with a large gutter, so the document list has a bounded width and the markdown preview has breathing room next to the divider.
+
+### Prompt Context
+
+**User prompt (verbatim):** "http://localhost:6007/?path=/story/widget-ir-renderer-course-studio--document-list-and-preview-toolbar - no margin / padding next to the hand out pane, and the /tmp/pi-clipboard-f25dda9d-0b73-4851-99a2-9edf02df0198.png 
+
+and the sidebar should have limited width /tmp/pi-clipboard-fdf77340-62d9-4fc4-a6b1-32d7ef7f25f7.png"
+
+**Assistant interpretation:** Fix the Storybook course/handout split layout so the preview is padded away from the handout pane/divider and the left sidebar/list does not take too much width.
+
+**Inferred user intent:** Improve visual polish and composition constraints for the reusable course/handout Widget IR examples.
+
+### What I did
+- Added `gutter?: 'none' | 'md' | 'lg'` to `SplitPane` and `SplitPaneWidgetProps`.
+- Added `ratio: 'sidebar'` to `SplitPane` for fixed-ish sidebar/list compositions.
+- Passed `gutter` through `WidgetRenderer`.
+- Updated `DocumentListAndPreviewToolbar` to use `ratio: 'sidebar'` and `gutter: 'lg'`.
+- Captured a verification screenshot at `course-handout-fixed.png`.
+
+### Why
+- `leftNarrow` was still proportional, so a sidebar/list could become too wide on large canvases.
+- Divider-only split panes need optional inner padding for content that should not touch the divider.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-widget-ir-layout-fix` passed.
+
+### What didn't work
+- N/A
+
+### What I learned
+- The handout/document list story is a good example of needing a semantic split mode beyond fractional `leftNarrow` / `rightNarrow` ratios.
+
+### What was tricky to build
+- The fix needed to be reusable at the layout primitive level rather than hard-coded into the story, because other Widget IR compositions may need the same gutter/sidebar behavior.
+
+### What warrants a second pair of eyes
+- Review whether `sidebar` should use `minmax(220px, 320px)` or a different max width.
+- Review whether gutters should be applied symmetrically to both panes or have left/right-specific variants later.
+
+### What should be done in the future
+- Add a `SplitPane` Storybook example for the new `sidebar` ratio and gutter knobs.
+
+### Code review instructions
+- Start at `SplitPane.tsx` and `SplitPane.module.css`.
+- Then review `WidgetRenderer.course-handout.stories.tsx` for the concrete fixed story.
+- Re-open the reported Storybook URL and verify the left document list is constrained and the preview has padding near the divider.
+
+### Technical details
+- Storybook output for validation: `/tmp/rag-package-storybook-widget-ir-layout-fix`.

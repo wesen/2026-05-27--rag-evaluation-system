@@ -105,8 +105,9 @@ export const CoursePlusHandoutSplitView: Story = {
 export const DocumentListAndPreviewToolbar: Story = {
   args: {
     node: component('SplitPane', {
-      ratio: 'leftNarrow',
+      ratio: 'sidebar',
       divider: true,
+      gutter: 'lg',
       left: component('DocumentListPanel', {
         title: 'Documents',
         description: 'A custom handout layout assembled from molecules.',

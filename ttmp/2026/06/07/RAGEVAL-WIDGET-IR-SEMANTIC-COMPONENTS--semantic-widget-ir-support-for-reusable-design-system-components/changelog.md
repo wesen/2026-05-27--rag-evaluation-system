@@ -127,3 +127,14 @@ Updated package README for expanded Widget IR coverage and completed final valid
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/README.md — Expanded Widget IR documentation
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS--semantic-widget-ir-support-for-reusable-design-system-components/reference/01-investigation-diary.md — Final validation diary entry
 
+
+## 2026-06-07
+
+Fixed course handout Storybook split-pane spacing with gutter support and a constrained sidebar ratio.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/layout/SplitPane/SplitPane.module.css — SplitPane gutter and sidebar layout styles
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/layout/SplitPane/SplitPane.tsx — SplitPane gutter and sidebar ratio props
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.course-handout.stories.tsx — Updated reported story to use constrained sidebar layout
+

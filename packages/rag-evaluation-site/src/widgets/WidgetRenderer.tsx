@@ -548,7 +548,7 @@ function renderSectionBlock(node: ComponentNode, onAction?: WidgetActionHandler)
 
 function renderSplitPane(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
   const props = (node.props ?? {}) as SplitPaneWidgetProps;
-  return <SplitPane className={props.className} left={renderWidgetNode(props.left, onAction)} right={renderWidgetNode(props.right, onAction)} ratio={props.ratio} divider={props.divider} />;
+  return <SplitPane className={props.className} left={renderWidgetNode(props.left, onAction)} right={renderWidgetNode(props.right, onAction)} ratio={props.ratio} divider={props.divider} gutter={props.gutter} />;
 }
 
 function renderSidebarShell(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
