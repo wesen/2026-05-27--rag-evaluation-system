@@ -333,3 +333,17 @@ Added handout document-list shell, preview toolbar, and markdown article rendere
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.tsx — Document list plus markdown preview organism
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/context/fixtures.ts — Expanded handout fixtures
 
+
+## 2026-06-07
+
+Refined transcript widgets with title-bar message cards, note title bars, session header, and no-notes/with-notes workspace stories.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx — Note title-bar card anatomy
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx — Message title-bar card anatomy
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/TranscriptSessionHeader/TranscriptSessionHeader.tsx — Session header stripe
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/AnnotationRailPanel/AnnotationRailPanel.tsx — Tokenized notes rail
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.tsx — Tokenized transcript stream
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.tsx — No-notes/with-notes transcript shell
+

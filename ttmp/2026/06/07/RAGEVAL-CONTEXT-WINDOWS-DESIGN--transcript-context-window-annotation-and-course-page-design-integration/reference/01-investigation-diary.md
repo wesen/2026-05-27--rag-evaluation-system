@@ -1767,3 +1767,91 @@ We will need to build the shell and the menu molecules / organisms, and then als
 - `DocumentListPanel` emits `data-rag-molecule="DocumentListPanel"`.
 - `DocumentPreviewToolbar` emits `data-rag-molecule="DocumentPreviewToolbar"`.
 - `HandoutDocumentShell` emits `data-rag-organism="HandoutDocumentShell"`.
+
+## Step 29: Refine Transcript Widgets with Title Bars and Notes Variants
+
+I refined the package transcript surface into a more deliberate set of reusable widgets. The message cards now have compact title bars with role glyphs, role labels, optional note chips, and token counts; note cards now have their own NOTE title bars; and the reader gets a session header stripe with message/annotation/token summary.
+
+I also added a `TranscriptWorkspacePanel` organism so Storybook can show the transcript in the two requested modes: first without notes, then with the annotation rail. This keeps the note rail optional and prevents note-specific structure from being baked into the base transcript stream.
+
+### Prompt Context
+
+**User prompt (verbatim):** "/tmp/pi-clipboard-6b32b3a5-2cbf-436b-aea7-31a7069dc5e3.png --- Next do more custom widgets for the transcript view. the current one is ok but a bit rough. at least the title bars would be nice. we should have it first without notes, then with notes. 
+
+Take the same approach, stick to the guidelines. do it well.
+
+keep a frequent diary and commit at appropriate intervals."
+
+**Assistant interpretation:** Improve the transcript component set in the package, focusing on title bars and explicit no-notes/with-notes variants, while preserving package guidelines and documenting/committing the work.
+
+**Inferred user intent:** Turn the rough transcript display into a reusable, Storybook-reviewable transcript UI vocabulary that can later be wired into the course studio and possibly Widget IR.
+
+### What I did
+- Reviewed `GUIDELINES.md` and current transcript components.
+- Asked vision analysis for the provided transcript screenshot to identify layout/title-bar/note-card requirements.
+- Added `TranscriptSessionHeader` molecule for the sticky-style session summary stripe.
+- Reworked `TranscriptMessageCard` to use a title bar with role glyph, role label/tool name, note chips, and token count.
+- Reworked `AnnotationNoteCard` to use a NOTE title bar and a structured body.
+- Reworked `AnnotationRailPanel` to remove inline styles and use a CSS module with a proper notes header/list.
+- Reworked `TranscriptReaderPanel` to use `TranscriptSessionHeader` and a tokenized transcript stream instead of a generic `Panel` wrapper.
+- Added `TranscriptWorkspacePanel` organism with `WithoutNotes`, `WithNotes`, and tool-heavy story variants.
+- Added a `TranscriptSessionHeader` story and updated `AnnotationNoteCard` stories.
+- Tuned no-notes layout after visual review by constraining the reader width and strengthening the header title typography.
+
+### Why
+- The prototype transcript UI is not just a list of cards; it has a session header, message title bars, note chips, and note cards with their own title bars.
+- The no-notes and with-notes variants should be explicit package stories so future changes can be reviewed independently.
+- Inline styles in `AnnotationRailPanel` were drifting from the package rules, so this pass moved those styles into tokenized CSS modules.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed after fixes.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-transcript-widgets` passed.
+- Browser sanity checks loaded:
+  - `Component Library / Organisms / TranscriptWorkspacePanel / Without Notes`
+  - `Component Library / Organisms / TranscriptWorkspacePanel / With Notes`
+- Visual review confirmed the requested progression: transcript without notes first, then transcript with notes/title-bar note cards.
+
+### What didn't work
+- First typecheck failed because `TranscriptSessionHeaderProps` used a ReactNode `title` while extending native `HTMLAttributes<HTMLElement>`, which already has `title?: string`:
+  - `Types of property 'title' are incompatible.`
+- I fixed it with `Omit<HTMLAttributes<HTMLElement>, 'title'>`.
+- Visual review found the no-notes story felt too wide and the header too plain. I constrained the no-notes reader to 860px and changed the session title to the metric typography role.
+
+### What I learned
+- The title-bar pattern should be a first-class transcript anatomy, not a generic `Panel` header.
+- The notes rail must remain optional; the transcript stream should still read well without any annotation data.
+- The note chip/title-bar relationship gives a better future IR target than low-level styled divs.
+
+### What was tricky to build
+- The main layering issue was deciding what belongs where: `TranscriptSessionHeader`, `TranscriptMessageCard`, and `AnnotationNoteCard` are molecules; `TranscriptReaderPanel`, `AnnotationRailPanel`, and `TranscriptWorkspacePanel` are organisms because they compose DTO-shaped transcript data into feature panels.
+- The message cards need role-specific alignment and tool-output styling while still using only foundation/token typography.
+
+### What warrants a second pair of eyes
+- The current note chips are usable but may need tighter sizing/contrast against the reference screenshot.
+- The no-notes story centers/constrains the reader; confirm whether this is desirable in the final course studio shell.
+- Full keyboard navigation between message note chips and rail note cards is not implemented yet.
+
+### What should be done in the future
+- Run prototype-vs-package visual comparisons for the transcript screen.
+- Add scroll/focus linking between note chips, messages, and note cards when the web page wiring starts.
+- Consider semantic Widget IR nodes only after visual and interaction behavior stabilizes.
+
+### Code review instructions
+- Start with `TranscriptMessageCard.tsx` and `TranscriptMessageCard.module.css` for the new title-bar card anatomy.
+- Then review `AnnotationNoteCard`, `AnnotationRailPanel`, `TranscriptReaderPanel`, and `TranscriptWorkspacePanel`.
+- Validate Storybook:
+  - `Component Library / Organisms / TranscriptWorkspacePanel / Without Notes`
+  - `Component Library / Organisms / TranscriptWorkspacePanel / With Notes`
+  - `Component Library / Molecules / TranscriptMessageCard`
+  - `Component Library / Molecules / AnnotationNoteCard`
+
+### Technical details
+- New/updated `data-rag-*` handles:
+  - `data-rag-molecule="TranscriptSessionHeader"`
+  - `data-rag-message-id`
+  - `data-rag-role`
+  - `data-rag-has-notes`
+  - `data-rag-note-id`
+  - `data-rag-target-message-id`
+  - `data-rag-organism="TranscriptWorkspacePanel"`

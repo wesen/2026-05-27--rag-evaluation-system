@@ -1,5 +1,6 @@
 export * from './ContextDiagramPanel';
 export * from './TranscriptReaderPanel';
+export * from './TranscriptWorkspacePanel';
 export * from './AnnotationRailPanel';
 export * from './AnchoredCommentRail';
 export * from './CourseLessonPanel';

@@ -28,6 +28,7 @@
 - [x] Add generic slide-shell vocabulary and refactor CourseSlidePanel to support visual-left or visual-right compositions
 - [x] Add global course sidebar shell for Course/Slides/Visualize/Upload/Transcript/Comments/Handout navigation
 - [x] Add handout document list shell, preview toolbar, and MarkdownArticle renderer
+- [x] Refine transcript widgets with title bars, no-notes and with-notes workspace variants
 - [ ] Compose web ContextVisualizerPage from package components using fixtures
 - [ ] Compose web TranscriptAnnotationPage from package components using fixtures
 - [ ] Compose web ContextCoursePage from package components using fixtures

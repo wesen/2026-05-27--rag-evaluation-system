@@ -1,23 +1,37 @@
 import type { HTMLAttributes } from 'react';
 import type { TranscriptAnnotation, TranscriptMessage } from '../../../context';
-import { Caption } from '../../foundation';
-import { Panel, Stack } from '../../layout';
-import { TranscriptMessageCard } from '../../molecules';
+import { TranscriptMessageCard, TranscriptSessionHeader } from '../../molecules';
+import styles from './TranscriptReaderPanel.module.css';
 
-export interface TranscriptReaderPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+export interface TranscriptReaderPanelProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   title?: string;
   subtitle?: string;
   messages: TranscriptMessage[];
   annotations?: TranscriptAnnotation[];
   selectedAnnotationId?: string;
   onAnnotationSelect?: (annotationId: string) => void;
+  showAnnotationChips?: boolean;
 }
 
-export function TranscriptReaderPanel({ title = 'Transcript', subtitle, messages, annotations = [], selectedAnnotationId, onAnnotationSelect, ...rest }: TranscriptReaderPanelProps) {
+function tokenTotal(messages: TranscriptMessage[]) {
+  return messages.reduce((total, message) => total + (message.tokens ?? 0), 0);
+}
+
+export function TranscriptReaderPanel({
+  title = 'Transcript',
+  subtitle,
+  messages,
+  annotations = [],
+  selectedAnnotationId,
+  onAnnotationSelect,
+  showAnnotationChips = true,
+  className,
+  ...rest
+}: TranscriptReaderPanelProps) {
   return (
-    <Panel title={title} fill data-rag-organism="TranscriptReaderPanel" {...rest}>
-      <Stack gap="sm">
-        {subtitle && <Caption>{subtitle}</Caption>}
+    <section className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-organism="TranscriptReaderPanel" {...rest}>
+      <TranscriptSessionHeader title={title} subtitle={subtitle} messageCount={messages.length} annotationCount={annotations.length} tokenTotal={tokenTotal(messages)} />
+      <div className={styles.stream}>
         {messages.map((message) => (
           <TranscriptMessageCard
             key={message.id}
@@ -25,9 +39,10 @@ export function TranscriptReaderPanel({ title = 'Transcript', subtitle, messages
             annotations={annotations}
             selectedAnnotationId={selectedAnnotationId}
             onAnnotationSelect={onAnnotationSelect}
+            showAnnotationChips={showAnnotationChips}
           />
         ))}
-      </Stack>
-    </Panel>
+      </div>
+    </section>
   );
 }

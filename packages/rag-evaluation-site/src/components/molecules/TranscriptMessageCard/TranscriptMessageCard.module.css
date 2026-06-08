@@ -1,10 +1,116 @@
-.root { border: 1px solid var(--mac-border); background: var(--mac-surface); color: var(--mac-text); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
-.header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.body { margin: 0; white-space: pre-wrap; color: var(--mac-text); font: var(--rag-font-role-body); }
-.annotations { display: flex; flex-wrap: wrap; gap: 4px; }
-.annotationButton { appearance: none; border: 0; background: transparent; padding: 0; cursor: pointer; }
-.user { border-left-width: 4px; }
-.assistant { border-left-width: 2px; }
-.tool { background: var(--mac-surface-2); }
-.system,.developer { background: repeating-linear-gradient(45deg, var(--mac-border) 0 1px, var(--mac-surface) 1px 8px); }
-.system .body,.developer .body { background: var(--mac-surface); padding: 2px 4px; }
+.root {
+  border: 1px solid var(--mac-border);
+  background: var(--mac-surface);
+  color: var(--mac-text);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.selected {
+  border-color: var(--mac-accent);
+  box-shadow: 0 0 0 1px var(--mac-accent);
+}
+
+.titleBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 3px 8px;
+  border-bottom: 1px solid var(--mac-border);
+  background: var(--mac-surface);
+  min-width: 0;
+}
+
+.titleCluster,
+.metaCluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.metaCluster {
+  flex: 0 0 auto;
+}
+
+.roleGlyph {
+  color: currentColor;
+  font: var(--rag-font-role-label);
+}
+
+.roleLabel {
+  color: var(--mac-text);
+  font: var(--rag-font-role-label);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.body {
+  padding: 8px 10px;
+  white-space: pre-wrap;
+  color: var(--mac-text);
+  font: var(--rag-font-role-readable-body);
+}
+
+.toolBody {
+  background: var(--mac-surface-2);
+  color: var(--mac-text);
+  font: var(--rag-font-role-code);
+}
+
+.noteChip {
+  appearance: none;
+  border: 1px solid var(--mac-accent);
+  background: var(--mac-surface);
+  color: var(--mac-accent);
+  padding: 1px 5px;
+  font: var(--rag-font-role-metadata);
+  cursor: pointer;
+}
+
+.noteChip:hover,
+.noteChip[data-selected='true'] {
+  background: var(--mac-accent);
+  color: var(--mac-text-inv);
+}
+
+.user {
+  align-self: flex-end;
+  max-width: 520px;
+  width: min(100%, 520px);
+}
+
+.user .titleBar {
+  background: var(--mac-surface-2);
+}
+
+.assistant,
+.tool,
+.system,
+.developer,
+.other {
+  align-self: flex-start;
+  max-width: 620px;
+  width: min(100%, 620px);
+}
+
+.assistant .roleGlyph {
+  color: var(--mac-accent);
+}
+
+.tool .roleGlyph {
+  color: var(--mac-amber);
+}
+
+.system,
+.developer {
+  background: repeating-linear-gradient(45deg, var(--mac-border-subtle) 0 1px, var(--mac-surface) 1px 8px);
+}
+
+.system .body,
+.developer .body {
+  background: var(--mac-surface);
+}
