@@ -70,6 +70,7 @@ export const SidebarShellWithHeaderAndFooter: Story = {
   args: {
     node: component('SidebarShell', {
       sidebarWidth: 204,
+      contentPadding: 'lg',
       sidebar,
       header: component('Inline', { justify: 'between' }, [
         component('Text', { size: 'metric', weight: 'bold' }, [text('IR Studio')]),

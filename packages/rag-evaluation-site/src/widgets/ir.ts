@@ -449,6 +449,7 @@ export interface SplitPaneWidgetProps extends BaseWidgetProps {
 export interface SidebarShellWidgetProps extends BaseWidgetProps {
   sidebar?: WidgetNode;
   sidebarWidth?: number;
+  contentPadding?: 'none' | 'md' | 'lg';
   header?: WidgetNode;
   footer?: WidgetNode;
 }

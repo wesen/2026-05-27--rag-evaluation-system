@@ -553,7 +553,7 @@ function renderSplitPane(node: ComponentNode, onAction?: WidgetActionHandler): R
 
 function renderSidebarShell(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
   const props = (node.props ?? {}) as SidebarShellWidgetProps;
-  return <SidebarShell className={props.className} sidebar={renderNodeProp(props.sidebar, onAction)} sidebarWidth={props.sidebarWidth} header={renderNodeProp(props.header, onAction)} footer={renderNodeProp(props.footer, onAction)}>{renderChildren(node.children, onAction)}</SidebarShell>;
+  return <SidebarShell className={props.className} sidebar={renderNodeProp(props.sidebar, onAction)} sidebarWidth={props.sidebarWidth} contentPadding={props.contentPadding} header={renderNodeProp(props.header, onAction)} footer={renderNodeProp(props.footer, onAction)}>{renderChildren(node.children, onAction)}</SidebarShell>;
 }
 
 function renderSlideShell(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {

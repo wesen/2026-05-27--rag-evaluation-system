@@ -743,3 +743,55 @@ and the sidebar should have limited width /tmp/pi-clipboard-fdf77340-62d9-4fc4-a
 
 ### Technical details
 - Storybook output for validation: `/tmp/rag-package-storybook-widget-ir-layout-fix`.
+
+## Step 11: Add SidebarShell Content Padding for Layout Recipe Story
+
+I also addressed the same spacing family in the `SidebarShellWithHeaderAndFooter` Widget IR story. The sidebar width itself was already reasonable, but the main content area needed an explicit inset so section content and embedded panels do not sit hard against the shell edge.
+
+The fix adds reusable `contentPadding` support to `SidebarShell` and threads it through the Widget IR props/renderer. The layout recipe story now opts into `contentPadding: 'lg'` instead of relying on every caller to wrap children in a padded container.
+
+### Prompt Context
+
+**User prompt (verbatim):** "also here: http://localhost:6007/?path=/story/widget-ir-renderer-layout-recipes--sidebar-shell-with-header-and-footer"
+
+**Assistant interpretation:** Apply the same visual spacing/polish fix to the SidebarShell layout recipe story.
+
+**Inferred user intent:** Ensure layout primitives expose reusable spacing knobs so Storybook examples do not look flush or cramped.
+
+### What I did
+- Added `contentPadding?: 'none' | 'md' | 'lg'` to `SidebarShell`.
+- Added `.contentPaddingMd` and `.contentPaddingLg` styles.
+- Added `contentPadding` to `SidebarShellWidgetProps`.
+- Passed `contentPadding` through `WidgetRenderer`.
+- Updated `SidebarShellWithHeaderAndFooter` to use `contentPadding: 'lg'`.
+
+### Why
+- Sidebar shell content should be able to opt into shell-managed padding.
+- This keeps padding responsibility with the layout primitive rather than requiring every story/caller to add wrapper nodes.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `docmgr doctor --ticket RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS --stale-after 30` passed.
+
+### What didn't work
+- N/A
+
+### What I learned
+- `SidebarShell` and `SplitPane` both need explicit spacing APIs because Widget IR stories often compose raw layout nodes without app-page wrappers.
+
+### What was tricky to build
+- The change needed to preserve `SidebarShell`'s default app-shell behavior. The default remains `contentPadding: 'none'`, and individual stories/compositions opt in.
+
+### What warrants a second pair of eyes
+- Review whether future `CourseStudioShell` should pass its own content padding through `SidebarShell` instead of wrapping children in `CourseStudioShell.module.css`.
+
+### What should be done in the future
+- Add controls/stories for `SidebarShell.contentPadding`.
+
+### Code review instructions
+- Review `SidebarShell.tsx` and `SidebarShell.module.css` first.
+- Then review `WidgetRenderer.layout-recipes.stories.tsx` to see the reported story using the new prop.
+
+### Technical details
+- The change is intentionally additive and keeps default content padding disabled for backwards-compatible layout behavior.

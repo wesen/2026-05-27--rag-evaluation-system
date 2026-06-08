@@ -138,3 +138,14 @@ Fixed course handout Storybook split-pane spacing with gutter support and a cons
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/layout/SplitPane/SplitPane.tsx — SplitPane gutter and sidebar ratio props
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.course-handout.stories.tsx — Updated reported story to use constrained sidebar layout
 
+
+## 2026-06-07
+
+Added SidebarShell content padding support and applied it to the layout recipe Storybook example.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.module.css — SidebarShell content padding styles
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.tsx — SidebarShell contentPadding prop
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.layout-recipes.stories.tsx — Updated reported layout recipe story
+

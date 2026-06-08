@@ -5,6 +5,7 @@ export interface SidebarShellProps extends HTMLAttributes<HTMLDivElement> {
   sidebar: ReactNode;
   children?: ReactNode;
   sidebarWidth?: number | string;
+  contentPadding?: 'none' | 'md' | 'lg';
   header?: ReactNode;
   footer?: ReactNode;
 }
@@ -14,7 +15,7 @@ function toCssSize(value: number | string | undefined) {
   return value;
 }
 
-export function SidebarShell({ sidebar, sidebarWidth = 188, header, footer, className, children, style, ...rest }: SidebarShellProps) {
+export function SidebarShell({ sidebar, sidebarWidth = 188, contentPadding = 'none', header, footer, className, children, style, ...rest }: SidebarShellProps) {
   const shellStyle = {
     ...style,
     '--rag-sidebar-width': toCssSize(sidebarWidth),
@@ -27,7 +28,7 @@ export function SidebarShell({ sidebar, sidebarWidth = 188, header, footer, clas
         <div className={styles.sidebarBody}>{sidebar}</div>
         {footer && <div className={styles.sidebarFooter}>{footer}</div>}
       </aside>
-      <main className={styles.content}>{children}</main>
+      <main className={[styles.content, contentPadding !== 'none' ? styles[`contentPadding${contentPadding[0]!.toUpperCase()}${contentPadding.slice(1)}`] : ''].filter(Boolean).join(' ')}>{children}</main>
     </div>
   );
 }
