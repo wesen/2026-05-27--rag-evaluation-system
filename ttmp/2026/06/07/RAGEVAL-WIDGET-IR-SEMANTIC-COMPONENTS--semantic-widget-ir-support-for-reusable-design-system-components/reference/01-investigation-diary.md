@@ -870,3 +870,62 @@ continue"
 
 ### Technical details
 - The xgoja example still serves the same embedded React app; only the Widget IR returned from jsverb endpoints changed.
+
+## Step 13: Refresh Embedded xgoja App Assets and Browser-Check New Pages
+
+After adding the xgoja semantic pages, the API responses were correct but the browser still showed `Unknown widget` for components such as `TranscriptWorkspacePanel` and `SplitPane`. The cause was a stale embedded SPA bundle in `examples/xgoja/widget-site/assets/public`; it had not been rebuilt from the current package app after the renderer gained the new component cases.
+
+I rebuilt the package app bundle, re-synced it into the xgoja widget-site assets, reran the xgoja smoke test, and opened the transcript, slides, and handout pages in the browser. The pages now render without console warnings or unknown-widget messages.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Unknown widget: TranscriptWorkspacePanel
+Unknown widget: SplitPane
+Unknown widget: SplitPane
+Unknown widget: TranscriptWorkspacePanel"
+
+**Assistant interpretation:** The xgoja-served frontend is using a stale renderer bundle that does not know the newly added Widget IR component types.
+
+**Inferred user intent:** Make the runnable xgoja demo actually render the new semantic examples in the browser, not just return valid JSON.
+
+### What I did
+- Ran `pnpm --dir packages/rag-evaluation-site build:app` to rebuild `app-dist`.
+- Ran `make sync-app` in `examples/xgoja/widget-site` to refresh embedded public assets.
+- Ran `make smoke` in `examples/xgoja/widget-site`.
+- Restarted the local generated xgoja site on `127.0.0.1:18793`.
+- Browser-checked:
+  - `/pages/transcripts`
+  - `/pages/slides`
+  - `/pages/handouts`
+- Captured `xgoja-transcripts-fixed.png` after the fix.
+
+### Why
+- xgoja embeds a static React app bundle; updating Widget IR server JSON is not enough if the embedded app bundle predates the new renderer cases.
+
+### What worked
+- The refreshed xgoja pages rendered expected headings such as `Transcript components`, `Slide examples`, and `Handout components`.
+- Browser console warnings/errors were clean after navigation.
+- `make smoke` passed after asset sync.
+
+### What didn't work
+- The first browser check showed `Unknown widget` because the embedded assets were stale.
+
+### What I learned
+- The xgoja workflow needs an explicit `build:app` + `sync-app` step whenever renderer support changes.
+- `make smoke` validates JSON/API coverage but does not alone prove that the embedded browser bundle has current renderer code unless assets were synced first.
+
+### What was tricky to build
+- The symptom looked like a DSL/server issue, but the API returned the expected component types. The actual problem was the client bundle version boundary between `packages/rag-evaluation-site/app-dist` and `examples/xgoja/widget-site/assets/public`.
+
+### What warrants a second pair of eyes
+- Consider making `make smoke` depend on `sync-app` or adding a separate `smoke-fresh` target to prevent stale embedded assets.
+
+### What should be done in the future
+- Add a browser smoke target for the generated xgoja site that fails on `Unknown widget` text.
+
+### Code review instructions
+- Review the refreshed files under `examples/xgoja/widget-site/assets/public`.
+- Validate with `pnpm --dir packages/rag-evaluation-site build:app`, `make sync-app`, and `make smoke`.
+
+### Technical details
+- The old embedded asset hash was replaced by the current app bundle hash after `build:app`.
