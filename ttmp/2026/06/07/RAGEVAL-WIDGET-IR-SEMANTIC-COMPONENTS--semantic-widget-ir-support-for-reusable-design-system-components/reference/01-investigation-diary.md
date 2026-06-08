@@ -995,3 +995,59 @@ I split the three default pages into distinct pages and added an expanded top na
 ### Technical details
 - The queue page still uses `rag.recipes.masterDetailTable` with `onRowSelect: "select-query"`.
 - The actions page uses the same server state and exposes toolbar buttons plus a compact row table.
+
+## Step 15: Fill Out the xgoja Widget DSL API Reference for New Semantic Components
+
+I checked the provider help documentation and found that the xgoja docs covered the new semantic recipes and mentioned the new direct helpers, but the API reference did not yet enumerate all new helpers or document the DTO/prop shapes needed to use transcripts, slides, course pages, handouts, context diagrams, and split/sidebar layout from JavaScript.
+
+I expanded the JavaScript API reference so xgoja authors have a single place to look up the new helper names, expected JSON DTO shapes, action context behavior, and example compositions.
+
+### Prompt Context
+
+**User prompt (verbatim):** "do we have documentation api reference for all the new xgoja"
+
+**Assistant interpretation:** Verify whether the xgoja/widget.dsl API reference fully documents the expanded Widget IR surface, and close any documentation gap.
+
+**Inferred user intent:** Make the new xgoja authoring surface discoverable and usable without reading TypeScript or Storybook source.
+
+### What I did
+- Inspected `pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md`.
+- Confirmed recipe docs existed, but direct helper/API reference coverage was incomplete.
+- Added all new semantic helper names to the component helper table.
+- Added a `Semantic component props and DTO shapes` section covering:
+  - context-window snapshots and diagram helpers
+  - transcript messages/annotations and transcript workspace/reader/rail helpers
+  - anchored comments
+  - course, agenda, slide, studio, and custom slide helpers
+  - handout/document bundle helpers
+  - `SplitPane` gutter/sidebar ratio and `SidebarShell.contentPadding`
+- Added examples for direct helpers and recipes using xgoja-friendly JSON data.
+
+### Why
+- The xgoja example now has many semantic pages; the help reference needed to match that authoring surface.
+- Authors should not have to infer DTO shapes from TypeScript interfaces.
+
+### What worked
+- `go test ./pkg/xgoja/providers/widgetsite ./pkg/widgetdsl -count=1` passed.
+
+### What didn't work
+- N/A
+
+### What I learned
+- The docs had recipe coverage but not full direct-helper coverage; this was an important gap after adding the rich xgoja examples.
+
+### What was tricky to build
+- The API reference needed to balance completeness with readability. I documented the common DTO fields and examples rather than duplicating every TypeScript interface verbatim.
+
+### What warrants a second pair of eyes
+- Review whether every documented prop name exactly matches the React/IR interface, especially action props and layout options.
+
+### What should be done in the future
+- Consider generating part of the helper table from `pkg/widgetdsl/module.go` to avoid drift.
+
+### Code review instructions
+- Review `pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md`, especially the new semantic component section.
+- Validate with provider/widgetdsl Go tests.
+
+### Technical details
+- This is provider help documentation embedded through the widget-site xgoja provider docs FS.

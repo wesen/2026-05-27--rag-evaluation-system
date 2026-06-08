@@ -183,3 +183,13 @@ Split xgoja index/demo/actions into distinct navigable pages and browser-verifie
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/verbs/sites.js — Distinct xgoja pages and nav metadata
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS--semantic-widget-ir-support-for-reusable-design-system-components/reference/01-investigation-diary.md — Diary entry for xgoja navigation/browser verification
 
+
+## 2026-06-07
+
+Expanded the xgoja widget.dsl API reference with helper coverage and DTO examples for semantic context, transcript, slide, course, handout, and layout components.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md — Expanded xgoja/widget.dsl API reference
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS--semantic-widget-ir-support-for-reusable-design-system-components/reference/01-investigation-diary.md — Diary entry for API reference completion
+

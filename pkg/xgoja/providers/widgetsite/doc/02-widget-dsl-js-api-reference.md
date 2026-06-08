@@ -131,11 +131,48 @@ The first argument is props when it is a plain object. Otherwise, it is treated 
 | `metadataGrid` | `MetadataGrid` | Key-value metadata display. |
 | `panel` | `Panel` | Section container with optional title. |
 | `scrollRegion` | `ScrollRegion` | Scrollable content region. |
+| `sectionBlock` | `SectionBlock` | Editorial section with optional label/caption/divider. |
 | `selectInput` | `SelectInput` | Select control. |
+| `sidebarShell` | `SidebarShell` | Two-column shell with sidebar, optional header/footer, and optional content padding. |
+| `slideShell` | `SlideShell` | Generic teaching/presentation slide layout with slots. |
+| `splitPane` | `SplitPane` | Two-pane layout with ratios, divider, and optional gutters. |
 | `stack` | `Stack` | Vertical stack layout. |
 | `statusText` | `StatusText` | Status label with optional icon. |
 | `tabList` | `TabList` | Tab selector. |
+| `textBlock` | `Text` | Foundation text component; use when typography props are needed. |
 | `textInput` | `TextInput` | Text input control. |
+| `contextKindSwatch` | `ContextKindSwatch` | Visual marker for a context part kind. |
+| `annotationBadge` | `AnnotationBadge` | Compact semantic badge. |
+| `transcriptRoleBadge` | `TranscriptRoleBadge` | Badge for transcript message roles. |
+| `contextLegend` | `ContextLegend` | Legend for context diagram colors/kinds. |
+| `contextBudgetBar` | `ContextBudgetBar` | Budget bar for a context-window snapshot. |
+| `contextStripDiagram` | `ContextStripDiagram` | Strip view for context-window parts. |
+| `contextStackDiagram` | `ContextStackDiagram` | Stacked view for context-window parts. |
+| `contextTreemap` | `ContextTreemap` | Treemap view for context-window parts. |
+| `contextDiagramPanel` | `ContextDiagramPanel` | Switchable context diagram panel. |
+| `transcriptSessionHeader` | `TranscriptSessionHeader` | Title/status header for transcript sessions. |
+| `transcriptMessageCard` | `TranscriptMessageCard` | Single transcript message card. |
+| `annotationNoteCard` | `AnnotationNoteCard` | Single transcript annotation note. |
+| `annotationRailPanel` | `AnnotationRailPanel` | Annotation list/rail for transcripts. |
+| `transcriptReaderPanel` | `TranscriptReaderPanel` | Transcript reader with optional annotation chips. |
+| `transcriptWorkspacePanel` | `TranscriptWorkspacePanel` | Transcript reader plus notes workspace. |
+| `anchoredCommentCard` | `AnchoredCommentCard` | Single spatially anchored comment. |
+| `anchoredCommentRail` | `AnchoredCommentRail` | List/rail of anchored comments. |
+| `keyValueStrip` | `KeyValueStrip` | Horizontal key/value summary strip. |
+| `checkList` | `CheckList` | Checklist content block. |
+| `stepList` | `StepList` | Ordered/agenda-style selectable step list. |
+| `personSummary` | `PersonSummary` | Instructor/person summary block. |
+| `figureBlock` | `FigureBlock` | Figure wrapper with caption/legend slots. |
+| `keyPointList` | `KeyPointList` | Teaching key-points list. |
+| `sidebarNav` | `SidebarNav` | Grouped sidebar navigation. |
+| `courseStepNav` | `CourseStepNav` | Course agenda navigation. |
+| `markdownArticle` | `MarkdownArticle` | Dependency-free markdown subset renderer. |
+| `documentListPanel` | `DocumentListPanel` | Handout/document list panel. |
+| `documentPreviewToolbar` | `DocumentPreviewToolbar` | File/format/size toolbar for document preview. |
+| `courseLessonPanel` | `CourseLessonPanel` | Course landing/lesson panel. |
+| `courseSlidePanel` | `CourseSlidePanel` | Course slide with context visual. |
+| `courseStudioShell` | `CourseStudioShell` | Sidebar course studio shell. |
+| `handoutDocumentShell` | `HandoutDocumentShell` | Full handout document browser/reader. |
 
 Example:
 
@@ -149,6 +186,197 @@ widget.panel({ title: "Evaluation" },
 ```
 
 The component helper does not validate every prop. It preserves props as JSON-compatible data and lets the renderer decide how to interpret them. This keeps the authoring layer lightweight but means authors should use props supported by the React component library.
+
+## Semantic component props and DTO shapes
+
+The newer context-viewer helpers use JSON DTOs that match the React package types. The most common shapes are listed below. All renderable fields accept strings, numbers, or Widget IR nodes unless noted.
+
+### Context-window DTOs
+
+```js
+const snapshot = {
+  id: "ctx",
+  title: "Context Window",
+  subtitle: "Optional subtitle",
+  limit: 16000,
+  selectedPartId: "retrieval",
+  parts: [
+    { id: "system", label: "System prompt", kind: "system", tokens: 620, note: "Pinned" },
+    { id: "retrieval", label: "Retrieved docs", kind: "retrieval", tokens: 7100 }
+  ]
+}
+```
+
+Valid context kinds include `system`, `instruction`, `context`, `conversation`, `summary`, `retrieval`, `tool`, `result`, `generated`, `annotation`, `course`, `active`, `evicted`, `empty`, and `other`.
+
+```js
+widget.contextDiagramPanel({ snapshot, initialView: "budget", selectedPartId: "retrieval" })
+widget.contextBudgetBar({ snapshot })
+widget.contextStripDiagram({ snapshot, selectedPartId: "system" })
+widget.contextStackDiagram({ snapshot })
+widget.contextTreemap({ snapshot })
+widget.contextLegend({ compact: true })
+```
+
+Diagram views are `strip`, `stack`, `budget`, and `treemap`.
+
+### Transcript and annotation DTOs
+
+```js
+const transcript = {
+  title: "Context review session",
+  subtitle: "Optional subtitle",
+  messages: [
+    { id: "m1", role: "user", text: "Question", tokens: 12, timestamp: "09:14", annotationIds: ["a1"] },
+    { id: "m2", role: "assistant", text: "Answer", tokens: 34, timestamp: "09:15" }
+  ],
+  annotations: [
+    { id: "a1", targetMessageId: "m1", kind: "context", label: "Budget pressure", text: "Retrieved docs dominate.", confidence: 0.92 }
+  ],
+  selectedAnnotationId: "a1"
+}
+```
+
+Roles are `system`, `developer`, `user`, `assistant`, `tool`, and `other`.
+
+```js
+widget.transcriptWorkspacePanel({
+  title: transcript.title,
+  messages: transcript.messages,
+  annotations: transcript.annotations,
+  selectedAnnotationId: "a1",
+  showNotes: true,
+  onAnnotationSelectAction: widget.action.server("note-selected")
+})
+
+widget.splitPane({
+  ratio: "course",
+  divider: true,
+  gutter: "lg",
+  left: widget.transcriptReaderPanel({ messages: transcript.messages, annotations: transcript.annotations, showAnnotationChips: true }),
+  right: widget.annotationRailPanel({ annotations: transcript.annotations, selectedAnnotationId: "a1" })
+})
+```
+
+`onAnnotationSelectAction` receives context with `annotationId`, `value`, and `componentType`.
+
+### Anchored comments
+
+```js
+const comments = [
+  { id: "c1", anchorX: 28, anchorY: 18, author: "Reviewer", text: "Clarify this region.", time: "09:22", status: "open" }
+]
+
+widget.anchoredCommentRail({
+  title: "Review comments",
+  comments,
+  selectedCommentId: "c1",
+  onCommentSelectAction: widget.action.server("comment-selected")
+})
+```
+
+Comment statuses are `open` and `resolved`. `onCommentSelectAction` receives `commentId`, `value`, and `componentType`.
+
+### Course and slide DTOs
+
+```js
+const course = {
+  id: "context-workshop",
+  kicker: "Workshop",
+  title: "Context Window Engineering",
+  tagline: "Learn to see and budget context windows.",
+  instructor: { name: "RAG Systems Team", role: "Instructor", bio: "Builds evaluation tooling." },
+  outcomes: ["Read diagrams", "Annotate transcripts"],
+  agenda: [
+    { id: "map", number: "01", title: "Map the window", description: "Identify context slices.", duration: "20 min" }
+  ]
+}
+
+const slide = {
+  id: "slide-budget",
+  number: "01",
+  kicker: "Budget",
+  title: "Context budget is a product decision",
+  view: "budget",
+  snapshotId: snapshot.id,
+  notes: ["Pinned content protects invariants."]
+}
+```
+
+```js
+widget.courseLessonPanel({ course, activeAgendaItemId: "map", onAgendaItemSelectAction: widget.action.server("agenda-selected") })
+widget.courseSlidePanel({ slide, snapshot, index: 0, total: 3, visualSide: "right" })
+widget.courseStudioShell({ sections, activeItemId: "slides" },
+  widget.courseSlidePanel({ slide, snapshot, index: 0, total: 3 })
+)
+```
+
+For custom slides, use `slideShell` with slot props:
+
+```js
+widget.slideShell({
+  eyebrow: "custom slide",
+  counter: "02 / 03",
+  title: "Direct Widget IR composition",
+  primary: widget.figureBlock({ frame: "bordered", caption: "Budget" }, widget.contextBudgetBar({ snapshot })),
+  secondary: widget.keyPointList({ items: [
+    { id: "json", title: "JSON", text: "xgoja returns Widget IR data." }
+  ]}),
+  footer: widget.inline({ justify: "between" }, widget.button({}, "Previous"), widget.button({ variant: "primary" }, "Next"))
+})
+```
+
+### Handout/document DTOs
+
+```js
+const bundle = {
+  intro: "Reference material for the workshop.",
+  docs: [
+    { id: "guide", title: "Guide", file: "guide.md", format: "markdown", size: "8 KB", description: "Checklist", body: "# Guide\n\nContent." }
+  ]
+}
+```
+
+```js
+widget.handoutDocumentShell({
+  title: "Workshop handout",
+  intro: bundle.intro,
+  documents: bundle.docs,
+  selectedDocumentId: "guide",
+  onDocumentSelectAction: widget.action.server("document-selected"),
+  onDownloadAction: widget.action.server("document-download"),
+  onDownloadAllAction: widget.action.server("download-all")
+})
+
+widget.splitPane({
+  ratio: "sidebar",
+  divider: true,
+  gutter: "lg",
+  left: widget.documentListPanel({
+    title: "Documents",
+    items: bundle.docs.map(doc => ({ id: doc.id, title: doc.title, format: doc.format, size: doc.size, description: doc.description })),
+    selectedItemId: "guide",
+    showItemDescriptions: true
+  }),
+  right: widget.stack({ gap: "sm" },
+    widget.documentPreviewToolbar({ file: "guide.md", format: "markdown", size: "8 KB" }),
+    widget.markdownArticle({ source: bundle.docs[0].body }))
+})
+```
+
+`MarkdownArticle` supports the dependency-free subset used by the examples: headings, paragraphs, lists, code-ish text, and simple tables.
+
+### Layout details for new examples
+
+```js
+widget.splitPane({ ratio: "sidebar", divider: true, gutter: "lg", left, right })
+widget.sidebarShell({ sidebarWidth: 204, contentPadding: "lg", sidebar, header, footer }, mainContent)
+widget.sectionBlock({ label: "Overview", density: "spacious", divider: "bottom" }, body)
+```
+
+`splitPane.ratio` may be `balanced`, `leftNarrow`, `rightNarrow`, `course`, or `sidebar`. `gutter` may be `none`, `md`, or `lg`.
+
+`sidebarShell.contentPadding` may be `none`, `md`, or `lg`.
 
 ## Status values
 
