@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ErrorCallout } from '../components/atoms';
 import { Caption } from '../components/foundation';
 import { AppShell, Panel } from '../components/layout';
@@ -31,6 +31,14 @@ const DEFAULT_NAV_ITEMS: AppNavItemSpec[] = [
 ];
 
 export function RagEvaluationSiteApp({ apiBase = '/api/widget', defaultPageId = 'index' }: RagEvaluationSiteAppProps) {
+  const [, setLocationVersion] = useState(0);
+
+  useEffect(() => {
+    const handleLocationChange = () => setLocationVersion((version) => version + 1);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
   const pageId = readPageIdFromLocation(defaultPageId);
   const cleanApiBase = apiBase.replace(/\/$/, '');
   const { page, loading, error, refresh } = useWidgetPage(`${cleanApiBase}/pages/${encodeURIComponent(pageId)}`);
