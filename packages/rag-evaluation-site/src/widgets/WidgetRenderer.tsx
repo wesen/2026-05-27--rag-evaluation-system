@@ -452,7 +452,23 @@ function renderHandoutDocumentShell(node: ComponentNode, onAction?: WidgetAction
 
 function renderContextUploadDropArea(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
   const props = (node.props ?? {}) as ContextUploadDropAreaWidgetProps;
-  return <ContextUploadDropArea className={props.className} title={renderRenderableValue(props.title, onAction)} description={renderRenderableValue(props.description, onAction)} accept={props.accept} disabled={props.disabled} active={props.active} onFilesSelected={props.onFilesSelectedAction ? (files) => bindAndRun(props.onFilesSelectedAction!, { componentType: 'ContextUploadDropArea', files, fileNames: files.map((file) => file.name), fileCount: files.length }, onAction) : undefined} />;
+  return <ContextUploadDropArea className={props.className} title={renderRenderableValue(props.title, onAction)} description={renderRenderableValue(props.description, onAction)} accept={props.accept} disabled={props.disabled} active={props.active} onFilesSelected={props.onFilesSelectedAction ? (files) => { void runFileSelectionAction(props.onFilesSelectedAction!, files, onAction); } : undefined} />;
+}
+
+async function runFileSelectionAction(action: ActionSpec, files: File[], onAction?: WidgetActionHandler): Promise<void> {
+  const serializedFiles = await Promise.all(files.map(async (file) => ({
+    name: file.name,
+    size: file.size,
+    type: file.type,
+    lastModified: file.lastModified,
+    text: await file.text(),
+  })));
+  bindAndRun(action, {
+    componentType: 'ContextUploadDropArea',
+    files: serializedFiles,
+    fileNames: serializedFiles.map((file) => file.name),
+    fileCount: serializedFiles.length,
+  }, onAction);
 }
 
 function isChecklistObject(value: unknown): value is { id?: string; text: unknown } {

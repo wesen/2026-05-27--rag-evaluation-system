@@ -17,14 +17,14 @@ function demo() {
   db.exec("INSERT INTO queries (name, status, priority, owner, notes) VALUES (?, ?, ?, ?, ?)", "Arborvitae Spacing", "running", 2, "landscape", "Needs another pass")
   db.exec("INSERT INTO queries (name, status, priority, owner, notes) VALUES (?, ?, ?, ?, ?)", "Broken Import Example", "failed", 1, "ingest", "Retry after source cleanup")
 
-  const appState = { selectedId: 1, audit: ["Demo initialized"] }
+  const appState = { selectedId: 1, audit: ["Demo initialized"], upload: null }
   const app = express.app()
   app.spaFromAssetsModule("/", assets, "/app/public", { excludePrefixes: ["/api", "/healthz", "/favicon.ico"] })
   app.get("/favicon.ico", (_req, res) => res.status(204).end())
   app.get("/healthz", (_req, res) => res.json({ ok: true, site: "rag-widget-xgoja-site" }))
   app.get("/api/widget/schema", (_req, res) => res.json({ schemaVersion: "0.1.0", components: [
     "Panel", "StatusText", "DataTable", "Button", "MetadataGrid",
-    "ContextDiagramPanel", "TranscriptWorkspacePanel", "CourseStudioShell", "CourseSlidePanel", "HandoutDocumentShell"
+    "ContextDiagramPanel", "TranscriptWorkspacePanel", "CourseStudioShell", "CourseSlidePanel", "HandoutDocumentShell", "ContextUploadDropArea"
   ] }))
 
   function allRows() {
@@ -225,6 +225,7 @@ function demo() {
     { id: "demo", label: "Queue" },
     { id: "actions", label: "Actions" },
     { id: "semantic", label: "Semantic" },
+    { id: "upload", label: "Upload" },
     { id: "transcripts", label: "Transcripts" },
     { id: "slides", label: "Slides" },
     { id: "handouts", label: "Handouts" },
@@ -417,6 +418,62 @@ function demo() {
     })
   }
 
+  function normalizeUploadedSnapshot(value) {
+    const candidate = value && value.snapshot ? value.snapshot : value
+    if (!candidate || typeof candidate !== "object" || !Array.isArray(candidate.parts)) return null
+    return {
+      id: String(candidate.id || "uploaded-context"),
+      title: String(candidate.title || "Uploaded context window"),
+      limit: Number(candidate.limit || candidate.tokenLimit || 16000),
+      parts: candidate.parts.map((part, index) => ({
+        id: String(part.id || "part-" + index),
+        label: String(part.label || part.name || "Part " + (index + 1)),
+        kind: String(part.kind || "other"),
+        tokens: Number(part.tokens || 0),
+        importance: part.importance == null ? undefined : Number(part.importance),
+        pinned: Boolean(part.pinned)
+      }))
+    }
+  }
+
+  function uploadExamplesPage(id) {
+    const upload = appState.upload
+    const sections = [
+      rag.panel({ title: "Upload context JSON" },
+        rag.caption({ tone: "muted" }, "Drop or choose a .json file. The React renderer reads the browser File as text and sends serializable metadata/text to this xgoja action.")),
+      rag.contextUploadDropArea({
+        title: "Drop a .json file here",
+        description: "or choose one from disk · demo parses context-window snapshots",
+        accept: "application/json,.json",
+        onFilesSelectedAction: rag.action.server("context-upload-selected")
+      })
+    ]
+    if (upload && upload.error) {
+      sections.push(rag.panel({ title: "Upload error" },
+        rag.statusText({ status: "failed", icon: true }, "Could not parse upload"),
+        rag.caption({ tone: "danger" }, upload.error)))
+    }
+    if (upload && upload.snapshot) {
+      sections.push(rag.keyValueStrip({ items: [
+        { key: "File", value: upload.fileName },
+        { key: "Bytes", value: String(upload.size) },
+        { key: "Parts", value: String(upload.snapshot.parts.length) },
+        { key: "Limit", value: String(upload.snapshot.limit) }
+      ]}))
+      sections.push(rag.contextDiagramPanel({ snapshot: upload.snapshot, initialView: "budget" }))
+      sections.push(rag.splitPane({
+        ratio: "rightNarrow",
+        divider: true,
+        gutter: "lg",
+        left: rag.markdownArticle({ source: "# Parsed upload\n\nThe uploaded file was parsed in the xgoja server action and rendered back as Widget IR.\n\n```json\n" + upload.preview + "\n```" }),
+        right: auditPanel()
+      }))
+    } else {
+      sections.push(auditPanel())
+    }
+    return rag.page({ schemaVersion: "0.1.0", id, title: "xgoja upload demo", meta: pageMeta(id), sections })
+  }
+
   function overviewPage(id) {
     return rag.page({
       schemaVersion: "0.1.0",
@@ -437,6 +494,7 @@ function demo() {
           rag.inline({ gap: "sm", wrap: true },
             rag.button({ action: rag.action.navigate("/pages/demo") }, "Queue demo"),
             rag.button({ action: rag.action.navigate("/pages/actions") }, "Actions lab"),
+            rag.button({ action: rag.action.navigate("/pages/upload") }, "Upload"),
             rag.button({ action: rag.action.navigate("/pages/transcripts") }, "Transcripts"),
             rag.button({ action: rag.action.navigate("/pages/slides") }, "Slides"),
             rag.button({ action: rag.action.navigate("/pages/handouts") }, "Handouts"),
@@ -519,6 +577,7 @@ function demo() {
   app.get("/api/widget/pages/demo", (_req, res) => res.json(widgetPage("demo")))
   app.get("/api/widget/pages/actions", (_req, res) => res.json(actionsPage("actions")))
   app.get("/api/widget/pages/semantic", (_req, res) => res.json(semanticPage("semantic")))
+  app.get("/api/widget/pages/upload", (_req, res) => res.json(uploadExamplesPage("upload")))
   app.get("/api/widget/pages/transcripts", (_req, res) => res.json(transcriptExamplesPage("transcripts")))
   app.get("/api/widget/pages/slides", (_req, res) => res.json(slideExamplesPage("slides")))
   app.get("/api/widget/pages/handouts", (_req, res) => res.json(handoutExamplesPage("handouts")))
@@ -526,6 +585,34 @@ function demo() {
   app.get("/api/widget/pages/context", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "context", title: "Context recipe", meta: pageMeta("semantic"), sections: [rag.recipes.contextDiagram({ snapshot, view: "treemap" })] })))
   app.get("/api/widget/pages/course", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "course", title: "Course recipe", meta: pageMeta("course-examples"), sections: [rag.recipes.courseStudio({ sections: courseSections, activeItemId: "slides", main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 }) })] })))
   app.get("/api/widget/pages/handout", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "handout", title: "Handout recipe", meta: pageMeta("handouts"), sections: [rag.recipes.handout({ bundle: handoutBundle, selectedDocumentId: "guide" })] })))
+
+  app.post("/api/widget/actions/context-upload-selected", (req, res) => {
+    const ctx = actionContext(req)
+    const files = Array.isArray(ctx.files) ? ctx.files : []
+    const file = files[0]
+    if (!file || typeof file.text !== "string") {
+      appState.upload = { error: "No readable JSON file was provided." }
+      return res.json(actionResult("Upload failed: no readable file"))
+    }
+    try {
+      const parsed = JSON.parse(file.text)
+      const uploadedSnapshot = normalizeUploadedSnapshot(parsed)
+      if (!uploadedSnapshot) {
+        appState.upload = { fileName: String(file.name || "upload.json"), size: Number(file.size || file.text.length), error: "Expected a context snapshot object with a parts array, or { snapshot: ... }." }
+        return res.json(actionResult("Upload failed: unsupported JSON shape"))
+      }
+      appState.upload = {
+        fileName: String(file.name || "upload.json"),
+        size: Number(file.size || file.text.length),
+        snapshot: uploadedSnapshot,
+        preview: JSON.stringify(parsed, null, 2).slice(0, 4000)
+      }
+      res.json(actionResult("Uploaded " + appState.upload.fileName + " with " + uploadedSnapshot.parts.length + " context parts"))
+    } catch (err) {
+      appState.upload = { fileName: String(file.name || "upload.json"), size: Number(file.size || file.text.length), error: String(err && err.message ? err.message : err) }
+      res.json(actionResult("Upload failed: invalid JSON"))
+    }
+  })
 
   app.post("/api/widget/actions/note-selected", (req, res) => {
     const ctx = actionContext(req)

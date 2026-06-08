@@ -31,7 +31,7 @@ serve-smoke: build
 	log=$$(mktemp); \
 	$(BIN) serve sites demo --http-listen $(HTTP_ADDR) >$$log 2>&1 & \
 	pid=$$!; \
-	trap 'kill $$pid >/dev/null 2>&1 || true; wait $$pid >/dev/null 2>&1 || true; rm -f $$log /tmp/rag-widget-xgoja-page.json /tmp/rag-widget-xgoja-semantic.json /tmp/rag-widget-xgoja-transcripts.json /tmp/rag-widget-xgoja-slides.json /tmp/rag-widget-xgoja-handouts.json /tmp/rag-widget-xgoja-course.json /tmp/rag-widget-xgoja-page-after-actions.json /tmp/rag-widget-xgoja-action-add.json /tmp/rag-widget-xgoja-action-cycle.json /tmp/rag-widget-xgoja-action-retry.json /tmp/rag-widget-xgoja-spa.html /tmp/rag-widget-xgoja-health.json /tmp/rag-widget-xgoja-root.html /tmp/rag-widget-xgoja-asset.js' EXIT; \
+	trap 'kill $$pid >/dev/null 2>&1 || true; wait $$pid >/dev/null 2>&1 || true; rm -f $$log /tmp/rag-widget-xgoja-page.json /tmp/rag-widget-xgoja-semantic.json /tmp/rag-widget-xgoja-upload.json /tmp/rag-widget-xgoja-upload-after.json /tmp/rag-widget-xgoja-upload-request.json /tmp/rag-widget-xgoja-upload-action.json /tmp/rag-widget-xgoja-transcripts.json /tmp/rag-widget-xgoja-slides.json /tmp/rag-widget-xgoja-handouts.json /tmp/rag-widget-xgoja-course.json /tmp/rag-widget-xgoja-page-after-actions.json /tmp/rag-widget-xgoja-action-add.json /tmp/rag-widget-xgoja-action-cycle.json /tmp/rag-widget-xgoja-action-retry.json /tmp/rag-widget-xgoja-spa.html /tmp/rag-widget-xgoja-health.json /tmp/rag-widget-xgoja-root.html /tmp/rag-widget-xgoja-asset.js' EXIT; \
 	for i in $$(seq 1 100); do \
 		if curl -fsS http://$(HTTP_ADDR)/healthz >/tmp/rag-widget-xgoja-health.json 2>/dev/null; then break; fi; \
 		if ! kill -0 $$pid >/dev/null 2>&1; then cat $$log; exit 1; fi; \
@@ -49,6 +49,14 @@ serve-smoke: build
 	grep -q 'ContextDiagramPanel' /tmp/rag-widget-xgoja-semantic.json; \
 	grep -q 'CourseStudioShell' /tmp/rag-widget-xgoja-semantic.json; \
 	grep -q 'HandoutDocumentShell' /tmp/rag-widget-xgoja-semantic.json; \
+	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/upload >/tmp/rag-widget-xgoja-upload.json; \
+	grep -q 'ContextUploadDropArea' /tmp/rag-widget-xgoja-upload.json; \
+	python3 -c 'import json; uploaded={"id":"uploaded-context","title":"Uploaded Context","limit":1000,"parts":[{"id":"prompt","label":"Prompt","kind":"conversation","tokens":400},{"id":"retrieval","label":"Retrieval","kind":"retrieval","tokens":350}]}; print(json.dumps({"payload":{},"context":{"componentType":"ContextUploadDropArea","files":[{"name":"uploaded-context.json","size":len(json.dumps(uploaded)),"type":"application/json","text":json.dumps(uploaded)}],"fileNames":["uploaded-context.json"],"fileCount":1}}))' >/tmp/rag-widget-xgoja-upload-request.json; \
+	curl -fsS -X POST http://$(HTTP_ADDR)/api/widget/actions/context-upload-selected -H 'Content-Type: application/json' --data-binary @/tmp/rag-widget-xgoja-upload-request.json >/tmp/rag-widget-xgoja-upload-action.json; \
+	grep -q 'Uploaded uploaded-context.json with 2 context parts' /tmp/rag-widget-xgoja-upload-action.json; \
+	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/upload >/tmp/rag-widget-xgoja-upload-after.json; \
+	grep -q 'Uploaded Context' /tmp/rag-widget-xgoja-upload-after.json; \
+	grep -q 'ContextDiagramPanel' /tmp/rag-widget-xgoja-upload-after.json; \
 	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/transcripts >/tmp/rag-widget-xgoja-transcripts.json; \
 	grep -q 'TranscriptWorkspacePanel' /tmp/rag-widget-xgoja-transcripts.json; \
 	grep -q 'AnchoredCommentRail' /tmp/rag-widget-xgoja-transcripts.json; \
