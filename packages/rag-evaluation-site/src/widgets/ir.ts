@@ -1,5 +1,5 @@
 import type { CaptionTone, CaptionTransform, RagStatus, TextAlign, TextAs, TextSize, TextTone, TextWeight } from '../components/foundation';
-import type { ButtonSize, ButtonVariant, ContextKindSwatchSize } from '../components/atoms';
+import type { ButtonSize, ButtonVariant, ContextKindSwatchSize, ContextStudioNavIconId } from '../components/atoms';
 import type { DashboardGridRecipe, InlineGap, InlineJustify, StackAlign, StackGap } from '../components/layout';
 import type { AnchoredComment, ContextCourse, ContextCourseAgendaItem, ContextDiagramStyle, ContextDiagramView, ContextHandoutDocument, ContextSlide, ContextPartKind, ContextWindowSnapshot, TranscriptAnnotation, TranscriptMessage, TranscriptRole } from '../context';
 
@@ -28,6 +28,7 @@ export type RagWidgetType =
   | 'Caption'
   | 'CodeText'
   | 'ContextKindSwatch'
+  | 'ContextStudioNavIcon'
   | 'AnnotationBadge'
   | 'ContextLegend'
   | 'ContextBudgetBar'
@@ -168,6 +169,11 @@ export interface CodeTextWidgetProps extends BaseWidgetProps {
 
 export interface DividerWidgetProps extends BaseWidgetProps {
   orientation?: 'horizontal' | 'vertical';
+}
+
+export interface ContextStudioNavIconWidgetProps extends BaseWidgetProps {
+  id: ContextStudioNavIconId;
+  title?: string;
 }
 
 export interface ContextKindSwatchWidgetProps extends BaseWidgetProps {
@@ -522,6 +528,7 @@ export type WidgetProps =
   | CodeTextWidgetProps
   | DividerWidgetProps
   | ContextKindSwatchWidgetProps
+  | ContextStudioNavIconWidgetProps
   | AnnotationBadgeWidgetProps
   | TranscriptRoleBadgeWidgetProps
   | ContextLegendWidgetProps

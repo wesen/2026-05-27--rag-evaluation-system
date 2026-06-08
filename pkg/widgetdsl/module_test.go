@@ -308,7 +308,7 @@ func TestCourseAndHandoutHelpersAreJSONSerializable(t *testing.T) {
 		const snapshot = { id: "ctx", title: "Window", limit: 1000, parts: [{ id: "p", label: "Prompt", kind: "conversation", tokens: 300 }] };
 		const slide = { id: "s1", number: "01", title: "Window shape", view: "budget", snapshotId: "ctx", notes: ["Budget matters"] };
 		const docs = [{ id: "d1", title: "Guide", file: "guide.md", format: "markdown", description: "Guide", body: "# Guide\n\nRead me." }];
-		const sections = [{ id: "course", label: "Course", items: [{ id: "slides", label: "Slides", icon: "▣" }] }];
+		const sections = [{ id: "course", label: "Course", items: [{ id: "slides", label: "Slides", icon: rag.contextStudioNavIcon({ id: "slides" }) }] }];
 		const page = rag.page({ id: "course", title: "Course", sections: [
 			rag.courseStudioShell({ sections, activeItemId: "slides", title: "Studio" }, rag.courseSlidePanel({ slide, snapshot, index: 0, total: 1 })),
 			rag.courseLessonPanel({ course, activeAgendaItemId: "intro", onAgendaItemSelectAction: rag.action.server("select-agenda") }),
@@ -330,6 +330,11 @@ func TestCourseAndHandoutHelpersAreJSONSerializable(t *testing.T) {
 	assertString(t, children[1].(map[string]any), "type", "CourseLessonPanel")
 	assertString(t, children[2].(map[string]any), "type", "HandoutDocumentShell")
 	assertString(t, children[3].(map[string]any), "type", "SlideShell")
+	studioProps := children[0].(map[string]any)["props"].(map[string]any)
+	sections := studioProps["sections"].([]any)
+	items := sections[0].(map[string]any)["items"].([]any)
+	icon := items[0].(map[string]any)["icon"].(map[string]any)
+	assertString(t, icon, "type", "ContextStudioNavIcon")
 }
 
 func TestContextCourseHandoutRecipesAreJSONSerializable(t *testing.T) {

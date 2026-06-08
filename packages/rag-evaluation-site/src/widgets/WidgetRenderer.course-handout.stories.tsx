@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { contextCourseFixture, contextHandoutFixture, contextSlides, contextWindowSnapshots } from '../context';
-import { courseStudioNavSections } from '../components/organisms';
 import { WidgetRenderer } from './WidgetRenderer';
 import { component, text, type WidgetNode } from './ir';
 
@@ -12,9 +11,16 @@ const snapshot = contextWindowSnapshots[0]!;
 const slide = contextSlides[0]!;
 const selectedDoc = contextHandoutFixture.docs[0]!;
 
+const irCourseStudioNavSections = [
+  { id: 'present', label: 'Present', items: [{ id: 'course', label: 'Course', icon: component('ContextStudioNavIcon', { id: 'course' }) }, { id: 'slides', label: 'Slides', icon: component('ContextStudioNavIcon', { id: 'slides' }) }] },
+  { id: 'analyze', label: 'Analyze', items: [{ id: 'visualize', label: 'Visualize', icon: component('ContextStudioNavIcon', { id: 'visualize' }) }, { id: 'upload', label: 'Upload', icon: component('ContextStudioNavIcon', { id: 'upload' }) }] },
+  { id: 'review', label: 'Review', items: [{ id: 'transcript', label: 'Transcript', icon: component('ContextStudioNavIcon', { id: 'transcript' }) }, { id: 'comments', label: 'Comments', icon: component('ContextStudioNavIcon', { id: 'comments' }) }] },
+  { id: 'take-home', label: 'Take-home', items: [{ id: 'handout', label: 'Handout', icon: component('ContextStudioNavIcon', { id: 'handout' }) }] },
+];
+
 function studio(main: WidgetNode, activeItemId = 'slides'): WidgetNode {
   return component('CourseStudioShell', {
-    sections: courseStudioNavSections,
+    sections: irCourseStudioNavSections,
     activeItemId,
     title: 'Context Window Engineering',
     subtitle: 'Widget IR rendered course studio',

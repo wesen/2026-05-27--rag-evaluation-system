@@ -145,6 +145,7 @@ The first argument is props when it is a plain object. Otherwise, it is treated 
 | `annotationBadge` | `AnnotationBadge` | Compact semantic badge. |
 | `transcriptRoleBadge` | `TranscriptRoleBadge` | Badge for transcript message roles. |
 | `contextLegend` | `ContextLegend` | Legend for context diagram colors/kinds. |
+| `contextStudioNavIcon` | `ContextStudioNavIcon` | Original SVG sidebar icon for context/course navigation. |
 | `contextBudgetBar` | `ContextBudgetBar` | Budget bar for a context-window snapshot. |
 | `contextStripDiagram` | `ContextStripDiagram` | Strip view for context-window parts. |
 | `contextStackDiagram` | `ContextStackDiagram` | Stacked view for context-window parts. |
@@ -304,12 +305,22 @@ const slide = {
 ```
 
 ```js
-widget.courseLessonPanel({ course, activeAgendaItemId: "map", onAgendaItemSelectAction: widget.action.server("agenda-selected") })
-widget.courseSlidePanel({ slide, snapshot, index: 0, total: 3, visualSide: "right" })
-widget.courseStudioShell({ sections, activeItemId: "slides" },
-  widget.courseSlidePanel({ slide, snapshot, index: 0, total: 3 })
+const sections = [{
+  id: "present",
+  label: "Present",
+  items: [
+    { id: "course", label: "Course", icon: widget.contextStudioNavIcon({ id: "course" }) },
+    { id: "slides", label: "Slides", icon: widget.contextStudioNavIcon({ id: "slides" }) }
+  ]
+}]
+
+widget.courseStudioShell({ sections, activeItemId: "course" },
+  widget.courseLessonPanel({ course, activeAgendaItemId: "map", onAgendaItemSelectAction: widget.action.server("agenda-selected") })
 )
+widget.courseSlidePanel({ slide, snapshot, index: 0, total: 3, visualSide: "right" })
 ```
+
+Use `widget.contextStudioNavIcon(...)` for course-studio sidebar icons. Do not pass React elements from Storybook fixtures into Widget IR; xgoja pages must remain JSON-compatible.
 
 For custom slides, use `slideShell` with slot props:
 

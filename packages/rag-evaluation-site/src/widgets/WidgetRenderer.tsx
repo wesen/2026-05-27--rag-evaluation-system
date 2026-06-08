@@ -1,5 +1,5 @@
 import { createElement, type CSSProperties, type ReactNode } from 'react';
-import { AnnotationBadge, Button, ContextKindSwatch, ErrorCallout, SelectInput, TextInput, TranscriptRoleBadge } from '../components/atoms';
+import { AnnotationBadge, Button, ContextKindSwatch, ContextStudioNavIcon, ErrorCallout, SelectInput, TextInput, TranscriptRoleBadge } from '../components/atoms';
 import { Caption, CodeText, Divider, StatusText, Text } from '../components/foundation';
 import { AppShell, DashboardGrid, FormRow, Inline, Panel, ScrollRegion, SectionBlock, SidebarShell, SlideShell, SplitPane, Stack, TabList } from '../components/layout';
 import { AnnotationNoteCard, AnchoredCommentCard, AppNav, CheckList, ContextBudgetBar, ContextLegend, ContextStackDiagram, ContextStripDiagram, ContextTreemap, CourseStepNav, DataTable, DocumentListPanel, DocumentPreviewToolbar, FigureBlock, KeyPointList, KeyValueStrip, MarkdownArticle, MetadataGrid, PersonSummary, SidebarNav, StepList, TranscriptMessageCard, TranscriptSessionHeader } from '../components/molecules';
@@ -21,6 +21,7 @@ import type {
   ContextBudgetBarWidgetProps,
   ContextDiagramPanelWidgetProps,
   ContextKindSwatchWidgetProps,
+  ContextStudioNavIconWidgetProps,
   ContextLegendWidgetProps,
   ContextStackDiagramWidgetProps,
   ContextStripDiagramWidgetProps,
@@ -118,6 +119,8 @@ function renderComponentNode(node: ComponentNode, onAction?: WidgetActionHandler
       return renderDivider(node);
     case 'ContextKindSwatch':
       return renderContextKindSwatch(node);
+    case 'ContextStudioNavIcon':
+      return renderContextStudioNavIcon(node);
     case 'AnnotationBadge':
       return renderAnnotationBadge(node);
     case 'TranscriptRoleBadge':
@@ -282,6 +285,11 @@ function renderDivider(node: ComponentNode): ReactNode {
 function renderContextKindSwatch(node: ComponentNode): ReactNode {
   const props = (node.props ?? {}) as ContextKindSwatchWidgetProps;
   return <ContextKindSwatch className={props.className} kind={props.kind} mode={props.mode} size={props.size} selected={props.selected} />;
+}
+
+function renderContextStudioNavIcon(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as ContextStudioNavIconWidgetProps;
+  return <ContextStudioNavIcon className={props.className} id={props.id} title={props.title} />;
 }
 
 function renderAnnotationBadge(node: ComponentNode): ReactNode {
