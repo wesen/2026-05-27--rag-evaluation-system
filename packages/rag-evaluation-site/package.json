@@ -4,6 +4,23 @@
   "private": false,
   "type": "module",
   "license": "MIT",
+  "description": "React Widget IR renderer and default RAG evaluation site shell.",
+  "keywords": [
+    "rag",
+    "widget-ir",
+    "react",
+    "renderer",
+    "go-go-golems"
+  ],
+  "homepage": "https://github.com/go-go-golems/rag-evaluation-system#readme",
+  "bugs": {
+    "url": "https://github.com/go-go-golems/rag-evaluation-system/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/go-go-golems/rag-evaluation-system.git",
+    "directory": "packages/rag-evaluation-site"
+  },
   "sideEffects": [
     "**/*.css"
   ],

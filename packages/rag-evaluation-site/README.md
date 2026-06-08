@@ -36,6 +36,19 @@ Goja authors can use direct helpers from `require("widget.dsl")` / `require("rag
 pnpm add @go-go-golems/rag-evaluation-site react react-dom
 ```
 
+## Publishing
+
+The package is published from the generated `dist/` artifact, not directly from source. Build and smoke-test the artifact before publishing:
+
+```bash
+pnpm --dir packages/rag-evaluation-site build
+pnpm --dir packages/rag-evaluation-site consumer:smoke
+```
+
+GitHub Actions workflow `.github/workflows/publish-npm.yml` publishes with npm Trusted Publishing. The workflow uses GitHub OIDC (`id-token: write`) and does not require `NODE_AUTH_TOKEN` after the npm package has been bootstrapped and trusted.
+
+For the first publish of a brand-new package, create `@go-go-golems/rag-evaluation-site` manually with an npm account that has access to the `@go-go-golems` scope, then configure trusted publishing for repository `go-go-golems/rag-evaluation-system`, workflow `publish-npm.yml`, environment `npm-production`.
+
 ## Renderer usage
 
 ```tsx
