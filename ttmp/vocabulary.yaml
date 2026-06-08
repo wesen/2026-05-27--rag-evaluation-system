@@ -99,6 +99,10 @@ topics:
       description: Frontend architecture and component design system organization
     - slug: storybook
       description: Storybook component documentation and visual testing
+    - slug: widget-ir
+      description: Widget IR, WidgetRenderer, and semantic UI JSON contracts
+    - slug: rag-evaluation
+      description: RAG Evaluation System project and package work
 docTypes:
     - slug: design-doc
       description: Structured rationale and architecture notes

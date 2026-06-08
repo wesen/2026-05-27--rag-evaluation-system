@@ -1,0 +1,487 @@
+# Widget IR evidence collected 2026-06-07T20:55:23-04:00
+
+## Current git head
+11e601e
+
+## Widget renderer and DSL files
+examples/xgoja/widget-site/verbs/sites.js
+packages/rag-evaluation-site/src/components/atoms/AnnotationBadge/AnnotationBadge.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/AnnotationBadge/AnnotationBadge.tsx
+packages/rag-evaluation-site/src/components/atoms/AnnotationBadge/index.ts
+packages/rag-evaluation-site/src/components/atoms/Button/Button.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/Button/Button.tsx
+packages/rag-evaluation-site/src/components/atoms/Button/index.ts
+packages/rag-evaluation-site/src/components/atoms/CheckboxRow/CheckboxRow.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/CheckboxRow/CheckboxRow.tsx
+packages/rag-evaluation-site/src/components/atoms/CheckboxRow/index.ts
+packages/rag-evaluation-site/src/components/atoms/ContextKindSwatch/ContextKindSwatch.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/ContextKindSwatch/ContextKindSwatch.tsx
+packages/rag-evaluation-site/src/components/atoms/ContextKindSwatch/index.ts
+packages/rag-evaluation-site/src/components/atoms/ErrorCallout/ErrorCallout.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/ErrorCallout/ErrorCallout.tsx
+packages/rag-evaluation-site/src/components/atoms/ErrorCallout/index.ts
+packages/rag-evaluation-site/src/components/atoms/IconButton/IconButton.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/IconButton/IconButton.tsx
+packages/rag-evaluation-site/src/components/atoms/IconButton/index.ts
+packages/rag-evaluation-site/src/components/atoms/index.ts
+packages/rag-evaluation-site/src/components/atoms/SelectInput/index.ts
+packages/rag-evaluation-site/src/components/atoms/SelectInput/SelectInput.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/SelectInput/SelectInput.tsx
+packages/rag-evaluation-site/src/components/atoms/TextInput/index.ts
+packages/rag-evaluation-site/src/components/atoms/TextInput/TextInput.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/TextInput/TextInput.tsx
+packages/rag-evaluation-site/src/components/atoms/TranscriptRoleBadge/index.ts
+packages/rag-evaluation-site/src/components/atoms/TranscriptRoleBadge/TranscriptRoleBadge.stories.tsx
+packages/rag-evaluation-site/src/components/atoms/TranscriptRoleBadge/TranscriptRoleBadge.tsx
+packages/rag-evaluation-site/src/components/foundation/Caption/Caption.stories.tsx
+packages/rag-evaluation-site/src/components/foundation/Caption/Caption.tsx
+packages/rag-evaluation-site/src/components/foundation/Caption/index.ts
+packages/rag-evaluation-site/src/components/foundation/CodeText/CodeText.stories.tsx
+packages/rag-evaluation-site/src/components/foundation/CodeText/CodeText.tsx
+packages/rag-evaluation-site/src/components/foundation/CodeText/index.ts
+packages/rag-evaluation-site/src/components/foundation/Divider/Divider.stories.tsx
+packages/rag-evaluation-site/src/components/foundation/Divider/Divider.tsx
+packages/rag-evaluation-site/src/components/foundation/Divider/index.ts
+packages/rag-evaluation-site/src/components/foundation/Foundation.stories.tsx
+packages/rag-evaluation-site/src/components/foundation/index.ts
+packages/rag-evaluation-site/src/components/foundation/StatusText/index.ts
+packages/rag-evaluation-site/src/components/foundation/StatusText/StatusText.stories.tsx
+packages/rag-evaluation-site/src/components/foundation/StatusText/StatusText.tsx
+packages/rag-evaluation-site/src/components/foundation/Text/index.ts
+packages/rag-evaluation-site/src/components/foundation/Text/Text.stories.tsx
+packages/rag-evaluation-site/src/components/foundation/Text/Text.tsx
+packages/rag-evaluation-site/src/components/foundation/VisuallyHidden/index.ts
+packages/rag-evaluation-site/src/components/foundation/VisuallyHidden/VisuallyHidden.stories.tsx
+packages/rag-evaluation-site/src/components/foundation/VisuallyHidden/VisuallyHidden.tsx
+packages/rag-evaluation-site/src/components/layout/AppShell/AppShell.stories.tsx
+packages/rag-evaluation-site/src/components/layout/AppShell/AppShell.tsx
+packages/rag-evaluation-site/src/components/layout/AppShell/index.ts
+packages/rag-evaluation-site/src/components/layout/DashboardGrid/DashboardGrid.stories.tsx
+packages/rag-evaluation-site/src/components/layout/DashboardGrid/DashboardGrid.tsx
+packages/rag-evaluation-site/src/components/layout/DashboardGrid/index.ts
+packages/rag-evaluation-site/src/components/layout/FormRow/FormRow.stories.tsx
+packages/rag-evaluation-site/src/components/layout/FormRow/FormRow.tsx
+packages/rag-evaluation-site/src/components/layout/FormRow/index.ts
+packages/rag-evaluation-site/src/components/layout/index.ts
+packages/rag-evaluation-site/src/components/layout/Inline/index.ts
+packages/rag-evaluation-site/src/components/layout/Inline/Inline.stories.tsx
+packages/rag-evaluation-site/src/components/layout/Inline/Inline.tsx
+packages/rag-evaluation-site/src/components/layout/Panel/index.ts
+packages/rag-evaluation-site/src/components/layout/Panel/Panel.stories.tsx
+packages/rag-evaluation-site/src/components/layout/Panel/Panel.tsx
+packages/rag-evaluation-site/src/components/layout/ScrollRegion/index.ts
+packages/rag-evaluation-site/src/components/layout/ScrollRegion/ScrollRegion.stories.tsx
+packages/rag-evaluation-site/src/components/layout/ScrollRegion/ScrollRegion.tsx
+packages/rag-evaluation-site/src/components/layout/SectionBlock/index.ts
+packages/rag-evaluation-site/src/components/layout/SectionBlock/SectionBlock.stories.tsx
+packages/rag-evaluation-site/src/components/layout/SectionBlock/SectionBlock.tsx
+packages/rag-evaluation-site/src/components/layout/SidebarShell/index.ts
+packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.stories.tsx
+packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.tsx
+packages/rag-evaluation-site/src/components/layout/SlideShell/index.ts
+packages/rag-evaluation-site/src/components/layout/SlideShell/SlideShell.stories.tsx
+packages/rag-evaluation-site/src/components/layout/SlideShell/SlideShell.tsx
+packages/rag-evaluation-site/src/components/layout/SplitPane/index.ts
+packages/rag-evaluation-site/src/components/layout/SplitPane/SplitPane.stories.tsx
+packages/rag-evaluation-site/src/components/layout/SplitPane/SplitPane.tsx
+packages/rag-evaluation-site/src/components/layout/Stack/index.ts
+packages/rag-evaluation-site/src/components/layout/Stack/Stack.stories.tsx
+packages/rag-evaluation-site/src/components/layout/Stack/Stack.tsx
+packages/rag-evaluation-site/src/components/layout/TabList/index.ts
+packages/rag-evaluation-site/src/components/layout/TabList/TabList.stories.tsx
+packages/rag-evaluation-site/src/components/layout/TabList/TabList.tsx
+packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/AnchoredCommentCard.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/AnchoredCommentCard.tsx
+packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/index.ts
+packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx
+packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/index.ts
+packages/rag-evaluation-site/src/components/molecules/AppNav/AppNav.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/AppNav/AppNav.tsx
+packages/rag-evaluation-site/src/components/molecules/AppNav/index.ts
+packages/rag-evaluation-site/src/components/molecules/CheckList/CheckList.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/CheckList/CheckList.tsx
+packages/rag-evaluation-site/src/components/molecules/CheckList/index.ts
+packages/rag-evaluation-site/src/components/molecules/ContextBudgetBar/ContextBudgetBar.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextBudgetBar/ContextBudgetBar.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextBudgetBar/index.ts
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/ContextLegend.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/ContextLegend.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/index.ts
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/index.ts
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/index.ts
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.tsx
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/index.ts
+packages/rag-evaluation-site/src/components/molecules/CourseStepNav/CourseStepNav.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/CourseStepNav/CourseStepNav.tsx
+packages/rag-evaluation-site/src/components/molecules/CourseStepNav/index.ts
+packages/rag-evaluation-site/src/components/molecules/DataTable/DataTable.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/DataTable/DataTable.tsx
+packages/rag-evaluation-site/src/components/molecules/DataTable/index.ts
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/DocumentListPanel.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/DocumentListPanel.tsx
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/index.ts
+packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/DocumentPreviewToolbar.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/DocumentPreviewToolbar.tsx
+packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/index.ts
+packages/rag-evaluation-site/src/components/molecules/FigureBlock/FigureBlock.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/FigureBlock/FigureBlock.tsx
+packages/rag-evaluation-site/src/components/molecules/FigureBlock/index.ts
+packages/rag-evaluation-site/src/components/molecules/index.ts
+packages/rag-evaluation-site/src/components/molecules/KeyPointList/index.ts
+packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.tsx
+packages/rag-evaluation-site/src/components/molecules/KeyValueStrip/index.ts
+packages/rag-evaluation-site/src/components/molecules/KeyValueStrip/KeyValueStrip.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/KeyValueStrip/KeyValueStrip.tsx
+packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/index.ts
+packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/MarkdownArticle.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/MarkdownArticle.tsx
+packages/rag-evaluation-site/src/components/molecules/MetadataGrid/index.ts
+packages/rag-evaluation-site/src/components/molecules/MetadataGrid/MetadataGrid.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/MetadataGrid/MetadataGrid.tsx
+packages/rag-evaluation-site/src/components/molecules/PersonSummary/index.ts
+packages/rag-evaluation-site/src/components/molecules/PersonSummary/PersonSummary.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/PersonSummary/PersonSummary.tsx
+packages/rag-evaluation-site/src/components/molecules/SidebarNav/index.ts
+packages/rag-evaluation-site/src/components/molecules/SidebarNav/SidebarNav.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/SidebarNav/SidebarNav.tsx
+packages/rag-evaluation-site/src/components/molecules/StepList/index.ts
+packages/rag-evaluation-site/src/components/molecules/StepList/StepList.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/StepList/StepList.tsx
+packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/index.ts
+packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx
+packages/rag-evaluation-site/src/components/molecules/TranscriptSessionHeader/index.ts
+packages/rag-evaluation-site/src/components/molecules/TranscriptSessionHeader/TranscriptSessionHeader.stories.tsx
+packages/rag-evaluation-site/src/components/molecules/TranscriptSessionHeader/TranscriptSessionHeader.tsx
+packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/AnchoredCommentRail.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/AnchoredCommentRail.tsx
+packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/index.ts
+packages/rag-evaluation-site/src/components/organisms/AnnotationRailPanel/AnnotationRailPanel.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/AnnotationRailPanel/AnnotationRailPanel.tsx
+packages/rag-evaluation-site/src/components/organisms/AnnotationRailPanel/index.ts
+packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.tsx
+packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/index.ts
+packages/rag-evaluation-site/src/components/organisms/CourseLessonPanel/CourseLessonPanel.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/CourseLessonPanel/CourseLessonPanel.tsx
+packages/rag-evaluation-site/src/components/organisms/CourseLessonPanel/index.ts
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/CourseSlidePanel.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/CourseSlidePanel.tsx
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/index.ts
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.tsx
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/index.ts
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.tsx
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/index.ts
+packages/rag-evaluation-site/src/components/organisms/index.ts
+packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/index.ts
+packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.tsx
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/index.ts
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.stories.tsx
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.tsx
+packages/rag-evaluation-site/src/widgets/ir.ts
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx
+pkg/widgetdsl/logcopter.go
+pkg/widgetdsl/module.go
+pkg/widgetdsl/module_test.go
+pkg/widgetdsl/registrar.go
+
+## Renderer component switch cases
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:12:  ComponentNode,
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:37:export function WidgetRenderer({ node, onAction }: WidgetRendererProps) {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:44:  return renderComponentNode(node, onAction);
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:61:function renderComponentNode(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:63:    case 'AppShell':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:65:    case 'AppNav':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:67:    case 'Button':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:69:    case 'Caption':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:71:    case 'DashboardGrid':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:73:    case 'DataTable':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:75:    case 'FormRow':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:77:    case 'Inline':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:79:    case 'MetadataGrid':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:81:    case 'Panel':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:83:    case 'ScrollRegion':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:85:    case 'SelectInput':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:87:    case 'Stack':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:89:    case 'StatusText':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:91:    case 'TabList':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:93:    case 'TextInput':
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:100:function renderAppShell(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:113:function renderAppNav(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:128:function renderButton(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:145:function renderCaption(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:150:function renderDashboardGrid(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:155:function renderDataTable(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:177:function renderFormRow(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:189:function renderInline(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:194:function renderMetadataGrid(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:209:function renderPanel(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:224:function renderScrollRegion(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:229:function renderSelectInput(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:243:function renderStack(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:248:function renderStatusText(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:253:function renderTabList(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:267:function renderTextInput(node: ComponentNode): ReactNode {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:3:import { component, element, text, type JsonObject, type WidgetNode } from './ir';
+packages/rag-evaluation-site/src/widgets/ir.ts:9:export type WidgetNode = TextNode | ElementNode | ComponentNode;
+packages/rag-evaluation-site/src/widgets/ir.ts:11:export interface TextNode {
+packages/rag-evaluation-site/src/widgets/ir.ts:16:export interface ElementNode {
+packages/rag-evaluation-site/src/widgets/ir.ts:41:export interface ComponentNode {
+packages/rag-evaluation-site/src/widgets/ir.ts:304:export function component(type: RagWidgetType | string, props?: WidgetProps, children: WidgetNode[] = []): ComponentNode {
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:10:    case 'field':
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:12:    case 'number':
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:14:    case 'status': {
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:18:    case 'caption':
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:20:    case 'template':
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:22:    case 'link': {
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:27:    case 'constant':
+packages/rag-evaluation-site/src/components/layout/TabList/TabList.tsx:4:export interface TabListItem<T extends string> { id: T; label: ReactNode; }
+packages/rag-evaluation-site/src/components/molecules/KeyValueStrip/KeyValueStrip.tsx:4:export interface KeyValueStripItem { key: ReactNode; value: ReactNode; }
+packages/rag-evaluation-site/src/components/molecules/CheckList/CheckList.tsx:4:export interface CheckListItem { id?: string; text: ReactNode; }
+packages/rag-evaluation-site/src/components/molecules/CheckList/CheckList.tsx:5:export interface CheckListProps extends HTMLAttributes<HTMLUListElement> { items: Array<CheckListItem | ReactNode>; marker?: ReactNode; }
+packages/rag-evaluation-site/src/components/molecules/PersonSummary/PersonSummary.tsx:4:export interface PersonSummaryProps extends HTMLAttributes<HTMLDivElement> { name: ReactNode; subtitle?: ReactNode; bio?: ReactNode; avatar?: ReactNode; }
+packages/rag-evaluation-site/src/components/molecules/StepList/StepList.tsx:4:export interface StepListItem { id: string; index: ReactNode; title: ReactNode; description?: ReactNode; meta?: ReactNode; }
+
+## Package component exports
+packages/rag-evaluation-site/src/index.ts:3:export * from './widgets';
+packages/rag-evaluation-site/src/index.ts:4:export * from './hooks/useWidgetPage';
+packages/rag-evaluation-site/src/index.ts:5:export * from './components';
+packages/rag-evaluation-site/src/index.ts:6:export * from './context';
+packages/rag-evaluation-site/src/context/index.ts:1:export * from './types';
+packages/rag-evaluation-site/src/context/index.ts:2:export * from './kinds';
+packages/rag-evaluation-site/src/context/index.ts:3:export * from './fixtures';
+packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/index.ts:1:export * from './ContextDiagramPanel';
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/index.ts:1:export * from './CourseStudioShell';
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/index.ts:2:export * from './courseStudioNav';
+packages/rag-evaluation-site/src/components/organisms/CourseLessonPanel/index.ts:1:export * from './CourseLessonPanel';
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/index.ts:1:export * from './HandoutDocumentShell';
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/index.ts:1:export * from './CourseSlidePanel';
+packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/index.ts:1:export * from './TranscriptReaderPanel';
+packages/rag-evaluation-site/src/components/organisms/index.ts:1:export * from './ContextDiagramPanel';
+packages/rag-evaluation-site/src/components/organisms/index.ts:2:export * from './TranscriptReaderPanel';
+packages/rag-evaluation-site/src/components/organisms/index.ts:3:export * from './TranscriptWorkspacePanel';
+packages/rag-evaluation-site/src/components/organisms/index.ts:4:export * from './AnnotationRailPanel';
+packages/rag-evaluation-site/src/components/organisms/index.ts:5:export * from './AnchoredCommentRail';
+packages/rag-evaluation-site/src/components/organisms/index.ts:6:export * from './CourseLessonPanel';
+packages/rag-evaluation-site/src/components/organisms/index.ts:7:export * from './CourseSlidePanel';
+packages/rag-evaluation-site/src/components/organisms/index.ts:8:export * from './CourseStudioShell';
+packages/rag-evaluation-site/src/components/organisms/index.ts:9:export * from './HandoutDocumentShell';
+packages/rag-evaluation-site/src/components/organisms/AnnotationRailPanel/index.ts:1:export * from './AnnotationRailPanel';
+packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/index.ts:1:export * from './AnchoredCommentRail';
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/index.ts:1:export * from './TranscriptWorkspacePanel';
+packages/rag-evaluation-site/src/components/index.ts:1:export * from './atoms';
+packages/rag-evaluation-site/src/components/index.ts:2:export * from './foundation';
+packages/rag-evaluation-site/src/components/index.ts:3:export * from './layout';
+packages/rag-evaluation-site/src/components/index.ts:4:export * from './molecules';
+packages/rag-evaluation-site/src/components/index.ts:5:export * from './organisms';
+packages/rag-evaluation-site/src/components/foundation/StatusText/index.ts:1:export * from './StatusText';
+packages/rag-evaluation-site/src/components/foundation/Text/index.ts:1:export * from './Text';
+packages/rag-evaluation-site/src/components/foundation/VisuallyHidden/index.ts:1:export * from './VisuallyHidden';
+packages/rag-evaluation-site/src/components/foundation/Divider/index.ts:1:export * from './Divider';
+packages/rag-evaluation-site/src/components/foundation/index.ts:1:export * from './Text';
+packages/rag-evaluation-site/src/components/foundation/index.ts:2:export * from './CodeText';
+packages/rag-evaluation-site/src/components/foundation/index.ts:3:export * from './StatusText';
+packages/rag-evaluation-site/src/components/foundation/index.ts:4:export * from './Divider';
+packages/rag-evaluation-site/src/components/foundation/index.ts:5:export * from './VisuallyHidden';
+packages/rag-evaluation-site/src/components/foundation/index.ts:6:export * from './Caption';
+packages/rag-evaluation-site/src/components/foundation/CodeText/index.ts:1:export * from './CodeText';
+packages/rag-evaluation-site/src/components/atoms/Button/index.ts:1:export * from './Button';
+packages/rag-evaluation-site/src/components/foundation/Caption/index.ts:1:export * from './Caption';
+packages/rag-evaluation-site/src/components/atoms/SelectInput/index.ts:1:export * from './SelectInput';
+packages/rag-evaluation-site/src/components/atoms/TranscriptRoleBadge/index.ts:1:export * from './TranscriptRoleBadge';
+packages/rag-evaluation-site/src/components/atoms/TextInput/index.ts:1:export * from './TextInput';
+packages/rag-evaluation-site/src/components/atoms/ErrorCallout/index.ts:1:export * from './ErrorCallout';
+packages/rag-evaluation-site/src/components/atoms/AnnotationBadge/index.ts:1:export * from './AnnotationBadge';
+packages/rag-evaluation-site/src/components/atoms/index.ts:1:export * from './Button';
+packages/rag-evaluation-site/src/components/atoms/index.ts:2:export * from './CheckboxRow';
+packages/rag-evaluation-site/src/components/atoms/index.ts:3:export * from './ErrorCallout';
+packages/rag-evaluation-site/src/components/atoms/index.ts:4:export * from './IconButton';
+packages/rag-evaluation-site/src/components/atoms/index.ts:5:export * from './SelectInput';
+packages/rag-evaluation-site/src/components/atoms/index.ts:6:export * from './TextInput';
+packages/rag-evaluation-site/src/components/atoms/index.ts:7:export * from './ContextKindSwatch';
+packages/rag-evaluation-site/src/components/atoms/index.ts:8:export * from './TranscriptRoleBadge';
+packages/rag-evaluation-site/src/components/atoms/index.ts:9:export * from './AnnotationBadge';
+packages/rag-evaluation-site/src/components/atoms/IconButton/index.ts:1:export * from './IconButton';
+packages/rag-evaluation-site/src/components/atoms/ContextKindSwatch/index.ts:1:export * from './ContextKindSwatch';
+packages/rag-evaluation-site/src/components/atoms/CheckboxRow/index.ts:1:export * from './CheckboxRow';
+packages/rag-evaluation-site/src/components/layout/SplitPane/index.ts:1:export * from './SplitPane';
+packages/rag-evaluation-site/src/components/layout/Stack/index.ts:1:export * from './Stack';
+packages/rag-evaluation-site/src/components/layout/Panel/index.ts:1:export * from './Panel';
+packages/rag-evaluation-site/src/components/layout/TabList/index.ts:1:export * from './TabList';
+packages/rag-evaluation-site/src/components/layout/Inline/index.ts:1:export * from './Inline';
+packages/rag-evaluation-site/src/components/layout/SectionBlock/index.ts:1:export * from './SectionBlock';
+packages/rag-evaluation-site/src/components/layout/index.ts:1:export * from './Panel';
+packages/rag-evaluation-site/src/components/layout/index.ts:2:export * from './Stack';
+packages/rag-evaluation-site/src/components/layout/index.ts:3:export * from './Inline';
+packages/rag-evaluation-site/src/components/layout/index.ts:4:export * from './DashboardGrid';
+packages/rag-evaluation-site/src/components/layout/index.ts:5:export * from './AppShell';
+packages/rag-evaluation-site/src/components/layout/index.ts:6:export * from './ScrollRegion';
+packages/rag-evaluation-site/src/components/layout/index.ts:7:export * from './TabList';
+packages/rag-evaluation-site/src/components/layout/index.ts:8:export * from './FormRow';
+packages/rag-evaluation-site/src/components/layout/index.ts:9:export * from './SectionBlock';
+packages/rag-evaluation-site/src/components/layout/index.ts:10:export * from './SplitPane';
+packages/rag-evaluation-site/src/components/layout/index.ts:11:export * from './SlideShell';
+packages/rag-evaluation-site/src/components/layout/index.ts:12:export * from './SidebarShell';
+packages/rag-evaluation-site/src/components/layout/SlideShell/index.ts:1:export * from './SlideShell';
+packages/rag-evaluation-site/src/components/layout/FormRow/index.ts:1:export * from './FormRow';
+packages/rag-evaluation-site/src/components/layout/AppShell/index.ts:1:export * from './AppShell';
+packages/rag-evaluation-site/src/components/layout/ScrollRegion/index.ts:1:export * from './ScrollRegion';
+packages/rag-evaluation-site/src/components/molecules/DataTable/index.ts:1:export * from './DataTable';
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/index.ts:1:export * from './DocumentListPanel';
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/index.ts:1:export * from './ContextStripDiagram';
+packages/rag-evaluation-site/src/components/layout/SidebarShell/index.ts:1:export * from './SidebarShell';
+packages/rag-evaluation-site/src/components/layout/DashboardGrid/index.ts:1:export * from './DashboardGrid';
+packages/rag-evaluation-site/src/components/molecules/PersonSummary/index.ts:1:export * from './PersonSummary';
+packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/index.ts:1:export * from './TranscriptMessageCard';
+packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/index.ts:1:export * from './AnchoredCommentCard';
+packages/rag-evaluation-site/src/components/molecules/TranscriptSessionHeader/index.ts:1:export * from './TranscriptSessionHeader';
+packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/index.ts:1:export * from './DocumentPreviewToolbar';
+packages/rag-evaluation-site/src/components/molecules/CheckList/index.ts:1:export * from './CheckList';
+packages/rag-evaluation-site/src/components/molecules/SidebarNav/index.ts:1:export * from './SidebarNav';
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/index.ts:1:export * from './ContextStackDiagram';
+packages/rag-evaluation-site/src/components/molecules/MetadataGrid/index.ts:1:export * from './MetadataGrid';
+packages/rag-evaluation-site/src/components/molecules/index.ts:1:export * from './MetadataGrid';
+packages/rag-evaluation-site/src/components/molecules/index.ts:2:export * from './DataTable';
+packages/rag-evaluation-site/src/components/molecules/index.ts:3:export * from './AppNav';
+packages/rag-evaluation-site/src/components/molecules/index.ts:4:export * from './ContextLegend';
+packages/rag-evaluation-site/src/components/molecules/index.ts:5:export * from './ContextBudgetBar';
+packages/rag-evaluation-site/src/components/molecules/index.ts:6:export * from './ContextStripDiagram';
+packages/rag-evaluation-site/src/components/molecules/index.ts:7:export * from './ContextStackDiagram';
+packages/rag-evaluation-site/src/components/molecules/index.ts:8:export * from './ContextTreemap';
+packages/rag-evaluation-site/src/components/molecules/index.ts:9:export * from './TranscriptMessageCard';
+packages/rag-evaluation-site/src/components/molecules/index.ts:10:export * from './TranscriptSessionHeader';
+packages/rag-evaluation-site/src/components/molecules/index.ts:11:export * from './AnnotationNoteCard';
+packages/rag-evaluation-site/src/components/molecules/index.ts:12:export * from './AnchoredCommentCard';
+packages/rag-evaluation-site/src/components/molecules/index.ts:13:export * from './CourseStepNav';
+packages/rag-evaluation-site/src/components/molecules/index.ts:14:export * from './KeyValueStrip';
+packages/rag-evaluation-site/src/components/molecules/index.ts:15:export * from './CheckList';
+packages/rag-evaluation-site/src/components/molecules/index.ts:16:export * from './StepList';
+packages/rag-evaluation-site/src/components/molecules/index.ts:17:export * from './PersonSummary';
+packages/rag-evaluation-site/src/components/molecules/index.ts:18:export * from './FigureBlock';
+packages/rag-evaluation-site/src/components/molecules/index.ts:19:export * from './KeyPointList';
+packages/rag-evaluation-site/src/components/molecules/index.ts:20:export * from './SidebarNav';
+packages/rag-evaluation-site/src/components/molecules/index.ts:21:export * from './MarkdownArticle';
+packages/rag-evaluation-site/src/components/molecules/index.ts:22:export * from './DocumentListPanel';
+packages/rag-evaluation-site/src/components/molecules/index.ts:23:export * from './DocumentPreviewToolbar';
+packages/rag-evaluation-site/src/components/molecules/ContextBudgetBar/index.ts:1:export * from './ContextBudgetBar';
+packages/rag-evaluation-site/src/components/molecules/KeyValueStrip/index.ts:1:export * from './KeyValueStrip';
+packages/rag-evaluation-site/src/components/molecules/CourseStepNav/index.ts:1:export * from './CourseStepNav';
+packages/rag-evaluation-site/src/components/molecules/KeyPointList/index.ts:1:export * from './KeyPointList';
+packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/index.ts:1:export * from './AnnotationNoteCard';
+packages/rag-evaluation-site/src/components/molecules/StepList/index.ts:1:export * from './StepList';
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/index.ts:1:export * from './ContextTreemap';
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/index.ts:1:export * from './ContextLegend';
+packages/rag-evaluation-site/src/components/molecules/FigureBlock/index.ts:1:export * from './FigureBlock';
+packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/index.ts:1:export * from './MarkdownArticle';
+
+## Existing DSL helper names
+pkg/widgetdsl/module.go:106:	setExport(exports, "text", r.text)
+pkg/widgetdsl/module.go:107:	setExport(exports, "element", r.element)
+pkg/widgetdsl/module.go:108:	setExport(exports, "component", r.component)
+pkg/widgetdsl/module.go:109:	setExport(exports, "fragment", r.fragment)
+pkg/widgetdsl/module.go:110:	setExport(exports, "page", r.page)
+pkg/widgetdsl/module.go:114:		setExport(exports, name, r.componentFactory(componentType))
+pkg/widgetdsl/module.go:118:	setExport(cell, "field", func(field string, options ...goja.Value) map[string]any {
+pkg/widgetdsl/module.go:123:	setExport(cell, "number", func(field string, options ...goja.Value) map[string]any {
+pkg/widgetdsl/module.go:128:	setExport(cell, "status", func(field string, options ...goja.Value) map[string]any {
+pkg/widgetdsl/module.go:133:	setExport(cell, "caption", func(field string, options ...goja.Value) map[string]any {
+pkg/widgetdsl/module.go:138:	setExport(cell, "template", func(template string) map[string]any {
+pkg/widgetdsl/module.go:141:	setExport(cell, "link", func(hrefField string, labelField string, options ...goja.Value) map[string]any {
+pkg/widgetdsl/module.go:146:	setExport(cell, "constant", func(value goja.Value) any {
+pkg/widgetdsl/module.go:149:	setExport(exports, "cell", cell)
+pkg/widgetdsl/module.go:152:	setExport(action, "server", func(name string, options ...goja.Value) map[string]any {
+pkg/widgetdsl/module.go:157:	setExport(action, "navigate", func(to string, options ...goja.Value) map[string]any {
+pkg/widgetdsl/module.go:162:	setExport(action, "event", func(event string, options ...goja.Value) map[string]any {
+pkg/widgetdsl/module.go:167:	setExport(action, "copy", func(value string) map[string]any {
+pkg/widgetdsl/module.go:170:	setExport(exports, "action", action)
+pkg/widgetdsl/module.go:172:	recipes := r.vm.NewObject()
+pkg/widgetdsl/module.go:173:	setExport(recipes, "metrics", r.metricsRecipe)
+pkg/widgetdsl/module.go:174:	setExport(recipes, "actionToolbar", r.actionToolbarRecipe)
+pkg/widgetdsl/module.go:175:	setExport(recipes, "masterDetailTable", r.masterDetailTableRecipe)
+pkg/widgetdsl/module.go:176:	setExport(exports, "recipes", recipes)
+pkg/widgetdsl/module.go:231:func (r *runtime) page(call goja.FunctionCall) goja.Value {
+pkg/widgetdsl/module.go:233:		panic(r.vm.NewGoError(fmt.Errorf("widget.dsl page(options) requires an options object")))
+pkg/widgetdsl/module.go:677:func setExport(obj *goja.Object, name string, value any) {
+pkg/widgetdsl/module_test.go:162:		const page = rag.page({
+pkg/widgetdsl/module_test.go:167:				rag.recipes.metrics({ items: [
+pkg/widgetdsl/module_test.go:171:				rag.recipes.actionToolbar({ title: "Controls", actions: [
+pkg/widgetdsl/module_test.go:175:				rag.recipes.masterDetailTable({
+pkg/widgetdsl/module_test.go:213:		const table = rag.recipes.masterDetailTable({
+
+## Existing tests mentioning Widget IR
+pkg/widgetdsl/module_test.go:1:package widgetdsl
+pkg/widgetdsl/module_test.go:14:func TestRequireWidgetDSLExportsHelpers(t *testing.T) {
+pkg/widgetdsl/module_test.go:21:		const rag = require("widget.dsl");
+pkg/widgetdsl/module_test.go:33:		t.Fatalf("require widget.dsl: %v", err)
+pkg/widgetdsl/module_test.go:61:func TestBuildsNestedWidgetIR(t *testing.T) {
+pkg/widgetdsl/module_test.go:68:		const rag = require("widget.dsl");
+pkg/widgetdsl/module_test.go:77:		t.Fatalf("build widget IR: %v", err)
+pkg/widgetdsl/module_test.go:98:func TestEngineRegistrarRegistersWidgetAndRagAliases(t *testing.T) {
+pkg/widgetdsl/module_test.go:110:		const widget = require("widget.dsl");
+pkg/widgetdsl/module_test.go:112:		({ widgetPanel: typeof widget.panel, ragPanel: typeof rag.panel });
+pkg/widgetdsl/module_test.go:118:	if got["widgetPanel"] != "function" || got["ragPanel"] != "function" {
+pkg/widgetdsl/module_test.go:123:func TestDataTableAndCellHelpersAreJSONSerializable(t *testing.T) {
+pkg/widgetdsl/module_test.go:130:		const rag = require("widget.dsl");
+pkg/widgetdsl/module_test.go:140:		JSON.stringify(table);
+pkg/widgetdsl/module_test.go:147:		t.Fatalf("IR is not JSON: %v\n%s", err, value.String())
+pkg/widgetdsl/module_test.go:150:	assertString(t, decoded, "type", "DataTable")
+pkg/widgetdsl/module_test.go:153:func TestSemanticRecipesAndActionsAreJSONSerializable(t *testing.T) {
+pkg/widgetdsl/module_test.go:160:		const rag = require("widget.dsl");
+pkg/widgetdsl/module_test.go:167:				rag.recipes.metrics({ items: [
+pkg/widgetdsl/module_test.go:171:				rag.recipes.actionToolbar({ title: "Controls", actions: [
+pkg/widgetdsl/module_test.go:175:				rag.recipes.masterDetailTable({
+pkg/widgetdsl/module_test.go:185:		JSON.stringify(page);
+pkg/widgetdsl/module_test.go:192:		t.Fatalf("recipe page is not JSON: %v\n%s", err, value.String())
+pkg/widgetdsl/module_test.go:212:		const rag = require("widget.dsl");
+pkg/widgetdsl/module_test.go:213:		const table = rag.recipes.masterDetailTable({
+pkg/widgetdsl/module_test.go:220:		JSON.stringify(table);
+pkg/widgetdsl/module_test.go:227:		t.Fatalf("master-detail table is not JSON: %v\n%s", err, value.String())
+pkg/widgetrunner/runner_test.go:1:package widgetrunner
+pkg/widgetrunner/runner_test.go:13:		const rag = require("widget.dsl");
+pkg/widgetrunner/runner_test.go:46:func TestRenderFallbackExportsPageWrapsBareWidgetNode(t *testing.T) {
+pkg/widgetrunner/runner_test.go:48:		const rag = require("widget.dsl");
+pkg/widgetrunner/runner_test.go:68:		const rag = require("widget.dsl");
+pkg/widgetrunner/runner_test.go:79:func TestInvalidWidgetIRIsRejected(t *testing.T) {
+pkg/widgetrunner/runner_test.go:88:	if !errors.Is(err, ErrInvalidWidgetIR) {
+pkg/widgetrunner/runner_test.go:89:		t.Fatalf("error = %v, want ErrInvalidWidgetIR", err)
+pkg/widgetrunner/runner_test.go:130:		const rag = require("widget.dsl");
+pkg/widgetserver/server_test.go:1:package widgetserver
+pkg/widgetserver/server_test.go:13:	"github.com/go-go-golems/rag-evaluation-system/pkg/widgetrunner"
+pkg/widgetserver/server_test.go:18:		const rag = require("widget.dsl");
+pkg/widgetserver/server_test.go:26:	body := getJSON(t, handler, "/api/widget/pages/demo?q=World", http.StatusOK)
+pkg/widgetserver/server_test.go:38:	body := getJSON(t, handler, "/api/widget/pages/missing", http.StatusNotFound)
+pkg/widgetserver/server_test.go:47:	health := getJSON(t, handler, "/api/widget/health", http.StatusOK)
+pkg/widgetserver/server_test.go:51:	schema := getJSON(t, handler, "/api/widget/schema", http.StatusOK)
+pkg/widgetserver/server_test.go:72:	body := postJSONBody(t, handler, "/api/widget/actions/save", `{"payload":{"id":"42"},"context":{"rowKey":"row-42"}}`, http.StatusOK)
+pkg/widgetserver/server_test.go:84:	body := postJSON(t, handler, "/api/widget/actions/save", http.StatusNotFound)
+pkg/widgetserver/server_test.go:163:func newTestRunner(t *testing.T, script string) *widgetrunner.Runner {
+pkg/widgetserver/server_test.go:167:	runner, err := widgetrunner.New(context.Background(), widgetrunner.Config{ScriptDirs: []string{dir}})
+pkg/widgetserver/server_test.go:175:func getJSON(t *testing.T, handler http.Handler, path string, want int) map[string]any {
+pkg/widgetserver/server_test.go:190:func postJSON(t *testing.T, handler http.Handler, path string, want int) map[string]any {
+pkg/widgetserver/server_test.go:192:	return postJSONBody(t, handler, path, "", want)
+pkg/widgetserver/server_test.go:195:func postJSONBody(t *testing.T, handler http.Handler, path, body string, want int) map[string]any {
+pkg/xgoja/providers/widgetsite/provider_test.go:1:package widgetsite
+pkg/xgoja/providers/widgetsite/provider_test.go:14:func TestRegisterExposesWidgetModules(t *testing.T) {
+pkg/xgoja/providers/widgetsite/provider_test.go:19:	for _, name := range []string{"widget.dsl", "rag.dsl"} {
+pkg/xgoja/providers/widgetsite/provider_test.go:41:func TestRegisterExposesWidgetDSLHelpSource(t *testing.T) {
+pkg/xgoja/providers/widgetsite/provider_test.go:46:	source, ok := registry.ResolveHelpSource(PackageID, "widget-dsl")
+pkg/xgoja/providers/widgetsite/provider_test.go:48:		t.Fatalf("expected widget-dsl help source")
+pkg/xgoja/providers/widgetsite/provider_test.go:57:	for _, want := range []string{"widget-dsl-getting-started", "widget-dsl-js-api-reference"} {
+pkg/xgoja/providers/widgetsite/provider_test.go:74:func TestGeneratedRuntimeCanRequireWidgetDSL(t *testing.T) {
+pkg/xgoja/providers/widgetsite/provider_test.go:80:		Name: "widgetsite-provider-test",
+pkg/xgoja/providers/widgetsite/provider_test.go:83:			Name:    "widget.dsl",
+pkg/xgoja/providers/widgetsite/provider_test.go:84:			As:      "widget.dsl",
+pkg/xgoja/providers/widgetsite/provider_test.go:94:	ret, err := rt.Owner.Call(context.Background(), "widgetsite-provider.require-widget-dsl", func(_ context.Context, vm *goja.Runtime) (any, error) {
+pkg/xgoja/providers/widgetsite/provider_test.go:96:			const rag = require("widget.dsl");
+pkg/xgoja/providers/widgetsite/provider_test.go:98:			JSON.stringify(node);

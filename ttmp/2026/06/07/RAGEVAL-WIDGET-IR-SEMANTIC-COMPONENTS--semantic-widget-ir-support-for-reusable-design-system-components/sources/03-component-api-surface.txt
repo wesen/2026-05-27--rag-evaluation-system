@@ -1,0 +1,261 @@
+packages/rag-evaluation-site/src/components/atoms/AnnotationBadge/AnnotationBadge.stories.tsx:6:export const Kinds: Story = { render: () => <Inline><AnnotationBadge kind="context" label="Task framing" /><AnnotationBadge kind="result" label="Tool result cost" /><AnnotationBadge kind="generated" label="Scratchpad" /><AnnotationBadge kind="active" label="Window rebuilt" selected /></Inline> };
+packages/rag-evaluation-site/src/components/atoms/AnnotationBadge/AnnotationBadge.tsx:5:export interface AnnotationBadgeProps extends HTMLAttributes<HTMLSpanElement> { kind: ContextPartKind; label: string; selected?: boolean; }
+packages/rag-evaluation-site/src/components/atoms/AnnotationBadge/AnnotationBadge.tsx:6:export function AnnotationBadge({ kind, label, selected = false, className, ...rest }: AnnotationBadgeProps) {
+packages/rag-evaluation-site/src/components/atoms/Button/Button.stories.tsx:16:export const Variants: Story = {
+packages/rag-evaluation-site/src/components/atoms/Button/Button.stories.tsx:27:export const Compact: Story = {
+packages/rag-evaluation-site/src/components/atoms/Button/Button.tsx:14:export function Button({ variant = 'default', size = 'normal', selected = false, className, children, ...rest }: ButtonProps) {
+packages/rag-evaluation-site/src/components/atoms/Button/Button.tsx:7:export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+packages/rag-evaluation-site/src/components/atoms/CheckboxRow/CheckboxRow.stories.tsx:8:export const Checked: Story = { args: { checked: true, onChange: () => {}, children: 'TTC Guides' } };
+packages/rag-evaluation-site/src/components/atoms/CheckboxRow/CheckboxRow.stories.tsx:9:export const Unchecked: Story = { args: { checked: false, onChange: () => {}, children: 'TTC Articles' } };
+packages/rag-evaluation-site/src/components/atoms/CheckboxRow/CheckboxRow.tsx:10:export function CheckboxRow({ checked, onChange, className, children, ...rest }: CheckboxRowProps) {
+packages/rag-evaluation-site/src/components/atoms/CheckboxRow/CheckboxRow.tsx:4:export interface CheckboxRowProps extends Omit<LabelHTMLAttributes<HTMLLabelElement>, 'onChange'> {
+packages/rag-evaluation-site/src/components/atoms/ContextKindSwatch/ContextKindSwatch.stories.tsx:22:export const AllKinds: Story = {
+packages/rag-evaluation-site/src/components/atoms/ContextKindSwatch/ContextKindSwatch.stories.tsx:42:export const SizesAndSelection: Story = {
+packages/rag-evaluation-site/src/components/atoms/ContextKindSwatch/ContextKindSwatch.tsx:14:export function ContextKindSwatch({ kind, mode = 'pattern', size = 'md', selected = false, className, style, ...rest }: ContextKindSwatchProps) {
+packages/rag-evaluation-site/src/components/atoms/ContextKindSwatch/ContextKindSwatch.tsx:7:export interface ContextKindSwatchProps extends HTMLAttributes<HTMLSpanElement> {
+packages/rag-evaluation-site/src/components/atoms/ErrorCallout/ErrorCallout.stories.tsx:14:export const Preformatted: Story = {
+packages/rag-evaluation-site/src/components/atoms/ErrorCallout/ErrorCallout.stories.tsx:8:export const ApiError: Story = {
+packages/rag-evaluation-site/src/components/atoms/ErrorCallout/ErrorCallout.tsx:4:export interface ErrorCalloutProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/atoms/ErrorCallout/ErrorCallout.tsx:8:export function ErrorCallout({ className, children, ...rest }: ErrorCalloutProps) {
+packages/rag-evaluation-site/src/components/atoms/IconButton/IconButton.stories.tsx:13:export const Actions: Story = {
+packages/rag-evaluation-site/src/components/atoms/IconButton/IconButton.tsx:12:export function IconButton({ size = 'compact', label, className, children, ...rest }: IconButtonProps) {
+packages/rag-evaluation-site/src/components/atoms/IconButton/IconButton.tsx:6:export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+packages/rag-evaluation-site/src/components/atoms/SelectInput/SelectInput.stories.tsx:8:export const Basic: Story = {
+packages/rag-evaluation-site/src/components/atoms/SelectInput/SelectInput.tsx:4:export interface SelectInputProps extends SelectHTMLAttributes<HTMLSelectElement> {}
+packages/rag-evaluation-site/src/components/atoms/SelectInput/SelectInput.tsx:6:export function SelectInput({ className, children, ...rest }: SelectInputProps) {
+packages/rag-evaluation-site/src/components/atoms/TextInput/TextInput.stories.tsx:9:export const Examples: Story = {
+packages/rag-evaluation-site/src/components/atoms/TextInput/TextInput.tsx:4:export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {}
+packages/rag-evaluation-site/src/components/atoms/TextInput/TextInput.tsx:6:export function TextInput({ className, ...rest }: TextInputProps) {
+packages/rag-evaluation-site/src/components/atoms/TranscriptRoleBadge/TranscriptRoleBadge.stories.tsx:8:export const Roles: Story = { render: () => <Inline>{roles.map(role => <TranscriptRoleBadge key={role} role={role} />)}<TranscriptRoleBadge role="tool" name="read_file" /></Inline> };
+packages/rag-evaluation-site/src/components/atoms/TranscriptRoleBadge/TranscriptRoleBadge.tsx:4:export interface TranscriptRoleBadgeProps extends HTMLAttributes<HTMLSpanElement> { role: TranscriptRole; name?: string; }
+packages/rag-evaluation-site/src/components/atoms/TranscriptRoleBadge/TranscriptRoleBadge.tsx:5:export function TranscriptRoleBadge({ role, name, className, ...rest }: TranscriptRoleBadgeProps) {
+packages/rag-evaluation-site/src/components/foundation/Caption/Caption.stories.tsx:13:export const Default: Story = {};
+packages/rag-evaluation-site/src/components/foundation/Caption/Caption.stories.tsx:14:export const Tones: Story = {
+packages/rag-evaluation-site/src/components/foundation/Caption/Caption.tsx:23:export function Caption({ tone = 'muted', transform = 'none', truncate = false, className, children, ...rest }: CaptionProps) {
+packages/rag-evaluation-site/src/components/foundation/Caption/Caption.tsx:7:export interface CaptionProps extends HTMLAttributes<HTMLSpanElement> {
+packages/rag-evaluation-site/src/components/foundation/CodeText/CodeText.stories.tsx:12:export const Identifiers: Story = {
+packages/rag-evaluation-site/src/components/foundation/CodeText/CodeText.tsx:18:export function CodeText({
+packages/rag-evaluation-site/src/components/foundation/CodeText/CodeText.tsx:4:export interface CodeTextProps extends HTMLAttributes<HTMLElement> {
+packages/rag-evaluation-site/src/components/foundation/Divider/Divider.stories.tsx:12:export const Horizontal: Story = {
+packages/rag-evaluation-site/src/components/foundation/Divider/Divider.stories.tsx:22:export const Vertical: Story = {
+packages/rag-evaluation-site/src/components/foundation/Divider/Divider.tsx:4:export interface DividerProps extends HTMLAttributes<HTMLHRElement> {
+packages/rag-evaluation-site/src/components/foundation/Divider/Divider.tsx:8:export function Divider({ orientation = 'horizontal', className, ...rest }: DividerProps) {
+packages/rag-evaluation-site/src/components/foundation/Foundation.stories.tsx:106:export const Spacing: Story = {
+packages/rag-evaluation-site/src/components/foundation/Foundation.stories.tsx:123:export const BordersAndRadii: Story = {
+packages/rag-evaluation-site/src/components/foundation/Foundation.stories.tsx:148:export const Accessibility: Story = {
+packages/rag-evaluation-site/src/components/foundation/Foundation.stories.tsx:56:export const Colors: Story = {
+packages/rag-evaluation-site/src/components/foundation/Foundation.stories.tsx:76:export const Typography: Story = {
+packages/rag-evaluation-site/src/components/foundation/Foundation.stories.tsx:92:export const StatusTones: Story = {
+packages/rag-evaluation-site/src/components/foundation/StatusText/StatusText.stories.tsx:18:export const WorkflowStatuses: Story = {
+packages/rag-evaluation-site/src/components/foundation/StatusText/StatusText.tsx:16:export function StatusText({ status, icon = false, className, children, ...rest }: StatusTextProps) {
+packages/rag-evaluation-site/src/components/foundation/StatusText/StatusText.tsx:6:export interface StatusTextProps extends HTMLAttributes<HTMLSpanElement> {
+packages/rag-evaluation-site/src/components/foundation/Text/Text.stories.tsx:15:export const Body: Story = {};
+packages/rag-evaluation-site/src/components/foundation/Text/Text.stories.tsx:17:export const Roles: Story = {
+packages/rag-evaluation-site/src/components/foundation/Text/Text.stories.tsx:29:export const Tones: Story = {
+packages/rag-evaluation-site/src/components/foundation/Text/Text.tsx:10:export interface TextProps extends HTMLAttributes<HTMLElement> {
+packages/rag-evaluation-site/src/components/foundation/Text/Text.tsx:50:export function Text({
+packages/rag-evaluation-site/src/components/foundation/VisuallyHidden/VisuallyHidden.stories.tsx:13:export const AccessibleLabel: Story = {
+packages/rag-evaluation-site/src/components/foundation/VisuallyHidden/VisuallyHidden.tsx:4:export interface VisuallyHiddenProps extends HTMLAttributes<HTMLSpanElement> {
+packages/rag-evaluation-site/src/components/foundation/VisuallyHidden/VisuallyHidden.tsx:8:export function VisuallyHidden({ className, children, ...rest }: VisuallyHiddenProps) {
+packages/rag-evaluation-site/src/components/layout/AppShell/AppShell.stories.tsx:9:export const Basic: Story = {
+packages/rag-evaluation-site/src/components/layout/AppShell/AppShell.tsx:10:export function AppShell({ header, sidebar, className, children, ...rest }: AppShellProps) {
+packages/rag-evaluation-site/src/components/layout/AppShell/AppShell.tsx:4:export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/layout/DashboardGrid/DashboardGrid.stories.tsx:19:export const CorpusExplorer: Story = {
+packages/rag-evaluation-site/src/components/layout/DashboardGrid/DashboardGrid.stories.tsx:9:export const SearchWorkbench: Story = {
+packages/rag-evaluation-site/src/components/layout/DashboardGrid/DashboardGrid.tsx:17:export function DashboardGrid({ recipe = 'twoColumn', className, children, ...rest }: DashboardGridProps) {
+packages/rag-evaluation-site/src/components/layout/DashboardGrid/DashboardGrid.tsx:6:export interface DashboardGridProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/layout/FormRow/FormRow.stories.tsx:9:export const Basic: Story = { args: { label: 'Limit', control: <TextInput defaultValue="10" />, hint: 'Maximum number of results.' } };
+packages/rag-evaluation-site/src/components/layout/FormRow/FormRow.tsx:10:export function FormRow({ label, control, hint, className, ...rest }: FormRowProps) {
+packages/rag-evaluation-site/src/components/layout/FormRow/FormRow.tsx:4:export interface FormRowProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/layout/Inline/Inline.stories.tsx:10:export const Toolbar: Story = {
+packages/rag-evaluation-site/src/components/layout/Inline/Inline.tsx:17:export function Inline({ gap = 'sm', justify = 'start', wrap = true, className, children, ...rest }: InlineProps) {
+packages/rag-evaluation-site/src/components/layout/Inline/Inline.tsx:7:export interface InlineProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/layout/Panel/Panel.stories.tsx:10:export const Default: Story = {
+packages/rag-evaluation-site/src/components/layout/Panel/Panel.stories.tsx:17:export const WithActions: Story = {
+packages/rag-evaluation-site/src/components/layout/Panel/Panel.tsx:12:export function Panel({ title, actions, density = 'normal', fill = false, className, children, ...rest }: PanelProps) {
+packages/rag-evaluation-site/src/components/layout/Panel/Panel.tsx:4:export interface PanelProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+packages/rag-evaluation-site/src/components/layout/ScrollRegion/ScrollRegion.stories.tsx:8:export const Vertical: Story = {
+packages/rag-evaluation-site/src/components/layout/ScrollRegion/ScrollRegion.tsx:4:export interface ScrollRegionProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/layout/ScrollRegion/ScrollRegion.tsx:9:export function ScrollRegion({ axis = 'y', className, children, ...rest }: ScrollRegionProps) {
+packages/rag-evaluation-site/src/components/layout/SectionBlock/SectionBlock.stories.tsx:6:export const Plain: Story = {};
+packages/rag-evaluation-site/src/components/layout/SectionBlock/SectionBlock.tsx:14:export function SectionBlock({ as: Element = 'section', label, caption, density = 'normal', divider = 'none', className, children, ...rest }: SectionBlockProps) {
+packages/rag-evaluation-site/src/components/layout/SectionBlock/SectionBlock.tsx:5:export interface SectionBlockProps extends HTMLAttributes<HTMLElement> {
+packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.stories.tsx:20:export const CourseSidebar: Story = {};
+packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.tsx:17:export function SidebarShell({ sidebar, sidebarWidth = 188, header, footer, className, children, style, ...rest }: SidebarShellProps) {
+packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.tsx:4:export interface SidebarShellProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/layout/SlideShell/SlideShell.stories.tsx:32:export const VisualFirst: Story = {};
+packages/rag-evaluation-site/src/components/layout/SlideShell/SlideShell.stories.tsx:34:export const ContentFirst: Story = {
+packages/rag-evaluation-site/src/components/layout/SlideShell/SlideShell.stories.tsx:43:export const VisualOnRight: Story = {
+packages/rag-evaluation-site/src/components/layout/SlideShell/SlideShell.tsx:19:export function SlideShell({
+packages/rag-evaluation-site/src/components/layout/SlideShell/SlideShell.tsx:5:export interface SlideShellProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
+packages/rag-evaluation-site/src/components/layout/SplitPane/SplitPane.stories.tsx:7:export const CourseRatio: Story = { args: { ratio: 'course', divider: true } };
+packages/rag-evaluation-site/src/components/layout/SplitPane/SplitPane.tsx:11:export function SplitPane({ left, right, ratio = 'balanced', divider = false, className, ...rest }: SplitPaneProps) {
+packages/rag-evaluation-site/src/components/layout/SplitPane/SplitPane.tsx:4:export interface SplitPaneProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/layout/Stack/Stack.stories.tsx:13:export const PanelStack: Story = {
+packages/rag-evaluation-site/src/components/layout/Stack/Stack.tsx:28:export function Stack({ gap = 'md', align = 'stretch', className, children, ...rest }: StackProps) {
+packages/rag-evaluation-site/src/components/layout/Stack/Stack.tsx:7:export interface StackProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/layout/TabList/TabList.stories.tsx:9:export const Interactive: Story = { render: () => { const [tab, setTab] = useState('detail'); return <TabList items={[{ id: 'detail', label: 'detail' }, { id: 'chunk', label: 'chunk' }, { id: 'document', label: 'document' }]} activeId={tab} onChange={setTab} />; } };
+packages/rag-evaluation-site/src/components/layout/TabList/TabList.tsx:12:export function TabList<T extends string>({ items, activeId, onChange, ariaLabel = 'Tabs' }: TabListProps<T>) {
+packages/rag-evaluation-site/src/components/layout/TabList/TabList.tsx:5:export interface TabListProps<T extends string> {
+packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/AnchoredCommentCard.stories.tsx:7:export const States: Story = { render: () => <Stack gap="sm">{anchoredCommentFixtures.map((comment, i) => <AnchoredCommentCard key={comment.id} comment={comment} index={i+1} selected={i===0} compact={i===1} />)}</Stack> };
+packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/AnchoredCommentCard.tsx:14:export function AnchoredCommentCard({ comment, index, selected = false, compact = false, onDismiss, className, ...rest }: AnchoredCommentCardProps) {
+packages/rag-evaluation-site/src/components/molecules/AnchoredCommentCard/AnchoredCommentCard.tsx:6:export interface AnchoredCommentCardProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.stories.tsx:7:export const Notes: Story = { render: () => <Stack gap="sm">{transcriptFixture.annotations.map((annotation, index) => <AnnotationNoteCard key={annotation.id} annotation={annotation} index={index + 1} selected={annotation.id === transcriptFixture.selectedAnnotationId} />)}</Stack> };
+packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx:13:export function AnnotationNoteCard({ annotation, selected = false, index, className, ...rest }: AnnotationNoteCardProps) {
+packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx:7:export interface AnnotationNoteCardProps extends HTMLAttributes<HTMLElement> {
+packages/rag-evaluation-site/src/components/molecules/AppNav/AppNav.stories.tsx:23:export const SearchActive: Story = {
+packages/rag-evaluation-site/src/components/molecules/AppNav/AppNav.stories.tsx:32:export const Interactive: Story = {
+packages/rag-evaluation-site/src/components/molecules/AppNav/AppNav.tsx:16:export function AppNav({ brand, items, activeItemId, onItemSelect }: AppNavProps) {
+packages/rag-evaluation-site/src/components/molecules/AppNav/AppNav.tsx:9:export interface AppNavProps {
+packages/rag-evaluation-site/src/components/molecules/CheckList/CheckList.stories.tsx:5:export const Outcomes: Story = {};
+packages/rag-evaluation-site/src/components/molecules/CheckList/CheckList.tsx:5:export interface CheckListProps extends HTMLAttributes<HTMLUListElement> { items: Array<CheckListItem | ReactNode>; marker?: ReactNode; }
+packages/rag-evaluation-site/src/components/molecules/CheckList/CheckList.tsx:7:export function CheckList({ items, marker = '✔', className, ...rest }: CheckListProps) {
+packages/rag-evaluation-site/src/components/molecules/ContextBudgetBar/ContextBudgetBar.stories.tsx:19:export const BudgetStates: Story = {
+packages/rag-evaluation-site/src/components/molecules/ContextBudgetBar/ContextBudgetBar.stories.tsx:29:export const SelectedSegment: Story = {
+packages/rag-evaluation-site/src/components/molecules/ContextBudgetBar/ContextBudgetBar.tsx:13:export interface ContextBudgetBarProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/molecules/ContextBudgetBar/ContextBudgetBar.tsx:28:export function ContextBudgetBar({ snapshot, mode = 'pattern', showLegend = true, selectedPartId, className, ...rest }: ContextBudgetBarProps) {
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/ContextLegend.stories.tsx:21:export const Modes: Story = {
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/ContextLegend.stories.tsx:33:export const CompactCoreKinds: Story = {
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/ContextLegend.stories.tsx:46:export const AnnotationAndCourseKinds: Story = {
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/ContextLegend.tsx:13:export function ContextLegend({
+packages/rag-evaluation-site/src/components/molecules/ContextLegend/ContextLegend.tsx:6:export interface ContextLegendProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.stories.tsx:10:export const Comparison: Story = { render: () => <Stack gap="md"><Panel title="turn 14"><ContextStackDiagram snapshot={deepBug!} /></Panel><Panel title="turn 31"><ContextStackDiagram snapshot={atLimit!} /></Panel></Stack> };
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.stories.tsx:8:export const GroupedContextWindow: Story = { render: () => <Panel title="layered call"><ContextStackDiagram snapshot={deepBug!} /></Panel> };
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.stories.tsx:9:export const SelectedLayer: Story = { render: () => <Panel title="selected scratchpad"><ContextStackDiagram snapshot={atLimit!} selectedPartId="t31-scratchpad" /></Panel> };
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.tsx:12:export function ContextStackDiagram({ snapshot, selectedPartId, className, ...rest }: ContextStackDiagramProps) {
+packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.tsx:5:export interface ContextStackDiagramProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.stories.tsx:18:export const DenseSegments: Story = {
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.stories.tsx:29:export const SelectedSegment: Story = {
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.stories.tsx:37:export const LimitComparison: Story = {
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.tsx:16:export function ContextStripDiagram({ snapshot, mode = 'pattern', selectedPartId, showLabels = true, className, ...rest }: ContextStripDiagramProps) {
+packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.tsx:5:export interface ContextStripDiagramProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.stories.tsx:10:export const Comparison: Story = { render: () => <Stack gap="md"><Panel title="turn 14"><ContextTreemap snapshot={deepBug!} /></Panel><Panel title="turn 31"><ContextTreemap snapshot={atLimit!} /></Panel></Stack> };
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.stories.tsx:8:export const ProportionalTokens: Story = { render: () => <Panel title="where the tokens went"><ContextTreemap snapshot={atLimit!} /></Panel> };
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.stories.tsx:9:export const SelectedTile: Story = { render: () => <Panel title="selected file reads"><ContextTreemap snapshot={deepBug!} selectedPartId="t14-file-reads" /></Panel> };
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.tsx:4:export interface ContextTreemapProps extends HTMLAttributes<HTMLDivElement> { snapshot: ContextWindowSnapshot; selectedPartId?: string; }
+packages/rag-evaluation-site/src/components/molecules/ContextTreemap/ContextTreemap.tsx:6:export function ContextTreemap({ snapshot, selectedPartId, className, ...rest }: ContextTreemapProps) {
+packages/rag-evaluation-site/src/components/molecules/CourseStepNav/CourseStepNav.stories.tsx:7:export const Agenda: Story = { render: () => { const [active, setActive] = useState(contextCourseFixture.agenda[0]?.id); return <CourseStepNav items={contextCourseFixture.agenda} activeItemId={active} onItemSelect={setActive} />; } };
+packages/rag-evaluation-site/src/components/molecules/CourseStepNav/CourseStepNav.tsx:12:export function CourseStepNav({ items, activeItemId, onItemSelect, className, ...rest }: CourseStepNavProps) {
+packages/rag-evaluation-site/src/components/molecules/CourseStepNav/CourseStepNav.tsx:6:export interface CourseStepNavProps extends HTMLAttributes<HTMLOListElement> {
+packages/rag-evaluation-site/src/components/molecules/DataTable/DataTable.stories.tsx:14:export const RetrievalRows: Story = {
+packages/rag-evaluation-site/src/components/molecules/DataTable/DataTable.tsx:12:export interface DataTableProps<T> {
+packages/rag-evaluation-site/src/components/molecules/DataTable/DataTable.tsx:22:export function DataTable<T>({ columns, rows, getRowKey, selectedKey, onRowSelect, emptyMessage, className }: DataTableProps<T>) {
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/DocumentListPanel.stories.tsx:28:export const Documents: Story = {};
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/DocumentListPanel.stories.tsx:30:export const Interactive: Story = {
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/DocumentListPanel.stories.tsx:37:export const Empty: Story = {
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/DocumentListPanel.tsx:16:export interface DocumentListPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect' | 'title'> {
+packages/rag-evaluation-site/src/components/molecules/DocumentListPanel/DocumentListPanel.tsx:36:export function DocumentListPanel({
+packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/DocumentPreviewToolbar.stories.tsx:18:export const MarkdownDocument: Story = {};
+packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/DocumentPreviewToolbar.stories.tsx:20:export const LongFilename: Story = {
+packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/DocumentPreviewToolbar.tsx:15:export function DocumentPreviewToolbar({ file, format, size, onDownload, downloadLabel = '⤓ Download', rightSlot, className, ...rest }: DocumentPreviewToolbarProps) {
+packages/rag-evaluation-site/src/components/molecules/DocumentPreviewToolbar/DocumentPreviewToolbar.tsx:6:export interface DocumentPreviewToolbarProps extends HTMLAttributes<HTMLDivElement> {
+packages/rag-evaluation-site/src/components/molecules/FigureBlock/FigureBlock.stories.tsx:8:export const DiagramFigure: Story = {};
+packages/rag-evaluation-site/src/components/molecules/FigureBlock/FigureBlock.stories.tsx:9:export const BorderedFigure: Story = { args: { frame: 'bordered' } };
+packages/rag-evaluation-site/src/components/molecules/FigureBlock/FigureBlock.tsx:13:export function FigureBlock({ as: Element = 'figure', children, caption, legend, frame = 'none', className, ...rest }: FigureBlockProps) {
+packages/rag-evaluation-site/src/components/molecules/FigureBlock/FigureBlock.tsx:5:export interface FigureBlockProps extends HTMLAttributes<HTMLElement> {
+packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.stories.tsx:5:export const SlidePoints: Story = {};
+packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.stories.tsx:6:export const WithTitles: Story = { args: { items: [{ title: 'Read the budget', text: 'Start with the largest tenant and ask whether it still pays rent.' }, { title: 'Mark the churn', text: 'Scratchpad and tool output should age out quickly.', meta: 'Rule 02' }] } };
+packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.tsx:12:export interface KeyPointListProps extends HTMLAttributes<HTMLOListElement> {
+packages/rag-evaluation-site/src/components/molecules/KeyPointList/KeyPointList.tsx:24:export function KeyPointList({ items, markerTone = 'accent', className, ...rest }: KeyPointListProps) {
+packages/rag-evaluation-site/src/components/molecules/KeyValueStrip/KeyValueStrip.stories.tsx:5:export const MetaStrip: Story = {};
+packages/rag-evaluation-site/src/components/molecules/KeyValueStrip/KeyValueStrip.tsx:5:export interface KeyValueStripProps extends HTMLAttributes<HTMLDListElement> { items: KeyValueStripItem[]; }
+packages/rag-evaluation-site/src/components/molecules/KeyValueStrip/KeyValueStrip.tsx:7:export function KeyValueStrip({ items, className, ...rest }: KeyValueStripProps) {
+packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/MarkdownArticle.stories.tsx:14:export const FieldGuide: Story = {};
+packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/MarkdownArticle.stories.tsx:16:export const Checklist: Story = {
+packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/MarkdownArticle.tsx:41:export function MarkdownArticle({ source, className, ...rest }: MarkdownArticleProps) {
+packages/rag-evaluation-site/src/components/molecules/MarkdownArticle/MarkdownArticle.tsx:4:export interface MarkdownArticleProps extends HTMLAttributes<HTMLElement> {
+packages/rag-evaluation-site/src/components/molecules/MetadataGrid/MetadataGrid.stories.tsx:8:export const ResultIdentity: Story = {
+packages/rag-evaluation-site/src/components/molecules/MetadataGrid/MetadataGrid.tsx:10:export interface MetadataGridProps {
+packages/rag-evaluation-site/src/components/molecules/MetadataGrid/MetadataGrid.tsx:17:export function MetadataGrid({ items, density = 'normal', className, onCopy }: MetadataGridProps) {
+packages/rag-evaluation-site/src/components/molecules/PersonSummary/PersonSummary.stories.tsx:5:export const Instructor: Story = {};
+packages/rag-evaluation-site/src/components/molecules/PersonSummary/PersonSummary.tsx:4:export interface PersonSummaryProps extends HTMLAttributes<HTMLDivElement> { name: ReactNode; subtitle?: ReactNode; bio?: ReactNode; avatar?: ReactNode; }
+packages/rag-evaluation-site/src/components/molecules/PersonSummary/PersonSummary.tsx:6:export function PersonSummary({ name, subtitle, bio, avatar, className, ...rest }: PersonSummaryProps) {
+packages/rag-evaluation-site/src/components/molecules/SidebarNav/SidebarNav.stories.tsx:10:export const CourseNavigation: Story = {};
+packages/rag-evaluation-site/src/components/molecules/SidebarNav/SidebarNav.stories.tsx:12:export const Interactive: Story = {
+packages/rag-evaluation-site/src/components/molecules/SidebarNav/SidebarNav.tsx:18:export interface SidebarNavProps extends Omit<HTMLAttributes<HTMLElement>, 'onSelect'> {
+packages/rag-evaluation-site/src/components/molecules/SidebarNav/SidebarNav.tsx:25:export function SidebarNav({ sections, activeItemId, onItemSelect, ariaLabel = 'Course', className, ...rest }: SidebarNavProps) {
+packages/rag-evaluation-site/src/components/molecules/StepList/StepList.stories.tsx:8:export const MinimalSteps: Story = { render: () => { const [active, setActive] = useState(items[0]?.id); return <StepList items={items} activeItemId={active} onItemSelect={setActive} />; } };
+packages/rag-evaluation-site/src/components/molecules/StepList/StepList.tsx:5:export interface StepListProps extends HTMLAttributes<HTMLOListElement> { items: StepListItem[]; activeItemId?: string; onItemSelect?: (id: string) => void; }
+packages/rag-evaluation-site/src/components/molecules/StepList/StepList.tsx:7:export function StepList({ items, activeItemId, onItemSelect, className, ...rest }: StepListProps) {
+packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.stories.tsx:7:export const Roles: Story = { render: () => <Stack gap="sm">{transcriptFixture.messages.slice(0,6).map(message => <TranscriptMessageCard key={message.id} message={message} annotations={transcriptFixture.annotations} selectedAnnotationId="task-framing" />)}</Stack> };
+packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.stories.tsx:8:export const ToolOutput: Story = { render: () => <TranscriptMessageCard message={transcriptFixture.messages[4]!} annotations={transcriptFixture.annotations} selectedAnnotationId="stack-trace-noise" /> };
+packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx:36:export function TranscriptMessageCard({
+packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx:6:export interface TranscriptMessageCardProps extends HTMLAttributes<HTMLElement> {
+packages/rag-evaluation-site/src/components/molecules/TranscriptSessionHeader/TranscriptSessionHeader.stories.tsx:22:export const SessionSummary: Story = {};
+packages/rag-evaluation-site/src/components/molecules/TranscriptSessionHeader/TranscriptSessionHeader.tsx:14:export function TranscriptSessionHeader({ title, subtitle, messageCount, annotationCount, tokenTotal, rightSlot, className, ...rest }: TranscriptSessionHeaderProps) {
+packages/rag-evaluation-site/src/components/molecules/TranscriptSessionHeader/TranscriptSessionHeader.tsx:5:export interface TranscriptSessionHeaderProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
+packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/AnchoredCommentRail.stories.tsx:7:export const Rail: Story = { render: () => { const [selected, setSelected] = useState(anchoredCommentFixtures[0]?.id); return <AnchoredCommentRail comments={anchoredCommentFixtures} selectedCommentId={selected} onCommentSelect={setSelected} />; } };
+packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/AnchoredCommentRail.tsx:14:export function AnchoredCommentRail({ title = 'Comments', comments, selectedCommentId, onCommentSelect, ...rest }: AnchoredCommentRailProps) {
+packages/rag-evaluation-site/src/components/organisms/AnchoredCommentRail/AnchoredCommentRail.tsx:7:export interface AnchoredCommentRailProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+packages/rag-evaluation-site/src/components/organisms/AnnotationRailPanel/AnnotationRailPanel.stories.tsx:7:export const Rail: Story = { render: () => { const [selected, setSelected] = useState(transcriptFixture.selectedAnnotationId); return <AnnotationRailPanel annotations={transcriptFixture.annotations} selectedAnnotationId={selected} onAnnotationSelect={setSelected} />; } };
+packages/rag-evaluation-site/src/components/organisms/AnnotationRailPanel/AnnotationRailPanel.tsx:15:export function AnnotationRailPanel({
+packages/rag-evaluation-site/src/components/organisms/AnnotationRailPanel/AnnotationRailPanel.tsx:7:export interface AnnotationRailPanelProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
+packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.stories.tsx:8:export const InteractiveViews: Story = { render: () => <ContextDiagramPanel snapshot={deepBug!} /> };
+packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.stories.tsx:9:export const StartingViews: Story = { render: () => <Stack gap="md"><ContextDiagramPanel snapshot={deepBug!} initialView="strip" /><ContextDiagramPanel snapshot={atLimit!} initialView="treemap" /><ContextDiagramPanel snapshot={overBudget!} initialView="budget" /></Stack> };
+packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.tsx:11:export function ContextDiagramPanel({ snapshot, initialView='strip', selectedPartId, className, ...rest }: ContextDiagramPanelProps) {
+packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.tsx:9:export interface ContextDiagramPanelProps extends HTMLAttributes<HTMLDivElement> { snapshot: ContextWindowSnapshot; initialView?: ContextDiagramView; selectedPartId?: string; }
+packages/rag-evaluation-site/src/components/organisms/CourseLessonPanel/CourseLessonPanel.stories.tsx:7:export const WorkshopLanding: Story = { render: () => { const [active, setActive] = useState(contextCourseFixture.agenda[0]?.id); return <CourseLessonPanel course={contextCourseFixture} activeAgendaItemId={active} onAgendaItemSelect={setActive} />; } };
+packages/rag-evaluation-site/src/components/organisms/CourseLessonPanel/CourseLessonPanel.tsx:15:export function CourseLessonPanel({ course, activeAgendaItemId, onAgendaItemSelect, className, ...rest }: CourseLessonPanelProps) {
+packages/rag-evaluation-site/src/components/organisms/CourseLessonPanel/CourseLessonPanel.tsx:9:export interface CourseLessonPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/CourseSlidePanel.stories.tsx:10:export const VisualOnRight: Story = { render: () => <CourseSlidePanel slide={slide} snapshot={snapshot} index={1} total={contextSlides.length} visualSide="right" /> };
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/CourseSlidePanel.stories.tsx:11:export const SlideDeckSamples: Story = { render: () => <Stack gap="md">{contextSlides.slice(0,3).map((s, i) => <CourseSlidePanel key={s.id} slide={s} snapshot={contextWindowSnapshots.find((item) => item.id === s.snapshotId)!} index={i} total={contextSlides.length} visualSide={i % 2 === 0 ? 'left' : 'right'} />)}</Stack> };
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/CourseSlidePanel.stories.tsx:9:export const AnatomySlide: Story = { render: () => <CourseSlidePanel slide={slide} snapshot={snapshot} index={1} total={contextSlides.length} /> };
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/CourseSlidePanel.tsx:30:export function CourseSlidePanel({
+packages/rag-evaluation-site/src/components/organisms/CourseSlidePanel/CourseSlidePanel.tsx:7:export interface CourseSlidePanelProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/courseStudioNav.ts:3:export const courseStudioNavSections: SidebarNavSection[] = [
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.stories.tsx:41:export const SlidesActive: Story = {};
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.stories.tsx:43:export const Interactive: Story = {
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.tsx:17:export function CourseStudioShell({
+packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.tsx:7:export interface CourseStudioShellProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.stories.tsx:21:export const FieldGuideSelected: Story = {};
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.stories.tsx:23:export const ChecklistSelected: Story = {
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.stories.tsx:27:export const Interactive: Story = {
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.tsx:22:export function HandoutDocumentShell({
+packages/rag-evaluation-site/src/components/organisms/HandoutDocumentShell/HandoutDocumentShell.tsx:7:export interface HandoutDocumentShellProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect' | 'title'> {
+packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.stories.tsx:20:export const AnnotatedTranscript: Story = {
+packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.stories.tsx:27:export const ToolHeavyExcerpt: Story = {
+packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.tsx:20:export function TranscriptReaderPanel({
+packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.tsx:6:export interface TranscriptReaderPanelProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.stories.tsx:19:export const WithoutNotes: Story = {
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.stories.tsx:26:export const WithNotes: Story = {
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.stories.tsx:42:export const ToolHeavyWithoutNotes: Story = {
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.tsx:17:export function TranscriptWorkspacePanel({
+packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.tsx:7:export interface TranscriptWorkspacePanelProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+packages/rag-evaluation-site/src/widgets/actions.ts:21:export function dispatchWidgetAction(action: ActionSpec, context: WidgetActionContext = {}, onAction?: WidgetActionHandler): void {
+packages/rag-evaluation-site/src/widgets/actions.ts:56:export function bindAction(action: ActionSpec | undefined, context: WidgetActionContext, onAction?: WidgetActionHandler): (() => void) | undefined {
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:34:export function renderRenderable(value: RenderableValue | undefined, renderWidgetNode: RenderWidgetNode): ReactNode {
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:40:export function rowKey(row: JsonObject, spec: string | { field: string } | { template: string }): string {
+packages/rag-evaluation-site/src/widgets/cellRenderers.tsx:8:export function renderCell(spec: CellSpec, row: JsonObject, renderWidgetNode: RenderWidgetNode): ReactNode {
+packages/rag-evaluation-site/src/widgets/ir.ts:105:export interface ButtonWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:113:export interface CaptionWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:119:export interface DashboardGridWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:123:export interface DataTableWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:197:export interface FormRowWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:203:export interface InlineWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:209:export interface MetadataGridWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:220:export interface PanelWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:227:export interface ScrollRegionWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:231:export interface SelectInputWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:245:export interface StackWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:250:export interface StatusTextWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:255:export interface TabListWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:267:export interface TextInputWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:277:export type WidgetProps =
+packages/rag-evaluation-site/src/widgets/ir.ts:296:export function text(value: string | number | boolean): TextNode {
+packages/rag-evaluation-site/src/widgets/ir.ts:300:export function element(tag: string, attrs?: JsonObject, children: WidgetNode[] = []): ElementNode {
+packages/rag-evaluation-site/src/widgets/ir.ts:304:export function component(type: RagWidgetType | string, props?: WidgetProps, children: WidgetNode[] = []): ComponentNode {
+packages/rag-evaluation-site/src/widgets/ir.ts:308:export function isWidgetNode(value: unknown): value is WidgetNode {
+packages/rag-evaluation-site/src/widgets/ir.ts:80:export interface BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:88:export interface AppShellWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/ir.ts:93:export interface AppNavWidgetProps extends BaseWidgetProps {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:121:export const DataTableCellKinds: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:142:export const DataTableEmptyAndMalformed: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:163:export const SearchWorkbenchComposition: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:214:export const CorpusExplorerSkeleton: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:272:export const WorkflowDashboardSkeleton: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:39:export const PrimitiveAtoms: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:65:export const FoundationStatuses: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:83:export const LayoutRecipes: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.stories.tsx:98:export const MetadataGridVariants: Story = {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:32:export interface WidgetRendererProps {
+packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx:37:export function WidgetRenderer({ node, onAction }: WidgetRendererProps) {
