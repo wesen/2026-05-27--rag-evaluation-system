@@ -149,3 +149,15 @@ Added SidebarShell content padding support and applied it to the layout recipe S
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/layout/SidebarShell/SidebarShell.tsx — SidebarShell contentPadding prop
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.layout-recipes.stories.tsx — Updated reported layout recipe story
 
+
+## 2026-06-07
+
+Expanded the xgoja widget-site example with semantic transcript, slide, course, and handout pages plus smoke checks and provider docs.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/Makefile — Smoke checks for new semantic pages
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/examples/xgoja/widget-site/verbs/sites.js — xgoja semantic Widget IR example pages
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/xgoja/providers/widgetsite/doc/01-widget-dsl-getting-started.md — Updated getting started recipe docs
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md — Updated recipe API reference
+

@@ -795,3 +795,78 @@ The fix adds reusable `contentPadding` support to `SidebarShell` and threads it 
 
 ### Technical details
 - The change is intentionally additive and keeps default content padding disabled for backwards-compatible layout behavior.
+
+## Step 12: Expand the xgoja Widget Site with Transcript, Slide, Course, and Handout Examples
+
+I moved from the React/Storybook side into the Goja/xgoja demo surface. The widget-site example now exposes multiple jsverb-authored pages that exercise the semantic recipes and direct component helpers for transcripts, annotations, anchored comments, slides, course shells, and handouts.
+
+This makes the xgoja story concrete: JavaScript authors can serve rich React-rendered context-review pages from a generated xgoja binary without writing HTML or React code. The examples intentionally include both high-level recipes and lower-level direct component compositions so reviewers can compare authoring styles.
+
+### Prompt Context
+
+**User prompt (verbatim):** "add lots of examples around the transcripts and slides and handouts and all that. 
+
+continue"
+
+**Assistant interpretation:** Continue into the xgoja/widget-site layer and add many runnable examples for the newly supported semantic Widget IR families.
+
+**Inferred user intent:** Validate the expanded Widget IR API from the actual JavaScript/xgoja authoring surface, not only React Storybook and Go unit tests.
+
+### What I did
+- Expanded `examples/xgoja/widget-site/verbs/sites.js` with richer fixtures:
+  - context snapshot
+  - transcript messages and annotations
+  - anchored comments
+  - course metadata and agenda
+  - three slides
+  - four handout documents
+- Added xgoja page endpoints:
+  - `/api/widget/pages/semantic`
+  - `/api/widget/pages/transcripts`
+  - `/api/widget/pages/slides`
+  - `/api/widget/pages/handouts`
+  - `/api/widget/pages/course-examples`
+- Added direct component examples for:
+  - `TranscriptWorkspacePanel`, `TranscriptReaderPanel`, `AnnotationRailPanel`, `AnchoredCommentRail`
+  - `CourseSlidePanel`, `SlideShell`, `FigureBlock`, `KeyPointList`
+  - `HandoutDocumentShell`, `DocumentListPanel`, `DocumentPreviewToolbar`, `MarkdownArticle`
+  - `CourseLessonPanel`, `CourseStudioShell`
+- Added lightweight action handlers for annotation/comment/document/agenda selections.
+- Extended `examples/xgoja/widget-site/Makefile` smoke checks for the new pages.
+- Updated provider docs for the expanded recipe set and example routes.
+
+### Why
+- The Goja DSL core already supported the new helpers and recipes, but the generated xgoja example still mostly demonstrated the older dashboard/action flow.
+- Runnable jsverb examples are the strongest proof that the new semantic Widget IR surface works across the intended boundary.
+
+### What worked
+- `node --check examples/xgoja/widget-site/verbs/sites.js` passed.
+- `go test ./pkg/widgetdsl ./pkg/xgoja/providers/widgetsite ./pkg/widgetrunner ./pkg/widgetserver ./pkg/widgetschema -count=1` passed.
+- `cd examples/xgoja/widget-site && make smoke` passed.
+
+### What didn't work
+- N/A
+
+### What I learned
+- The direct component helpers make xgoja pages expressive enough to demonstrate custom layouts, while recipes keep the common pages compact.
+- The smoke test can cheaply verify semantic coverage by checking for expected component names in JSON page responses.
+
+### What was tricky to build
+- The examples needed to use the actual DTO shapes expected by React components, especially transcript annotations (`targetMessageId`, `label`, `text`) and course/handout document fields.
+- It was important to keep the new pages JSON-first; no HTML strings or React-specific assumptions were added.
+
+### What warrants a second pair of eyes
+- Review whether the example data should be moved out of `sites.js` once it grows further.
+- Review the action context keys used by the new action handlers against the renderer bindings.
+
+### What should be done in the future
+- Add browser-level visual smoke for the new xgoja pages.
+- Consider adding a navigation page that links the demo, semantic, transcripts, slides, handouts, and course examples.
+
+### Code review instructions
+- Start with `examples/xgoja/widget-site/verbs/sites.js` and review each new `*ExamplesPage` function.
+- Then review `examples/xgoja/widget-site/Makefile` smoke checks.
+- Validate with `node --check`, targeted Go tests, and `make smoke` from the widget-site example directory.
+
+### Technical details
+- The xgoja example still serves the same embedded React app; only the Widget IR returned from jsverb endpoints changed.

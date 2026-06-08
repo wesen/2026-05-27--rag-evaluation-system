@@ -31,7 +31,7 @@ serve-smoke: build
 	log=$$(mktemp); \
 	$(BIN) serve sites demo --http-listen $(HTTP_ADDR) >$$log 2>&1 & \
 	pid=$$!; \
-	trap 'kill $$pid >/dev/null 2>&1 || true; wait $$pid >/dev/null 2>&1 || true; rm -f $$log /tmp/rag-widget-xgoja-page.json /tmp/rag-widget-xgoja-page-after-actions.json /tmp/rag-widget-xgoja-action-add.json /tmp/rag-widget-xgoja-action-cycle.json /tmp/rag-widget-xgoja-action-retry.json /tmp/rag-widget-xgoja-spa.html /tmp/rag-widget-xgoja-health.json /tmp/rag-widget-xgoja-root.html /tmp/rag-widget-xgoja-asset.js' EXIT; \
+	trap 'kill $$pid >/dev/null 2>&1 || true; wait $$pid >/dev/null 2>&1 || true; rm -f $$log /tmp/rag-widget-xgoja-page.json /tmp/rag-widget-xgoja-semantic.json /tmp/rag-widget-xgoja-transcripts.json /tmp/rag-widget-xgoja-slides.json /tmp/rag-widget-xgoja-handouts.json /tmp/rag-widget-xgoja-course.json /tmp/rag-widget-xgoja-page-after-actions.json /tmp/rag-widget-xgoja-action-add.json /tmp/rag-widget-xgoja-action-cycle.json /tmp/rag-widget-xgoja-action-retry.json /tmp/rag-widget-xgoja-spa.html /tmp/rag-widget-xgoja-health.json /tmp/rag-widget-xgoja-root.html /tmp/rag-widget-xgoja-asset.js' EXIT; \
 	for i in $$(seq 1 100); do \
 		if curl -fsS http://$(HTTP_ADDR)/healthz >/tmp/rag-widget-xgoja-health.json 2>/dev/null; then break; fi; \
 		if ! kill -0 $$pid >/dev/null 2>&1; then cat $$log; exit 1; fi; \
@@ -45,6 +45,22 @@ serve-smoke: build
 	grep -q '"type":"DataTable"' /tmp/rag-widget-xgoja-page.json; \
 	grep -q 'Fast Growing Trees' /tmp/rag-widget-xgoja-page.json; \
 	grep -q 'Queue controls' /tmp/rag-widget-xgoja-page.json; \
+	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/semantic >/tmp/rag-widget-xgoja-semantic.json; \
+	grep -q 'ContextDiagramPanel' /tmp/rag-widget-xgoja-semantic.json; \
+	grep -q 'CourseStudioShell' /tmp/rag-widget-xgoja-semantic.json; \
+	grep -q 'HandoutDocumentShell' /tmp/rag-widget-xgoja-semantic.json; \
+	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/transcripts >/tmp/rag-widget-xgoja-transcripts.json; \
+	grep -q 'TranscriptWorkspacePanel' /tmp/rag-widget-xgoja-transcripts.json; \
+	grep -q 'AnchoredCommentRail' /tmp/rag-widget-xgoja-transcripts.json; \
+	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/slides >/tmp/rag-widget-xgoja-slides.json; \
+	grep -q 'CourseSlidePanel' /tmp/rag-widget-xgoja-slides.json; \
+	grep -q 'SlideShell' /tmp/rag-widget-xgoja-slides.json; \
+	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/handouts >/tmp/rag-widget-xgoja-handouts.json; \
+	grep -q 'DocumentListPanel' /tmp/rag-widget-xgoja-handouts.json; \
+	grep -q 'MarkdownArticle' /tmp/rag-widget-xgoja-handouts.json; \
+	curl -fsS http://$(HTTP_ADDR)/api/widget/pages/course-examples >/tmp/rag-widget-xgoja-course.json; \
+	grep -q 'CourseLessonPanel' /tmp/rag-widget-xgoja-course.json; \
+	grep -q 'CourseStudioShell' /tmp/rag-widget-xgoja-course.json; \
 	curl -fsS -X POST http://$(HTTP_ADDR)/api/widget/actions/add-query -H 'Content-Type: application/json' -d '{"payload":{"owner":"qa"},"context":{"componentType":"Button"}}' >/tmp/rag-widget-xgoja-action-add.json; \
 	grep -q '"refresh":true' /tmp/rag-widget-xgoja-action-add.json; \
 	grep -q 'Added query' /tmp/rag-widget-xgoja-action-add.json; \

@@ -355,6 +355,59 @@ widget.recipes.masterDetailTable({
 })
 ```
 
+### `recipes.contextDiagram({ snapshot, view?, initialView?, selectedPartId? })`
+
+Creates a `ContextDiagramPanel` from a serializable context-window snapshot:
+
+```js
+widget.recipes.contextDiagram({ snapshot, view: "budget", selectedPartId: "retrieval" })
+```
+
+### `recipes.annotatedTranscript({ transcript, messages?, annotations?, selectedAnnotationId?, showNotes?, onAnnotationSelect? })`
+
+Creates a `TranscriptWorkspacePanel`. `transcript` may contain `title`, `subtitle`, `messages`, `annotations`, and `selectedAnnotationId`; top-level fields can override the bundle:
+
+```js
+widget.recipes.annotatedTranscript({
+  transcript,
+  selectedAnnotationId: "a1",
+  onAnnotationSelect: "note-selected"
+})
+```
+
+### `recipes.courseStudio({ sections, activeItemId?, title?, subtitle?, main?, onNavigate? })`
+
+Creates a `CourseStudioShell`. The optional `main` field should be a Widget IR node, often a course slide or lesson panel:
+
+```js
+widget.recipes.courseStudio({
+  sections,
+  activeItemId: "slides",
+  main: widget.recipes.courseSlide({ slide, snapshot, index: 0, total: 3 })
+})
+```
+
+### `recipes.courseSlide({ slide, snapshot, index?, total?, visualSide?, onPrevious?, onNext? })`
+
+Creates a `CourseSlidePanel` from a slide DTO and matching context-window snapshot:
+
+```js
+widget.recipes.courseSlide({ slide, snapshot, index: 0, total: slides.length, visualSide: "right" })
+```
+
+### `recipes.handout({ bundle, documents?, selectedDocumentId?, title?, onSelect?, onDownload?, onDownloadAll? })`
+
+Creates a `HandoutDocumentShell`. `bundle.docs` is used as the document list when present:
+
+```js
+widget.recipes.handout({
+  bundle,
+  selectedDocumentId: "guide",
+  onSelect: "document-selected",
+  onDownload: "document-download"
+})
+```
+
 Recipes are convenience helpers only. They return the same JSON-compatible Widget IR that could be written manually with low-level component helpers.
 
 ## Page object contract

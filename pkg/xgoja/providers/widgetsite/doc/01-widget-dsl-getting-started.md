@@ -198,7 +198,43 @@ return rag.page({
 })
 ```
 
-The current recipe set includes `metrics`, `actionToolbar`, and `masterDetailTable`. Use recipes to make scripts read like page intent, then drop down to component helpers such as `panel`, `dataTable`, and `metadataGrid` for custom sections.
+The current recipe set includes dashboard recipes (`metrics`, `actionToolbar`, `masterDetailTable`) and semantic context-viewer recipes (`contextDiagram`, `annotatedTranscript`, `courseStudio`, `courseSlide`, `handout`). Use recipes to make scripts read like page intent, then drop down to component helpers such as `panel`, `dataTable`, `transcriptWorkspacePanel`, `courseSlidePanel`, and `handoutDocumentShell` for custom sections.
+
+For example, a jsverb can expose a context-window teaching page without building React-specific markup:
+
+```js
+const snapshot = {
+  id: "ctx",
+  title: "Context Window",
+  limit: 16000,
+  parts: [
+    { id: "system", label: "System", kind: "system", tokens: 600 },
+    { id: "retrieval", label: "Retrieved docs", kind: "retrieval", tokens: 7000 }
+  ]
+}
+
+const slide = {
+  id: "budget",
+  number: "01",
+  title: "Budget pressure",
+  view: "budget",
+  snapshotId: snapshot.id,
+  notes: ["Retrieved documents dominate this example."]
+}
+
+return rag.page({
+  id: "semantic",
+  title: "Semantic context page",
+  sections: [
+    rag.recipes.contextDiagram({ snapshot, view: "budget" }),
+    rag.recipes.courseStudio({
+      sections: [{ id: "course", label: "Course", items: [{ id: "slides", label: "Slides" }] }],
+      activeItemId: "slides",
+      main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 })
+    })
+  ]
+})
+```
 
 ## Build and run
 
@@ -220,6 +256,16 @@ Open a frontend route handled by the SPA fallback:
 
 ```text
 http://127.0.0.1:18793/pages/demo
+```
+
+The bundled widget-site example also exposes semantic pages for the expanded component library:
+
+```text
+http://127.0.0.1:18793/pages/semantic
+http://127.0.0.1:18793/pages/transcripts
+http://127.0.0.1:18793/pages/slides
+http://127.0.0.1:18793/pages/handouts
+http://127.0.0.1:18793/pages/course-examples
 ```
 
 The browser asks the React app to render `demo`. The app calls `/api/widget/pages/demo`, receives Widget IR, and renders the page.

@@ -22,7 +22,10 @@ function demo() {
   app.spaFromAssetsModule("/", assets, "/app/public", { excludePrefixes: ["/api", "/healthz", "/favicon.ico"] })
   app.get("/favicon.ico", (_req, res) => res.status(204).end())
   app.get("/healthz", (_req, res) => res.json({ ok: true, site: "rag-widget-xgoja-site" }))
-  app.get("/api/widget/schema", (_req, res) => res.json({ schemaVersion: "0.1.0", components: ["Panel", "StatusText", "DataTable", "Button", "MetadataGrid"] }))
+  app.get("/api/widget/schema", (_req, res) => res.json({ schemaVersion: "0.1.0", components: [
+    "Panel", "StatusText", "DataTable", "Button", "MetadataGrid",
+    "ContextDiagramPanel", "TranscriptWorkspacePanel", "CourseStudioShell", "CourseSlidePanel", "HandoutDocumentShell"
+  ] }))
 
   function allRows() {
     return db.query("SELECT id, name, status, priority, owner, notes FROM queries ORDER BY priority DESC, id ASC")
@@ -113,6 +116,287 @@ function demo() {
     )
   }
 
+  const snapshot = {
+    id: "xgoja-context-window",
+    title: "xgoja Generated Context Window",
+    limit: 16000,
+    parts: [
+      { id: "system", label: "System prompt", kind: "system", tokens: 620, importance: 0.9, pinned: true },
+      { id: "chat", label: "Recent transcript", kind: "conversation", tokens: 4200, importance: 0.82 },
+      { id: "docs", label: "Retrieved docs", kind: "retrieval", tokens: 7100, importance: 0.74 },
+      { id: "tools", label: "Tool traces", kind: "tool", tokens: 1800, importance: 0.5 },
+      { id: "notes", label: "Reviewer notes", kind: "annotation", tokens: 900, importance: 0.62 }
+    ]
+  }
+
+  const transcript = {
+    title: "Context review session",
+    subtitle: "Rendered from rag.recipes.annotatedTranscript in xgoja",
+    messages: [
+      { id: "m1", role: "system", text: "You are reviewing whether the current answer used the allowed retrieval context.", tokens: 38, timestamp: "09:13" },
+      { id: "m2", role: "user", text: "Why did retrieval crowd out the system prompt?", tokens: 12, timestamp: "09:14", annotationIds: ["a1"] },
+      { id: "m3", role: "assistant", text: "The retrieved-doc slice grew to 44% of the window. Pinning kept the system prompt present, but reduced budget for tool traces.", tokens: 34, timestamp: "09:15", annotationIds: ["a1", "a2"] },
+      { id: "m4", role: "tool", name: "context.inspect", text: "retrieval=7100 tokens, transcript=4200 tokens, tools=1800 tokens", tokens: 19, timestamp: "09:15" },
+      { id: "m5", role: "assistant", text: "A safer plan is to summarize retrieved evidence before adding it to the next turn.", tokens: 21, timestamp: "09:16", annotationIds: ["a3"] }
+    ],
+    annotations: [
+      { id: "a1", targetMessageId: "m3", kind: "context", label: "Budget pressure", text: "Retrieved documents dominate this context window.", confidence: 0.92 },
+      { id: "a2", targetMessageId: "m3", kind: "course", label: "Teaching note", text: "Use the treemap to show the tradeoff.", confidence: 0.81 },
+      { id: "a3", targetMessageId: "m5", kind: "summary", label: "Repair pattern", text: "Summarize before carrying evidence forward.", confidence: 0.88 }
+    ]
+  }
+
+  const anchoredComments = [
+    { id: "c1", anchorX: 28, anchorY: 18, author: "Reviewer", text: "Call out pinned system content before discussing retrieval.", time: "09:22", status: "open" },
+    { id: "c2", anchorX: 62, anchorY: 54, author: "Instructor", text: "This is the moment to switch from budget bar to treemap.", time: "09:24", status: "open" },
+    { id: "c3", anchorX: 40, anchorY: 72, author: "QA", text: "Resolved once tool traces are summarized.", time: "09:29", status: "resolved" }
+  ]
+
+  const courseSections = [
+    { id: "course", label: "Course", items: [{ id: "overview", label: "Overview" }, { id: "slides", label: "Slides" }] },
+    { id: "reference", label: "Reference", items: [{ id: "handout", label: "Handout" }] }
+  ]
+
+  const course = {
+    id: "context-workshop",
+    kicker: "Live xgoja workshop",
+    title: "Context Window Engineering",
+    tagline: "Learn to see, budget, annotate, and teach context windows.",
+    when: "Friday 10:00",
+    where: "Remote studio",
+    format: "90 minute lab",
+    price: "Included",
+    instructor: { name: "RAG Systems Team", role: "Instructor", bio: "Builds evaluation tooling and context visualizers." },
+    blurb: "This course page is generated entirely by a jsverb and rendered by the package React components.",
+    outcomes: ["Read context-window diagrams", "Connect transcript annotations to budget pressure", "Package a slide and handout for reviewers"],
+    agenda: [
+      { id: "agenda-map", number: "01", title: "Map the window", description: "Identify pinned, retrieved, conversational, and tool slices.", duration: "20 min" },
+      { id: "agenda-annotate", number: "02", title: "Annotate the transcript", description: "Attach reviewer notes to the exact messages that changed the answer.", duration: "25 min" },
+      { id: "agenda-teach", number: "03", title: "Teach the repair", description: "Turn the finding into a slide and handout.", duration: "30 min" }
+    ]
+  }
+
+  const slides = [
+    {
+      id: "slide-budget",
+      number: "01",
+      kicker: "Budget",
+      title: "Context budget is a product decision",
+      subtitle: "xgoja emits semantic Widget IR; React owns the rendering.",
+      view: "budget",
+      snapshotId: snapshot.id,
+      notes: ["Pinned content protects invariants.", "Retrieval slices need explicit budgets.", "Tool traces should be summarized before they dominate the window."]
+    },
+    {
+      id: "slide-treemap",
+      number: "02",
+      kicker: "Shape",
+      title: "Treemaps make crowding obvious",
+      subtitle: "When one slice expands, every other slice loses room.",
+      view: "treemap",
+      snapshotId: snapshot.id,
+      notes: ["Look for a single dominant rectangle.", "Ask whether that slice can be summarized.", "Move low-value traces to a reference artifact."]
+    },
+    {
+      id: "slide-stack",
+      number: "03",
+      kicker: "Order",
+      title: "Stack order explains what the model saw first",
+      subtitle: "Use stack view to discuss recency and instruction placement.",
+      view: "stack",
+      snapshotId: snapshot.id,
+      notes: ["System and developer content should be easy to find.", "Conversation turns carry recency pressure.", "Generated summaries belong near the evidence they summarize."]
+    }
+  ]
+  const slide = slides[0]
+
+  const handoutBundle = {
+    intro: "Reference material generated by the xgoja widget site demo.",
+    docs: [
+      { id: "guide", title: "Context Window Guide", file: "context-window-guide.md", format: "markdown", size: "8 KB", description: "Short checklist for reviewing context windows.", body: "# Context Window Guide\n\nUse this handout to review context composition.\n\n## Checklist\n\n- Preserve system invariants.\n- Budget retrieval explicitly.\n- Summarize verbose tool traces.\n" },
+      { id: "exercise", title: "Workshop Exercise", file: "workshop-exercise.md", format: "markdown", size: "5 KB", description: "Hands-on prompt for balancing retrieval and transcript budget.", body: "# Workshop Exercise\n\nGiven a 16k window, allocate budget for system prompt, transcript, retrieval, and tools.\n" },
+      { id: "rubric", title: "Review Rubric", file: "review-rubric.md", format: "markdown", size: "6 KB", description: "Scoring guide for context-window review sessions.", body: "# Review Rubric\n\nScore each answer on evidence fit, instruction preservation, and trace compactness.\n\n| Dimension | Question |\n| --- | --- |\n| Evidence | Did retrieved context support the answer? |\n| Instructions | Were system/developer instructions preserved? |\n| Trace | Were tool outputs compact enough? |\n" },
+      { id: "facilitator", title: "Facilitator Notes", file: "facilitator-notes.md", format: "markdown", size: "7 KB", description: "Teaching notes for running the workshop.", body: "# Facilitator Notes\n\nStart with the transcript, then reveal the budget diagram, then ask learners to rewrite the next turn.\n" }
+    ]
+  }
+
+  function semanticPage(id) {
+    return rag.page({
+      schemaVersion: "0.1.0",
+      id,
+      title: "xgoja semantic Widget IR demo",
+      sections: [
+        rag.panel({ title: "Semantic recipes from xgoja" },
+          rag.caption({ tone: "muted" }, "This page is authored in JavaScript with widget.dsl recipes and rendered by the React package.")),
+        rag.keyValueStrip({ items: [
+          { key: "Recipe count", value: "5" },
+          { key: "Messages", value: String(transcript.messages.length) },
+          { key: "Slides", value: String(slides.length) },
+          { key: "Handouts", value: String(handoutBundle.docs.length) }
+        ]}),
+        rag.recipes.contextDiagram({ snapshot, view: "budget" }),
+        rag.recipes.annotatedTranscript({ transcript, selectedAnnotationId: "a1", onAnnotationSelect: "note-selected" }),
+        rag.recipes.courseStudio({
+          sections: courseSections,
+          activeItemId: "slides",
+          main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 })
+        }),
+        rag.recipes.handout({ bundle: handoutBundle, selectedDocumentId: "guide", onSelect: "document-selected", onDownload: "document-download" })
+      ]
+    })
+  }
+
+  function transcriptExamplesPage(id) {
+    return rag.page({
+      schemaVersion: "0.1.0",
+      id,
+      title: "xgoja transcript examples",
+      sections: [
+        rag.panel({ title: "Transcript components" },
+          rag.caption({ tone: "muted" }, "This page mixes direct transcript components with the annotatedTranscript recipe.")),
+        rag.transcriptWorkspacePanel({
+          title: transcript.title,
+          subtitle: "Workspace panel with notes rail",
+          messages: transcript.messages,
+          annotations: transcript.annotations,
+          selectedAnnotationId: "a1",
+          showNotes: true,
+          onAnnotationSelectAction: rag.action.server("note-selected")
+        }),
+        rag.splitPane({
+          ratio: "course",
+          divider: true,
+          gutter: "lg",
+          left: rag.transcriptReaderPanel({
+            title: "Reader only",
+            subtitle: "TranscriptReaderPanel with annotation chips",
+            messages: transcript.messages,
+            annotations: transcript.annotations,
+            selectedAnnotationId: "a2",
+            showAnnotationChips: true,
+            onAnnotationSelectAction: rag.action.server("note-selected")
+          }),
+          right: rag.annotationRailPanel({
+            title: "Annotation rail",
+            description: "Annotations emitted as serializable data from xgoja.",
+            annotations: transcript.annotations,
+            selectedAnnotationId: "a2",
+            onAnnotationSelectAction: rag.action.server("note-selected")
+          })
+        }),
+        rag.splitPane({
+          ratio: "rightNarrow",
+          divider: true,
+          gutter: "md",
+          left: rag.figureBlock({ frame: "bordered", caption: "Transcript plus context budget" },
+            rag.contextDiagramPanel({ snapshot, initialView: "strip", selectedPartId: "docs" })),
+          right: rag.anchoredCommentRail({
+            title: "Anchored review comments",
+            comments: anchoredComments,
+            selectedCommentId: "c1",
+            onCommentSelectAction: rag.action.server("comment-selected")
+          })
+        }),
+        rag.recipes.annotatedTranscript({ transcript, selectedAnnotationId: "a3", onAnnotationSelect: "note-selected" })
+      ]
+    })
+  }
+
+  function slideExamplesPage(id) {
+    return rag.page({
+      schemaVersion: "0.1.0",
+      id,
+      title: "xgoja slide examples",
+      sections: [
+        rag.panel({ title: "Slide examples" },
+          rag.caption({ tone: "muted" }, "CourseSlidePanel is useful for standard teaching slides; SlideShell is useful for custom compositions.")),
+        rag.courseSlidePanel({ slide: slides[0], snapshot, index: 0, total: slides.length, visualSide: "right" }),
+        rag.courseSlidePanel({ slide: slides[1], snapshot, index: 1, total: slides.length, visualSide: "left" }),
+        rag.slideShell({
+          eyebrow: "custom xgoja slide",
+          counter: "03 / 03",
+          title: "A slide can be assembled from direct Widget IR nodes",
+          subtitle: "FigureBlock, KeyPointList, ContextLegend, and ContextBudgetBar all render through React.",
+          primarySide: "left",
+          ratio: "secondaryWide",
+          primary: rag.figureBlock({ frame: "bordered", caption: "Budget bar inside a FigureBlock", legend: rag.contextLegend({ compact: true }) },
+            rag.contextBudgetBar({ snapshot })),
+          secondary: rag.keyPointList({ items: [
+            { id: "data", title: "Data only", text: "xgoja returns JSON-compatible Widget IR." },
+            { id: "slots", title: "Slots", text: "Renderable slot props can contain nested WidgetNodes." },
+            { id: "render", title: "Renderer", text: "React owns layout, CSS modules, and interaction binding." }
+          ]}),
+          footer: rag.inline({ justify: "between" },
+            rag.button({ size: "compact" }, "Previous"),
+            rag.button({ size: "compact", variant: "primary" }, "Next"))
+        })
+      ]
+    })
+  }
+
+  function handoutExamplesPage(id) {
+    const selected = handoutBundle.docs[0]
+    return rag.page({
+      schemaVersion: "0.1.0",
+      id,
+      title: "xgoja handout examples",
+      sections: [
+        rag.panel({ title: "Handout components" },
+          rag.caption({ tone: "muted" }, "The full shell and the molecule-level list/toolbar/article composition are both authored from xgoja.")),
+        rag.handoutDocumentShell({
+          title: "Workshop handout shell",
+          intro: handoutBundle.intro,
+          documents: handoutBundle.docs,
+          selectedDocumentId: selected.id,
+          onDocumentSelectAction: rag.action.server("document-selected"),
+          onDownloadAction: rag.action.server("document-download"),
+          onDownloadAllAction: rag.action.server("download-all")
+        }),
+        rag.splitPane({
+          ratio: "sidebar",
+          divider: true,
+          gutter: "lg",
+          left: rag.documentListPanel({
+            title: "Documents",
+            description: "A custom handout reader assembled from molecules.",
+            items: handoutBundle.docs.map(doc => ({ id: doc.id, title: doc.title, format: doc.format, size: doc.size, description: doc.description })),
+            selectedItemId: selected.id,
+            showItemDescriptions: true,
+            onItemSelectAction: rag.action.server("document-selected"),
+            onDownloadAllAction: rag.action.server("download-all")
+          }),
+          right: rag.stack({ gap: "sm" },
+            rag.documentPreviewToolbar({
+              file: selected.file,
+              format: selected.format,
+              size: selected.size,
+              rightSlot: rag.annotationBadge({ kind: "course", label: "selected" }),
+              onDownloadAction: rag.action.server("document-download")
+            }),
+            rag.markdownArticle({ source: selected.body }))
+        })
+      ]
+    })
+  }
+
+  function courseExamplesPage(id) {
+    return rag.page({
+      schemaVersion: "0.1.0",
+      id,
+      title: "xgoja course examples",
+      sections: [
+        rag.courseLessonPanel({ course, activeAgendaItemId: "agenda-annotate", onAgendaItemSelectAction: rag.action.server("agenda-selected") }),
+        rag.courseStudioShell({
+          sections: courseSections,
+          activeItemId: "slides",
+          title: "xgoja Course Studio",
+          subtitle: "Direct CourseStudioShell node with a CourseSlidePanel child",
+          sidebarFooter: rag.caption({ tone: "muted" }, "Generated by examples/xgoja/widget-site")
+        }, rag.courseSlidePanel({ slide: slides[2], snapshot, index: 2, total: slides.length, visualSide: "right" }))
+      ]
+    })
+  }
+
   function widgetPage(id) {
     const rows = allRows()
     const selected = selectedRow()
@@ -160,6 +444,40 @@ function demo() {
   app.get("/api/widget/pages/index", (_req, res) => res.json(widgetPage("index")))
   app.get("/api/widget/pages/demo", (_req, res) => res.json(widgetPage("demo")))
   app.get("/api/widget/pages/actions", (_req, res) => res.json(widgetPage("actions")))
+  app.get("/api/widget/pages/semantic", (_req, res) => res.json(semanticPage("semantic")))
+  app.get("/api/widget/pages/transcripts", (_req, res) => res.json(transcriptExamplesPage("transcripts")))
+  app.get("/api/widget/pages/slides", (_req, res) => res.json(slideExamplesPage("slides")))
+  app.get("/api/widget/pages/handouts", (_req, res) => res.json(handoutExamplesPage("handouts")))
+  app.get("/api/widget/pages/course-examples", (_req, res) => res.json(courseExamplesPage("course-examples")))
+  app.get("/api/widget/pages/context", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "context", title: "Context recipe", sections: [rag.recipes.contextDiagram({ snapshot, view: "treemap" })] })))
+  app.get("/api/widget/pages/course", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "course", title: "Course recipe", sections: [rag.recipes.courseStudio({ sections: courseSections, activeItemId: "slides", main: rag.recipes.courseSlide({ slide, snapshot, index: 0, total: 1 }) })] })))
+  app.get("/api/widget/pages/handout", (_req, res) => res.json(rag.page({ schemaVersion: "0.1.0", id: "handout", title: "Handout recipe", sections: [rag.recipes.handout({ bundle: handoutBundle, selectedDocumentId: "guide" })] })))
+
+  app.post("/api/widget/actions/note-selected", (req, res) => {
+    const ctx = actionContext(req)
+    res.json(actionResult("Selected annotation " + String(ctx.annotationId || ctx.value || "unknown")))
+  })
+
+  app.post("/api/widget/actions/comment-selected", (req, res) => {
+    const ctx = actionContext(req)
+    res.json(actionResult("Selected comment " + String(ctx.commentId || ctx.value || "unknown")))
+  })
+
+  app.post("/api/widget/actions/document-selected", (req, res) => {
+    const ctx = actionContext(req)
+    res.json(actionResult("Selected document " + String(ctx.documentId || ctx.itemId || ctx.value || "unknown")))
+  })
+
+  app.post("/api/widget/actions/document-download", (req, res) => {
+    const ctx = actionContext(req)
+    res.json(actionResult("Downloaded document " + String(ctx.documentId || ctx.file || ctx.value || "current")))
+  })
+
+  app.post("/api/widget/actions/download-all", (_req, res) => res.json(actionResult("Downloaded all handouts")))
+  app.post("/api/widget/actions/agenda-selected", (req, res) => {
+    const ctx = actionContext(req)
+    res.json(actionResult("Selected agenda item " + String(ctx.itemId || ctx.value || "unknown")))
+  })
 
   app.post("/api/widget/actions/select-query", (req, res) => {
     const ctx = actionContext(req)
