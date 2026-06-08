@@ -1,16 +1,20 @@
 import { createElement, type CSSProperties, type ReactNode } from 'react';
-import { Button, ErrorCallout, SelectInput, TextInput } from '../components/atoms';
-import { Caption, StatusText } from '../components/foundation';
-import { AppShell, DashboardGrid, FormRow, Inline, Panel, ScrollRegion, Stack, TabList } from '../components/layout';
+import { AnnotationBadge, Button, ContextKindSwatch, ErrorCallout, SelectInput, TextInput, TranscriptRoleBadge } from '../components/atoms';
+import { Caption, CodeText, Divider, StatusText, Text } from '../components/foundation';
+import { AppShell, DashboardGrid, FormRow, Inline, Panel, ScrollRegion, SectionBlock, SidebarShell, SplitPane, Stack, TabList } from '../components/layout';
 import { AppNav, DataTable, MetadataGrid } from '../components/molecules';
 import type {
   ActionSpec,
   AppNavWidgetProps,
   AppShellWidgetProps,
+  AnnotationBadgeWidgetProps,
   ButtonWidgetProps,
   CaptionWidgetProps,
+  CodeTextWidgetProps,
   ComponentNode,
+  ContextKindSwatchWidgetProps,
   DashboardGridWidgetProps,
+  DividerWidgetProps,
   DataTableWidgetProps,
   ElementNode,
   FormRowWidgetProps,
@@ -19,11 +23,16 @@ import type {
   MetadataGridWidgetProps,
   PanelWidgetProps,
   ScrollRegionWidgetProps,
+  SectionBlockWidgetProps,
   SelectInputWidgetProps,
+  SidebarShellWidgetProps,
+  SplitPaneWidgetProps,
   StackWidgetProps,
   StatusTextWidgetProps,
   TabListWidgetProps,
   TextInputWidgetProps,
+  TextWidgetProps,
+  TranscriptRoleBadgeWidgetProps,
   WidgetNode,
 } from './ir';
 import { bindAction, type WidgetActionContext, type WidgetActionHandler } from './actions';
@@ -52,6 +61,10 @@ function renderRenderableValue(value: unknown, onAction?: WidgetActionHandler): 
   return renderRenderable(value as never, (node) => renderWidgetNode(node, onAction));
 }
 
+function renderNodeProp(node: WidgetNode | undefined, onAction?: WidgetActionHandler): ReactNode | undefined {
+  return node ? renderWidgetNode(node, onAction) : undefined;
+}
+
 function renderElementNode(node: ElementNode, onAction?: WidgetActionHandler): ReactNode {
   const attrs = { ...(node.attrs ?? {}) } as Record<string, unknown>;
   if (attrs.style && typeof attrs.style === 'object') attrs.style = attrs.style as CSSProperties;
@@ -66,6 +79,18 @@ function renderComponentNode(node: ComponentNode, onAction?: WidgetActionHandler
       return renderAppNav(node, onAction);
     case 'Button':
       return renderButton(node, onAction);
+    case 'Text':
+      return renderText(node, onAction);
+    case 'CodeText':
+      return renderCodeText(node, onAction);
+    case 'Divider':
+      return renderDivider(node);
+    case 'ContextKindSwatch':
+      return renderContextKindSwatch(node);
+    case 'AnnotationBadge':
+      return renderAnnotationBadge(node);
+    case 'TranscriptRoleBadge':
+      return renderTranscriptRoleBadge(node);
     case 'Caption':
       return renderCaption(node, onAction);
     case 'DashboardGrid':
@@ -82,6 +107,12 @@ function renderComponentNode(node: ComponentNode, onAction?: WidgetActionHandler
       return renderPanel(node, onAction);
     case 'ScrollRegion':
       return renderScrollRegion(node, onAction);
+    case 'SectionBlock':
+      return renderSectionBlock(node, onAction);
+    case 'SplitPane':
+      return renderSplitPane(node, onAction);
+    case 'SidebarShell':
+      return renderSidebarShell(node, onAction);
     case 'SelectInput':
       return renderSelectInput(node, onAction);
     case 'Stack':
@@ -140,6 +171,36 @@ function renderButton(node: ComponentNode, onAction?: WidgetActionHandler): Reac
       {renderChildren(node.children, onAction)}
     </Button>
   );
+}
+
+function renderText(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+  const props = (node.props ?? {}) as TextWidgetProps;
+  return <Text className={props.className} as={props.as} size={props.size} tone={props.tone} weight={props.weight} align={props.align} truncate={props.truncate}>{renderChildren(node.children, onAction)}</Text>;
+}
+
+function renderCodeText(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+  const props = (node.props ?? {}) as CodeTextWidgetProps;
+  return <CodeText className={props.className} as={props.as} tone={props.tone} display={props.display} copyable={props.copyable}>{renderChildren(node.children, onAction)}</CodeText>;
+}
+
+function renderDivider(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as DividerWidgetProps;
+  return <Divider className={props.className} orientation={props.orientation} />;
+}
+
+function renderContextKindSwatch(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as ContextKindSwatchWidgetProps;
+  return <ContextKindSwatch className={props.className} kind={props.kind} mode={props.mode} size={props.size} selected={props.selected} />;
+}
+
+function renderAnnotationBadge(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as AnnotationBadgeWidgetProps;
+  return <AnnotationBadge className={props.className} kind={props.kind} label={props.label} selected={props.selected} />;
+}
+
+function renderTranscriptRoleBadge(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as TranscriptRoleBadgeWidgetProps;
+  return <TranscriptRoleBadge className={props.className} role={props.role} name={props.name} />;
 }
 
 function renderCaption(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
@@ -224,6 +285,21 @@ function renderPanel(node: ComponentNode, onAction?: WidgetActionHandler): React
 function renderScrollRegion(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
   const props = (node.props ?? {}) as ScrollRegionWidgetProps;
   return <ScrollRegion className={props.className} axis={props.axis} style={props.style as CSSProperties | undefined}>{renderChildren(node.children, onAction)}</ScrollRegion>;
+}
+
+function renderSectionBlock(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+  const props = (node.props ?? {}) as SectionBlockWidgetProps;
+  return <SectionBlock className={props.className} as={props.as} label={renderRenderableValue(props.label, onAction)} caption={renderRenderableValue(props.caption, onAction)} density={props.density} divider={props.divider}>{renderChildren(node.children, onAction)}</SectionBlock>;
+}
+
+function renderSplitPane(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+  const props = (node.props ?? {}) as SplitPaneWidgetProps;
+  return <SplitPane className={props.className} left={renderWidgetNode(props.left, onAction)} right={renderWidgetNode(props.right, onAction)} ratio={props.ratio} divider={props.divider} />;
+}
+
+function renderSidebarShell(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {
+  const props = (node.props ?? {}) as SidebarShellWidgetProps;
+  return <SidebarShell className={props.className} sidebar={renderNodeProp(props.sidebar, onAction)} sidebarWidth={props.sidebarWidth} header={renderNodeProp(props.header, onAction)} footer={renderNodeProp(props.footer, onAction)}>{renderChildren(node.children, onAction)}</SidebarShell>;
 }
 
 function renderSelectInput(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {

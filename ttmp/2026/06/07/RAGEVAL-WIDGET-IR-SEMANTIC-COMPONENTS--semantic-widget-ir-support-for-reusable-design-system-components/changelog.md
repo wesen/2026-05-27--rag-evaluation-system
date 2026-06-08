@@ -49,3 +49,18 @@ Added Widget IR Storybook subgroup/story matrix for validating interesting compo
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS--semantic-widget-ir-support-for-reusable-design-system-components/reference/02-phased-implementation-task-list.md — Storybook subgroup and composition story matrix
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-WIDGET-IR-SEMANTIC-COMPONENTS--semantic-widget-ir-support-for-reusable-design-system-components/tasks.md — Ticket task status update
 
+
+## 2026-06-07
+
+Implemented Phase 1/2 Widget IR support for foundation, atom, and layout nodes with Storybook groups, Goja helpers, schema updates, and tests.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.foundation-atoms.stories.tsx — Added foundation and atoms Widget IR stories
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.layout-recipes.stories.tsx — Added layout recipe Widget IR stories
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx — Added Phase 1 renderer cases
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/ir.ts — Added Phase 1 Widget IR component types and prop interfaces
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetdsl/module.go — Added Phase 2 Goja helpers
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetdsl/module_test.go — Added JSON serialization coverage
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/pkg/widgetschema/schema.go — Added schema component names
+

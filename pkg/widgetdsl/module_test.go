@@ -25,6 +25,12 @@ func TestRequireWidgetDSLExportsHelpers(t *testing.T) {
 			element: typeof rag.element,
 			panel: typeof rag.panel,
 			dataTable: typeof rag.dataTable,
+			textBlock: typeof rag.textBlock,
+			codeText: typeof rag.codeText,
+			contextKindSwatch: typeof rag.contextKindSwatch,
+			sectionBlock: typeof rag.sectionBlock,
+			splitPane: typeof rag.splitPane,
+			sidebarShell: typeof rag.sidebarShell,
 			cellField: typeof rag.cell.field,
 			cellStatus: typeof rag.cell.status,
 		});
@@ -33,7 +39,7 @@ func TestRequireWidgetDSLExportsHelpers(t *testing.T) {
 		t.Fatalf("require widget.dsl: %v", err)
 	}
 	got := value.Export().(map[string]any)
-	for _, name := range []string{"text", "component", "element", "panel", "dataTable", "cellField", "cellStatus"} {
+	for _, name := range []string{"text", "component", "element", "panel", "dataTable", "textBlock", "codeText", "contextKindSwatch", "sectionBlock", "splitPane", "sidebarShell", "cellField", "cellStatus"} {
 		if got[name] != "function" {
 			t.Fatalf("%s export = %#v, want function (all: %#v)", name, got[name], got)
 		}
@@ -148,6 +154,60 @@ func TestDataTableAndCellHelpersAreJSONSerializable(t *testing.T) {
 	}
 	assertString(t, decoded, "kind", "component")
 	assertString(t, decoded, "type", "DataTable")
+}
+
+func TestFoundationAtomLayoutHelpersAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const page = rag.page({
+			id: "phase-1",
+			title: "Phase 1",
+			sections: [
+				rag.sectionBlock({ label: "Overview", caption: rag.caption({ tone: "muted" }, "Rendered through WidgetRenderer") },
+					rag.textBlock({ size: "body" }, "Text component node"),
+					rag.codeText({ tone: "accent" }, "ctx.window.parts[0]")
+				),
+				rag.splitPane({
+					ratio: "leftNarrow",
+					divider: true,
+					left: rag.panel({ title: "Kinds" },
+						rag.inline({ gap: "sm" },
+							rag.contextKindSwatch({ kind: "conversation", selected: true }),
+							rag.annotationBadge({ kind: "result", label: "tool result" }),
+							rag.transcriptRoleBadge({ role: "tool", name: "read_file" })
+						)
+					),
+					right: rag.panel({ title: "Details" }, rag.divider(), rag.caption({ tone: "success" }, "ok"))
+				}),
+				rag.sidebarShell({
+					sidebarWidth: 188,
+					sidebar: rag.stack({ gap: "sm" }, rag.button({ selected: true }, "Overview")),
+					header: rag.textBlock({ size: "metric", weight: "bold" }, "Header")
+				}, rag.caption({ tone: "muted" }, "Main content"))
+			]
+		});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build phase-1 widget IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("phase-1 page is not JSON: %v\n%s", err, value.String())
+	}
+	root := decoded["root"].(map[string]any)
+	children := root["children"].([]any)
+	if len(children) != 3 {
+		t.Fatalf("phase-1 sections len = %d, want 3: %#v", len(children), children)
+	}
+	assertString(t, children[0].(map[string]any), "type", "SectionBlock")
+	assertString(t, children[1].(map[string]any), "type", "SplitPane")
+	assertString(t, children[2].(map[string]any), "type", "SidebarShell")
 }
 
 func TestSemanticRecipesAndActionsAreJSONSerializable(t *testing.T) {

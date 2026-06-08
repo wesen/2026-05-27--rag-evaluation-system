@@ -52,8 +52,14 @@ func TestSchemaAndHealthEndpoints(t *testing.T) {
 	if schema["schemaVersion"] != "0.1.0" {
 		t.Fatalf("schema = %#v", schema)
 	}
-	if len(schema["components"].([]any)) == 0 || len(schema["cellKinds"].([]any)) == 0 {
+	components := schema["components"].([]any)
+	if len(components) == 0 || len(schema["cellKinds"].([]any)) == 0 {
 		t.Fatalf("schema lists are empty: %#v", schema)
+	}
+	for _, component := range []string{"Text", "ContextKindSwatch", "SectionBlock", "SplitPane", "SidebarShell"} {
+		if !containsString(components, component) {
+			t.Fatalf("schema components missing %s: %#v", component, components)
+		}
 	}
 	jsonSchema, ok := schema["jsonSchema"].(map[string]any)
 	if !ok || jsonSchema["$schema"] == "" {
@@ -170,6 +176,15 @@ func newTestRunner(t *testing.T, script string) *widgetrunner.Runner {
 	}
 	t.Cleanup(func() { _ = runner.Close(context.Background()) })
 	return runner
+}
+
+func containsString(values []any, want string) bool {
+	for _, value := range values {
+		if value == want {
+			return true
+		}
+	}
+	return false
 }
 
 func getJSON(t *testing.T, handler http.Handler, path string, want int) map[string]any {

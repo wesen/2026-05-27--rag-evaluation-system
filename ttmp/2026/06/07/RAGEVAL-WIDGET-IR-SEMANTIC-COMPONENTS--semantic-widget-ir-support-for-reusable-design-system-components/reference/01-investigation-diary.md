@@ -259,3 +259,96 @@ This was added because individual renderer cases are not enough. The expanded Wi
   - `Widget IR/Renderer/Handout Documents/...`
   - `Widget IR/Renderer/Composed Workflows/...`
   - `Widget IR/Renderer/Actions and Edge Cases/...`
+
+## Step 4: Implement Phase 0, Phase 1, and Phase 2 Foundation IR Support
+
+I started the implementation work from the phase plan and completed the low-risk foundation/atom/layout slice. This extends the existing Widget IR system in place: `ir.ts` now knows about the new component types, `WidgetRenderer.tsx` renders them through the real package components, Storybook has grouped Widget IR stories for foundation/atoms and layout recipes, and `widget.dsl` exposes matching Goja helpers.
+
+This is the first proof that the plan works end-to-end without introducing a second renderer. JSON IR nodes such as `Text`, `ContextKindSwatch`, `SectionBlock`, `SplitPane`, and `SidebarShell` now render via the existing React `WidgetRenderer`, and Goja authors can create the same nodes through helper functions such as `rag.textBlock()`, `rag.contextKindSwatch()`, `rag.sectionBlock()`, `rag.splitPane()`, and `rag.sidebarShell()`.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Now work on these tasks one by one, commit at appropriate intervals, keep a diary as you work. I am going to go swimming and I want to have done verything when I come back. No faltering."
+
+**Assistant interpretation:** Begin executing the phased Widget IR implementation plan, keep diary updates, validate frequently, and commit coherent slices.
+
+**Inferred user intent:** Make tangible implementation progress across the Widget IR roadmap while the user is away, with enough documentation and commits to review safely later.
+
+### What I did
+- Ran Phase 0 baseline validation:
+  - `git status --short`
+  - `pnpm --dir packages/rag-evaluation-site typecheck`
+  - `pnpm --dir packages/rag-evaluation-site build`
+  - `go test ./pkg/widgetdsl ./pkg/widgetrunner ./pkg/widgetserver ./pkg/widgetschema -count=1`
+- Extended `packages/rag-evaluation-site/src/widgets/ir.ts` with Phase 1 component types and prop interfaces:
+  - `Text`, `CodeText`, `Divider`
+  - `ContextKindSwatch`, `AnnotationBadge`, `TranscriptRoleBadge`
+  - `SectionBlock`, `SplitPane`, `SidebarShell`
+- Extended `packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx` with explicit switch cases and render helpers for those components.
+- Added `renderNodeProp()` for `WidgetNode` slot props used by `SplitPane` and `SidebarShell`.
+- Added grouped Widget IR Storybook files:
+  - `WidgetRenderer.foundation-atoms.stories.tsx`
+  - `WidgetRenderer.layout-recipes.stories.tsx`
+- Extended `pkg/widgetdsl/module.go` with direct Goja helpers:
+  - `textBlock`, `codeText`, `divider`
+  - `contextKindSwatch`, `annotationBadge`, `transcriptRoleBadge`
+  - `sectionBlock`, `splitPane`, `sidebarShell`
+- Extended `pkg/widgetschema/schema.go` with the new component names.
+- Extended Go tests in `pkg/widgetdsl/module_test.go` and `pkg/widgetserver/server_test.go`.
+
+### Why
+- Phase 1 and Phase 2 are the smallest safe end-to-end slice: they cover scalar props, children, slot props, direct renderer cases, Goja helpers, schema discovery, and Storybook grouping without DTO-heavy organisms.
+- This establishes the exact pattern needed for later context diagrams, transcripts, course, and handout support.
+
+### What worked
+- Baseline package validation passed before implementation.
+- Phase 1 package validation passed after implementation:
+  - `pnpm --dir packages/rag-evaluation-site typecheck`
+  - `pnpm --dir packages/rag-evaluation-site build`
+  - `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-widget-ir-phase-1`
+- Phase 2 Go validation passed:
+  - `go test ./pkg/widgetdsl ./pkg/widgetrunner ./pkg/widgetserver ./pkg/widgetschema -count=1`
+- Storybook build now includes the subgroup files under `Widget IR/Renderer/Foundation and Atoms` and `Widget IR/Renderer/Layout Recipes`.
+
+### What didn't work
+- First Phase 1 typecheck failed because I used `sidebar` as a `SplitPane` ratio in the IR and story, but the actual `SplitPane` component supports `balanced`, `leftNarrow`, `rightNarrow`, and `course`.
+- Exact error:
+  - `Type '"course" | "sidebar" | "balanced" | undefined' is not assignable to type '"course" | "balanced" | "leftNarrow" | "rightNarrow" | undefined'.`
+- I fixed the IR prop type and story to use `leftNarrow`.
+
+### What I learned
+- Slot-prop components can be represented cleanly with `WidgetNode` props and a small renderer helper.
+- The direct `componentFactory` in Goja is already enough for the Phase 1 helper set; no custom Go functions were needed.
+- `rag.text()` must remain a raw text-node helper, so `rag.textBlock()` is the right DSL helper name for the React `Text` component.
+
+### What was tricky to build
+- The main sharp edge was keeping TypeScript IR prop unions aligned with the actual component prop unions. The `SplitPane` ratio mismatch showed why Phase 1 should remain small and heavily typechecked.
+- Another subtle point is that `CodeText` copyability only copies when its React `children` is a string; WidgetRenderer passes children as React nodes. This is acceptable for now because action-based copy remains available through Button/action specs, but it should be reviewed if authors expect `CodeText.copyable` to work from IR text children.
+
+### What warrants a second pair of eyes
+- Confirm whether `CodeText.copyable` should be supported from Widget IR or omitted from the IR prop interface until a string-value prop exists.
+- Review whether `style` pass-through should remain ignored for these new components, matching most existing renderer helpers, or selectively supported.
+- Review whether `SidebarShell.sidebarWidth` should accept only numbers in IR or also CSS strings.
+
+### What should be done in the future
+- Continue with Phase 3 context diagram nodes.
+- Add browser visual sanity screenshots for the new grouped Widget IR stories.
+- Update the phase task list checkboxes after the first commit lands.
+
+### Code review instructions
+- Start in `packages/rag-evaluation-site/src/widgets/ir.ts` and review new prop interfaces.
+- Then review `packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx` for explicit prop mapping.
+- Review Storybook groups:
+  - `Widget IR/Renderer/Foundation and Atoms`
+  - `Widget IR/Renderer/Layout Recipes`
+- Review Go helper additions in `pkg/widgetdsl/module.go` and tests in `pkg/widgetdsl/module_test.go`.
+- Validate with:
+  - `pnpm --dir packages/rag-evaluation-site typecheck`
+  - `pnpm --dir packages/rag-evaluation-site build`
+  - `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-widget-ir-phase-1`
+  - `go test ./pkg/widgetdsl ./pkg/widgetrunner ./pkg/widgetserver ./pkg/widgetschema -count=1`
+
+### Technical details
+- New DSL helper distinction:
+  - `rag.text("...")` creates `{ kind: "text" }`.
+  - `rag.textBlock({...}, "...")` creates `{ kind: "component", type: "Text" }`.

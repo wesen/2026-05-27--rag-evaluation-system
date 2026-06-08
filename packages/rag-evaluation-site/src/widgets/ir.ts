@@ -1,6 +1,7 @@
-import type { CaptionTone, CaptionTransform, RagStatus } from '../components/foundation';
-import type { ButtonSize, ButtonVariant } from '../components/atoms';
+import type { CaptionTone, CaptionTransform, RagStatus, TextAlign, TextAs, TextSize, TextTone, TextWeight } from '../components/foundation';
+import type { ButtonSize, ButtonVariant, ContextKindSwatchSize } from '../components/atoms';
 import type { DashboardGridRecipe, InlineGap, InlineJustify, StackAlign, StackGap } from '../components/layout';
+import type { ContextDiagramStyle, ContextPartKind, TranscriptRole } from '../context';
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
@@ -25,18 +26,27 @@ export type RagWidgetType =
   | 'AppNav'
   | 'Button'
   | 'Caption'
+  | 'CodeText'
+  | 'ContextKindSwatch'
+  | 'AnnotationBadge'
   | 'DashboardGrid'
   | 'DataTable'
+  | 'Divider'
   | 'FormRow'
   | 'Inline'
   | 'MetadataGrid'
   | 'Panel'
   | 'ScrollRegion'
+  | 'SectionBlock'
   | 'SelectInput'
+  | 'SidebarShell'
+  | 'SplitPane'
   | 'Stack'
   | 'StatusText'
   | 'TabList'
-  | 'TextInput';
+  | 'Text'
+  | 'TextInput'
+  | 'TranscriptRoleBadge';
 
 export interface ComponentNode {
   kind: 'component';
@@ -108,6 +118,44 @@ export interface ButtonWidgetProps extends BaseWidgetProps {
   selected?: boolean;
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
+}
+
+export interface TextWidgetProps extends BaseWidgetProps {
+  as?: TextAs;
+  size?: TextSize;
+  tone?: TextTone;
+  weight?: TextWeight;
+  align?: TextAlign;
+  truncate?: boolean;
+}
+
+export interface CodeTextWidgetProps extends BaseWidgetProps {
+  as?: 'code' | 'span' | 'div';
+  tone?: 'primary' | 'muted' | 'accent';
+  display?: 'inline' | 'block';
+  copyable?: boolean;
+}
+
+export interface DividerWidgetProps extends BaseWidgetProps {
+  orientation?: 'horizontal' | 'vertical';
+}
+
+export interface ContextKindSwatchWidgetProps extends BaseWidgetProps {
+  kind: ContextPartKind;
+  mode?: ContextDiagramStyle;
+  size?: ContextKindSwatchSize;
+  selected?: boolean;
+}
+
+export interface AnnotationBadgeWidgetProps extends BaseWidgetProps {
+  kind: ContextPartKind;
+  label: string;
+  selected?: boolean;
+}
+
+export interface TranscriptRoleBadgeWidgetProps extends BaseWidgetProps {
+  role: TranscriptRole;
+  name?: string;
 }
 
 export interface CaptionWidgetProps extends BaseWidgetProps {
@@ -228,6 +276,28 @@ export interface ScrollRegionWidgetProps extends BaseWidgetProps {
   axis?: 'y' | 'x' | 'both';
 }
 
+export interface SectionBlockWidgetProps extends BaseWidgetProps {
+  as?: 'section' | 'article' | 'div';
+  label?: RenderableValue;
+  caption?: RenderableValue;
+  density?: 'normal' | 'spacious';
+  divider?: 'none' | 'top' | 'bottom' | 'both';
+}
+
+export interface SplitPaneWidgetProps extends BaseWidgetProps {
+  left: WidgetNode;
+  right: WidgetNode;
+  ratio?: 'balanced' | 'leftNarrow' | 'rightNarrow' | 'course';
+  divider?: boolean;
+}
+
+export interface SidebarShellWidgetProps extends BaseWidgetProps {
+  sidebar?: WidgetNode;
+  sidebarWidth?: number;
+  header?: WidgetNode;
+  footer?: WidgetNode;
+}
+
 export interface SelectInputWidgetProps extends BaseWidgetProps {
   name?: string;
   value?: string | number;
@@ -278,6 +348,12 @@ export type WidgetProps =
   | AppShellWidgetProps
   | AppNavWidgetProps
   | ButtonWidgetProps
+  | TextWidgetProps
+  | CodeTextWidgetProps
+  | DividerWidgetProps
+  | ContextKindSwatchWidgetProps
+  | AnnotationBadgeWidgetProps
+  | TranscriptRoleBadgeWidgetProps
   | CaptionWidgetProps
   | DashboardGridWidgetProps
   | DataTableWidgetProps
@@ -286,6 +362,9 @@ export type WidgetProps =
   | MetadataGridWidgetProps
   | PanelWidgetProps
   | ScrollRegionWidgetProps
+  | SectionBlockWidgetProps
+  | SplitPaneWidgetProps
+  | SidebarShellWidgetProps
   | SelectInputWidgetProps
   | StackWidgetProps
   | StatusTextWidgetProps
