@@ -1,4 +1,4 @@
-import { useRef, useState, type DragEvent, type HTMLAttributes, type KeyboardEvent, type ReactNode } from 'react';
+import { useRef, useState, type DragEvent, type HTMLAttributes, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
 import { UploadGlyph } from '../../atoms';
 import { Caption, Text } from '../../foundation';
 import styles from './FileDropZone.module.css';
@@ -74,6 +74,11 @@ export function FileDropZone({
     handleFiles(filesFromList(event.dataTransfer.files));
   }
 
+  function handleClick(event: MouseEvent<HTMLDivElement>) {
+    if (event.target === inputRef.current) return;
+    openFilePicker();
+  }
+
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     onKeyDown?.(event);
     if (event.defaultPrevented || disabled) return;
@@ -92,7 +97,7 @@ export function FileDropZone({
       data-active={isActive ? 'true' : undefined}
       data-disabled={disabled ? 'true' : undefined}
       data-rag-molecule="FileDropZone"
-      onClick={openFilePicker}
+      onClick={handleClick}
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -108,6 +113,7 @@ export function FileDropZone({
         multiple={multiple}
         disabled={disabled}
         aria-label={inputAriaLabel}
+        tabIndex={-1}
         onChange={(event) => {
           handleFiles(filesFromList(event.currentTarget.files));
           event.currentTarget.value = '';
