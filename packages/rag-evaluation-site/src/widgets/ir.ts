@@ -1,7 +1,7 @@
 import type { CaptionTone, CaptionTransform, RagStatus, TextAlign, TextAs, TextSize, TextTone, TextWeight } from '../components/foundation';
 import type { ButtonSize, ButtonVariant, ContextKindSwatchSize } from '../components/atoms';
 import type { DashboardGridRecipe, InlineGap, InlineJustify, StackAlign, StackGap } from '../components/layout';
-import type { ContextDiagramStyle, ContextPartKind, TranscriptRole } from '../context';
+import type { ContextDiagramStyle, ContextDiagramView, ContextPartKind, ContextWindowSnapshot, TranscriptRole } from '../context';
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
@@ -29,6 +29,12 @@ export type RagWidgetType =
   | 'CodeText'
   | 'ContextKindSwatch'
   | 'AnnotationBadge'
+  | 'ContextLegend'
+  | 'ContextBudgetBar'
+  | 'ContextStripDiagram'
+  | 'ContextStackDiagram'
+  | 'ContextTreemap'
+  | 'ContextDiagramPanel'
   | 'DashboardGrid'
   | 'DataTable'
   | 'Divider'
@@ -156,6 +162,43 @@ export interface AnnotationBadgeWidgetProps extends BaseWidgetProps {
 export interface TranscriptRoleBadgeWidgetProps extends BaseWidgetProps {
   role: TranscriptRole;
   name?: string;
+}
+
+export interface ContextLegendWidgetProps extends BaseWidgetProps {
+  kinds?: ContextPartKind[];
+  mode?: ContextDiagramStyle;
+  compact?: boolean;
+  selectedKind?: ContextPartKind;
+}
+
+export interface ContextBudgetBarWidgetProps extends BaseWidgetProps {
+  snapshot: ContextWindowSnapshot;
+  mode?: ContextDiagramStyle;
+  showLegend?: boolean;
+  selectedPartId?: string;
+}
+
+export interface ContextStripDiagramWidgetProps extends BaseWidgetProps {
+  snapshot: ContextWindowSnapshot;
+  mode?: ContextDiagramStyle;
+  selectedPartId?: string;
+  showLabels?: boolean;
+}
+
+export interface ContextStackDiagramWidgetProps extends BaseWidgetProps {
+  snapshot: ContextWindowSnapshot;
+  selectedPartId?: string;
+}
+
+export interface ContextTreemapWidgetProps extends BaseWidgetProps {
+  snapshot: ContextWindowSnapshot;
+  selectedPartId?: string;
+}
+
+export interface ContextDiagramPanelWidgetProps extends BaseWidgetProps {
+  snapshot: ContextWindowSnapshot;
+  initialView?: ContextDiagramView;
+  selectedPartId?: string;
 }
 
 export interface CaptionWidgetProps extends BaseWidgetProps {
@@ -354,6 +397,12 @@ export type WidgetProps =
   | ContextKindSwatchWidgetProps
   | AnnotationBadgeWidgetProps
   | TranscriptRoleBadgeWidgetProps
+  | ContextLegendWidgetProps
+  | ContextBudgetBarWidgetProps
+  | ContextStripDiagramWidgetProps
+  | ContextStackDiagramWidgetProps
+  | ContextTreemapWidgetProps
+  | ContextDiagramPanelWidgetProps
   | CaptionWidgetProps
   | DashboardGridWidgetProps
   | DataTableWidgetProps

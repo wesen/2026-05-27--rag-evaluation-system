@@ -2,7 +2,8 @@ import { createElement, type CSSProperties, type ReactNode } from 'react';
 import { AnnotationBadge, Button, ContextKindSwatch, ErrorCallout, SelectInput, TextInput, TranscriptRoleBadge } from '../components/atoms';
 import { Caption, CodeText, Divider, StatusText, Text } from '../components/foundation';
 import { AppShell, DashboardGrid, FormRow, Inline, Panel, ScrollRegion, SectionBlock, SidebarShell, SplitPane, Stack, TabList } from '../components/layout';
-import { AppNav, DataTable, MetadataGrid } from '../components/molecules';
+import { AppNav, ContextBudgetBar, ContextLegend, ContextStackDiagram, ContextStripDiagram, ContextTreemap, DataTable, MetadataGrid } from '../components/molecules';
+import { ContextDiagramPanel } from '../components/organisms';
 import type {
   ActionSpec,
   AppNavWidgetProps,
@@ -12,7 +13,13 @@ import type {
   CaptionWidgetProps,
   CodeTextWidgetProps,
   ComponentNode,
+  ContextBudgetBarWidgetProps,
+  ContextDiagramPanelWidgetProps,
   ContextKindSwatchWidgetProps,
+  ContextLegendWidgetProps,
+  ContextStackDiagramWidgetProps,
+  ContextStripDiagramWidgetProps,
+  ContextTreemapWidgetProps,
   DashboardGridWidgetProps,
   DividerWidgetProps,
   DataTableWidgetProps,
@@ -91,6 +98,18 @@ function renderComponentNode(node: ComponentNode, onAction?: WidgetActionHandler
       return renderAnnotationBadge(node);
     case 'TranscriptRoleBadge':
       return renderTranscriptRoleBadge(node);
+    case 'ContextLegend':
+      return renderContextLegend(node);
+    case 'ContextBudgetBar':
+      return renderContextBudgetBar(node);
+    case 'ContextStripDiagram':
+      return renderContextStripDiagram(node);
+    case 'ContextStackDiagram':
+      return renderContextStackDiagram(node);
+    case 'ContextTreemap':
+      return renderContextTreemap(node);
+    case 'ContextDiagramPanel':
+      return renderContextDiagramPanel(node);
     case 'Caption':
       return renderCaption(node, onAction);
     case 'DashboardGrid':
@@ -201,6 +220,36 @@ function renderAnnotationBadge(node: ComponentNode): ReactNode {
 function renderTranscriptRoleBadge(node: ComponentNode): ReactNode {
   const props = (node.props ?? {}) as TranscriptRoleBadgeWidgetProps;
   return <TranscriptRoleBadge className={props.className} role={props.role} name={props.name} />;
+}
+
+function renderContextLegend(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as ContextLegendWidgetProps;
+  return <ContextLegend className={props.className} kinds={props.kinds} mode={props.mode} compact={props.compact} selectedKind={props.selectedKind} />;
+}
+
+function renderContextBudgetBar(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as ContextBudgetBarWidgetProps;
+  return <ContextBudgetBar className={props.className} snapshot={props.snapshot} mode={props.mode} showLegend={props.showLegend} selectedPartId={props.selectedPartId} />;
+}
+
+function renderContextStripDiagram(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as ContextStripDiagramWidgetProps;
+  return <ContextStripDiagram className={props.className} snapshot={props.snapshot} mode={props.mode} selectedPartId={props.selectedPartId} showLabels={props.showLabels} />;
+}
+
+function renderContextStackDiagram(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as ContextStackDiagramWidgetProps;
+  return <ContextStackDiagram className={props.className} snapshot={props.snapshot} selectedPartId={props.selectedPartId} />;
+}
+
+function renderContextTreemap(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as ContextTreemapWidgetProps;
+  return <ContextTreemap className={props.className} snapshot={props.snapshot} selectedPartId={props.selectedPartId} />;
+}
+
+function renderContextDiagramPanel(node: ComponentNode): ReactNode {
+  const props = (node.props ?? {}) as ContextDiagramPanelWidgetProps;
+  return <ContextDiagramPanel className={props.className} snapshot={props.snapshot} initialView={props.initialView} selectedPartId={props.selectedPartId} />;
 }
 
 function renderCaption(node: ComponentNode, onAction?: WidgetActionHandler): ReactNode {

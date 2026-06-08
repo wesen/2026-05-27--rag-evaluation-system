@@ -210,6 +210,55 @@ func TestFoundationAtomLayoutHelpersAreJSONSerializable(t *testing.T) {
 	assertString(t, children[2].(map[string]any), "type", "SidebarShell")
 }
 
+func TestContextDiagramHelpersAreJSONSerializable(t *testing.T) {
+	vm := goja.New()
+	reg := require.NewRegistry()
+	Register(reg)
+	reg.Enable(vm)
+
+	value, err := vm.RunString(`
+		const rag = require("widget.dsl");
+		const snapshot = {
+			id: "ctx-1",
+			title: "Context window",
+			limit: 1000,
+			selectedPartId: "conversation",
+			parts: [
+				{ id: "system", label: "System", kind: "system", tokens: 100 },
+				{ id: "conversation", label: "Conversation", kind: "conversation", tokens: 650 },
+				{ id: "result", label: "Tool result", kind: "result", tokens: 200 }
+			]
+		};
+		const page = rag.page({
+			id: "context-diagrams",
+			title: "Context Diagrams",
+			sections: [
+				rag.contextDiagramPanel({ snapshot, initialView: "budget", selectedPartId: "conversation" }),
+				rag.dashboardGrid({ recipe: "twoColumn" },
+					rag.contextBudgetBar({ snapshot, showLegend: true }),
+					rag.contextStripDiagram({ snapshot }),
+					rag.contextStackDiagram({ snapshot }),
+					rag.contextTreemap({ snapshot })
+				),
+				rag.contextLegend({ compact: true, selectedKind: "conversation" })
+			]
+		});
+		JSON.stringify(page);
+	`)
+	if err != nil {
+		t.Fatalf("build context diagram IR: %v", err)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal([]byte(value.String()), &decoded); err != nil {
+		t.Fatalf("context diagram page is not JSON: %v\n%s", err, value.String())
+	}
+	root := decoded["root"].(map[string]any)
+	children := root["children"].([]any)
+	assertString(t, children[0].(map[string]any), "type", "ContextDiagramPanel")
+	assertString(t, children[1].(map[string]any), "type", "DashboardGrid")
+	assertString(t, children[2].(map[string]any), "type", "ContextLegend")
+}
+
 func TestSemanticRecipesAndActionsAreJSONSerializable(t *testing.T) {
 	vm := goja.New()
 	reg := require.NewRegistry()

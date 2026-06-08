@@ -352,3 +352,69 @@ This is the first proof that the plan works end-to-end without introducing a sec
 - New DSL helper distinction:
   - `rag.text("...")` creates `{ kind: "text" }`.
   - `rag.textBlock({...}, "...")` creates `{ kind: "component", type: "Text" }`.
+
+## Step 5: Add Context Diagram Widget IR Support
+
+I completed the next implementation slice for context-window visualizations. Widget IR now supports the context legend, budget bar, strip diagram, stack diagram, treemap, and the higher-level `ContextDiagramPanel` organism. The implementation again extends the existing renderer and DSL surfaces rather than creating any separate rendering path.
+
+I also added a grouped Storybook file under `Widget IR/Renderer/Context Diagrams` with stories that combine multiple diagram types, a diagram panel mode gallery, a metadata sidebar composition, and an over-budget context-window state. This starts exercising the “interesting combinations” story matrix rather than only one component at a time.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 4)
+
+**Assistant interpretation:** Continue executing the phased Widget IR implementation plan and commit coherent slices with diary updates.
+
+**Inferred user intent:** Keep making concrete progress through the component families while maintaining reviewable commits and validation evidence.
+
+### What I did
+- Added context diagram prop interfaces to `packages/rag-evaluation-site/src/widgets/ir.ts`.
+- Added renderer imports, switch cases, and render helpers in `WidgetRenderer.tsx` for:
+  - `ContextLegend`
+  - `ContextBudgetBar`
+  - `ContextStripDiagram`
+  - `ContextStackDiagram`
+  - `ContextTreemap`
+  - `ContextDiagramPanel`
+- Added `WidgetRenderer.context-diagrams.stories.tsx` with subgroup title `Widget IR/Renderer/Context Diagrams`.
+- Added Goja helper mappings in `pkg/widgetdsl/module.go`.
+- Added schema component names in `pkg/widgetschema/schema.go`.
+- Added Go JSON serialization coverage for a context diagram page in `pkg/widgetdsl/module_test.go`.
+- Extended schema endpoint test coverage in `pkg/widgetserver/server_test.go`.
+
+### Why
+- Context diagrams are the next lowest-risk DTO-backed family because their props are already JSON-compatible `ContextWindowSnapshot` objects.
+- The diagrams are central to the context-viewer work and should be available both as low-level diagrams and as `ContextDiagramPanel`.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-widget-ir-phase-3` passed.
+- `go test ./pkg/widgetdsl ./pkg/widgetrunner ./pkg/widgetserver ./pkg/widgetschema -count=1` passed.
+
+### What didn't work
+- N/A
+
+### What I learned
+- The context diagram family fits the direct-node model cleanly because the React components already accept DTO-shaped props.
+- `ContextDiagramPanel` is stateful internally for view switching, but its initial state and selected part are still safely representable in JSON IR.
+
+### What was tricky to build
+- The diagram components do not all expose identical props: `ContextBudgetBar` and `ContextStripDiagram` accept `mode`, while `ContextStackDiagram` and `ContextTreemap` do not. The IR prop interfaces intentionally mirror the real component APIs instead of inventing a fake unified shape.
+
+### What warrants a second pair of eyes
+- Confirm whether the IR should eventually add `onPartSelectAction`; current React context diagram components do not expose selection callbacks, so this was deferred.
+- Review whether `ContextDiagramPanel.initialView` should be renamed at the IR level to `view` for author ergonomics, or kept identical to React props for simplicity.
+
+### What should be done in the future
+- Proceed to transcript/annotation/comment Widget IR support.
+- Add visual screenshots for the context diagram Widget IR stories if needed for review.
+
+### Code review instructions
+- Review `WidgetRenderer.context-diagrams.stories.tsx` first to understand expected renderer output.
+- Then review `ir.ts` and `WidgetRenderer.tsx` context diagram additions.
+- Validate with the same package and Go commands listed in `What worked`.
+
+### Technical details
+- New Storybook subgroup: `Widget IR/Renderer/Context Diagrams`.
+- The over-budget story uses a modified fixture with a lower token limit to force warning/over-budget behavior.
