@@ -347,3 +347,16 @@ Refined transcript widgets with title-bar message cards, note title bars, sessio
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.tsx — Tokenized transcript stream
 - /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.tsx — No-notes/with-notes transcript shell
 
+
+## 2026-06-07
+
+Ported the prototype upload drag/drop area as UploadGlyph, FileDropZone, and ContextUploadDropArea; also reused original sidebar SVG icons in course studio navigation.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/atoms/ContextStudioNavIcon/ContextStudioNavIcon.tsx — Original sidebar SVG icons as atom
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/atoms/UploadGlyph/UploadGlyph.tsx — Prototype upload drop-zone glyph atom
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/FileDropZone/FileDropZone.tsx — Reusable drag/drop file target molecule
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/ContextUploadDropArea/ContextUploadDropArea.tsx — Context-window JSON upload drop area organism
+- /home/manuel/workspaces/2026-05-27/rag-evaluation-system/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/courseStudioNav.ts — Course studio nav now uses original SVG icons
+

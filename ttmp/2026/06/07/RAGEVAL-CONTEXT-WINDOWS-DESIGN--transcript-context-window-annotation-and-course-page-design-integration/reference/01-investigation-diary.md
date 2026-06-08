@@ -1855,3 +1855,73 @@ keep a frequent diary and commit at appropriate intervals."
   - `data-rag-note-id`
   - `data-rag-target-message-id`
   - `data-rag-organism="TranscriptWorkspacePanel"`
+
+## Step 25: Port the Upload Drag-Drop Area as Atom, Molecule, and Organism Components
+
+I ported only the drag/drop upload target from the prototype upload screen, not the full upload/parser workflow. The implementation follows the package layering rules: the SVG glyph is an atom, the generic file drop target is a molecule, and the context-window-specific `.json` upload area is an organism wrapper with the prototype copy and defaults.
+
+I also extracted the original sidebar icon SVGs from `app.jsx` into a reusable atom and wired the course studio navigation fixture to use those SVG icons instead of placeholder unicode symbols. This keeps the upload icon and navigation icon language faithful to the prototype while still using package components and CSS Modules.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Also implement the atoms/molecules/organism decomposition and port of the Upload widget in the @2026-05-27--rag-evaluation-system/ttmp/2026/06/07/RAGEVAL-CONTEXT-WINDOWS-DESIGN--transcript-context-window-annotation-and-course-page-design-integration/ designs. /tmp/pi-clipboard-2f7723ba-e17f-47fa-ab13-ad5d072de918.png
+
+We only need the drag drop widget area part."
+
+**Assistant interpretation:** Extract just the prototype upload drop zone into reusable package components, split by atom/molecule/organism, and avoid porting the full upload page/parser UI.
+
+**Inferred user intent:** Add the reusable visual drop area needed for future upload workflows while keeping app-owned parsing behavior out of the design-system package.
+
+### What I did
+- Added atom `UploadGlyph` from the prototype drop-zone SVG.
+- Added atom `ContextStudioNavIcon` with the original sidebar SVG icon set from `app.jsx`.
+- Added molecule `FileDropZone`:
+  - accepts drag/drop and file-picker input;
+  - supports `active`, `disabled`, `accept`, `multiple`, and `onFilesSelected`;
+  - renders centered icon/title/helper text with a dashed border.
+- Added organism `ContextUploadDropArea`:
+  - defaults to `Drop a .json file here`;
+  - defaults helper copy to `or paste below · max 200k tokens`;
+  - defaults accepted files to JSON.
+- Updated package barrels for atoms, molecules, and organisms.
+- Updated `CourseStudioShell/courseStudioNav.ts` to use `ContextStudioNavIcon` instead of unicode placeholders.
+- Added Storybook stories for all three new components and states.
+
+### Why
+- The full upload screen owns parsing, pasted JSON, sample loading, preview state, and route behavior. Those remain web/container concerns.
+- The drag/drop target itself is a reusable visual and interaction primitive, so it belongs in the package as a molecule plus a context-specific organism wrapper.
+
+### What worked
+- `pnpm --dir packages/rag-evaluation-site typecheck` passed.
+- `pnpm --dir packages/rag-evaluation-site build` passed.
+- `pnpm --dir packages/rag-evaluation-site exec storybook build --output-dir /tmp/rag-package-storybook-upload-dropzone-final` passed.
+
+### What didn't work
+- I briefly changed the upload glyph to a boxed arrow while tuning visual parity. The user clarified that the original SVG was fine, so I reverted the glyph back to the prototype's folder/arrow shape.
+- Renaming `courseStudioNav.ts` to `.tsx` caused duplicate declaration output during package build. I fixed this by keeping the file as `.ts` and using `createElement(ContextStudioNavIcon, { id })` for SVG icon React nodes.
+
+### What I learned
+- The prototype's sidebar SVGs are compact enough to promote to a reusable atom, and using them immediately improves the course studio navigation fixture.
+- The upload drop-zone can stay API-free: it returns selected `File[]` to its caller, but it does not parse JSON or own app workflow state.
+
+### What was tricky to build
+- The sharp boundary was separating visual file selection from upload workflow behavior. The molecule can own browser file selection and drag/drop affordances; it must not own context-window validation, sample loading, pasted text, or preview rendering.
+- A `.tsx` data fixture can be awkward for declaration output when a same-named `.ts` module previously existed, so the fixture remains TypeScript and creates icon React elements explicitly.
+
+### What warrants a second pair of eyes
+- Review whether `FileDropZone` should expose a visible browse button later; the prototype does not show one, so this implementation keeps the whole area clickable instead.
+- Review whether `ContextStudioNavIcon` should eventually replace any other navigation icon placeholders beyond `courseStudioNavSections`.
+
+### What should be done in the future
+- Add Widget IR support only if an IR-authored upload workflow needs the drop area; for now this is React-first as required by package guidelines.
+- Compose the eventual web upload parser page around `ContextUploadDropArea` and keep parser/state logic in `web`.
+
+### Code review instructions
+- Start with `FileDropZone.tsx` for interaction behavior and `FileDropZone.module.css` for visual parity.
+- Review `ContextUploadDropArea.tsx` to confirm it is only a context-specific wrapper.
+- Review `ContextStudioNavIcon.tsx` and `courseStudioNav.ts` for the original sidebar icon port.
+- Validate with package typecheck/build/Storybook.
+
+### Technical details
+- Prototype source for the upload drop zone: `sources/03-context-viewer-design-iteration/screens.jsx`.
+- Prototype source for sidebar SVG icons: `sources/03-context-viewer-design-iteration/app.jsx`.

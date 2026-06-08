@@ -7,3 +7,4 @@ export * from './CourseLessonPanel';
 export * from './CourseSlidePanel';
 export * from './CourseStudioShell';
 export * from './HandoutDocumentShell';
+export * from './ContextUploadDropArea';

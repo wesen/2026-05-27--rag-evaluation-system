@@ -21,3 +21,4 @@ export * from './SidebarNav';
 export * from './MarkdownArticle';
 export * from './DocumentListPanel';
 export * from './DocumentPreviewToolbar';
+export * from './FileDropZone';

@@ -7,3 +7,5 @@ export * from './TextInput';
 export * from './ContextKindSwatch';
 export * from './TranscriptRoleBadge';
 export * from './AnnotationBadge';
+export * from './UploadGlyph';
+export * from './ContextStudioNavIcon';
