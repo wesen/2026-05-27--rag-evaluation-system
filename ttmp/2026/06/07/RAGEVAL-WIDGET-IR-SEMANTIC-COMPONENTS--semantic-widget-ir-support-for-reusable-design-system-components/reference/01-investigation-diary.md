@@ -189,3 +189,73 @@ The plan clarifies that Phase 1 extends the existing `WidgetRenderer` in place, 
   - `pkg/widgetdsl/module.go`
   - `pkg/widgetdsl/module_test.go`
   - `pkg/widgetschema/schema.go`
+
+## Step 3: Add Widget IR Storybook Story Matrix
+
+I expanded the phased task list with a dedicated Widget IR Storybook story matrix. The new section keeps all renderer validation stories under the `Widget IR/Renderer/...` mantle while splitting them into navigable subgroups for foundation/atoms, layout recipes, context diagrams, transcripts and notes, course studio, handout documents, composed workflows, and actions/edge cases.
+
+This was added because individual renderer cases are not enough. The expanded Widget IR surface must prove that new components compose well together in realistic product scenes: transcript review workbenches, context studio overviews, course slides with context visuals, handout readers, and legacy RAG dashboards enhanced with new components.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Add tasks to write stories for all these different combinations under the widget IR storybook mantle, but then split into subgroups, since we have so many possibilities. We want to see these things being combined in interesting ways."
+
+**Assistant interpretation:** Extend the implementation task list with a detailed Storybook plan for many Widget IR combinations, organized into subgroups under the Widget IR renderer story hierarchy.
+
+**Inferred user intent:** Ensure the implementation validates real compositional usage, not only one isolated story per component.
+
+### What I did
+- Added `Cross-phase Widget IR Storybook story matrix` to `reference/02-phased-implementation-task-list.md`.
+- Added subgroup title conventions under `Widget IR/Renderer/...`.
+- Added story tasks for:
+  - Foundation and atoms
+  - Layout recipes
+  - Context diagrams
+  - Transcript and notes
+  - Course studio
+  - Handout documents
+  - Composed workflows
+  - Actions and edge cases
+- Added cross-story quality tasks for deterministic fixtures, action loggers, overflow states, and screenshot capture.
+- Updated `tasks.md` to record the Storybook matrix addition.
+
+### Why
+- Widget IR needs to prove component composition, not just component existence.
+- The renderer story catalog would become unmanageable if every scenario stayed in one flat Storybook list.
+- Subgroups make visual review and implementation progress easier to navigate.
+
+### What worked
+- The task list now gives concrete story names and the renderer behavior each group should prove.
+- It explicitly requires every story to render through `<WidgetRenderer node={...} />`, preserving the validation path.
+
+### What didn't work
+- N/A
+
+### What I learned
+- The highest-value stories are cross-feature compositions: transcript plus comments, course plus handout, context diagram plus metadata sidebar, and legacy dashboards enhanced with new atoms/layout.
+
+### What was tricky to build
+- The tricky part was keeping the story matrix broad enough to cover interesting combinations without turning it into implementation code. The plan therefore lists story intent and required components, but leaves exact fixture shape to the implementation phase.
+
+### What warrants a second pair of eyes
+- Review whether the subgroup names match the desired Storybook navigation taxonomy.
+- Review whether action-logger stories should be implemented with Storybook actions, custom stateful render wrappers, or a small shared helper.
+
+### What should be done in the future
+- When implementation begins, create story files incrementally per subgroup rather than one enormous story file.
+- Link screenshots or Storybook URLs in the diary after each subgroup lands.
+
+### Code review instructions
+- Review the new `Cross-phase Widget IR Storybook story matrix` section in `reference/02-phased-implementation-task-list.md`.
+- Confirm that each subgroup validates renderer behavior through IR rather than direct JSX.
+
+### Technical details
+- Proposed Storybook mantle/subgroups:
+  - `Widget IR/Renderer/Foundation and Atoms/...`
+  - `Widget IR/Renderer/Layout Recipes/...`
+  - `Widget IR/Renderer/Context Diagrams/...`
+  - `Widget IR/Renderer/Transcript and Notes/...`
+  - `Widget IR/Renderer/Course Studio/...`
+  - `Widget IR/Renderer/Handout Documents/...`
+  - `Widget IR/Renderer/Composed Workflows/...`
+  - `Widget IR/Renderer/Actions and Edge Cases/...`

@@ -728,6 +728,175 @@ Make the implementation easy to review, resume, and maintain.
 
 ---
 
+## Cross-phase Widget IR Storybook story matrix
+
+### Purpose
+
+The expanded renderer should not only prove that each individual component works. It should prove that Widget IR authors can combine these components into realistic, interesting product surfaces. Keep all of these stories under the `Widget IR/Renderer/...` Storybook mantle, but split them into subgroups so the renderer catalog stays navigable.
+
+### Storybook structure tasks
+
+- [ ] Keep the top-level Storybook title prefix as `Widget IR/Renderer`.
+- [ ] Split stories into subgroup files or subgroup titles once `WidgetRenderer.stories.tsx` becomes too large.
+  - [ ] `Widget IR/Renderer/Foundation and Atoms/...`
+  - [ ] `Widget IR/Renderer/Layout Recipes/...`
+  - [ ] `Widget IR/Renderer/Context Diagrams/...`
+  - [ ] `Widget IR/Renderer/Transcript and Notes/...`
+  - [ ] `Widget IR/Renderer/Course Studio/...`
+  - [ ] `Widget IR/Renderer/Handout Documents/...`
+  - [ ] `Widget IR/Renderer/Composed Workflows/...`
+  - [ ] `Widget IR/Renderer/Actions and Edge Cases/...`
+- [ ] Prefer multiple focused story files over one enormous `WidgetRenderer.stories.tsx` if Storybook supports the desired grouping cleanly.
+- [ ] Every story must render through `<WidgetRenderer node={...} />`; direct JSX is allowed only inside Storybook decorators or action-log harnesses.
+- [ ] Story names should describe product intent, not implementation only. Prefer `Annotated Transcript With Notes Rail` over `TranscriptWorkspacePanel`.
+- [ ] Use package fixtures from `src/context/fixtures.ts` where possible.
+- [ ] Add small local fixture snippets only when a story needs a very specific edge state.
+- [ ] Avoid backend calls in stories; use `onAction` loggers or mocked action handlers.
+- [ ] Include `data-rag-*` visible outputs indirectly by rendering the real components; do not reimplement DOM in the story.
+
+### Subgroup: Foundation and Atoms
+
+- [ ] Story: `Typography Token Sampler`.
+  - [ ] Render `Text` roles: body, compact, metadata, label, metric.
+  - [ ] Render `Caption` tones beside `Text` tones.
+  - [ ] Render `CodeText` for IDs, model names, and file paths.
+  - [ ] Render `Divider` between groups.
+- [ ] Story: `Semantic Badges and Swatches`.
+  - [ ] Combine `ContextKindSwatch`, `AnnotationBadge`, and `TranscriptRoleBadge`.
+  - [ ] Show selected/unselected states.
+  - [ ] Show context kinds: system, instruction, conversation, retrieval, tool, result, generated, active, evicted.
+- [ ] Story: `Inline Status Header`.
+  - [ ] Compose `Inline`, `StatusText`, `Caption`, `AnnotationBadge`, and `Button`.
+  - [ ] Demonstrate compact toolbar-like use.
+
+### Subgroup: Layout Recipes
+
+- [ ] Story: `Section Blocks in a Stack`.
+  - [ ] Combine `Stack`, `SectionBlock`, `Text`, `Caption`, and `Divider`.
+  - [ ] Show plain, compact, and divided sections.
+- [ ] Story: `Split Pane Inspector`.
+  - [ ] Use `SplitPane` with a left navigation/list panel and right detail panel.
+  - [ ] Put `DataTable` or `MetadataGrid` in one pane and `SectionBlock` content in the other.
+- [ ] Story: `Sidebar Shell With Header and Footer`.
+  - [ ] Use `SidebarShell` with `SidebarNav`, `AppNav`-like header content, and footer metadata.
+  - [ ] Render generic content in the main area.
+- [ ] Story: `Slide Shell Slots`.
+  - [ ] Use `SlideShell` with a `FigureBlock` visual and `KeyPointList` content.
+  - [ ] Include visual-left and visual-right variants if `SlideShell` is in scope.
+
+### Subgroup: Context Diagrams
+
+- [ ] Story: `Context Diagram Gallery`.
+  - [ ] Render `ContextBudgetBar`, `ContextStripDiagram`, `ContextStackDiagram`, and `ContextTreemap` in a `DashboardGrid`.
+  - [ ] Use the same snapshot so differences are easy to compare.
+  - [ ] Include selected part state.
+- [ ] Story: `Context Diagram Panel Modes`.
+  - [ ] Render `ContextDiagramPanel` in strip, stack, budget, and treemap views.
+  - [ ] Show pattern/tone/outline modes if supported.
+- [ ] Story: `Context Diagram With Metadata Sidebar`.
+  - [ ] Combine `ContextDiagramPanel` with `SidebarShell` or `SplitPane`.
+  - [ ] Put `MetadataGrid` and `ContextLegend` beside the diagram.
+- [ ] Story: `Over Budget Context Window`.
+  - [ ] Use fixture data where total tokens exceed the limit.
+  - [ ] Verify budget visualization and warning copy remain readable.
+
+### Subgroup: Transcript and Notes
+
+- [ ] Story: `Transcript Without Notes`.
+  - [ ] Render `TranscriptWorkspacePanel` with `showNotes: false` and no rail.
+  - [ ] Include user, assistant, tool, and developer/system messages.
+- [ ] Story: `Annotated Transcript With Notes Rail`.
+  - [ ] Render `TranscriptWorkspacePanel` with annotations and selected annotation.
+  - [ ] Verify note chips appear on message title bars.
+- [ ] Story: `Transcript Reader Plus Custom Rail`.
+  - [ ] Compose `TranscriptReaderPanel` and `AnnotationRailPanel` manually in `SplitPane` or `DashboardGrid`.
+  - [ ] This proves low-level transcript organisms can be combined outside `TranscriptWorkspacePanel`.
+- [ ] Story: `Message Card States`.
+  - [ ] Render individual `TranscriptMessageCard` examples for assistant, tool, selected, with notes, without notes, long text, and metadata-heavy messages.
+- [ ] Story: `Anchored Comments Over Transcript`.
+  - [ ] Combine `AnchoredCommentRail` with transcript content.
+  - [ ] Show open/resolved comments and selected state.
+- [ ] Story: `Transcript Action Logger`.
+  - [ ] Provide an `onAction` logger/decorator.
+  - [ ] Click note/annotation controls and show emitted `ActionSpec` context if callbacks exist.
+
+### Subgroup: Course Studio
+
+- [ ] Story: `Course Lesson Landing`.
+  - [ ] Render `CourseLessonPanel` inside `CourseStudioShell`.
+  - [ ] Include `SidebarNav` or default course studio nav sections.
+- [ ] Story: `Course Slide With Context Visual`.
+  - [ ] Render `CourseSlidePanel` with a `ContextDiagramPanel` visual.
+  - [ ] Show visual-left and visual-right variants.
+- [ ] Story: `Course Studio Navigation States`.
+  - [ ] Render `CourseStudioShell` with active items for Course, Slides, Visualize, Transcript, Comments, and Handout.
+  - [ ] Use placeholder main content for inactive states if needed.
+- [ ] Story: `Teaching Slide Composition`.
+  - [ ] Compose `SlideShell`, `FigureBlock`, `KeyPointList`, `ContextLegend`, and `ContextBudgetBar` directly.
+  - [ ] This proves IR can build a custom teaching page without a prebuilt organism.
+
+### Subgroup: Handout Documents
+
+- [ ] Story: `Markdown Article Reader`.
+  - [ ] Render `MarkdownArticle` with headings, paragraphs, lists, blockquote, table, and code-like text.
+- [ ] Story: `Document List and Preview Toolbar`.
+  - [ ] Combine `DocumentListPanel`, `DocumentPreviewToolbar`, and `MarkdownArticle` in `SplitPane`.
+  - [ ] Show selected document state.
+- [ ] Story: `Handout Document Shell`.
+  - [ ] Render `HandoutDocumentShell` with multiple documents and a selected markdown document.
+  - [ ] Include PDF/JSON/file metadata in the document list.
+- [ ] Story: `Handout Action Logger`.
+  - [ ] Use `onSelectAction` and a Storybook action logger to prove document selection context.
+
+### Subgroup: Composed Workflows
+
+- [ ] Story: `Context Studio Overview`.
+  - [ ] Use `CourseStudioShell` or `SidebarShell`.
+  - [ ] Main content combines `ContextDiagramPanel`, `MetadataGrid`, `KeyValueStrip`, and `CheckList`.
+- [ ] Story: `Transcript Review Workbench`.
+  - [ ] Combine transcript workspace, anchored comments, and context budget summary.
+  - [ ] Use `DashboardGrid` or `SplitPane` for multi-region layout.
+- [ ] Story: `Course Plus Handout Split View`.
+  - [ ] Combine `CourseSlidePanel` and `HandoutDocumentShell` in a `SplitPane`.
+  - [ ] This should demonstrate cross-feature composition from plain IR.
+- [ ] Story: `Legacy RAG Dashboard With New Components`.
+  - [ ] Extend existing `SearchWorkbenchComposition` or `WorkflowDashboardSkeleton` with new `SectionBlock`, `KeyValueStrip`, badges, and sidebars.
+  - [ ] Proves old and new Widget IR vocabularies compose together.
+
+### Subgroup: Actions and Edge Cases
+
+- [ ] Story: `Unknown Widget Boundary`.
+  - [ ] Keep or extend existing unknown-widget story.
+  - [ ] Confirm `ErrorCallout` remains visible.
+- [ ] Story: `Empty States Gallery`.
+  - [ ] Empty transcript, empty annotations, empty document list, empty context parts, empty table.
+- [ ] Story: `Overflow and Dense Content`.
+  - [ ] Very long transcript messages.
+  - [ ] Many context parts.
+  - [ ] Many handout documents.
+  - [ ] Long sidebar labels.
+- [ ] Story: `Action Dispatch Gallery`.
+  - [ ] Buttons with `copy`, `event`, `navigate`, and `server` action specs.
+  - [ ] Table row selection action.
+  - [ ] Transcript annotation selection action.
+  - [ ] Handout document selection action.
+- [ ] Story: `Malformed But Valid JSON Props`.
+  - [ ] Missing optional props.
+  - [ ] Unknown context kind fallback.
+  - [ ] Unsupported or empty role/name values where components provide fallback behavior.
+
+### Cross-story quality tasks
+
+- [ ] Add a short comment above each story explaining what renderer behavior it proves.
+- [ ] Keep stories deterministic; no timers, random IDs, or live dates unless fixed.
+- [ ] Use compact fixtures and avoid giant blobs unless testing overflow.
+- [ ] Prefer semantic story sections over visual noise.
+- [ ] Run Storybook build after every subgroup lands.
+- [ ] Capture screenshots for major subgroup stories when visual review is part of the phase.
+- [ ] Link important Storybook story names in diary entries and PR descriptions.
+
+---
+
 ## Cross-phase review checklist
 
 Use this checklist for every component before marking it complete.
