@@ -11,6 +11,10 @@ RelatedFiles:
       Note: Consumer styleSet wiring recorded in Step 6
     - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/slide-loader.js
       Note: Markdown context-window parts normalize styleKey
+    - Path: packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.module.css
+      Note: Side-note title-bar palette chrome and neutral body rules recorded in Step 13
+    - Path: packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx
+      Note: Side-note palette foreground behavior recorded in Step 13
     - Path: packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.module.css
       Note: Title-bar-only palette chrome and neutral body behavior recorded in Step 12
     - Path: packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx
@@ -23,6 +27,7 @@ LastUpdated: 0001-01-01T00:00:00Z
 WhatFor: ""
 WhenToUse: ""
 ---
+
 
 
 
@@ -1037,3 +1042,79 @@ I kept the body-background rule from the prior clarification: transcript message
 - Token chip readability is handled by `Caption tone="inherit"` plus `.tokenChip` using a mostly-white background.
 - Header text uses `--ctx-label`, derived from each `ContextVisualStyle.labelColor`.
 - Message body background remains `var(--mac-surface)` by default.
+
+## Step 13: Side-Note Palette Foregrounds
+
+This step applies the transcript foreground rule to the side-note cards shown in transcript views. The note body stays neutral for readability, while the note title strip uses the annotation palette style, including explicit foreground color and halftone pattern.
+
+The key visual target was the annotation rail and side-note cards that appear alongside transcript message states. These cards now behave like message title bars: palette color is chrome, not the default body background, and every colored header has a matching text color.
+
+### Prompt Context
+
+**User prompt (verbatim):** "do it for the side notes in the transcript views as well, like in Transcript and Notes / Message Card States and such"
+
+**Assistant interpretation:** Extend the palette foreground and neutral-body treatment from transcript message cards to annotation side-note cards in transcript views and Widget IR stories.
+
+**Inferred user intent:** The user wants all transcript-adjacent colored surfaces, including side notes, to remain readable and visually consistent across palette choices.
+
+**Commit (code):** pending — "Frontend: add side-note palette foregrounds"
+
+### What I did
+
+- Updated `AnnotationNoteCard` to resolve `annotation.styleKey` against the transcript style set by default.
+- Applied `contextVisualStyleToCssVars()` to each note card so note headers get `--ctx-fill`, `--ctx-line`, `--ctx-stroke`, and `--ctx-label`.
+- Added pattern classes for side-note title bars using the same halftone vocabulary as transcript message cards.
+- Kept side-note bodies on `var(--mac-surface)` so longer note text remains neutral and readable.
+- Added a safe neutral `confidenceChip` so confidence text does not sit directly on colored fills.
+- Validated with:
+  - `cd packages/rag-evaluation-site && pnpm typecheck`
+  - `cd packages/rag-evaluation-site && pnpm build-storybook`
+
+### Why
+
+- Side notes are rendered in the same transcript views as message cards, so they need the same contrast and foreground rules.
+- A fixed dark title bar did not reflect caller-selected transcript palettes.
+- Applying palette fills to entire note cards would make note body text noisier, so the palette remains constrained to note chrome.
+
+### What worked
+
+- The side-note card already received `styleSet` through prior Widget IR work, so this step only needed to consume that prop fully.
+- Reusing `ContextVisualStyle.labelColor` for `--ctx-label` gives note headers explicit readable foregrounds.
+- Both TypeScript and Storybook production build passed after the CSS/TS changes.
+
+### What didn't work
+
+- N/A; the implementation was straightforward after the message-card foreground pattern was established.
+
+### What I learned
+
+- The same colored-chrome/neutral-body rule maps cleanly across transcript cards and side notes.
+- Confidence captions need the same treatment as token chips: either neutral background or palette-matched foreground.
+
+### What was tricky to build
+
+- The note card has two visual indicators in the title strip: the `NOTE` label and the `ContextStyleSwatch`. The label needs to use `--ctx-label`, while the swatch can continue to show the underlying visual style directly.
+- Selected side notes need a palette-aware border/shadow without turning the whole note body into a colored surface.
+
+### What warrants a second pair of eyes
+
+- Whether the side-note title strip should be visually quieter than message title strips in dense annotation rails.
+- Whether confidence chips should be shown as plain muted metadata instead of bordered chips in compact layouts.
+
+### What should be done in the future
+
+- Visually inspect the transcript-and-notes stories across all palettes, especially the annotation rail density.
+
+### Code review instructions
+
+- Review `packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx` for style-set consumption.
+- Review `packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.module.css` for title-bar-only palette behavior.
+- Validate with:
+  - `cd packages/rag-evaluation-site && pnpm typecheck`
+  - `cd packages/rag-evaluation-site && pnpm build-storybook`
+
+### Technical details
+
+- Side-note header foreground comes from `--ctx-label`.
+- Side-note body background remains `var(--mac-surface)`.
+- Confidence metadata uses a mostly-white chip background mixed slightly with the note palette fill.

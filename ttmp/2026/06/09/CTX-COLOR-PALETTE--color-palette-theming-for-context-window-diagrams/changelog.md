@@ -76,3 +76,13 @@ Step 12: made transcript palette foregrounds explicit and added Widget IR transc
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx — Transcript title/header foreground and token chip handling
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.transcript-notes.stories.tsx — Widget IR transcript palette control coverage
 
+
+## 2026-06-09
+
+Step 13: made transcript side-note headers palette-aware with explicit foregrounds
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.module.css — Side-note title-bar foreground
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx — Side-note style-set consumption and palette variables
+
