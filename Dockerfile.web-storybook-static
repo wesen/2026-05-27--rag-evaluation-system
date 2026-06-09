@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1
+
+FROM alpine:3.20
+
+LABEL org.opencontainers.image.title="rag-evaluation-page-storybook"
+LABEL org.opencontainers.image.description="Static Storybook artifact for the RAG Evaluation web app pages"
+LABEL org.opencontainers.image.source="https://github.com/go-go-golems/rag-evaluation-system"
+
+WORKDIR /
+COPY web/storybook-static/ /site/
+
+RUN find /site -type f | sort > /site-manifest.txt \
+  && test -f /site/index.html
