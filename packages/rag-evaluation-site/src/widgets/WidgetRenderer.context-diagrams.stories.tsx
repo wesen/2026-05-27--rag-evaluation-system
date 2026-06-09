@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { contextPaletteOptions, contextStyleSetForPalette, contextThreeLabelStyleSets, contextWindowSnapshots, type ContextPaletteName, type ContextStyleSet, type ContextWindowSnapshot } from '../context';
+import { contextPaletteOptions, contextStyleSetForPalette, contextThreeLabelStyleSets, contextWindowSnapshots, type ContextPaletteName, type ContextStyleSet, type ContextVisualStyle, type ContextWindowSnapshot } from '../context';
 import { WidgetRenderer, type WidgetRendererProps } from './WidgetRenderer';
 import { defaultWidgetRegistry } from './defaultRegistry';
 import { component, text, type WidgetNode } from './ir';
@@ -53,6 +53,139 @@ const threeLabelSnapshot: ContextWindowSnapshot = {
 function panel(title: string, children: WidgetNode[]): WidgetNode { return component('Panel', { title, density: 'condensed' }, children); }
 function renderNode(node: WidgetNode, registry = defaultWidgetRegistry) { return <WidgetRenderer registry={registry} node={node} />; }
 
+const fallbackVisualStyle: ContextVisualStyle = {
+  pattern: 'overflow',
+  fill: 'var(--mac-surface)',
+  line: 'var(--mac-border)',
+  stroke: 'var(--mac-border)',
+  labelColor: 'var(--mac-text)',
+};
+
+function visual(base: ContextStyleSet, key: string): ContextVisualStyle {
+  return base.styles[key] ?? base.fallbackStyle ?? fallbackVisualStyle;
+}
+
+function compactStyleSet(base: ContextStyleSet, id: string, name: string, entries: Array<{ id: string; label: string; styleFrom: string; hidden?: boolean }>): ContextStyleSet {
+  return {
+    id,
+    name,
+    legendSize: 'sm',
+    swatchSize: 'sm',
+    fallbackStyle: base.fallbackStyle,
+    legend: entries.map(({ id, label, hidden }, order) => ({ id, label, hidden, order })),
+    styles: Object.fromEntries(entries.map(({ id, styleFrom }) => [id, visual(base, styleFrom)])),
+  };
+}
+
+function compactPanelExamples(base: ContextStyleSet): Array<{ title: string; view: 'strip' | 'budget' | 'stack' | 'treemap'; snapshot: ContextWindowSnapshot; styleSet: ContextStyleSet }> {
+  const ragStyleSet = compactStyleSet(base, 'story-rag-answer', 'RAG answer triad', [
+    { id: 'brief', label: 'Brief', styleFrom: 'system' },
+    { id: 'evidence', label: 'Evidence', styleFrom: 'result' },
+    { id: 'draft', label: 'Draft', styleFrom: 'active' },
+    { id: 'free', label: 'Headroom', styleFrom: 'empty', hidden: true },
+  ]);
+  const opsStyleSet = compactStyleSet(base, 'story-ops-payload', 'Ops payload', [
+    { id: 'guardrails', label: 'Guardrails', styleFrom: 'system' },
+    { id: 'chat', label: 'Chat', styleFrom: 'conversation' },
+    { id: 'commands', label: 'Commands', styleFrom: 'tool' },
+    { id: 'output', label: 'Output', styleFrom: 'result' },
+    { id: 'free', label: 'Free', styleFrom: 'empty', hidden: true },
+  ]);
+  const editorStyleSet = compactStyleSet(base, 'story-editor-budget', 'Editor budget', [
+    { id: 'spec', label: 'Spec', styleFrom: 'context' },
+    { id: 'source', label: 'Source files', styleFrom: 'retrieval' },
+    { id: 'tests', label: 'Test logs', styleFrom: 'result' },
+    { id: 'answer', label: 'Answer', styleFrom: 'active' },
+    { id: 'spare', label: 'Spare room', styleFrom: 'empty' },
+  ]);
+  const compressionStyleSet = compactStyleSet(base, 'story-compression-plan', 'Compression plan', [
+    { id: 'keep', label: 'Keep verbatim', styleFrom: 'active' },
+    { id: 'summarize', label: 'Summarize', styleFrom: 'summary' },
+    { id: 'archive', label: 'Archive refs', styleFrom: 'generated' },
+    { id: 'discard', label: 'Drop noise', styleFrom: 'evicted' },
+    { id: 'new', label: 'New turn', styleFrom: 'conversation' },
+    { id: 'room', label: 'Room after trim', styleFrom: 'empty' },
+  ]);
+  return [
+    {
+      title: '3 visible labels: RAG answer',
+      view: 'strip',
+      styleSet: ragStyleSet,
+      snapshot: {
+        id: 'rag-answer-mini-vocab',
+        title: 'RAG answer budget',
+        subtitle: 'Only caller-defined Brief / Evidence / Draft entries appear in the legend.',
+        limit: 32_000,
+        selectedPartId: 'rag-evidence',
+        parts: [
+          { id: 'rag-brief', label: 'task brief', styleKey: 'brief', tokens: 1_500 },
+          { id: 'rag-evidence', label: 'retrieved evidence', styleKey: 'evidence', tokens: 9_800 },
+          { id: 'rag-draft', label: 'draft answer', styleKey: 'draft', tokens: 2_600 },
+          { id: 'rag-free', label: 'headroom', styleKey: 'free', tokens: 18_100 },
+        ],
+      },
+    },
+    {
+      title: '4 visible labels: Ops payload',
+      view: 'budget',
+      styleSet: opsStyleSet,
+      snapshot: {
+        id: 'ops-payload-mini-vocab',
+        title: 'Ops payload mix',
+        subtitle: 'A server can rename system/tool/result into its own operational vocabulary.',
+        limit: 50_000,
+        selectedPartId: 'ops-output',
+        parts: [
+          { id: 'ops-guardrails', label: 'policy + guardrails', styleKey: 'guardrails', tokens: 4_200 },
+          { id: 'ops-chat', label: 'operator chat', styleKey: 'chat', tokens: 7_400 },
+          { id: 'ops-commands', label: 'commands', styleKey: 'commands', tokens: 3_600 },
+          { id: 'ops-output', label: 'stdout/stderr', styleKey: 'output', tokens: 24_000 },
+          { id: 'ops-free', label: 'free', styleKey: 'free', tokens: 10_800 },
+        ],
+      },
+    },
+    {
+      title: '5 labels: Editor budget',
+      view: 'stack',
+      styleSet: editorStyleSet,
+      snapshot: {
+        id: 'editor-budget-mini-vocab',
+        title: 'Patch authoring window',
+        subtitle: 'Five visible legend entries, including free space as a first-class category.',
+        limit: 100_000,
+        selectedPartId: 'editor-source',
+        parts: [
+          { id: 'editor-spec', label: 'ticket spec', styleKey: 'spec', tokens: 5_400 },
+          { id: 'editor-source', label: 'source files', styleKey: 'source', tokens: 41_000 },
+          { id: 'editor-tests', label: 'test logs', styleKey: 'tests', tokens: 18_000 },
+          { id: 'editor-answer', label: 'current patch answer', styleKey: 'answer', tokens: 3_200 },
+          { id: 'editor-spare', label: 'spare room', styleKey: 'spare', tokens: 32_400 },
+        ],
+      },
+    },
+    {
+      title: '6 labels: Compression plan',
+      view: 'treemap',
+      styleSet: compressionStyleSet,
+      snapshot: {
+        id: 'compression-plan-mini-vocab',
+        title: 'Before/after compression plan',
+        subtitle: 'The legend expresses product actions, not baked-in part kinds.',
+        limit: 80_000,
+        selectedPartId: 'compress-summarize',
+        parts: [
+          { id: 'compress-keep', label: 'key instructions', styleKey: 'keep', tokens: 8_000 },
+          { id: 'compress-summarize', label: 'summarize prior turns', styleKey: 'summarize', tokens: 22_000 },
+          { id: 'compress-archive', label: 'archive references', styleKey: 'archive', tokens: 9_500 },
+          { id: 'compress-discard', label: 'drop noisy logs', styleKey: 'discard', tokens: 14_000 },
+          { id: 'compress-new', label: 'new user turn', styleKey: 'new', tokens: 4_500 },
+          { id: 'compress-room', label: 'room after trim', styleKey: 'room', tokens: 22_000 },
+        ],
+      },
+    },
+  ];
+}
+
 function contextDiagramGalleryNode(styleSet: ContextStyleSet): WidgetNode {
   return component('Stack', { gap: 'md' }, [
     panel('Same snapshot, four diagram renderers', [
@@ -73,13 +206,17 @@ export const ContextDiagramGallery: Story = {
 
 export const ContextDiagramPanelViews: Story = {
   render: ({ palette, registry }) => {
-    const styleSet = contextStyleSetForPalette(palette);
-    return renderNode(component('DashboardGrid', { recipe: 'twoColumn' }, [
-      component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'strip', selectedPartId: snapshot.selectedPartId }),
-      component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'budget', selectedPartId: snapshot.selectedPartId }),
-      component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'stack', selectedPartId: snapshot.selectedPartId }),
-      component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'treemap', selectedPartId: snapshot.selectedPartId }),
-    ]), registry);
+    const examples = compactPanelExamples(contextStyleSetForPalette(palette));
+    return renderNode(component('DashboardGrid', { recipe: 'twoColumn' }, examples.map((example) =>
+      component('ContextDiagramPanel', {
+        snapshot: example.snapshot,
+        styleSet: example.styleSet,
+        initialView: example.view,
+        selectedPartId: example.snapshot.selectedPartId,
+        views: ['strip', 'budget', 'stack', 'treemap'],
+        showPartDetails: true,
+      }),
+    )), registry);
   },
 };
 
