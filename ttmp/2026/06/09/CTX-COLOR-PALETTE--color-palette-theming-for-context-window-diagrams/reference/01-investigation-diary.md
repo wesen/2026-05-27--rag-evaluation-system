@@ -962,7 +962,7 @@ I kept the body-background rule from the prior clarification: transcript message
 
 **Inferred user intent:** The user wants palette theming to be usable in actual transcript stories, not just decorative; small labels and metadata must remain legible when background colors change.
 
-**Commit (code):** 1231c63 — "Frontend: add transcript palette foregrounds"
+**Commit (code):** 347b567 — "Frontend: add transcript palette foregrounds"
 
 ### What I did
 
