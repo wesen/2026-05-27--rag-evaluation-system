@@ -43,6 +43,8 @@ modules:
       - data.dsl
       - context_window.dsl
     folderRoots:
+      - packages/rag-evaluation-site/src/components/atoms
+      - packages/rag-evaluation-site/src/components/layout
       - packages/rag-evaluation-site/src/components/molecules
       - packages/rag-evaluation-site/src/components/organisms
     ownsPageHelper: false

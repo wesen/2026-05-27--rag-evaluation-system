@@ -1,6 +1,7 @@
 import { annotationBadgeWidget } from '../components/atoms/AnnotationBadge/AnnotationBadge.widget';
 import { buttonWidget } from '../components/atoms/Button/Button.widget';
 import { contextKindSwatchWidget } from '../components/atoms/ContextKindSwatch/ContextKindSwatch.widget';
+import { contextStudioNavIconWidget } from '../components/atoms/ContextStudioNavIcon/ContextStudioNavIcon.widget';
 import { selectInputWidget } from '../components/atoms/SelectInput/SelectInput.widget';
 import { textInputWidget } from '../components/atoms/TextInput/TextInput.widget';
 import { transcriptRoleBadgeWidget } from '../components/atoms/TranscriptRoleBadge/TranscriptRoleBadge.widget';
@@ -17,6 +18,7 @@ import { panelWidget } from '../components/layout/Panel/Panel.widget';
 import { scrollRegionWidget } from '../components/layout/ScrollRegion/ScrollRegion.widget';
 import { sectionBlockWidget } from '../components/layout/SectionBlock/SectionBlock.widget';
 import { sidebarShellWidget } from '../components/layout/SidebarShell/SidebarShell.widget';
+import { slideShellWidget } from '../components/layout/SlideShell/SlideShell.widget';
 import { splitPaneWidget } from '../components/layout/SplitPane/SplitPane.widget';
 import { stackWidget } from '../components/layout/Stack/Stack.widget';
 import { tabListWidget } from '../components/layout/TabList/TabList.widget';
@@ -29,10 +31,14 @@ import { contextLegendWidget } from '../components/molecules/ContextLegend/Conte
 import { contextStackDiagramWidget } from '../components/molecules/ContextStackDiagram/ContextStackDiagram.widget';
 import { contextStripDiagramWidget } from '../components/molecules/ContextStripDiagram/ContextStripDiagram.widget';
 import { contextTreemapWidget } from '../components/molecules/ContextTreemap/ContextTreemap.widget';
+import { courseStepNavWidget } from '../components/molecules/CourseStepNav/CourseStepNav.widget';
 import { dataTableWidget } from '../components/molecules/DataTable/DataTable.widget';
+import { documentListPanelWidget } from '../components/molecules/DocumentListPanel/DocumentListPanel.widget';
+import { documentPreviewToolbarWidget } from '../components/molecules/DocumentPreviewToolbar/DocumentPreviewToolbar.widget';
 import { figureBlockWidget } from '../components/molecules/FigureBlock/FigureBlock.widget';
 import { keyPointListWidget } from '../components/molecules/KeyPointList/KeyPointList.widget';
 import { keyValueStripWidget } from '../components/molecules/KeyValueStrip/KeyValueStrip.widget';
+import { markdownArticleWidget } from '../components/molecules/MarkdownArticle/MarkdownArticle.widget';
 import { metadataGridWidget } from '../components/molecules/MetadataGrid/MetadataGrid.widget';
 import { personSummaryWidget } from '../components/molecules/PersonSummary/PersonSummary.widget';
 import { sidebarNavWidget } from '../components/molecules/SidebarNav/SidebarNav.widget';
@@ -43,7 +49,10 @@ import { anchoredCommentRailWidget } from '../components/organisms/AnchoredComme
 import { annotationRailPanelWidget } from '../components/organisms/AnnotationRailPanel/AnnotationRailPanel.widget';
 import { contextDiagramPanelWidget } from '../components/organisms/ContextDiagramPanel/ContextDiagramPanel.widget';
 import { contextUploadDropAreaWidget } from '../components/organisms/ContextUploadDropArea/ContextUploadDropArea.widget';
+import { courseLessonPanelWidget } from '../components/organisms/CourseLessonPanel/CourseLessonPanel.widget';
+import { courseSlidePanelWidget } from '../components/organisms/CourseSlidePanel/CourseSlidePanel.widget';
 import { courseStudioShellWidget } from '../components/organisms/CourseStudioShell/CourseStudioShell.widget';
+import { handoutDocumentShellWidget } from '../components/organisms/HandoutDocumentShell/HandoutDocumentShell.widget';
 import { transcriptReaderPanelWidget } from '../components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.widget';
 import { transcriptWorkspacePanelWidget } from '../components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.widget';
 import { createWidgetRegistry, mergeWidgetRegistries } from './registry';
@@ -105,7 +114,16 @@ export const contextWindowWidgetRegistry = createWidgetRegistry([
 ]);
 
 export const courseWidgetRegistry = createWidgetRegistry([
+  contextStudioNavIconWidget,
+  courseLessonPanelWidget,
+  courseSlidePanelWidget,
+  courseStepNavWidget,
   courseStudioShellWidget,
+  documentListPanelWidget,
+  documentPreviewToolbarWidget,
+  handoutDocumentShellWidget,
+  markdownArticleWidget,
+  slideShellWidget,
 ]);
 
 export const defaultWidgetRegistry = mergeWidgetRegistries(
