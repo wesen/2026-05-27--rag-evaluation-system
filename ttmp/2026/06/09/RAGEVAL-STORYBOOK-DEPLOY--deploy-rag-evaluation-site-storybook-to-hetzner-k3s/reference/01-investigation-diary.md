@@ -524,3 +524,129 @@ This separation is important for the playbook. The cluster's publisher Job needs
 - Kubernetes role name: `rag-evaluation-storybook`
 - GitHub Actions role name: `rag-evaluation-system-gitops-pr`
 - GitHub Actions policy name: `gha-rag-evaluation-system-gitops-pr`
+
+## Step 7: Consolidate implementation results for playbook reuse
+
+I updated the design guide with the concrete files, commits, and validation commands produced during the implementation. This turns the original proposed guide into a mixed design-and-playbook artifact: future readers can see both the intended architecture and the exact implementation sequence that worked.
+
+This step stops short of live rollout. The source workflow, K3s manifests, and Vault files are committed, but the publisher Job still uses `sha-0000000` until a real CI-published GHCR image exists and infra-tooling rewrites the Job through a GitOps PR.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 2)
+
+**Assistant interpretation:** Finish Phase 5 documentation work by updating the design guide and diary with implementation results, commits, and validation outcomes, then run docmgr validation and re-upload the updated bundle.
+
+**Inferred user intent:** Preserve enough operational detail that the diary can be refactored into a repeatable playbook for packaging Storybook deployments.
+
+**Commit (code):** pending — final ticket documentation update.
+
+### What I did
+- Added an `Implementation results from this session` section to the design guide.
+- Listed source repository commits:
+  - `2f3e0836ee86034adbbbaf1dc1364f9d966b759f`
+  - `8a32d252ad6f779dd47f1b59fee8fa57c5972cc4`
+  - `4547a48f0e5f71f86ad8ebb70901a512e0976538`
+  - `947b550fe9d1b0fbfb7fd579fcfa97216b07eea9`
+  - `4fba6e8fe25a50824297b749db4086fc0acef0b2`
+- Listed K3s repository commits:
+  - `7094ddccee1ab5d0c9a5838baf086f0a072780ca`
+  - `bbdcab44d59a5f92f6a5a6308f0811146d4089c0`
+- Added passed validation commands for source, Docker, GitOps target metadata, Kustomize render, and Vault role JSON checks.
+- Added remaining rollout steps that require live CI/GitOps/Vault/Argo activity.
+
+### Why
+- The diary is intended to become a playbook, so it needs exact command evidence and phase-by-phase lessons rather than just a final summary.
+- The design guide should tell reviewers what was actually implemented, not only what was proposed.
+
+### What worked
+- The implementation results section could be added without restructuring the entire guide.
+- The commits are cleanly separated into source-repo commits and K3s-repo commits.
+
+### What didn't work
+- N/A.
+
+### What I learned
+- This pattern has a useful reusable sequence: build static output locally, package as `/site`, wire CI to publish immutable image, add static-sites GitOps package, add Vault policies/roles, then only after a real image exists bootstrap Argo and live secrets.
+
+### What was tricky to build
+- The documentation has to be clear that “implemented” does not mean “live in cluster.” The GitOps manifests exist, but the placeholder image token intentionally prevents pretending that rollout is complete. The remaining rollout steps are therefore called out as operator work.
+
+### What warrants a second pair of eyes
+- Review the implementation results section for any commit hash mistakes before using it as a playbook source.
+- Review whether the remaining rollout steps should include actual Vault bootstrap commands in a separate operator-only playbook.
+
+### What should be done in the future
+- Run `docmgr doctor`.
+- Upload the updated bundle to reMarkable.
+- Commit the final ticket documentation update.
+
+### Code review instructions
+- Read the implementation results section in the design guide.
+- Compare the listed commits with `git log --oneline` in both repositories.
+- Confirm the remaining rollout steps accurately describe what is not yet live.
+
+### Technical details
+- Updated design doc: `/home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/09/RAGEVAL-STORYBOOK-DEPLOY--deploy-rag-evaluation-site-storybook-to-hetzner-k3s/design-doc/01-intern-guide-deploy-rag-evaluation-site-storybook-to-hetzner-k3s.md`
+
+## Step 8: Validate ticket and upload the updated playbook bundle
+
+I ran docmgr validation after relating the newly implemented source and K3s files, then uploaded the updated design guide and diary bundle to reMarkable. This is the handoff point for the documentation portion of the work: the ticket now contains the design, implementation evidence, validation outcomes, and remaining live rollout steps.
+
+The upload replaced the previous bundle with the updated implementation-aware version. The generated PDF is suitable for reading as both a design document and an implementation playbook draft.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 2)
+
+**Assistant interpretation:** Complete the final documentation phase by validating docmgr hygiene, uploading the updated bundle, marking the remaining documentation tasks complete, and committing the ticket updates.
+
+**Inferred user intent:** Ensure the reusable playbook material is persisted in docmgr and available on reMarkable after the implementation work.
+
+**Commit (code):** pending — final documentation/upload record.
+
+### What I did
+- Related newly implemented files to the primary design doc with `docmgr doc relate`.
+- Updated the ticket changelog with the implementation summary.
+- Ran:
+  - `docmgr --root 2026-05-27--rag-evaluation-system/ttmp doctor --ticket RAGEVAL-STORYBOOK-DEPLOY --stale-after 30`
+- Uploaded the updated bundle with:
+  - `remarquee upload bundle ... --name "RAGEVAL-STORYBOOK-DEPLOY Guide" --remote-dir "/ai/2026/06/09/RAGEVAL-STORYBOOK-DEPLOY" --toc-depth 2 --force --non-interactive`
+- Marked the final Phase 5 tasks complete.
+
+### Why
+- The ticket should remain self-contained and navigable from docmgr search/doctor output.
+- The reMarkable copy should include the implementation results and not just the initial proposal.
+- `--force` was used intentionally because this upload replaces the earlier same-name bundle with the updated version.
+
+### What worked
+- `docmgr doctor` passed with all checks green.
+- reMarkable upload succeeded with:
+  - `OK: uploaded RAGEVAL-STORYBOOK-DEPLOY Guide.pdf -> /ai/2026/06/09/RAGEVAL-STORYBOOK-DEPLOY`
+
+### What didn't work
+- N/A.
+
+### What I learned
+- The docmgr + reMarkable loop is useful at phase boundaries: the guide now captures both proposed and observed behavior, and the diary has enough detail to become a packaging playbook.
+
+### What was tricky to build
+- The main risk was accidentally documenting the deployment as fully live. I kept the distinction explicit: packaging, CI handoff, GitOps manifests, and Vault files are implemented; live rollout still needs a real GHCR image, Vault seeding/bootstrap, GitOps PR merge, Argo Application apply, and HTTP smoke test.
+
+### What warrants a second pair of eyes
+- Review the remaining rollout section before using it operationally.
+- Confirm whether to split the diary into a standalone “Package Storybook for static-sites-host” playbook after the first live rollout validates the remaining steps.
+
+### What should be done in the future
+- Run the source workflow on `main` and confirm the first real image/GitOps PR.
+- Replace the placeholder `sha-0000000` through infra-tooling, not by hand if possible.
+- Bootstrap and seed Vault secrets, apply the Argo Application once, and smoke test the public URL.
+
+### Code review instructions
+- Review the final `tasks.md` to confirm all implementation documentation tasks are marked complete.
+- Review the latest reMarkable bundle if reading offline.
+- Run `docmgr doctor` again after any follow-up edits.
+
+### Technical details
+- reMarkable path: `/ai/2026/06/09/RAGEVAL-STORYBOOK-DEPLOY`
+- Uploaded file name: `RAGEVAL-STORYBOOK-DEPLOY Guide.pdf`

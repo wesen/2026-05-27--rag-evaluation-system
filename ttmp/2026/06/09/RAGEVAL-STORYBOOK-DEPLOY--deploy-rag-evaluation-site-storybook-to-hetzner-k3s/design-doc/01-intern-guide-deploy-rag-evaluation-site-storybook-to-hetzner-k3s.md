@@ -14,12 +14,24 @@ Owners: []
 RelatedFiles:
     - Path: ../../../../../../../../../../code/wesen/2026-03-27--hetzner-k3s/docs/static-site-packaging-and-gitops-playbook.md
       Note: Reference static-site deployment model
+    - Path: ../../../../../../../../../../code/wesen/2026-03-27--hetzner-k3s/gitops/applications/rag-evaluation-storybook.yaml
+      Note: Argo CD Application for the Storybook static site
     - Path: ../../../../../../../../../../code/wesen/2026-03-27--hetzner-k3s/gitops/kustomize/dmeta-examples/publish-job.yaml
       Note: Reference publisher Job shape
+    - Path: ../../../../../../../../../../code/wesen/2026-03-27--hetzner-k3s/gitops/kustomize/rag-evaluation-storybook/publish-job.yaml
+      Note: K3s publisher Job copied /site into static-sites-content PVC
+    - Path: ../../../../../../../../../../code/wesen/2026-03-27--hetzner-k3s/vault/roles/github-actions/rag-evaluation-system-gitops-pr.json
+      Note: Vault GitHub Actions role referenced by source workflow
     - Path: ../../../../../../../../../../code/wesen/go-go-golems/infra-tooling/.github/workflows/publish-ghcr-image.yml
       Note: Reusable GHCR publish and GitOps PR workflow
     - Path: ../../../../../../../../../../code/wesen/go-go-golems/infra-tooling/actions/open-gitops-pr/action.yml
       Note: GitOps patch action supporting static-publisher-job
+    - Path: 2026-05-27--rag-evaluation-system/.github/workflows/publish-rag-evaluation-storybook.yml
+      Note: Source CI workflow that builds Storybook
+    - Path: 2026-05-27--rag-evaluation-system/Dockerfile.storybook-static
+      Note: Static artifact image contract for Storybook /site packaging
+    - Path: 2026-05-27--rag-evaluation-system/deploy/gitops-targets.json
+      Note: Infra-tooling target metadata for static-publisher-job patching
     - Path: 2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/.storybook/main.ts
       Note: Package-local Storybook story glob and framework
     - Path: 2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/package.json
@@ -30,6 +42,7 @@ LastUpdated: 2026-06-09T20:59:15-04:00
 WhatFor: Use this when implementing or reviewing the Storybook deployment for @go-go-golems/rag-evaluation-site.
 WhenToUse: Before adding Docker, GitHub Actions, deploy target metadata, K3s manifests, Vault roles, or rollout validation for the package Storybook.
 ---
+
 
 
 # Intern Guide: Deploy `rag-evaluation-site` Storybook to Hetzner K3s
@@ -1224,9 +1237,79 @@ When debugging, identify which contract failed before changing code.
 9. **Merge GitOps PR.** Apply the Argo Application once if this is the first rollout.
 10. **Smoke test HTTPS.** Confirm Storybook loads at the chosen hostname.
 
+## Implementation results from this session
+
+The initial implementation now exists across the source repository and K3s GitOps repository. The deployment has not been rolled out to the live cluster yet because the publisher Job still intentionally uses `sha-0000000` until the first CI-published GHCR image exists.
+
+### Source repository commits
+
+- `2f3e0836ee86034adbbbaf1dc1364f9d966b759f` — `docs: plan Storybook deployment ticket`
+  - Created the docmgr ticket deliverables and phased task plan.
+- `8a32d252ad6f779dd47f1b59fee8fa57c5972cc4` — `build: package rag evaluation Storybook static artifact`
+  - Added `Dockerfile.storybook-static`.
+  - Added `.dockerignore`.
+  - Updated `.gitignore` to ignore generated `packages/rag-evaluation-site/storybook-static/`.
+  - Validated package typecheck, Storybook build, Docker build, and `/site/index.html` in the artifact image.
+- `4547a48f0e5f71f86ad8ebb70901a512e0976538` — `ci: publish Storybook static artifact`
+  - Added `.github/workflows/publish-rag-evaluation-storybook.yml`.
+  - Added `deploy/gitops-targets.json` using `patch_strategy: static-publisher-job`.
+  - Validated target metadata with infra-tooling's `validate_gitops_targets.py`.
+- `947b550fe9d1b0fbfb7fd579fcfa97216b07eea9` — `docs: record Storybook K3s manifest phase`
+  - Recorded the K3s static-site manifest phase in the diary/tasks.
+- `4fba6e8fe25a50824297b749db4086fc0acef0b2` — `docs: record Storybook Vault wiring phase`
+  - Recorded the K3s Vault wiring phase in the diary/tasks.
+
+### K3s GitOps repository commits
+
+- `7094ddccee1ab5d0c9a5838baf086f0a072780ca` — `gitops: add rag evaluation Storybook static site`
+  - Added `gitops/kustomize/rag-evaluation-storybook/`.
+  - Added `gitops/applications/rag-evaluation-storybook.yaml`.
+  - Validated `kubectl kustomize gitops/kustomize/rag-evaluation-storybook`.
+- `bbdcab44d59a5f92f6a5a6308f0811146d4089c0` — `vault: add rag evaluation Storybook deployment roles`
+  - Added Kubernetes Vault policy/role for the image-pull secret.
+  - Added GitHub Actions Vault policy/role for the source workflow GitOps PR token.
+  - Validated both role JSON files with `python3 -m json.tool`.
+
+### Validation commands that passed
+
+```bash
+cd /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system
+pnpm --dir packages/rag-evaluation-site typecheck
+pnpm --dir packages/rag-evaluation-site build-storybook
+docker build -f Dockerfile.storybook-static -t rag-evaluation-storybook:test .
+docker run --rm rag-evaluation-storybook:test sh -c 'test -f /site/index.html && find /site -maxdepth 2 -type f | sort | head -30'
+python3 /home/manuel/code/wesen/go-go-golems/infra-tooling/scripts/gitops/validate_gitops_targets.py deploy/gitops-targets.json
+```
+
+```bash
+cd /home/manuel/code/wesen/2026-03-27--hetzner-k3s
+kubectl kustomize gitops/kustomize/rag-evaluation-storybook >/tmp/rag-evaluation-storybook-rendered.yaml
+python3 -m json.tool vault/roles/kubernetes/rag-evaluation-storybook.json
+python3 -m json.tool vault/roles/github-actions/rag-evaluation-system-gitops-pr.json
+```
+
+### Remaining rollout steps
+
+1. Push/merge the source repository changes so the GitHub Actions workflow can publish the first real `ghcr.io/go-go-golems/rag-evaluation-storybook:sha-*` image.
+2. Let infra-tooling open a GitOps PR that replaces `sha-0000000` in `publish-job.yaml`.
+3. Bootstrap/seed live Vault paths:
+   - `kv/apps/rag-evaluation-storybook/prod/image-pull`
+   - `kv/ci/github/rag-evaluation-system/gitops-pr-token`
+4. Merge the GitOps PR with a real image tag.
+5. Apply the Argo CD Application once:
+
+```bash
+cd /home/manuel/code/wesen/2026-03-27--hetzner-k3s
+export KUBECONFIG=$PWD/.cache/kubeconfig-tailnet.yaml
+kubectl apply -f gitops/applications/rag-evaluation-storybook.yaml
+kubectl -n argocd annotate application rag-evaluation-storybook argocd.argoproj.io/refresh=hard --overwrite
+```
+
+6. Validate `Application` health, `VaultStaticSecret`, publisher Job completion, TLS, and HTTPS smoke tests.
+
 ## Open questions
 
-1. **Final hostname.** This guide uses `rag-evaluation-storybook.yolo.scapegoat.dev`. Confirm this is the desired public hostname before creating DNS/TLS-facing manifests.
+1. **Final hostname.** This guide uses `rag-evaluation-storybook.yolo.scapegoat.dev`. Confirm this is the desired public hostname before live rollout.
 2. **GHCR visibility.** If `ghcr.io/go-go-golems/rag-evaluation-storybook` is public, the image-pull secret is optional. If private, the VSO pull secret is required.
 3. **GitHub repository identity.** The package metadata says `go-go-golems/rag-evaluation-system`; confirm the actual source repository claims before finalizing the Vault GitHub Actions role.
 4. **Workflow environment.** The reusable infra-tooling workflow sets up Go by default. This source repo has `go.mod`, so that should work, but the Storybook build itself depends on Node/Corepack/Pnpm inside `test_command`.
