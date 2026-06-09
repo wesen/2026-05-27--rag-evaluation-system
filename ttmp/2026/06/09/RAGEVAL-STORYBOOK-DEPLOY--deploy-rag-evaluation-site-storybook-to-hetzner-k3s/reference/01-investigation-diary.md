@@ -446,3 +446,81 @@ This phase still uses `sha-0000000` as an intentional placeholder in the publish
 - Hostname: `rag-evaluation-storybook.yolo.scapegoat.dev`
 - Placeholder release token: `sha-0000000`
 - Publisher image placeholder: `ghcr.io/go-go-golems/rag-evaluation-storybook:sha-0000000`
+
+## Step 6: Add K3s Vault policies and roles for deployment credentials
+
+I added the Vault-side declarative files needed by the Storybook static-site deployment. There are two separate credential paths: Kubernetes reads a GHCR image-pull secret through Vault Secret Operator, and GitHub Actions reads a GitOps PR token through Vault OIDC.
+
+This separation is important for the playbook. The cluster's publisher Job needs only package pull credentials, while the source workflow needs only enough GitHub access to open a PR against the GitOps repo. Neither path should grant broad runtime secret access.
+
+### Prompt Context
+
+**User prompt (verbatim):** (see Step 2)
+
+**Assistant interpretation:** Execute Phase 4: add K3s Vault policy/role manifests for both the cluster-side image-pull secret and the source-side GitOps PR workflow credential, validate the JSON files, and commit focused Vault wiring changes.
+
+**Inferred user intent:** Complete the credential manifests needed before an operator bootstraps Vault and attempts the first CI-to-GitOps rollout.
+
+**Commit (code):** `bbdcab44d59a5f92f6a5a6308f0811146d4089c0` — "vault: add rag evaluation Storybook deployment roles"
+
+### What I did
+- Added Kubernetes image-pull policy:
+  - `/home/manuel/code/wesen/2026-03-27--hetzner-k3s/vault/policies/kubernetes/rag-evaluation-storybook.hcl`
+- Added Kubernetes image-pull role:
+  - `/home/manuel/code/wesen/2026-03-27--hetzner-k3s/vault/roles/kubernetes/rag-evaluation-storybook.json`
+- Added GitHub Actions GitOps PR policy:
+  - `/home/manuel/code/wesen/2026-03-27--hetzner-k3s/vault/policies/github-actions/rag-evaluation-system-gitops-pr.hcl`
+- Added GitHub Actions GitOps PR role:
+  - `/home/manuel/code/wesen/2026-03-27--hetzner-k3s/vault/roles/github-actions/rag-evaluation-system-gitops-pr.json`
+- Validated JSON role syntax with:
+  - `python3 -m json.tool vault/roles/kubernetes/rag-evaluation-storybook.json`
+  - `python3 -m json.tool vault/roles/github-actions/rag-evaluation-system-gitops-pr.json`
+- Grepped the files for expected names and checked that no `TODO` or `PLACEHOLDER` markers remained.
+- Committed only the new Vault files in the K3s repo.
+
+### Why
+- `vault-static-secret-image-pull.yaml` from Phase 3 references `apps/rag-evaluation-storybook/prod/image-pull`; the Kubernetes Vault policy must allow the service account role to read that path.
+- The source workflow from Phase 2 references Vault role `rag-evaluation-system-gitops-pr` and secret path `kv/data/ci/github/rag-evaluation-system/gitops-pr-token`; the GitHub Actions policy/role must make that read possible.
+- Keeping these as files in the K3s repo makes bootstrap repeatable via the existing Vault bootstrap scripts.
+
+### What worked
+- Both Vault role JSON files parsed successfully.
+- The grep check confirmed expected names and paths:
+  - `kv/data/apps/rag-evaluation-storybook/prod/image-pull`
+  - `kv/data/ci/github/rag-evaluation-system/gitops-pr-token`
+  - `go-go-golems/rag-evaluation-system`
+  - `gha-rag-evaluation-system-gitops-pr`
+- The focused K3s commit succeeded while unrelated modified `ttmp` files remained unstaged.
+
+### What didn't work
+- N/A. File creation, syntax validation, and commit succeeded.
+
+### What I learned
+- The deployment needs two Vault bootstrap operations later: Kubernetes auth role/policy bootstrap and GitHub Actions OIDC role/policy bootstrap.
+- The role names now line up with the source workflow values added in Phase 2.
+
+### What was tricky to build
+- The trickiest part is distinguishing Vault path syntax from Vault CLI path syntax. The policy uses `kv/data/...` and `kv/metadata/...` because KV v2 policies operate on API paths. Operator seeding commands later should use `vault kv put kv/apps/...`, not `kv/data/apps/...`.
+- The GitHub Actions role is also claim-sensitive. It currently binds to repository `go-go-golems/rag-evaluation-system`, branch `refs/heads/main`, and event `push`. If the actual source repo or default branch differs, Vault authentication will fail even though the files are syntactically valid.
+
+### What warrants a second pair of eyes
+- Confirm that `go-go-golems/rag-evaluation-system` is the exact GitHub Actions `repository` claim.
+- Confirm the policy name convention `gha-rag-evaluation-system-gitops-pr` matches the bootstrap script's policy naming behavior.
+- Confirm the GHCR image-pull username convention before seeding the secret.
+
+### What should be done in the future
+- Bootstrap the live Vault policies/roles with the existing scripts after the GitOps changes are merged.
+- Seed:
+  - `kv/apps/rag-evaluation-storybook/prod/image-pull`
+  - `kv/ci/github/rag-evaluation-system/gitops-pr-token`
+
+### Code review instructions
+- Review the four Vault files added in commit `bbdcab44d59a5f92f6a5a6308f0811146d4089c0`.
+- Re-run JSON syntax checks for both role files.
+- Compare the workflow's `vault_role` and `vault_secret_path` against the GitHub Actions Vault role/policy.
+
+### Technical details
+- K3s commit: `bbdcab44d59a5f92f6a5a6308f0811146d4089c0`
+- Kubernetes role name: `rag-evaluation-storybook`
+- GitHub Actions role name: `rag-evaluation-system-gitops-pr`
+- GitHub Actions policy name: `gha-rag-evaluation-system-gitops-pr`
