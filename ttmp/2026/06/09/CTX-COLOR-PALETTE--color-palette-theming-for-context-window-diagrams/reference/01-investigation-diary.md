@@ -1,0 +1,234 @@
+---
+title: "Investigation Diary"
+doc_type: reference
+status: active
+intent: long-term
+topics: [frontend, theming, context-window, visualization]
+ticket: CTX-COLOR-PALETTE
+created: "2026-06-09"
+owners: []
+---
+
+# Investigation Diary
+
+## Goal
+
+Investigate the context window visualization subsystem to design a color palette theming layer, and produce a detailed implementation guide for a new intern.
+
+## Step 1: Evidence Gathering and Architecture Mapping
+
+### Prompt Context
+
+**User prompt (verbatim):** "Create a new ticket in 2026-05-27--rag-evaluation-system/ttmp/ (using `docmgr --root 2026-05-27--rag-evaluation-system/ttmp ...`) to add color palette theming support to the context_window part of @2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/ so that we can have more legible visualization of context window instead of just blue and different halftone. ~/Downloads/macos1_subtle_color_palettes.json I like /tmp/pi-clipboard-7a252d34-c9d4-4c4d-a7f7-ecd7f2f932b0.png signal orange, slate coral, cobalt / send, dusty magenta the most because the different colors are complementary so that we can nicely codify the diagrams. Create a detailed analysis / design / implementation guide that is for a new intern, explaining all the parts of the system needed to understand what it is, with prose paragraphs and bullet points and pseudocode and diagrams and api references and file references. It should be very clear and technical. Store in the ticket and then upload to remarkable. Import the json into the sources/ folder of the ticket"
+
+**Assistant interpretation:** Create a docmgr ticket, do deep analysis of the context window visualization code, write an intern-ready design doc with full prose explanations and pseudocode, store everything in the ticket, and upload to reMarkable.
+
+**Inferred user intent:** The user wants a comprehensive, self-contained design document that a new team member could pick up and implement without needing to ask questions. The document should explain what context windows are, how the visualization system works, and exactly what code to change — with concrete color values from the preferred palettes.
+
+### What I did
+
+- Read every source file in the context window visualization subsystem:
+  - `src/context/types.ts` — 15 `ContextPartKind` values, 3 diagram styles
+  - `src/context/kinds.ts` — Visual spec system with 3 registries (pattern/tone/outline)
+  - `src/context/fixtures.ts` — Example snapshot data (4 snapshots)
+  - `src/components/molecules/ContextStripDiagram/` — Horizontal strip view
+  - `src/components/molecules/ContextStackDiagram/` — Vertical layer view
+  - `src/components/molecules/ContextBudgetBar/` — Budget bar with headroom
+  - `src/components/molecules/ContextTreemap/` — Area-proportional treemap
+  - `src/components/molecules/ContextLegend/` — Kind swatch legend
+  - `src/components/atoms/ContextKindSwatch/` — Individual swatch atom
+  - `src/components/organisms/ContextDiagramPanel/` — View orchestrator
+  - `src/theme.css` — CSS custom properties
+  - All 4 CSS modules — Pattern-based `.kind_*` rules
+- Read the `macos1_subtle_color_palettes.json` (16 palettes, 225 lines)
+- Analyzed the screenshot showing the palette sheet
+- Identified the 3-tier color mapping strategy (accent / tint / neutral)
+- Pre-computed tint values for all 4 preferred palettes
+
+### Why
+
+The user needs to understand every layer of the system to design a theming approach that fits cleanly into the existing architecture. The `kinds.ts` visual spec system already has a mode-switching mechanism (`pattern` / `tone` / `outline`), making `'color'` a natural fourth mode.
+
+### What worked
+
+- The existing `getContextKindSpec(kind, mode)` function is perfectly designed for extension — just add a new `colorOverrides` registry and a `mode === 'color'` branch.
+- The `data-mode` attribute pattern already on all diagram roots means CSS can use attribute selectors for mode-specific rules.
+- CSS custom properties enable palette switching without React changes.
+
+### What didn't work
+
+- Initially tried to use inline styles for fills, but realized this breaks palette switching (would need React re-renders). CSS custom properties are the right approach.
+- The pre-computed hex values for tints are tedious to calculate by hand. Used `color-mix()` mental model and verified with hex arithmetic.
+
+### What I learned
+
+- The system has exactly 4 diagram molecules, 1 atom, 1 organism, and 1 spec registry — a small, well-scoped surface area.
+- The 15 `ContextPartKind` values can be reduced to 3 visual tiers based on semantic importance.
+- The Dusty Magenta / Blue palette naturally maps to the human-vs-machine duality in context windows.
+
+### What was tricky to build
+
+- **Color-to-kind mapping:** 15 kinds × 2-3 accent colors means most kinds get tints, not pure accents. The three-tier system (accent / tint / neutral) was the key insight that makes this work.
+- **Tint computation:** Getting the right opacity level for each tier so that kinds are distinguishable but not garish. 30% for retrieval, 20% for tool, 25% for result — these differences matter visually.
+- **Colored halftone vs flat fills:** Initially designed color mode as flat solid fills (replacing patterns entirely). User requested keeping the halftone patterns and coloring the pattern lines instead. This required splitting the CSS tokens into `--rag-context-line-<kind>` (pattern marks) and `--rag-context-fill-<kind>` (background behind pattern), and re-creating each CSS pattern with the colored tokens.
+- **Provider pattern for CSS vars:** How to switch palettes without React re-renders. Solution: `ContextPaletteProvider` sets CSS custom properties as inline `style` on a wrapper `<div>`. Descendants consume via `var()`. No React context needed — pure CSS cascade.
+
+### What warrants a second pair of eyes
+
+- The WCAG contrast ratios for label-on-fill in color mode — verify with an automated checker.
+- The `color-mix()` fallback strategy — confirm that all target browsers support it or that the pre-computed values work as a fallback.
+
+### What should be done in the future
+
+- Phase 2: Palette selector component
+- Phase 3: Dark mode palettes
+- Chromatic snapshot tests for color mode
+
+### Code review instructions
+
+- Start with `design-doc/01-color-palette-theming-design-implementation-guide.md`
+- Verify the three-tier mapping makes sense for the user's mental model
+- Check the pre-computed hex values in the palette swatch tables
+- Walk through the pseudocode in Steps 1–6 and verify it matches the existing code patterns
+
+### Technical details
+
+- Total files to modify: 9 (types, kinds, theme, 4 CSS modules, swatch CSS, panel TSX)
+- Total estimated lines: ~430
+- No new dependencies needed
+- No changes to data flow, widget registry, or layout components
+
+## Step 2: Reframe Around Configurable Legends and Style Sets
+
+The second design pass changed the core abstraction. Instead of making the existing hardcoded `ContextPartKind` list prettier, the revised design treats kinds as only a default preset and introduces a caller-defined `ContextStyleSet` for custom legend labels, flexible palette size, and per-label visual styles.
+
+This was prompted by the requirement that a caller should be able to say: "I have three labels for this context diagram, here is the thing to render, and here is what style each label has." That requirement means the legend, segment style, and data semantics must be separated.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Ok, so we actually also want to make the legend labels and even the size of the palette flexible and configurable. So basically we'd say \" i have 3 labels for this context diagram, and here's the thing to render, and here's what style each has\", which I think has some pretty interesting impact on the design. 
+
+So far, this has been done by your little brother, so I want you to take a critical look at it, especially in light of the above instructions to redo how legends for context window widgets work, and then make a new reviewed updated version (in a separate document) that points out what is good, what is problematic, what should be changed, how it should be changed, giving proper explanations so that they can do better next time. Upload to remarkable as well, write in a similar style."
+
+**Assistant interpretation:** Create a separate critical review document that preserves the good parts of the previous design but revises the architecture around caller-configurable legend labels, arbitrary palette size, and per-label styles.
+
+**Inferred user intent:** The user wants the implementation guide to teach a better abstraction: data segments should refer to caller-defined style keys, legends should not be hardcoded to `ContextPartKind`, and Storybook should prove that the same layout can render with custom labels and style sets.
+
+### What I did
+
+- Inspected the Widget IR contract in `src/widgets/ir.ts`.
+- Confirmed that `ContextLegendWidgetProps`, `ContextDiagramPanelWidgetProps`, and individual diagram widget props are currently tied to `ContextPartKind` and `ContextDiagramStyle`.
+- Added `design-doc/02-reviewed-design-configurable-legends-and-style-palettes.md`.
+- Critiqued the previous design constructively:
+  - good: colored halftone, CSS variables, Storybook showcase direction;
+  - problematic: `kind` does too much, legends derive from hardcoded enums, CSS is hardcoded as `.kind_*`, palette size is assumed to match built-in vocabulary.
+- Proposed `styleKey`, `ContextVisualStyle`, `ContextLegendItemSpec`, and `ContextStyleSet`.
+- Proposed replacing `.kind_*` CSS with generic `.pattern_*` classes and per-segment CSS variables.
+- Proposed Widget IR changes so server-sent widgets can carry arbitrary label/style definitions.
+
+### Why
+
+The new requirement invalidates a purely hardcoded-kind color palette design. A custom three-label diagram should not require editing global TypeScript unions, CSS classes, or visual registries. The component library should provide a generic visual grammar and treat built-in context kinds as one preset.
+
+### What worked
+
+- The existing Widget IR is already JSON-like, so `ContextStyleSet` can be made JSON-compatible and carried through widget props.
+- The diagram components already centralize rendering around snapshot parts, so adding `styleKey` resolution is conceptually straightforward.
+- The existing pattern CSS can be preserved if rewritten as generic `.pattern_*` renderers.
+
+### What didn't work
+
+- The previous `ContextPaletteProvider` idea alone does not solve the legend problem. It can scope theme tokens, but it cannot express "these are my three legend labels and styles" unless paired with a per-diagram `styleSet`.
+
+### What I learned
+
+- `ContextPartKind` is currently a semantic type, visual style key, legend key, and CSS class suffix all at once.
+- The better API is `snapshot.parts[].styleKey` plus `styleSet.styles[styleKey]` and `styleSet.legend`.
+- Storybook should include a custom diagram that uses no built-in `kind` fields at all; that is the strongest test of the new design.
+
+### What was tricky to build
+
+- Distinguishing global theme switching from per-diagram style configuration. A provider helps global CSS tokens cascade, but the required product behavior is local: each diagram can define its own labels and style count.
+- Keeping backward compatibility without preserving the bad abstraction as the primary API. The solution is to keep `ContextPartKind` as a built-in style preset and a legacy path, while making `items + styles` the primary legend API.
+
+### What warrants a second pair of eyes
+
+- The exact naming of `styleKey` vs `legendKey` vs `categoryId`. `styleKey` is implementation-friendly, but `legendKey` might better express caller intent.
+- Whether `ContextStyleSet.legend.label` should be plain string or `RenderableValue` in Widget IR. The doc recommends Widget IR support for richer labels, but React component props can start with string.
+
+### What should be done in the future
+
+- Implement the new generic style layer before adding more palette presets.
+- Add Storybook tests for a three-label diagram with no `kind` fields.
+- Add Widget IR examples with `styleSet` embedded in JSON.
+
+### Code review instructions
+
+- Start with `design-doc/02-reviewed-design-configurable-legends-and-style-palettes.md`.
+- Review `src/widgets/ir.ts` first, especially the context diagram widget prop interfaces.
+- Then review `ContextLegend.tsx`, `ContextKindSwatch.tsx`, and the four diagram molecules to plan the migration away from `.kind_*` CSS.
+
+### Technical details
+
+- New primary contract: `ContextStyleSet`.
+- New part lookup field: `ContextWindowPart.styleKey`.
+- New rendering primitive: generic `.pattern_*` CSS classes plus `--ctx-fill`, `--ctx-line`, `--ctx-stroke`, and `--ctx-label` variables.
+- Legacy path: `ContextPartKind` maps into a built-in default `ContextStyleSet`.
+
+## Step 3: Hard-Cutover Update — No Backwards Compatibility
+
+This update removes the migration-wrapper framing from the reviewed design. The implementation should not preserve `ContextPartKind`, `ContextKindSwatch`, `legendKinds`, `legendMode`, `.kind_*` CSS, or fallback-to-kind behavior. The only current consumers are `2026-05-27--rag-evaluation-system/` and `ClubMedMeetup/`, so both should be updated to the new `styleKey` + `ContextStyleSet` API in the same branch.
+
+### Prompt Context
+
+**User prompt (verbatim):** "we don't need backwards compatibility, we only have 2026-05-27--rag-evaluation-system/ and ClubMedMeetup/ using the system for now, and those can be updated. So no backwards wrappers or so, just hardcutover. Update the doc and create detailed tasks in the ticket."
+
+**Assistant interpretation:** Revise the reviewed design so it explicitly requires a hard cutover instead of preserving legacy wrappers or migration paths, and replace the ticket task list with detailed implementation tasks.
+
+**Inferred user intent:** The user wants a cleaner implementation with one API, not a dual-mode compatibility layer. They want the docs and tasks to prevent the implementer from adding shims that preserve the wrong abstraction.
+
+### What I did
+
+- Updated `design-doc/02-reviewed-design-configurable-legends-and-style-palettes.md` to add a hard-cutover directive.
+- Replaced optional/compatibility language with required `styleKey: string` and required `styleSet: ContextStyleSet`.
+- Removed recommendations to preserve `ContextKindSwatch`, `legendKinds`, `legendMode`, diagram `mode`, `.kind_*` CSS, and fallback-to-old-kind resolution.
+- Replaced `tasks.md` with a detailed implementation checklist covering architecture, style model, CSS, diagram components, legend/swatch, Widget IR, Storybook, and validation.
+
+### Why
+
+Maintaining compatibility would keep the wrong abstraction alive. Since the only consumers are known and can be updated, the cleanest implementation is a single hard-cutover to caller-defined style sets.
+
+### What worked
+
+- The reviewed design already had the right destination (`styleKey` + `ContextStyleSet`); the update mainly removed transition scaffolding.
+- The task list now directly encodes forbidden old APIs and validation searches.
+
+### What didn't work
+
+- The previous reviewed document still contained several legacy/migration phrases (`kind` fallback, `ContextKindSwatch` wrapper, `legendKinds`, and `.kind_*` migration layer). Those had to be removed to avoid implementer confusion.
+
+### What I learned
+
+- The acceptance criteria need to state negative requirements explicitly: no wrappers, no legacy props, no `.kind_*` selectors, no fallback resolution.
+
+### What was tricky to build
+
+- Keeping `fallbackStyle` language without implying backwards compatibility. The doc now frames it as production resilience only, not as a way to silently support old `kind` data.
+
+### What warrants a second pair of eyes
+
+- Whether any non-diagram components still need `ContextPartKind` for annotations/badges. If yes, either cut those over too or separate their domain model from diagram styling explicitly.
+
+### What should be done in the future
+
+- During implementation, run a repo-wide search for `ContextPartKind`, `ContextKindSwatch`, `legendKinds`, `legendMode`, `.kind_`, and `kind:` before review.
+
+### Code review instructions
+
+- Start with `tasks.md`; it is now the authoritative implementation checklist.
+- Then review `design-doc/02-reviewed-design-configurable-legends-and-style-palettes.md`, especially the hard-cutover directive and acceptance criteria.
+
+### Technical details
+
+- Updated document: `design-doc/02-reviewed-design-configurable-legends-and-style-palettes.md`
+- Updated task list: `tasks.md`
