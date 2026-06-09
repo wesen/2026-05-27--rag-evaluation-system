@@ -4,11 +4,11 @@
 
 ### Hard-cutover architecture
 
-- [ ] Remove `ContextPartKind` from context diagram styling contracts; do not add compatibility wrappers.
+- [x] Remove `ContextPartKind` from context diagram styling contracts; do not add compatibility wrappers.
 - [x] Replace `ContextWindowPart.kind` with required `ContextWindowPart.styleKey: string` in `packages/rag-evaluation-site/src/context/types.ts`.
 - [x] Update all context-window fixtures in `packages/rag-evaluation-site/src/context/fixtures.ts` so every part uses `styleKey` and no part uses `kind`.
-- [ ] Audit `ClubMedMeetup/` for context-window widget usage and update any serialized/widget data from `kind` to `styleKey` plus `styleSet`.
-- [ ] Audit `2026-05-27--rag-evaluation-system/` outside `packages/rag-evaluation-site/` for context-window widget usage and update any serialized/widget data from `kind` to `styleKey` plus `styleSet`.
+- [x] Audit `ClubMedMeetup/` for context-window widget usage and update any serialized/widget data from `kind` to `styleKey` plus `styleSet`.
+- [x] Audit `2026-05-27--rag-evaluation-system/` outside `packages/rag-evaluation-site/` for context-window widget usage and update any serialized/widget data from `kind` to `styleKey` plus `styleSet`.
 
 ### Generic style model
 
@@ -42,7 +42,7 @@
 - [x] Remove `kinds`, `mode`, `compact`, and `selectedKind` props from `ContextLegend`.
 - [x] Create `ContextStyleSwatch` that renders any `ContextVisualStyle` with the same generic pattern CSS.
 - [x] Delete `ContextKindSwatch` and its widget adapter/registry entry.
-- [ ] Update `AnnotationBadge` or any other consumer that currently depends on `ContextPartKind` styling to use `ContextVisualStyle` or a caller-provided style entry.
+- [x] Update `AnnotationBadge` or any other consumer that currently depends on `ContextPartKind` styling to use `ContextVisualStyle` or a caller-provided style entry.
 
 ### Widget IR hard cutover
 
@@ -66,7 +66,7 @@
 - [x] Update `contextWindow.recipes.contextDiagram(options)` to require `styleSet` or enough palette data to construct one; throw a useful error otherwise.
 - [x] Update Goja DSL tests so snapshots use `styleKey`, recipe IR includes `styleSet`, and missing `styleSet` errors.
 - [x] Update `pkg/widgetschema/schema.go` component list to remove `ContextKindSwatch` and include `ContextStyleSwatch` if exposed through Widget IR.
-- [ ] Update `schema/dsl-modules.yaml` or generated manifests if helper/component ownership metadata changes.
+- [x] Update `schema/dsl-modules.yaml` or generated manifests if helper/component ownership metadata changes.
 
 ### Storybook and examples
 
@@ -79,6 +79,6 @@
 
 - [x] Run `pnpm --dir packages/rag-evaluation-site typecheck` or the repository-equivalent TypeScript validation command.
 - [x] Run `pnpm --dir packages/rag-evaluation-site build-storybook` to verify Storybook compiles with the hard-cutover API.
-- [ ] Run repository tests/build commands that cover `ClubMedMeetup/` after updating consumers.
+- [x] Run repository tests/build commands that cover `ClubMedMeetup/` after updating consumers.
 - [x] Search for remaining forbidden API names: `ContextPartKind`, `ContextKindSwatch`, `legendKinds`, `legendMode`, `.kind_`, and `kind:` in context-window diagram paths.
 - [ ] Visually verify colored halftone: patterns remain visible, labels are legible, and swatches match segment rendering.

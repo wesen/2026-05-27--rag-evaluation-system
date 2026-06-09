@@ -384,3 +384,77 @@ Validation passed:
 - `go test ./pkg/widgetdsl ./pkg/widgetschema ./internal/widgetmanifest -count=1`
 - `pnpm build-storybook` in `packages/rag-evaluation-site`
 - forbidden API search for `ContextKindSwatch`, `ContextPartKind`, `legendKinds`, `legendMode`, `.kind_`, and context-diagram `kind:` data
+
+## Step 6: ClubMed Consumer Cutover and Embedded SPA Regeneration
+
+This step updated the active ClubMed meetup consumer so it no longer sends old context-window `kind` part data into the Widget IR renderer. The course slide Markdown, slide loader, session-derived model, LiteLLM live model, and page composition now use `styleKey` parts plus an explicit `ContextStyleSet` when rendering context diagrams.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue"
+
+**Assistant interpretation:** Continue the hard cutover beyond the already committed frontend and Goja DSL work, especially remaining consumer audits and validation.
+
+**Inferred user intent:** The user wants the implementation finished end-to-end, including external consumers and generated/bundled assets.
+
+**Commit (code):** pending — ClubMed consumer cutover
+
+### What I did
+
+- Audited `ClubMedMeetup/minitrace-viz` active code for context-window diagram usage.
+- Updated Markdown slide context-window blocks in `course/slides/01-window-budget.md` and `course/slides/02-tool-results.md` from `kind` to `styleKey`.
+- Updated `lib/slide-loader.js` so Markdown-authored context-window parts normalize only `styleKey`.
+- Updated `lib/course-session-data.js` so generated session snapshots use `styleKey` for context-window parts and selection logic.
+- Updated `lib/litellm-live-service.js` so live LiteLLM context snapshots use `styleKey` for context-window parts and selection logic.
+- Updated `lib/course-pages.js` to build a palette-derived `styleSet` with `contextWindow.paletteStyleSet(...)` and pass it to `CourseSlidePanel` and `ContextDiagramPanel` calls.
+- Rebuilt the local RAG widget package, pointed the ClubMed webapp at the built local package, rebuilt/synced the SPA, regenerated the xgoja package embed, and removed stale embedded asset hashes.
+- Marked the remaining audit/consumer tasks complete after validation.
+
+### Why
+
+The hard cutover would still fail in the meetup app if server-generated Widget IR kept emitting old part `kind` fields or omitted required `styleSet` props. The embedded SPA also had to be regenerated because the checked-in bundle still contained the previous renderer implementation.
+
+### What worked
+
+- `pnpm typecheck` passed in `ClubMedMeetup/minitrace-viz/webapp` after switching to the rebuilt local RAG package.
+- `make build` passed in `ClubMedMeetup/minitrace-viz`, proving the xgoja package still builds with the regenerated embed.
+- Active-code searches no longer found old context-window diagram API names in current source/assets.
+
+### What didn't work
+
+- `./scripts/sync-widget-spa.sh` initially failed with `ERR_PNPM_OUTDATED_LOCKFILE` because `webapp/package.json` was changed before refreshing `pnpm-lock.yaml`.
+- Pointing the webapp dependency at the local package source initially failed Vite resolution for `@go-go-golems/rag-evaluation-site/app` because package exports refer to built files. The fix was to run the RAG package build and point the file dependency at `packages/rag-evaluation-site/dist`.
+
+### What I learned
+
+- ClubMed has two deployable SPA copies: `assets/public` for the JS runtime and `internal/xgojaruntime/xgoja_embed/...` for the generated xgoja package. Both must be regenerated/cleaned together.
+- xgoja generation does not automatically remove stale hashed assets in the embed directory, so old hashes must be deleted explicitly after regeneration.
+
+### What was tricky to build
+
+- Distinguishing context-window part `kind` from unrelated annotation/message/action `kind` fields. I only changed context-window parts to `styleKey`; annotation DTOs still use `kind` because that is a separate contract.
+- Avoiding accidental historical-doc churn: many old `ttmp/` evidence files still mention `ContextKindSwatch` and `ContextPartKind`, but they are not active consumers.
+
+### What warrants a second pair of eyes
+
+- The ClubMed webapp now depends on a sibling built `dist` package for local development. Review whether that should remain as a file dependency or be replaced by a published package bump later.
+- The style labels chosen for ClubMed are a pragmatic default palette; a designer may want Meetup-specific labels/colors.
+
+### What should be done in the future
+
+- Run an end-to-end smoke request against the ClubMed server to inspect returned Widget IR JSON for `styleSet` and `styleKey` after committing.
+- Consider adding a lightweight test that rejects context-window snapshot parts containing `kind`.
+
+### Code review instructions
+
+- In ClubMed, start with `minitrace-viz/lib/course-pages.js`, then review the three snapshot producers: `slide-loader.js`, `course-session-data.js`, and `litellm-live-service.js`.
+- Confirm generated assets are expected by comparing old/new filenames in `assets/public` and `internal/xgojaruntime/xgoja_embed/...`.
+- Validate with `pnpm typecheck` in `ClubMedMeetup/minitrace-viz/webapp` and `make build` in `ClubMedMeetup/minitrace-viz`.
+
+### Technical details
+
+Validation passed:
+
+- `pnpm typecheck` in `ClubMedMeetup/minitrace-viz/webapp`
+- `make build` in `ClubMedMeetup/minitrace-viz`
+- active-code old API search excluding historical `ttmp/`, `node_modules`, and build output
