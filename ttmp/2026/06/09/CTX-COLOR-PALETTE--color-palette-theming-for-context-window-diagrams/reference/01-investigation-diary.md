@@ -1057,7 +1057,7 @@ The key visual target was the annotation rail and side-note cards that appear al
 
 **Inferred user intent:** The user wants all transcript-adjacent colored surfaces, including side notes, to remain readable and visually consistent across palette choices.
 
-**Commit (code):** pending — "Frontend: add side-note palette foregrounds"
+**Commit (code):** 1577e2b — "Frontend: add side-note palette foregrounds"
 
 ### What I did
 
