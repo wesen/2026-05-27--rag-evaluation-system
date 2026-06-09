@@ -1,0 +1,35 @@
+.git
+.github
+.idea
+.vscode
+.obsidian
+
+# Dependency and build output noise that is not needed for the static artifact image.
+node_modules
+web/node_modules
+packages/*/node_modules
+web/dist
+dist
+build
+coverage
+.tmp
+tmp
+
+# Local/runtime data.
+data
+state
+*.db
+*.bleve
+.env
+.env.local
+.devctl
+.playwright-mcp
+
+# OS/editor noise.
+**/.DS_Store
+Thumbs.db
+*.log
+*.png
+
+# Keep the generated package Storybook output in the Docker context.
+!packages/rag-evaluation-site/storybook-static/**
