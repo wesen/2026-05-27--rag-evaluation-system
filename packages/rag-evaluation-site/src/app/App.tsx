@@ -5,6 +5,7 @@ import { AppShell, Panel } from '../components/layout';
 import { AppNav } from '../components/molecules';
 import { CourseStudioShell } from '../components/organisms';
 import { WidgetRenderer } from '../widgets/WidgetRenderer';
+import { defaultWidgetRegistry } from '../widgets/defaultRegistry';
 import type { ActionSpec, AppNavItemSpec, ComponentNode, CourseStudioShellWidgetProps, RenderableValue, WidgetNode } from '../widgets/ir';
 import { dispatchWidgetAction, type WidgetActionContext } from '../widgets/actions';
 import { useWidgetPage, type WidgetPageResponse } from '../hooks/useWidgetPage';
@@ -110,7 +111,7 @@ function renderPage(page: WidgetPageResponse, pageId: string, onAction: (action:
     );
   }
 
-  const renderedRoot = <WidgetRenderer node={page.root} onAction={onAction} />;
+  const renderedRoot = <WidgetRenderer node={page.root} registry={defaultWidgetRegistry} onAction={onAction} />;
 
   if (!shouldUseDefaultShell(page, meta)) {
     return (
@@ -172,9 +173,9 @@ function renderCourseStudioShellPage(node: ComponentNode, onAction: (action: Act
       }}
       title={renderRenderableValue(props.title, onAction)}
       subtitle={renderRenderableValue(props.subtitle, onAction)}
-      sidebarFooter={props.sidebarFooter ? <WidgetRenderer node={props.sidebarFooter} onAction={onAction} /> : undefined}
+      sidebarFooter={props.sidebarFooter ? <WidgetRenderer node={props.sidebarFooter} registry={defaultWidgetRegistry} onAction={onAction} /> : undefined}
     >
-      {(node.children ?? []).map((child, index) => <WidgetRenderer key={widgetNodeKey(child, index)} node={child} onAction={onAction} />)}
+      {(node.children ?? []).map((child, index) => <WidgetRenderer key={widgetNodeKey(child, index)} node={child} registry={defaultWidgetRegistry} onAction={onAction} />)}
     </CourseStudioShell>
   );
 }
@@ -233,7 +234,7 @@ function renderNavLabel(label: RenderableValue): ReactNode {
 
 function renderRenderableValue(value: RenderableValue | undefined, onAction?: (action: ActionSpec, context: WidgetActionContext) => void): ReactNode {
   if (value && typeof value === 'object' && 'kind' in value) {
-    return <WidgetRenderer node={value as WidgetNode} onAction={onAction} />;
+    return <WidgetRenderer node={value as WidgetNode} registry={defaultWidgetRegistry} onAction={onAction} />;
   }
   return value == null ? null : String(value);
 }
