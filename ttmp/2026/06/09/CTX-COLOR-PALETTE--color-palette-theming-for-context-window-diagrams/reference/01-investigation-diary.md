@@ -1,13 +1,23 @@
 ---
-title: "Investigation Diary"
-doc_type: reference
-status: active
-intent: long-term
-topics: [frontend, theming, context-window, visualization]
-ticket: CTX-COLOR-PALETTE
-created: "2026-06-09"
-owners: []
+Title: ""
+Ticket: ""
+Status: ""
+Topics: []
+DocType: ""
+Intent: ""
+Owners: []
+RelatedFiles:
+    - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/course-pages.js
+      Note: Consumer styleSet wiring recorded in Step 6
+    - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/slide-loader.js
+      Note: Markdown context-window parts normalize styleKey
+ExternalSources: []
+Summary: ""
+LastUpdated: 0001-01-01T00:00:00Z
+WhatFor: ""
+WhenToUse: ""
 ---
+
 
 # Investigation Diary
 

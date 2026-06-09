@@ -55,3 +55,14 @@ Step 4 upload: Refreshed reMarkable bundle with hard-cutover reviewed design and
 
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/09/CTX-COLOR-PALETTE--color-palette-theming-for-context-window-diagrams/design-doc/02-reviewed-design-configurable-legends-and-style-palettes.md — Hard-cutover reviewed design uploaded to reMarkable
 
+
+## 2026-06-09
+
+Cut over ClubMed minitrace-viz consumers to styleKey + ContextStyleSet and regenerated embedded Widget SPA (ClubMed commit 4189219).
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-pages.js — Passes explicit palette-derived styleSet to CourseSlidePanel and ContextDiagramPanel
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-session-data.js — Session snapshots now emit styleKey context parts
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/litellm-live-service.js — Live LiteLLM snapshots now emit styleKey context parts
+
