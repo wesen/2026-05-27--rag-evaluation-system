@@ -12,6 +12,7 @@ export const transcriptMessageCardWidget = defineWidget<TranscriptMessageCardWid
       annotations={props.annotations}
       selectedAnnotationId={props.selectedAnnotationId}
       showAnnotationChips={props.showAnnotationChips}
+      styleSet={props.styleSet}
       onAnnotationSelect={props.onAnnotationSelectAction
         ? (annotationId) => ctx.dispatchAction(props.onAnnotationSelectAction!, { annotationId, value: annotationId, componentType: 'TranscriptMessageCard' })
         : undefined}

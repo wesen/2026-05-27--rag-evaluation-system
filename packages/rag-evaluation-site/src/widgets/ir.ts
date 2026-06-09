@@ -251,6 +251,7 @@ export interface TranscriptMessageCardWidgetProps extends BaseWidgetProps {
   annotations?: TranscriptAnnotation[];
   selectedAnnotationId?: string;
   showAnnotationChips?: boolean;
+  styleSet?: ContextStyleSet;
   onAnnotationSelectAction?: ActionSpec;
 }
 
@@ -258,6 +259,7 @@ export interface AnnotationNoteCardWidgetProps extends BaseWidgetProps {
   annotation: TranscriptAnnotation;
   selected?: boolean;
   index?: number;
+  styleSet?: ContextStyleSet;
 }
 
 export interface AnnotationRailPanelWidgetProps extends BaseWidgetProps {
@@ -265,6 +267,7 @@ export interface AnnotationRailPanelWidgetProps extends BaseWidgetProps {
   description?: string;
   annotations: TranscriptAnnotation[];
   selectedAnnotationId?: string;
+  styleSet?: ContextStyleSet;
   onAnnotationSelectAction?: ActionSpec;
 }
 
@@ -275,6 +278,7 @@ export interface TranscriptReaderPanelWidgetProps extends BaseWidgetProps {
   annotations?: TranscriptAnnotation[];
   selectedAnnotationId?: string;
   showAnnotationChips?: boolean;
+  styleSet?: ContextStyleSet;
   onAnnotationSelectAction?: ActionSpec;
 }
 
@@ -285,6 +289,7 @@ export interface TranscriptWorkspacePanelWidgetProps extends BaseWidgetProps {
   annotations?: TranscriptAnnotation[];
   selectedAnnotationId?: string;
   showNotes?: boolean;
+  styleSet?: ContextStyleSet;
   onAnnotationSelectAction?: ActionSpec;
 }
 

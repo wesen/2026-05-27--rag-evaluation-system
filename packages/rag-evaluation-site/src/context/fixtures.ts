@@ -6,7 +6,7 @@ import type {
   ContextWindowSnapshot,
   TranscriptFixture,
 } from './types';
-import { cobaltSand, createContextStyleSetFromPalette, defaultContextStyleSet, dustyMagentaBlue, signalOrangeCyan, slateCoral } from './styles';
+import { cobaltSand, createContextStyleSetFromPalette, defaultContextStyleSet, dustyMagentaBlue, signalOrangeCyan, slateCoral, transcriptStyleSet } from './styles';
 
 export const CONTEXT_WINDOW_LIMIT = 200_000;
 
@@ -14,6 +14,11 @@ export const contextDefaultStyleSet = defaultContextStyleSet(dustyMagentaBlue);
 export const contextSignalOrangeStyleSet = defaultContextStyleSet(signalOrangeCyan);
 export const contextSlateCoralStyleSet = defaultContextStyleSet(slateCoral);
 export const contextCobaltSandStyleSet = defaultContextStyleSet(cobaltSand);
+
+export const transcriptDefaultStyleSet = transcriptStyleSet(dustyMagentaBlue);
+export const transcriptSignalOrangeStyleSet = transcriptStyleSet(signalOrangeCyan);
+export const transcriptSlateCoralStyleSet = transcriptStyleSet(slateCoral);
+export const transcriptCobaltSandStyleSet = transcriptStyleSet(cobaltSand);
 
 export const contextThreeLabelStyleSets = [
   createContextStyleSetFromPalette({

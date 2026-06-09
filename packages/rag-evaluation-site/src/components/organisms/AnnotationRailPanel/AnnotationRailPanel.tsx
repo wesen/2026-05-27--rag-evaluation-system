@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react';
-import type { TranscriptAnnotation } from '../../../context';
+import type { ContextStyleSet, TranscriptAnnotation } from '../../../context';
 import { Caption, Text } from '../../foundation';
 import { AnnotationNoteCard } from '../../molecules';
 import styles from './AnnotationRailPanel.module.css';
@@ -10,6 +10,7 @@ export interface AnnotationRailPanelProps extends Omit<HTMLAttributes<HTMLElemen
   annotations: TranscriptAnnotation[];
   selectedAnnotationId?: string;
   onAnnotationSelect?: (annotationId: string) => void;
+  styleSet?: ContextStyleSet;
 }
 
 export function AnnotationRailPanel({
@@ -18,6 +19,7 @@ export function AnnotationRailPanel({
   annotations,
   selectedAnnotationId,
   onAnnotationSelect,
+  styleSet,
   className,
   ...rest
 }: AnnotationRailPanelProps) {
@@ -30,7 +32,7 @@ export function AnnotationRailPanel({
       <div className={styles.list}>
         {annotations.map((annotation, index) => (
           <button key={annotation.id} type="button" className={styles.button} onClick={() => onAnnotationSelect?.(annotation.id)}>
-            <AnnotationNoteCard annotation={annotation} selected={annotation.id === selectedAnnotationId} index={index + 1} />
+            <AnnotationNoteCard annotation={annotation} styleSet={styleSet} selected={annotation.id === selectedAnnotationId} index={index + 1} />
           </button>
         ))}
       </div>

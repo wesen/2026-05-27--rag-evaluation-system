@@ -11,12 +11,19 @@ RelatedFiles:
       Note: Consumer styleSet wiring recorded in Step 6
     - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/slide-loader.js
       Note: Markdown context-window parts normalize styleKey
+    - Path: packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.module.css
+      Note: Title-bar-only palette chrome and neutral body behavior recorded in Step 12
+    - Path: packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx
+      Note: Transcript palette foreground and token chip behavior recorded in Step 12
+    - Path: packages/rag-evaluation-site/src/widgets/WidgetRenderer.transcript-notes.stories.tsx
+      Note: Widget IR transcript palette control coverage recorded in Step 12
 ExternalSources: []
 Summary: ""
 LastUpdated: 0001-01-01T00:00:00Z
 WhatFor: ""
 WhenToUse: ""
 ---
+
 
 
 # Investigation Diary
@@ -940,3 +947,93 @@ Current WIP status at diary backfill time:
  M packages/rag-evaluation-site/src/context/storyPalettes.ts
  M packages/rag-evaluation-site/src/context/styles.ts
 ```
+
+## Step 12: Transcript Palette Foregrounds and Widget IR Story Controls
+
+This step tightened the transcript palette treatment after visual review of the `Widget IR / Renderer / Transcript and Notes / MessageCardStates` story. The important correction is that palette colors are not enough by themselves: every colored header or chip also needs a deliberate foreground color or a neutral chip background so token counts and labels remain readable across palettes.
+
+I kept the body-background rule from the prior clarification: transcript message bodies remain white/neutral by default, while role color, halftone, borders, glyphs, and token/note chrome live in the message title bar and related controls.
+
+### Prompt Context
+
+**User prompt (verbatim):** "for each palette color you should also define the color for text on top, like the 100 tok or so in http://localhost:6007/?path=/story/widget-ir-renderer-transcript-and-notes--message-card-states should either have white background or be matched to the background"
+
+**Assistant interpretation:** Fix transcript palette rendering so foreground text over palette-colored areas is explicit and readable, especially the token-count chip in the Widget IR `MessageCardStates` story.
+
+**Inferred user intent:** The user wants palette theming to be usable in actual transcript stories, not just decorative; small labels and metadata must remain legible when background colors change.
+
+**Commit (code):** 1231c63 — "Frontend: add transcript palette foregrounds"
+
+### What I did
+
+- Updated `TranscriptMessageCard` so token counts render as `Caption tone="inherit"` with a dedicated `tokenChip` class.
+- Constrained transcript palette fill and halftone patterns to the title/header strip; the message body remains `var(--mac-surface)` by default.
+- Made title bar foreground use `--ctx-label`, which is derived from `ContextVisualStyle.labelColor`.
+- Made token-count chips safe by giving them a mostly-white background mixed slightly with the palette fill and normal macOS text foreground.
+- Added transcript style-set entries for annotation-style keys still used by fixtures: `context`, `generated`, and `active`.
+- Threaded optional `styleSet` through transcript React components and Widget IR adapters:
+  - `TranscriptMessageCard`
+  - `TranscriptReaderPanel`
+  - `TranscriptWorkspacePanel`
+  - `AnnotationRailPanel`
+  - `AnnotationNoteCard` widget adapter
+- Reworked `WidgetRenderer.transcript-notes.stories.tsx` so the transcript-and-notes Widget IR stories expose a `palette` control and pass `transcriptStyleSetForPalette(palette)` into the rendered IR nodes.
+- Ran validation:
+  - `cd packages/rag-evaluation-site && pnpm typecheck`
+  - `cd packages/rag-evaluation-site && pnpm build-storybook`
+
+### Why
+
+- Palette fills can make small metadata unreadable unless every filled surface also carries an explicit foreground policy.
+- The token count (for example `100 tok`) is exactly the kind of small label that fails visually if it inherits muted text over a colored title bar.
+- Widget IR stories need to receive the same style set as direct React stories so the renderer path is validated, not just the component path.
+
+### What worked
+
+- The existing `ContextVisualStyle.labelColor` maps naturally to `--ctx-label`, so the transcript title bar can reuse the same foreground mechanism as context diagrams.
+- Giving token chips a neutral background avoids needing many per-palette chip-specific contrast rules.
+- `pnpm typecheck` passed after threading `styleSet` through the IR interfaces and adapters.
+- `pnpm build-storybook` completed successfully with the updated transcript stories.
+
+### What didn't work
+
+- `Caption` defaults to `tone="muted"`, so the token count did not inherit the title bar foreground until it was explicitly changed to `tone="inherit"`.
+- The first attempt to update Widget IR interfaces with small text replacements was ambiguous because multiple transcript interfaces had identical `showAnnotationChips` / `onAnnotationSelectAction` blocks. I replaced the whole contiguous transcript interface block instead.
+
+### What I learned
+
+- Foreground policy must be part of the palette contract, not an afterthought applied only in CSS.
+- The safest default for dense transcript content is colored chrome with neutral content bodies.
+- Widget IR stories are a good regression surface because they reveal whether style-set props are actually serializable and passed through registry adapters.
+
+### What was tricky to build
+
+- The title bar needs palette foregrounds, but token chips should not necessarily sit directly on the colored fill. If the chip itself is lightly neutralized, it stays legible even when the title bar fill is saturated or patterned.
+- Annotation chips use per-annotation style keys, while message title bars use role style keys. The solution was to resolve each chip's `annotation.styleKey` separately and pass those CSS variables directly to the button.
+- The transcript fixture annotations reuse context-diagram semantic keys such as `context`, `generated`, and `active`; the transcript style set now includes those keys so annotation cards and chips do not fall back unpredictably.
+
+### What warrants a second pair of eyes
+
+- Whether transcript styling should keep reusing `ContextStyleSet` long-term or split into a dedicated `TranscriptStyleSet` once transcript semantics diverge further.
+- Whether the neutral token chip background should be fully white or slightly palette-tinted; the current implementation keeps it mostly white with a small fill mix.
+- Whether `AnnotationNoteCard` should also move more color into its title/header strip and keep its body even more aggressively neutral.
+
+### What should be done in the future
+
+- Visually inspect the live `MessageCardStates` story across all palettes.
+- Add a transcript-focused contrast regression story if these palettes become product-critical.
+- Consider calculating foreground contrast from actual color values if future palettes include darker or more saturated fills.
+
+### Code review instructions
+
+- Start with `packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx` and its CSS module to review the title-bar-only palette behavior.
+- Then inspect `packages/rag-evaluation-site/src/widgets/WidgetRenderer.transcript-notes.stories.tsx` to verify Widget IR palette control wiring.
+- Validate with:
+  - `cd packages/rag-evaluation-site && pnpm typecheck`
+  - `cd packages/rag-evaluation-site && pnpm build-storybook`
+
+### Technical details
+
+- Token chip readability is handled by `Caption tone="inherit"` plus `.tokenChip` using a mostly-white background.
+- Header text uses `--ctx-label`, derived from each `ContextVisualStyle.labelColor`.
+- Message body background remains `var(--mac-surface)` by default.

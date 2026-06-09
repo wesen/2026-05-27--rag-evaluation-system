@@ -149,6 +149,32 @@ export function createContextStyleSetFromPalette(options: { id?: string; name?: 
   };
 }
 
+export function transcriptStyleSet(palette: PaletteDefinition | PaletteColors = dustyMagentaBlue): ContextStyleSet {
+  return createContextStyleSetFromPalette({
+    id: 'transcript-tones',
+    name: 'Transcript Tones',
+    palette,
+    legendSize: 'sm',
+    swatchSize: 'sm',
+    entries: [
+      { id: 'system', label: 'System', accent: 'b', pattern: 'checker', fillPct: 16, linePct: 70 },
+      { id: 'developer', label: 'Developer', accent: 'b', pattern: 'diagonal', fillPct: 14, linePct: 60 },
+      { id: 'user', label: 'User', accent: 'a', pattern: 'solid', solid: true },
+      { id: 'assistant', label: 'Assistant', accent: 'b', pattern: 'diagonalDense', fillPct: 16, linePct: 65 },
+      { id: 'tool', label: 'Tool call', accent: 'a', pattern: 'stipple', fillPct: 16, linePct: 60 },
+      { id: 'result', label: 'Tool result', accent: 'a', pattern: 'cross', fillPct: 14, linePct: 65 },
+      { id: 'context', label: 'Context note', accent: 'grid', pattern: 'diagonal', fillPct: 10, linePct: 40 },
+      { id: 'generated', label: 'Generated note', accent: 'c', pattern: 'diagonalDense', fillPct: 18, linePct: 70 },
+      { id: 'active', label: 'Active note', accent: 'a', pattern: 'solid', solid: true },
+      { id: 'note', label: 'Note', accent: 'c', pattern: 'checker', fillPct: 18, linePct: 80 },
+      { id: 'header', label: 'Header', accent: 'grid', pattern: 'none', hidden: true },
+      { id: 'rail', label: 'Notes rail', accent: 'grid', pattern: 'diagonal', fillPct: 10, linePct: 35, hidden: true },
+      { id: 'code', label: 'Code output', accent: 'shadow', pattern: 'stipple', fillPct: 10, linePct: 45, hidden: true },
+      { id: 'other', label: 'Other', accent: 'grid', pattern: 'none' },
+    ],
+  });
+}
+
 export function defaultContextStyleSet(palette: PaletteDefinition | PaletteColors = dustyMagentaBlue): ContextStyleSet {
   return createContextStyleSetFromPalette({
     id: 'context-window-default',

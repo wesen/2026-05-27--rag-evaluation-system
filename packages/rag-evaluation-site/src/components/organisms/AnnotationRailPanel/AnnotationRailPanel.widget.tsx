@@ -12,6 +12,7 @@ export const annotationRailPanelWidget = defineWidget<AnnotationRailPanelWidgetP
       description={props.description}
       annotations={props.annotations}
       selectedAnnotationId={props.selectedAnnotationId}
+      styleSet={props.styleSet}
       onAnnotationSelect={props.onAnnotationSelectAction
         ? (annotationId) => ctx.dispatchAction(props.onAnnotationSelectAction!, { annotationId, value: annotationId, componentType: 'AnnotationRailPanel' })
         : undefined}

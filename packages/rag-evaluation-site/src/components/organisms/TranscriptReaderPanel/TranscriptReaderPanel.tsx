@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react';
-import type { TranscriptAnnotation, TranscriptMessage } from '../../../context';
+import type { ContextStyleSet, TranscriptAnnotation, TranscriptMessage } from '../../../context';
 import { TranscriptMessageCard, TranscriptSessionHeader } from '../../molecules';
 import styles from './TranscriptReaderPanel.module.css';
 
@@ -11,6 +11,7 @@ export interface TranscriptReaderPanelProps extends Omit<HTMLAttributes<HTMLElem
   selectedAnnotationId?: string;
   onAnnotationSelect?: (annotationId: string) => void;
   showAnnotationChips?: boolean;
+  styleSet?: ContextStyleSet;
 }
 
 function tokenTotal(messages: TranscriptMessage[]) {
@@ -25,6 +26,7 @@ export function TranscriptReaderPanel({
   selectedAnnotationId,
   onAnnotationSelect,
   showAnnotationChips = true,
+  styleSet,
   className,
   ...rest
 }: TranscriptReaderPanelProps) {
@@ -40,6 +42,7 @@ export function TranscriptReaderPanel({
             selectedAnnotationId={selectedAnnotationId}
             onAnnotationSelect={onAnnotationSelect}
             showAnnotationChips={showAnnotationChips}
+            styleSet={styleSet}
           />
         ))}
       </div>

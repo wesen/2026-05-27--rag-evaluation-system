@@ -66,3 +66,13 @@ Cut over ClubMed minitrace-viz consumers to styleKey + ContextStyleSet and regen
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-session-data.js — Session snapshots now emit styleKey context parts
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/litellm-live-service.js — Live LiteLLM snapshots now emit styleKey context parts
 
+
+## 2026-06-09
+
+Step 12: made transcript palette foregrounds explicit and added Widget IR transcript palette controls
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx — Transcript title/header foreground and token chip handling
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.transcript-notes.stories.tsx — Widget IR transcript palette control coverage
+

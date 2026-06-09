@@ -1,5 +1,5 @@
 .root {
-  border: 1px solid var(--mac-border);
+  border: 1px solid var(--ctx-stroke, var(--mac-border));
   background: var(--mac-surface);
   color: var(--mac-text);
   display: flex;
@@ -8,19 +8,36 @@
 }
 
 .selected {
-  border-color: var(--mac-accent);
-  box-shadow: 0 0 0 1px var(--mac-accent);
+  border-color: var(--ctx-line, var(--mac-accent));
+  box-shadow: 0 0 0 1px var(--ctx-line, var(--mac-accent));
 }
 
 .titleBar {
+  position: relative;
+  overflow: hidden;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
   padding: 3px 8px;
-  border-bottom: 1px solid var(--mac-border);
-  background: var(--mac-surface);
+  border-bottom: 1px solid var(--ctx-stroke, var(--mac-border));
+  background: var(--ctx-fill, var(--mac-surface-2));
+  color: var(--ctx-label, var(--mac-text));
   min-width: 0;
+}
+
+.titleBar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .5;
+  background: transparent;
+}
+
+.titleBar > * {
+  position: relative;
+  z-index: 1;
 }
 
 .titleCluster,
@@ -33,15 +50,16 @@
 
 .metaCluster {
   flex: 0 0 auto;
+  color: var(--ctx-label, var(--mac-text));
 }
 
 .roleGlyph {
-  color: currentColor;
+  color: var(--ctx-line, currentColor);
   font: var(--rag-font-role-label);
 }
 
 .roleLabel {
-  color: var(--mac-text);
+  color: var(--ctx-label, var(--mac-text));
   font: var(--rag-font-role-label);
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -51,21 +69,24 @@
 .body {
   padding: 8px 10px;
   white-space: pre-wrap;
+  background: var(--mac-surface);
   color: var(--mac-text);
   font: var(--rag-font-role-readable-body);
 }
 
 .toolBody {
-  background: var(--mac-surface-2);
+  background:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--tx-code-line, var(--mac-border)) 22%, transparent) 0 1px, transparent 1px 10px),
+    color-mix(in srgb, var(--tx-code-fill, var(--mac-surface-2)) 35%, var(--mac-surface) 65%);
   color: var(--mac-text);
   font: var(--rag-font-role-code);
 }
 
 .noteChip {
   appearance: none;
-  border: 1px solid var(--mac-accent);
+  border: 1px solid var(--ctx-line, var(--mac-accent));
   background: var(--mac-surface);
-  color: var(--mac-accent);
+  color: var(--ctx-line, var(--mac-accent));
   padding: 1px 5px;
   font: var(--rag-font-role-metadata);
   cursor: pointer;
@@ -73,18 +94,21 @@
 
 .noteChip:hover,
 .noteChip[data-selected='true'] {
-  background: var(--mac-accent);
+  background: var(--ctx-line, var(--mac-accent));
   color: var(--mac-text-inv);
+}
+
+.tokenChip {
+  border: 1px solid color-mix(in srgb, var(--ctx-label, var(--mac-text)) 35%, transparent);
+  background: color-mix(in srgb, var(--mac-surface) 82%, var(--ctx-fill, var(--mac-surface-2)) 18%);
+  color: var(--mac-text);
+  padding: 1px 5px;
 }
 
 .user {
   align-self: flex-end;
   max-width: 520px;
   width: min(100%, 520px);
-}
-
-.user .titleBar {
-  background: var(--mac-surface-2);
 }
 
 .assistant,
@@ -97,20 +121,29 @@
   width: min(100%, 620px);
 }
 
-.assistant .roleGlyph {
-  color: var(--mac-accent);
+.pattern_none .titleBar::before { background: transparent; }
+.pattern_solid .titleBar::before { background: transparent; }
+.pattern_checker .titleBar::before {
+  background-image:
+    linear-gradient(45deg, color-mix(in srgb, var(--ctx-line, var(--mac-border)) 45%, transparent) 25%, transparent 25%),
+    linear-gradient(-45deg, color-mix(in srgb, var(--ctx-line, var(--mac-border)) 45%, transparent) 25%, transparent 25%);
+  background-size: 8px 8px;
 }
-
-.tool .roleGlyph {
-  color: var(--mac-amber);
+.pattern_diagonal .titleBar::before {
+  background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--ctx-line, var(--mac-border)) 48%, transparent) 0 1px, transparent 1px 8px);
 }
-
-.system,
-.developer {
-  background: repeating-linear-gradient(45deg, var(--mac-border-subtle) 0 1px, var(--mac-surface) 1px 8px);
+.pattern_diagonalDense .titleBar::before {
+  background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--ctx-line, var(--mac-border)) 48%, transparent) 0 1px, transparent 1px 4px);
 }
-
-.system .body,
-.developer .body {
-  background: var(--mac-surface);
+.pattern_stipple .titleBar::before {
+  background-image: radial-gradient(color-mix(in srgb, var(--ctx-line, var(--mac-border)) 58%, transparent) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+.pattern_cross .titleBar::before {
+  background:
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--ctx-line, var(--mac-border)) 42%, transparent) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--ctx-line, var(--mac-border)) 42%, transparent) 0 1px, transparent 1px 8px);
+}
+.pattern_overflow .titleBar::before {
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--ctx-line, var(--mac-border)) 60%, transparent) 0 2px, transparent 2px 6px);
 }
