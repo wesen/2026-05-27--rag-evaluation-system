@@ -42,8 +42,8 @@
 
 ## Phase 5 — Documentation, validation, and reMarkable update
 
-- [ ] Update design guide with implementation results, exact files created, validation outcomes, and commits
-- [ ] Update diary into a playbook-quality chronological packaging narrative
-- [ ] Run `docmgr doctor --ticket RAGEVAL-STORYBOOK-DEPLOY --stale-after 30`
-- [ ] Upload updated guide bundle to reMarkable
-- [ ] Record final changelog entry and mark ticket tasks complete
+- [x] Update design guide with implementation results, exact files created, validation outcomes, and commits
+- [x] Update diary into a playbook-quality chronological packaging narrative
+- [x] Run `docmgr doctor --ticket RAGEVAL-STORYBOOK-DEPLOY --stale-after 30`
+- [x] Upload updated guide bundle to reMarkable
+- [x] Record final changelog entry and mark ticket tasks complete
