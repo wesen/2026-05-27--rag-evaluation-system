@@ -52,14 +52,14 @@ For the first publish of a brand-new package, create `@go-go-golems/rag-evaluati
 ## Renderer usage
 
 ```tsx
-import { WidgetRenderer, useWidgetPage } from '@go-go-golems/rag-evaluation-site';
+import { WidgetRenderer, defaultWidgetRegistry, useWidgetPage } from '@go-go-golems/rag-evaluation-site';
 import '@go-go-golems/rag-evaluation-site/styles.css';
 
 export function Page() {
   const { page, loading, error } = useWidgetPage('/api/widget/pages/demo');
   if (loading) return <div>Loading…</div>;
   if (error || !page) return <div>Failed to load page</div>;
-  return <WidgetRenderer node={page.root} />;
+  return <WidgetRenderer node={page.root} registry={defaultWidgetRegistry} />;
 }
 ```
 

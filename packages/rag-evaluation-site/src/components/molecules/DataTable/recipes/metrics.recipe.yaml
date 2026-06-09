@@ -1,6 +1,6 @@
 schemaVersion: recipe-manifest/v1
 name: metrics
-module: data.dsl
+module: ui.dsl
 input: MetricsRecipeOptions
 output: WidgetNode
 implementation:
