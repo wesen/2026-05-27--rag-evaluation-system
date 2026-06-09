@@ -8,6 +8,7 @@ modules:
       - packages/rag-evaluation-site/src/components/atoms
       - packages/rag-evaluation-site/src/components/foundation
       - packages/rag-evaluation-site/src/components/layout
+      - packages/rag-evaluation-site/src/components/molecules
     ownsPageHelper: true
     ownsCellHelpers: false
 
