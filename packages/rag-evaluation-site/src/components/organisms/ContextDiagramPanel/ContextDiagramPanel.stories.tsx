@@ -86,15 +86,6 @@ const contentBlocks: ContextWindowSnapshot = {
   ],
 };
 
-const meta = {
-  title: 'Component Library/Organisms/ContextDiagramPanel',
-  component: ContextDiagramPanel,
-  args: { snapshot: deepBug!, styleSet: contextDefaultStyleSet },
-} satisfies Meta<typeof ContextDiagramPanel>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
 type PaletteName = 'Dusty Magenta / Blue' | 'Signal Orange / Cyan' | 'Slate / Coral' | 'Cobalt / Sand';
 type PaletteControlsArgs = Omit<ContextDiagramPanelProps, 'styleSet'> & { palette: PaletteName };
 
@@ -105,22 +96,30 @@ const paletteControlStyleSets: Record<PaletteName, ContextStyleSet> = {
   'Cobalt / Sand': contextCobaltSandStyleSet,
 };
 
-export const PaletteControls: StoryObj<PaletteControlsArgs> = {
-  args: {
-    snapshot: deepBug!,
-    palette: 'Dusty Magenta / Blue',
-    initialView: 'strip',
-    views: ['strip', 'stack', 'budget', 'treemap'],
-    showPartDetails: true,
-  },
+const meta = {
+  title: 'Component Library/Organisms/ContextDiagramPanel',
+  args: { snapshot: deepBug!, palette: 'Dusty Magenta / Blue', initialView: 'strip', views: ['strip', 'stack', 'budget', 'treemap'], showPartDetails: true },
   argTypes: {
     palette: { control: 'select', options: Object.keys(paletteControlStyleSets) },
     initialView: { control: 'select', options: ['strip', 'stack', 'budget', 'treemap'] },
     showLegend: { control: 'boolean' },
     showPartDetails: { control: 'boolean' },
     snapshot: { control: false },
-    selectedPartId: { control: false },
+    selectedPartId: { control: 'text' },
     views: { control: false },
+  },
+} satisfies Meta<PaletteControlsArgs>;
+
+export default meta;
+type Story = StoryObj<PaletteControlsArgs>;
+
+export const PaletteControls: Story = {
+  args: {
+    snapshot: deepBug!,
+    palette: 'Dusty Magenta / Blue',
+    initialView: 'strip',
+    views: ['strip', 'stack', 'budget', 'treemap'],
+    showPartDetails: true,
   },
   render: ({ palette, ...args }) => (
     <ContextDiagramPanel
@@ -131,24 +130,27 @@ export const PaletteControls: StoryObj<PaletteControlsArgs> = {
 };
 
 export const InteractiveViews: Story = {
-  render: () => <ContextDiagramPanel snapshot={deepBug!} styleSet={contextDefaultStyleSet} />,
+  render: ({ palette }) => <ContextDiagramPanel snapshot={deepBug!} styleSet={paletteControlStyleSets[palette]} />,
 };
 
 export const StartingViews: Story = {
-  render: () => (
-    <Stack gap="md">
-      <ContextDiagramPanel snapshot={deepBug!} styleSet={contextDefaultStyleSet} initialView="strip" />
-      <ContextDiagramPanel snapshot={atLimit!} styleSet={contextDefaultStyleSet} initialView="treemap" />
-      <ContextDiagramPanel snapshot={overBudget!} styleSet={contextDefaultStyleSet} initialView="budget" />
-    </Stack>
-  ),
+  render: ({ palette }) => {
+    const styleSet = paletteControlStyleSets[palette];
+    return (
+      <Stack gap="md">
+        <ContextDiagramPanel snapshot={deepBug!} styleSet={styleSet} initialView="strip" />
+        <ContextDiagramPanel snapshot={atLimit!} styleSet={styleSet} initialView="treemap" />
+        <ContextDiagramPanel snapshot={overBudget!} styleSet={styleSet} initialView="budget" />
+      </Stack>
+    );
+  },
 };
 
 export const ContentBlocksWithPartDetails: Story = {
-  render: () => (
+  render: ({ palette }) => (
     <ContextDiagramPanel
       snapshot={contentBlocks}
-      styleSet={contextDefaultStyleSet}
+      styleSet={paletteControlStyleSets[palette]}
       initialView="stack"
       views={['stack', 'strip', 'budget']}
       showPartDetails
@@ -157,10 +159,10 @@ export const ContentBlocksWithPartDetails: Story = {
 };
 
 export const LegendDerivedFromSnapshotParts: Story = {
-  render: () => (
+  render: ({ palette }) => (
     <ContextDiagramPanel
       snapshot={contentBlocks}
-      styleSet={contextDefaultStyleSet}
+      styleSet={paletteControlStyleSets[palette]}
       initialView="strip"
       showPartDetails
     />
@@ -193,8 +195,8 @@ const switchableStyleSets: ContextStyleSet[] = [
 ];
 
 export const InteractiveStyleSwitcher: Story = {
-  render: () => {
-    const [styleSet, setStyleSet] = useState<ContextStyleSet>(contextDefaultStyleSet);
+  render: ({ palette }) => {
+    const [styleSet, setStyleSet] = useState<ContextStyleSet>(paletteControlStyleSets[palette]);
     const usesThreeLabel = styleSet.id?.startsWith('three-label');
     return (
       <Stack gap="md">

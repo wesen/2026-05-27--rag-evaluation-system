@@ -8,24 +8,11 @@ import { ContextStripDiagram, type ContextStripDiagramProps } from './ContextStr
 
 const [, deepBug, atLimit, overBudget] = contextWindowSnapshots;
 
-type PaletteControlsArgs = Omit<ContextStripDiagramProps, 'styleSet'> & { palette: ContextPaletteName; showLegend: boolean };
+type StoryArgs = Omit<ContextStripDiagramProps, 'styleSet'> & { palette: ContextPaletteName; showLegend: boolean };
 
 const meta = {
   title: 'Component Library/Molecules/ContextStripDiagram',
-  component: ContextStripDiagram,
-  args: { snapshot: deepBug!, styleSet: contextDefaultStyleSet },
-} satisfies Meta<typeof ContextStripDiagram>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const PaletteControls: StoryObj<PaletteControlsArgs> = {
-  args: {
-    snapshot: deepBug!,
-    palette: 'Dusty Magenta / Blue',
-    selectedPartId: 't14-file-reads',
-    showLegend: true,
-  },
+  args: { snapshot: deepBug!, palette: 'Dusty Magenta / Blue', showLegend: true },
   argTypes: {
     palette: { control: 'select', options: contextPaletteOptions },
     snapshot: { control: false },
@@ -33,47 +20,48 @@ export const PaletteControls: StoryObj<PaletteControlsArgs> = {
     showLabels: { control: 'boolean' },
     showLegend: { control: 'boolean' },
   },
-  render: ({ palette, showLegend, ...args }) => {
+} satisfies Meta<StoryArgs>;
+
+export default meta;
+type Story = StoryObj<StoryArgs>;
+
+export const DenseSegments: Story = {
+  render: ({ palette, showLegend }) => {
     const styleSet = contextStyleSetForPalette(palette);
     return (
-      <Panel title={`strip diagram · ${palette}`}>
+      <Panel title={`turn 14 context strip · ${palette}`}>
         <Stack gap="sm">
-          <ContextStripDiagram {...args} styleSet={styleSet} />
-          {showLegend && <ContextLegend items={styleSet.legend} styles={styleSet.styles} size="sm" selectedId="result" />}
+          <ContextStripDiagram snapshot={deepBug!} styleSet={styleSet} />
+          {showLegend && <ContextLegend items={styleSet.legend} styles={styleSet.styles} size="sm" />}
         </Stack>
       </Panel>
     );
   },
 };
 
-export const DenseSegments: Story = {
-  render: () => (
-    <Panel title="turn 14 context strip">
-      <Stack gap="sm">
-        <ContextStripDiagram snapshot={deepBug!} styleSet={contextDefaultStyleSet} />
-        <ContextLegend items={contextDefaultStyleSet.legend} styles={contextDefaultStyleSet.styles} size="sm" />
-      </Stack>
-    </Panel>
-  ),
+export const SelectedSegment: Story = {
+  args: { selectedPartId: 't14-file-reads' },
+  render: ({ palette, selectedPartId }) => <Panel title={`selected file reads · ${palette}`}><ContextStripDiagram snapshot={deepBug!} styleSet={contextStyleSetForPalette(palette)} selectedPartId={selectedPartId} /></Panel>,
 };
 
-export const SelectedSegment: Story = { render: () => <Panel title="selected file reads"><ContextStripDiagram snapshot={deepBug!} styleSet={contextDefaultStyleSet} selectedPartId="t14-file-reads" /></Panel> };
-
 export const LimitComparison: Story = {
-  render: () => (
-    <Stack gap="md">
-      <Panel title="at limit"><ContextStripDiagram snapshot={atLimit!} styleSet={contextDefaultStyleSet} /></Panel>
-      <Panel title="before reclaim"><ContextStripDiagram snapshot={overBudget!} styleSet={contextDefaultStyleSet} /></Panel>
-      <Panel title="at limit / signal orange"><ContextStripDiagram snapshot={atLimit!} styleSet={contextSignalOrangeStyleSet} /></Panel>
-    </Stack>
-  ),
+  render: ({ palette }) => {
+    const styleSet = contextStyleSetForPalette(palette);
+    return (
+      <Stack gap="md">
+        <Panel title="at limit"><ContextStripDiagram snapshot={atLimit!} styleSet={styleSet} /></Panel>
+        <Panel title="before reclaim"><ContextStripDiagram snapshot={overBudget!} styleSet={styleSet} /></Panel>
+        <Panel title="at limit / signal orange reference"><ContextStripDiagram snapshot={atLimit!} styleSet={contextSignalOrangeStyleSet} /></Panel>
+      </Stack>
+    );
+  },
 };
 
 const stripStyleSets: ContextStyleSet[] = [contextDefaultStyleSet, contextSignalOrangeStyleSet, contextSlateCoralStyleSet, contextCobaltSandStyleSet];
 
 export const InteractiveStyleSwitcher: Story = {
-  render: () => {
-    const [styleSet, setStyleSet] = useState<ContextStyleSet>(contextDefaultStyleSet);
+  render: ({ palette }) => {
+    const [styleSet, setStyleSet] = useState<ContextStyleSet>(contextStyleSetForPalette(palette));
     return (
       <Panel title="switch the same strip between style sets">
         <Stack gap="sm">

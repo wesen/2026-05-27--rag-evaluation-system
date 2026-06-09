@@ -1,13 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { contextDefaultStyleSet, contextPaletteOptions, contextStyleSetForPalette, contextThreeLabelStyleSets, contextWindowSnapshots, type ContextPaletteName, type ContextStyleSet, type ContextWindowSnapshot } from '../context';
+import { contextPaletteOptions, contextStyleSetForPalette, contextThreeLabelStyleSets, contextWindowSnapshots, type ContextPaletteName, type ContextStyleSet, type ContextWindowSnapshot } from '../context';
 import { WidgetRenderer, type WidgetRendererProps } from './WidgetRenderer';
 import { defaultWidgetRegistry } from './defaultRegistry';
 import { component, text, type WidgetNode } from './ir';
 
-const meta = { title: 'Widget IR/Renderer/Context Diagrams', component: WidgetRenderer, args: { registry: defaultWidgetRegistry } } satisfies Meta<typeof WidgetRenderer>;
+type StoryArgs = WidgetRendererProps & { palette: ContextPaletteName };
+
+const meta = {
+  title: 'Widget IR/Renderer/Context Diagrams',
+  args: { registry: defaultWidgetRegistry, palette: 'Dusty Magenta / Blue' },
+  argTypes: {
+    palette: { control: 'select', options: contextPaletteOptions },
+    node: { control: false },
+    registry: { control: false },
+    onAction: { control: false },
+  },
+} satisfies Meta<StoryArgs>;
 export default meta;
-type Story = StoryObj<typeof meta>;
-type PaletteControlsArgs = WidgetRendererProps & { palette: ContextPaletteName };
+type Story = StoryObj<StoryArgs>;
 
 const snapshot = contextWindowSnapshots[0]!;
 const contentSnapshot: ContextWindowSnapshot = {
@@ -41,6 +51,7 @@ const threeLabelSnapshot: ContextWindowSnapshot = {
 };
 
 function panel(title: string, children: WidgetNode[]): WidgetNode { return component('Panel', { title, density: 'condensed' }, children); }
+function renderNode(node: WidgetNode, registry = defaultWidgetRegistry) { return <WidgetRenderer registry={registry} node={node} />; }
 
 function contextDiagramGalleryNode(styleSet: ContextStyleSet): WidgetNode {
   return component('Stack', { gap: 'md' }, [
@@ -56,54 +67,39 @@ function contextDiagramGalleryNode(styleSet: ContextStyleSet): WidgetNode {
   ]);
 }
 
-export const PaletteControls: StoryObj<PaletteControlsArgs> = {
-  args: {
-    registry: defaultWidgetRegistry,
-    palette: 'Dusty Magenta / Blue',
-    node: contextDiagramGalleryNode(contextDefaultStyleSet),
-  },
-  argTypes: {
-    palette: { control: 'select', options: contextPaletteOptions },
-    node: { control: false },
-    registry: { control: false },
-    onAction: { control: false },
-  },
-  render: ({ palette, registry, onAction }) => (
-    <WidgetRenderer registry={registry} onAction={onAction} node={contextDiagramGalleryNode(contextStyleSetForPalette(palette))} />
-  ),
-};
-
 export const ContextDiagramGallery: Story = {
-  args: {
-    node: contextDiagramGalleryNode(contextDefaultStyleSet),
-  },
+  render: ({ palette, registry }) => renderNode(contextDiagramGalleryNode(contextStyleSetForPalette(palette)), registry),
 };
 
 export const ContextDiagramPanelViews: Story = {
-  args: {
-    node: component('DashboardGrid', { recipe: 'twoColumn' }, [
-      component('ContextDiagramPanel', { snapshot, styleSet: contextDefaultStyleSet, initialView: 'strip', selectedPartId: snapshot.selectedPartId }),
-      component('ContextDiagramPanel', { snapshot, styleSet: contextDefaultStyleSet, initialView: 'budget', selectedPartId: snapshot.selectedPartId }),
-      component('ContextDiagramPanel', { snapshot, styleSet: contextDefaultStyleSet, initialView: 'stack', selectedPartId: snapshot.selectedPartId }),
-      component('ContextDiagramPanel', { snapshot, styleSet: contextDefaultStyleSet, initialView: 'treemap', selectedPartId: snapshot.selectedPartId }),
-    ]),
+  render: ({ palette, registry }) => {
+    const styleSet = contextStyleSetForPalette(palette);
+    return renderNode(component('DashboardGrid', { recipe: 'twoColumn' }, [
+      component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'strip', selectedPartId: snapshot.selectedPartId }),
+      component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'budget', selectedPartId: snapshot.selectedPartId }),
+      component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'stack', selectedPartId: snapshot.selectedPartId }),
+      component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'treemap', selectedPartId: snapshot.selectedPartId }),
+    ]), registry);
   },
 };
 
 export const ContextDiagramPanelContentDetails: Story = {
-  args: { node: component('ContextDiagramPanel', { snapshot: contentSnapshot, styleSet: contextDefaultStyleSet, initialView: 'stack', views: ['stack', 'strip', 'budget'], showPartDetails: true }) },
+  render: ({ palette, registry }) => renderNode(component('ContextDiagramPanel', { snapshot: contentSnapshot, styleSet: contextStyleSetForPalette(palette), initialView: 'stack', views: ['stack', 'strip', 'budget'], showPartDetails: true }), registry),
 };
 
 export const CustomThreeLabelWidgetIR: Story = {
-  args: { node: component('ContextDiagramPanel', { snapshot: threeLabelSnapshot, styleSet: threeLabelStyleSet, initialView: 'strip', views: ['strip', 'budget', 'treemap'], showPartDetails: true }) },
+  parameters: { controls: { include: [] } },
+  args: { palette: 'Dusty Magenta / Blue' },
+  render: ({ registry }) => renderNode(component('ContextDiagramPanel', { snapshot: threeLabelSnapshot, styleSet: threeLabelStyleSet, initialView: 'strip', views: ['strip', 'budget', 'treemap'], showPartDetails: true }), registry),
 };
 
 export const ContextDiagramWithMetadataSidebar: Story = {
-  args: {
-    node: component('SplitPane', {
+  render: ({ palette, registry }) => {
+    const styleSet = contextStyleSetForPalette(palette);
+    return renderNode(component('SplitPane', {
       ratio: 'rightNarrow',
       divider: true,
-      left: component('ContextDiagramPanel', { snapshot, styleSet: contextDefaultStyleSet, initialView: 'treemap', selectedPartId: snapshot.selectedPartId }),
+      left: component('ContextDiagramPanel', { snapshot, styleSet, initialView: 'treemap', selectedPartId: snapshot.selectedPartId }),
       right: component('Stack', { gap: 'md' }, [
         panel('Window metadata', [
           component('MetadataGrid', { density: 'compact', items: [
@@ -113,21 +109,22 @@ export const ContextDiagramWithMetadataSidebar: Story = {
             { key: 'Selected', value: snapshot.selectedPartId ?? 'none' },
           ] }),
         ]),
-        panel('Legend', [component('ContextLegend', { items: contextDefaultStyleSet.legend, styles: contextDefaultStyleSet.styles, size: 'sm', selectedId: 'conversation' })]),
+        panel('Legend', [component('ContextLegend', { items: styleSet.legend, styles: styleSet.styles, size: 'sm', selectedId: 'conversation' })]),
       ]),
-    }),
+    }), registry);
   },
 };
 
 export const OverBudgetContextWindow: Story = {
-  args: {
-    node: component('Stack', { gap: 'md' }, [
-      component('ContextBudgetBar', { snapshot: overBudgetSnapshot, styleSet: contextDefaultStyleSet, showLegend: true }),
+  render: ({ palette, registry }) => {
+    const styleSet = contextStyleSetForPalette(palette);
+    return renderNode(component('Stack', { gap: 'md' }, [
+      component('ContextBudgetBar', { snapshot: overBudgetSnapshot, styleSet, showLegend: true }),
       component('Inline', { gap: 'sm', wrap: true }, [
-        component('AnnotationBadge', { visualStyle: contextDefaultStyleSet.styles.evicted, label: 'eviction risk', selected: true }),
+        component('AnnotationBadge', { visualStyle: styleSet.styles.evicted, label: 'eviction risk', selected: true }),
         component('Caption', { tone: 'warning' }, [text('Budget state is intentionally over the configured limit.')]),
       ]),
-      component('ContextStripDiagram', { snapshot: overBudgetSnapshot, styleSet: contextDefaultStyleSet, showLabels: true }),
-    ]),
+      component('ContextStripDiagram', { snapshot: overBudgetSnapshot, styleSet, showLabels: true }),
+    ]), registry);
   },
 };
