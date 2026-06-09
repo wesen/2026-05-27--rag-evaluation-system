@@ -1,3 +1,3 @@
 export * from './types';
-export * from './kinds';
+export * from './styles';
 export * from './fixtures';

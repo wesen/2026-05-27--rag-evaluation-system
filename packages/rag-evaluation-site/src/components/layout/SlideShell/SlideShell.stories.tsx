@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { contextSlides, contextWindowSnapshots } from '../../../context';
+import { contextDefaultStyleSet, contextSlides, contextWindowSnapshots } from '../../../context';
 import { ContextStackDiagram, FigureBlock, KeyPointList } from '../../molecules';
 import { SlideShell } from './SlideShell';
 
@@ -8,7 +8,7 @@ const snapshot = contextWindowSnapshots.find((item) => item.id === slide.snapsho
 
 const figure = (
   <FigureBlock caption="context window — 200,000 tokens" frame="none">
-    <ContextStackDiagram snapshot={snapshot} />
+    <ContextStackDiagram snapshot={snapshot} styleSet={contextDefaultStyleSet} />
   </FigureBlock>
 );
 

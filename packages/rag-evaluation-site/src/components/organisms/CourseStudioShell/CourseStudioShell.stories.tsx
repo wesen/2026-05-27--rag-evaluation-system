@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { contextSlides, contextWindowSnapshots } from '../../../context';
+import { contextDefaultStyleSet, contextSlides, contextWindowSnapshots } from '../../../context';
 import { Caption } from '../../foundation';
 import { SlideShell } from '../../layout';
 import { ContextStackDiagram, FigureBlock, KeyPointList } from '../../molecules';
@@ -17,7 +17,7 @@ const slideContent = (
     title={slide.title}
     primary={(
       <FigureBlock caption="context window — 200,000 tokens">
-        <ContextStackDiagram snapshot={snapshot} />
+        <ContextStackDiagram snapshot={snapshot} styleSet={contextDefaultStyleSet} />
       </FigureBlock>
     )}
     secondary={<KeyPointList items={slide.notes} />}

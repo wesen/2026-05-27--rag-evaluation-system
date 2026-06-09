@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ContextDiagramStyle } from '../../../context';
+import { contextDefaultStyleSet, contextThreeLabelStyleSets } from '../../../context';
 import { Caption } from '../../foundation';
 import { Panel, Stack } from '../../layout';
 import { ContextLegend } from './ContextLegend';
@@ -7,46 +7,36 @@ import { ContextLegend } from './ContextLegend';
 const meta = {
   title: 'Component Library/Molecules/ContextLegend',
   component: ContextLegend,
-  args: {
-    mode: 'pattern',
-    compact: false,
-  },
+  args: { items: contextDefaultStyleSet.legend, styles: contextDefaultStyleSet.styles, size: 'md' },
 } satisfies Meta<typeof ContextLegend>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const modes: ContextDiagramStyle[] = ['pattern', 'tone', 'outline'];
+export const DefaultStyleSet: Story = {
+  render: () => <Panel title="default context-window legend"><ContextLegend items={contextDefaultStyleSet.legend} styles={contextDefaultStyleSet.styles} selectedId="active" /></Panel>,
+};
 
-export const Modes: Story = {
+export const Sizes: Story = {
   render: () => (
     <Stack gap="md">
-      {modes.map((mode) => (
-        <Panel key={mode} title={`${mode} mode`}>
-          <ContextLegend mode={mode} selectedKind={mode === 'pattern' ? 'active' : undefined} />
+      {(['xs', 'sm', 'md', 'lg'] as const).map((size) => (
+        <Panel key={size} title={`${size} legend`}>
+          <ContextLegend items={contextDefaultStyleSet.legend.slice(0, 8)} styles={contextDefaultStyleSet.styles} size={size} selectedId="result" />
         </Panel>
       ))}
     </Stack>
   ),
 };
 
-export const CompactCoreKinds: Story = {
-  render: () => (
-    <Stack gap="sm">
-      <Caption>Core context-window tenants</Caption>
-      <ContextLegend
-        compact
-        kinds={['system', 'context', 'summary', 'result', 'generated', 'evicted', 'active', 'empty']}
-        selectedKind="result"
-      />
-    </Stack>
-  ),
-};
-
-export const AnnotationAndCourseKinds: Story = {
-  render: () => (
-    <Panel title="annotation/course taxonomy">
-      <ContextLegend kinds={['annotation', 'course', 'conversation', 'retrieval', 'tool', 'instruction']} mode="tone" />
-    </Panel>
-  ),
+export const CustomThreeLabelLegend: Story = {
+  render: () => {
+    const styleSet = contextThreeLabelStyleSets[0]!;
+    return (
+      <Stack gap="sm">
+        <Caption>Caller-defined legend labels and palette size (3 visible labels)</Caption>
+        <ContextLegend items={styleSet.legend} styles={styleSet.styles} selectedId="evidence" />
+      </Stack>
+    );
+  },
 };

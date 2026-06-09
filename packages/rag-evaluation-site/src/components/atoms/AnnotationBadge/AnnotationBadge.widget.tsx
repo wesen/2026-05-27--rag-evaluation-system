@@ -5,5 +5,5 @@ import type { AnnotationBadgeWidgetProps } from '../../../widgets/ir';
 export const annotationBadgeWidget = defineWidget<AnnotationBadgeWidgetProps>({
   type: 'AnnotationBadge',
   module: 'context_window.dsl',
-  render: (props) => <AnnotationBadge className={props.className} kind={props.kind} label={props.label} selected={props.selected} />,
+  render: (props) => <AnnotationBadge className={props.className} visualStyle={props.visualStyle} label={props.label} selected={props.selected} />,
 });

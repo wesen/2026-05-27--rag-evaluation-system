@@ -6,8 +6,39 @@ import type {
   ContextWindowSnapshot,
   TranscriptFixture,
 } from './types';
+import { cobaltSand, createContextStyleSetFromPalette, defaultContextStyleSet, dustyMagentaBlue, signalOrangeCyan, slateCoral } from './styles';
 
 export const CONTEXT_WINDOW_LIMIT = 200_000;
+
+export const contextDefaultStyleSet = defaultContextStyleSet(dustyMagentaBlue);
+export const contextSignalOrangeStyleSet = defaultContextStyleSet(signalOrangeCyan);
+export const contextSlateCoralStyleSet = defaultContextStyleSet(slateCoral);
+export const contextCobaltSandStyleSet = defaultContextStyleSet(cobaltSand);
+
+export const contextThreeLabelStyleSets = [
+  createContextStyleSetFromPalette({
+    id: 'three-label-dusty',
+    name: 'Three Label — Dusty Magenta / Blue',
+    palette: dustyMagentaBlue,
+    entries: [
+      { id: 'prompt', label: 'Prompt scaffolding', accent: 'b', pattern: 'checker' },
+      { id: 'evidence', label: 'Retrieved evidence', accent: 'a', pattern: 'stipple' },
+      { id: 'answer', label: 'Answer draft', accent: 'a', pattern: 'solid', solid: true },
+      { id: 'free', label: 'Free space', accent: 'grid', pattern: 'none', hidden: true },
+    ],
+  }),
+  createContextStyleSetFromPalette({
+    id: 'three-label-signal',
+    name: 'Three Label — Signal Orange / Cyan',
+    palette: signalOrangeCyan,
+    entries: [
+      { id: 'prompt', label: 'Prompt scaffolding', accent: 'b', pattern: 'checker' },
+      { id: 'evidence', label: 'Retrieved evidence', accent: 'a', pattern: 'stipple' },
+      { id: 'answer', label: 'Answer draft', accent: 'a', pattern: 'solid', solid: true },
+      { id: 'free', label: 'Free space', accent: 'grid', pattern: 'none', hidden: true },
+    ],
+  }),
+];
 
 export const contextWindowSnapshots: ContextWindowSnapshot[] = [
   {
@@ -16,12 +47,12 @@ export const contextWindowSnapshots: ContextWindowSnapshot[] = [
     subtitle: 'Agent has read the repo map and the failing test.',
     limit: CONTEXT_WINDOW_LIMIT,
     parts: [
-      { id: 't03-system', label: 'system + tools', kind: 'system', tokens: 7200, note: 'instructions + tool schemas' },
-      { id: 't03-project', label: 'project context', kind: 'context', tokens: 4100, note: 'CLAUDE.md, repo map' },
-      { id: 't03-conversation', label: 'conversation', kind: 'context', tokens: 5200, note: '3 turns so far' },
-      { id: 't03-file-reads', label: 'file reads', kind: 'result', tokens: 9800, note: 'test + 2 source files' },
-      { id: 't03-task', label: 'current task', kind: 'active', tokens: 1400, note: 'fix failing test' },
-      { id: 't03-empty', label: 'free space', kind: 'empty', tokens: 162300 },
+      { id: 't03-system', label: 'system + tools', styleKey: 'system', tokens: 7200, note: 'instructions + tool schemas' },
+      { id: 't03-project', label: 'project context', styleKey: 'context', tokens: 4100, note: 'CLAUDE.md, repo map' },
+      { id: 't03-conversation', label: 'conversation', styleKey: 'context', tokens: 5200, note: '3 turns so far' },
+      { id: 't03-file-reads', label: 'file reads', styleKey: 'result', tokens: 9800, note: 'test + 2 source files' },
+      { id: 't03-task', label: 'current task', styleKey: 'active', tokens: 1400, note: 'fix failing test' },
+      { id: 't03-empty', label: 'free space', styleKey: 'empty', tokens: 162300 },
     ],
   },
   {
@@ -31,15 +62,15 @@ export const contextWindowSnapshots: ContextWindowSnapshot[] = [
     limit: CONTEXT_WINDOW_LIMIT,
     selectedPartId: 't14-file-reads',
     parts: [
-      { id: 't14-system', label: 'system + tools', kind: 'system', tokens: 7200, note: 'instructions + tool schemas' },
-      { id: 't14-project', label: 'project context', kind: 'context', tokens: 4100, note: 'CLAUDE.md, repo map' },
-      { id: 't14-summary', label: 'summary', kind: 'summary', tokens: 3400, note: 'turns 1–6 compressed' },
-      { id: 't14-conversation', label: 'conversation', kind: 'context', tokens: 21800, note: 'turns 7–14' },
-      { id: 't14-file-reads', label: 'file reads', kind: 'result', tokens: 38600, note: '6 files + grep output' },
-      { id: 't14-test-output', label: 'test output', kind: 'result', tokens: 12400, note: 'stack traces' },
-      { id: 't14-scratchpad', label: 'scratchpad', kind: 'generated', tokens: 9200, note: 'hypotheses, plan' },
-      { id: 't14-task', label: 'current task', kind: 'active', tokens: 1900, note: 'patch the parser' },
-      { id: 't14-empty', label: 'free space', kind: 'empty', tokens: 91700 },
+      { id: 't14-system', label: 'system + tools', styleKey: 'system', tokens: 7200, note: 'instructions + tool schemas' },
+      { id: 't14-project', label: 'project context', styleKey: 'context', tokens: 4100, note: 'CLAUDE.md, repo map' },
+      { id: 't14-summary', label: 'summary', styleKey: 'summary', tokens: 3400, note: 'turns 1–6 compressed' },
+      { id: 't14-conversation', label: 'conversation', styleKey: 'context', tokens: 21800, note: 'turns 7–14' },
+      { id: 't14-file-reads', label: 'file reads', styleKey: 'result', tokens: 38600, note: '6 files + grep output' },
+      { id: 't14-test-output', label: 'test output', styleKey: 'result', tokens: 12400, note: 'stack traces' },
+      { id: 't14-scratchpad', label: 'scratchpad', styleKey: 'generated', tokens: 9200, note: 'hypotheses, plan' },
+      { id: 't14-task', label: 'current task', styleKey: 'active', tokens: 1900, note: 'patch the parser' },
+      { id: 't14-empty', label: 'free space', styleKey: 'empty', tokens: 91700 },
     ],
   },
   {
@@ -48,15 +79,15 @@ export const contextWindowSnapshots: ContextWindowSnapshot[] = [
     subtitle: 'Window full. Old turns evicted; results re-summarized to reclaim space.',
     limit: CONTEXT_WINDOW_LIMIT,
     parts: [
-      { id: 't31-system', label: 'system + tools', kind: 'system', tokens: 7200, note: 'instructions + tool schemas' },
-      { id: 't31-project', label: 'project context', kind: 'context', tokens: 4100, note: 'CLAUDE.md, repo map' },
-      { id: 't31-evicted', label: 'evicted', kind: 'evicted', tokens: 28400, note: 'turns 1–18 dropped' },
-      { id: 't31-summary', label: 'summary', kind: 'summary', tokens: 8600, note: 'rolling summary' },
-      { id: 't31-conversation', label: 'conversation', kind: 'context', tokens: 41200, note: 'turns 19–31' },
-      { id: 't31-file-reads', label: 'file reads', kind: 'result', tokens: 64800, note: '12 files in working set' },
-      { id: 't31-scratchpad', label: 'scratchpad', kind: 'generated', tokens: 22600, note: 'long reasoning trace' },
-      { id: 't31-task', label: 'current task', kind: 'active', tokens: 2100, note: 'verify the fix' },
-      { id: 't31-empty', label: 'free space', kind: 'empty', tokens: 21000 },
+      { id: 't31-system', label: 'system + tools', styleKey: 'system', tokens: 7200, note: 'instructions + tool schemas' },
+      { id: 't31-project', label: 'project context', styleKey: 'context', tokens: 4100, note: 'CLAUDE.md, repo map' },
+      { id: 't31-evicted', label: 'evicted', styleKey: 'evicted', tokens: 28400, note: 'turns 1–18 dropped' },
+      { id: 't31-summary', label: 'summary', styleKey: 'summary', tokens: 8600, note: 'rolling summary' },
+      { id: 't31-conversation', label: 'conversation', styleKey: 'context', tokens: 41200, note: 'turns 19–31' },
+      { id: 't31-file-reads', label: 'file reads', styleKey: 'result', tokens: 64800, note: '12 files in working set' },
+      { id: 't31-scratchpad', label: 'scratchpad', styleKey: 'generated', tokens: 22600, note: 'long reasoning trace' },
+      { id: 't31-task', label: 'current task', styleKey: 'active', tokens: 2100, note: 'verify the fix' },
+      { id: 't31-empty', label: 'free space', styleKey: 'empty', tokens: 21000 },
     ],
   },
   {
@@ -65,12 +96,12 @@ export const contextWindowSnapshots: ContextWindowSnapshot[] = [
     subtitle: 'What the naïve append-everything window would have looked like.',
     limit: CONTEXT_WINDOW_LIMIT,
     parts: [
-      { id: 'over-system', label: 'system + tools', kind: 'system', tokens: 7200 },
-      { id: 'over-project', label: 'project context', kind: 'context', tokens: 4100 },
-      { id: 'over-conversation', label: 'conversation (all)', kind: 'context', tokens: 88200 },
-      { id: 'over-file-reads', label: 'file reads (all)', kind: 'result', tokens: 96400 },
-      { id: 'over-scratchpad', label: 'scratchpad', kind: 'generated', tokens: 31600 },
-      { id: 'over-task', label: 'current task', kind: 'active', tokens: 2100 },
+      { id: 'over-system', label: 'system + tools', styleKey: 'system', tokens: 7200 },
+      { id: 'over-project', label: 'project context', styleKey: 'context', tokens: 4100 },
+      { id: 'over-conversation', label: 'conversation (all)', styleKey: 'context', tokens: 88200 },
+      { id: 'over-file-reads', label: 'file reads (all)', styleKey: 'result', tokens: 96400 },
+      { id: 'over-scratchpad', label: 'scratchpad', styleKey: 'generated', tokens: 31600 },
+      { id: 'over-task', label: 'current task', styleKey: 'active', tokens: 2100 },
     ],
   },
 ];
@@ -150,35 +181,35 @@ export const transcriptFixture: TranscriptFixture = {
     {
       id: 'task-framing',
       targetMessageId: 'm2',
-      kind: 'context',
+      styleKey: 'context',
       label: 'Task framing',
       text: 'The current task is small but high-value — it stays pinned at the bottom of every window for the rest of the session.',
     },
     {
       id: 'tool-result-cost',
       targetMessageId: 'm3',
-      kind: 'result',
+      styleKey: 'result',
       label: 'Tool result cost',
       text: 'Two file reads are cheap now, but reads compound — by turn 14 the working set is 38k.',
     },
     {
       id: 'stack-trace-noise',
       targetMessageId: 'm5',
-      kind: 'result',
+      styleKey: 'result',
       label: 'Stack traces are noisy',
       text: 'Test output carries stack traces. Keep the assertion and first frame; the rest is a summarization candidate.',
     },
     {
       id: 'scratchpad-reasoning',
       targetMessageId: 'm6',
-      kind: 'generated',
+      styleKey: 'generated',
       label: 'Scratchpad reasoning',
       text: 'Reasoning tokens are generated, not retrieved. Useful in-turn, but rarely worth carrying forward verbatim.',
     },
     {
       id: 'window-rebuilt',
       targetMessageId: 'm9',
-      kind: 'active',
+      styleKey: 'active',
       label: 'Window rebuilt here',
       text: "Before this reply, the window was rebuilt: the failing run_test output was summarized to one line now that it's resolved.",
     },
@@ -409,7 +440,7 @@ Track \`tokens_by_kind\` for system, context, conversation, results, generated t
 
 export function contextWindowTokenTotal(snapshot: ContextWindowSnapshot, options: { includeEmpty?: boolean } = {}) {
   return snapshot.parts.reduce((total, part) => {
-    if (!options.includeEmpty && part.kind === 'empty') {
+    if (!options.includeEmpty && part.styleKey === 'empty') {
       return total;
     }
     return total + part.tokens;

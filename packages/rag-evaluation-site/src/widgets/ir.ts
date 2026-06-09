@@ -1,7 +1,7 @@
 import type { CaptionTone, CaptionTransform, RagStatus, TextAlign, TextAs, TextSize, TextTone, TextWeight } from '../components/foundation';
-import type { ButtonSize, ButtonVariant, ContextKindSwatchSize, ContextStudioNavIconId } from '../components/atoms';
+import type { ButtonSize, ButtonVariant, ContextStudioNavIconId } from '../components/atoms';
 import type { DashboardGridRecipe, InlineGap, InlineJustify, StackAlign, StackGap } from '../components/layout';
-import type { AnchoredComment, ContextCourse, ContextCourseAgendaItem, ContextDiagramStyle, ContextDiagramView, ContextHandoutDocument, ContextSlide, ContextPartKind, ContextWindowSnapshot, TranscriptAnnotation, TranscriptMessage, TranscriptRole } from '../context';
+import type { AnchoredComment, ContextCourse, ContextCourseAgendaItem, ContextDiagramView, ContextHandoutDocument, ContextLegendItemSpec, ContextSlide, ContextStyleSet, ContextVisualStyle, ContextWindowSnapshot, TranscriptAnnotation, TranscriptMessage, TranscriptRole } from '../context';
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
@@ -27,7 +27,7 @@ export type RagWidgetType =
   | 'Button'
   | 'Caption'
   | 'CodeText'
-  | 'ContextKindSwatch'
+  | 'ContextStyleSwatch'
   | 'ContextStudioNavIcon'
   | 'AnnotationBadge'
   | 'ContextLegend'
@@ -177,15 +177,14 @@ export interface ContextStudioNavIconWidgetProps extends BaseWidgetProps {
   title?: string;
 }
 
-export interface ContextKindSwatchWidgetProps extends BaseWidgetProps {
-  kind: ContextPartKind;
-  mode?: ContextDiagramStyle;
-  size?: ContextKindSwatchSize;
+export interface ContextStyleSwatchWidgetProps extends BaseWidgetProps {
+  visualStyle: ContextVisualStyle;
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   selected?: boolean;
 }
 
 export interface AnnotationBadgeWidgetProps extends BaseWidgetProps {
-  kind: ContextPartKind;
+  visualStyle: ContextVisualStyle;
   label: string;
   selected?: boolean;
 }
@@ -196,44 +195,45 @@ export interface TranscriptRoleBadgeWidgetProps extends BaseWidgetProps {
 }
 
 export interface ContextLegendWidgetProps extends BaseWidgetProps {
-  kinds?: ContextPartKind[];
-  mode?: ContextDiagramStyle;
-  compact?: boolean;
-  selectedKind?: ContextPartKind;
+  items: ContextLegendItemSpec[];
+  styles: Record<string, ContextVisualStyle>;
+  size?: 'xs' | 'sm' | 'md' | 'lg';
+  selectedId?: string;
 }
 
 export interface ContextBudgetBarWidgetProps extends BaseWidgetProps {
   snapshot: ContextWindowSnapshot;
-  mode?: ContextDiagramStyle;
+  styleSet: ContextStyleSet;
   showLegend?: boolean;
   selectedPartId?: string;
 }
 
 export interface ContextStripDiagramWidgetProps extends BaseWidgetProps {
   snapshot: ContextWindowSnapshot;
-  mode?: ContextDiagramStyle;
+  styleSet: ContextStyleSet;
   selectedPartId?: string;
   showLabels?: boolean;
 }
 
 export interface ContextStackDiagramWidgetProps extends BaseWidgetProps {
   snapshot: ContextWindowSnapshot;
+  styleSet: ContextStyleSet;
   selectedPartId?: string;
 }
 
 export interface ContextTreemapWidgetProps extends BaseWidgetProps {
   snapshot: ContextWindowSnapshot;
+  styleSet: ContextStyleSet;
   selectedPartId?: string;
 }
 
 export interface ContextDiagramPanelWidgetProps extends BaseWidgetProps {
   snapshot: ContextWindowSnapshot;
+  styleSet: ContextStyleSet;
   initialView?: ContextDiagramView;
   selectedPartId?: string;
   views?: ContextDiagramView[];
   showLegend?: boolean;
-  legendKinds?: ContextPartKind[];
-  legendMode?: ContextDiagramStyle;
   showPartDetails?: boolean;
 }
 
@@ -534,7 +534,7 @@ export type WidgetProps =
   | TextWidgetProps
   | CodeTextWidgetProps
   | DividerWidgetProps
-  | ContextKindSwatchWidgetProps
+  | ContextStyleSwatchWidgetProps
   | ContextStudioNavIconWidgetProps
   | AnnotationBadgeWidgetProps
   | TranscriptRoleBadgeWidgetProps

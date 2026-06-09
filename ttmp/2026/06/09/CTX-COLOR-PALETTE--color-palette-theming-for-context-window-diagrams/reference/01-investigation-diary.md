@@ -232,3 +232,77 @@ Maintaining compatibility would keep the wrong abstraction alive. Since the only
 
 - Updated document: `design-doc/02-reviewed-design-configurable-legends-and-style-palettes.md`
 - Updated task list: `tasks.md`
+
+## Step 4: Frontend Core StyleSet Cutover
+
+This implementation slice replaced the frontend context diagram rendering path from hardcoded `kind` classes to required `styleKey` plus `ContextStyleSet`. It also replaced `ContextKindSwatch` with `ContextStyleSwatch` and updated the molecule/organism Storybook stories so reviewers can change styles live.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Now implement these tasks one by one, commit at appropriate intervals, keep a frequent detailed diary as you work, add lots of testing stories in the storybook and the IR Widget transformer, and carry things all the way through to the goja DSL as well."
+
+**Assistant interpretation:** Begin the implementation, commit in focused chunks, and keep a detailed diary. Start with the frontend hard-cutover before moving to Widget IR and Goja DSL.
+
+**Inferred user intent:** The user wants the design turned into working code across React components, Storybook, Widget IR, and Goja DSL, with reviewable commits and progress notes.
+
+**Commit (code):** pending — frontend core cutover
+
+### What I did
+
+- Rewrote `src/context/types.ts` to remove `ContextPartKind` from context diagram parts and require `styleKey`.
+- Added `src/context/styles.ts` with `ContextVisualStyle`, `ContextStyleSet`, palette definitions, style resolution, CSS var conversion, and palette-derived style-set helpers.
+- Converted fixtures in `src/context/fixtures.ts` from `kind` to `styleKey` and exported default/preferred style sets.
+- Deleted `ContextKindSwatch` and created `ContextStyleSwatch`.
+- Replaced the four diagram molecule renderers to require `styleSet`, resolve each part by `styleKey`, and render generic pattern classes with CSS variables.
+- Replaced `.kind_*` CSS with `.pattern_*` CSS in strip, stack, budget, treemap, and swatch styles.
+- Replaced `ContextLegend` with required `items + styles` props.
+- Updated molecule Storybook stories, including live style switchers for `ContextStripDiagram` and `ContextDiagramPanel`.
+- Updated `CourseSlidePanel`, `FigureBlock` stories, `SlideShell` stories, and `CourseStudioShell` stories to pass style sets.
+- Ran `pnpm typecheck`; initial run found expected old API references; after fixes, typecheck passes.
+
+### Why
+
+This is the foundation needed before Widget IR and Goja DSL can be updated. The React components must have a stable hard-cutover API first; otherwise the downstream DSL work would target a moving contract.
+
+### What worked
+
+- The generic pattern CSS approach worked well: all diagrams now use the same style variables (`--ctx-fill`, `--ctx-line`, `--ctx-stroke`, `--ctx-label`) and pattern class names.
+- TypeScript caught many old references immediately, especially Storybook stories and annotation components.
+- The live Storybook style switcher is a useful acceptance test because the same snapshot can be rendered under multiple style sets without changing data.
+
+### What didn't work
+
+- A simple mechanical `kind` → `styleKey` replacement was not enough. Components such as `AnnotationBadge`, `AnnotationNoteCard`, `CourseSlidePanel`, and `FigureBlock` needed explicit style-set or visual-style handling.
+- Two story files referenced `contextDefaultStyleSet` without importing it after automated replacements; typecheck caught this.
+
+### What I learned
+
+- The hard-cutover removes a lot of branching: after `ContextStyleSet` is required, components no longer need `mode`, `legendMode`, `legendKinds`, or kind lookups.
+- Molecule stories are important because they catch lower-level missing props before organism stories do.
+
+### What was tricky to build
+
+- Keeping annotation UI compiling without reintroducing `ContextPartKind`. I updated it to use `ContextVisualStyle` directly, with transcript note cards resolving `annotation.styleKey` through a style set.
+- Making Storybook interactive without adding a production palette selector. The stories use local `useState` buttons to switch style sets, which proves the styling model without adding app-level UI.
+
+### What warrants a second pair of eyes
+
+- Whether annotation/transcript panels should require a `styleSet` prop instead of using `contextDefaultStyleSet` as a temporary default.
+- Whether the default style-set helper should live in `fixtures.ts` or a dedicated preset file.
+
+### What should be done in the future
+
+- Update Widget IR stories and Goja DSL helpers to emit required `styleSet`.
+- Run `build-storybook` after Widget IR stories are migrated.
+- Search for remaining `kind`, `ContextKindSwatch`, `legendKinds`, `legendMode`, and `.kind_` references.
+
+### Code review instructions
+
+- Start with `src/context/types.ts` and `src/context/styles.ts`.
+- Then review `ContextStyleSwatch`, `ContextLegend`, and one diagram molecule (strip) before reviewing the other diagrams.
+- Validate with `pnpm --dir packages/rag-evaluation-site typecheck`.
+
+### Technical details
+
+- Validation run: `pnpm typecheck` in `packages/rag-evaluation-site`.
+- Final result: typecheck passed after story/component fixes.

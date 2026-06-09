@@ -1,16 +1,18 @@
 import type { HTMLAttributes } from 'react';
-import type { TranscriptAnnotation } from '../../../context';
-import { ContextKindSwatch } from '../../atoms';
+import { contextDefaultStyleSet, resolveContextVisualStyle, type ContextStyleSet, type TranscriptAnnotation } from '../../../context';
+import { ContextStyleSwatch } from '../../atoms';
 import { Caption } from '../../foundation';
 import styles from './AnnotationNoteCard.module.css';
 
 export interface AnnotationNoteCardProps extends HTMLAttributes<HTMLElement> {
   annotation: TranscriptAnnotation;
+  styleSet?: ContextStyleSet;
   selected?: boolean;
   index?: number;
 }
 
-export function AnnotationNoteCard({ annotation, selected = false, index, className, ...rest }: AnnotationNoteCardProps) {
+export function AnnotationNoteCard({ annotation, styleSet = contextDefaultStyleSet, selected = false, index, className, ...rest }: AnnotationNoteCardProps) {
+  const visualStyle = resolveContextVisualStyle(annotation.styleKey, styleSet);
   return (
     <aside
       className={[styles.root, selected ? styles.selected : '', className ?? ''].filter(Boolean).join(' ')}
@@ -21,7 +23,7 @@ export function AnnotationNoteCard({ annotation, selected = false, index, classN
     >
       <header className={styles.titleBar}>
         <span className={styles.noteLabel}>NOTE {index ?? ''}</span>
-        <ContextKindSwatch kind={annotation.kind} size="sm" selected={selected} />
+        <ContextStyleSwatch visualStyle={visualStyle} size="sm" selected={selected} />
       </header>
       <div className={styles.body}>
         <div className={styles.title}>{annotation.label}</div>

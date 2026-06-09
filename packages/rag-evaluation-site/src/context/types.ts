@@ -1,20 +1,3 @@
-export type ContextPartKind =
-  | 'system'
-  | 'instruction'
-  | 'context'
-  | 'conversation'
-  | 'summary'
-  | 'retrieval'
-  | 'tool'
-  | 'result'
-  | 'generated'
-  | 'annotation'
-  | 'course'
-  | 'active'
-  | 'evicted'
-  | 'empty'
-  | 'other';
-
 export type TranscriptRole =
   | 'system'
   | 'developer'
@@ -27,10 +10,53 @@ export type ContextJsonPrimitive = string | number | boolean | null;
 export type ContextJsonValue = ContextJsonPrimitive | ContextJsonValue[] | { [key: string]: ContextJsonValue };
 export type ContextJsonRecord = Record<string, ContextJsonValue>;
 
+export type ContextPatternName =
+  | 'none'
+  | 'solid'
+  | 'checker'
+  | 'diagonal'
+  | 'diagonalDense'
+  | 'stipple'
+  | 'cross'
+  | 'overflow';
+
+export type ContextStyleSize = 'xs' | 'sm' | 'md' | 'lg';
+
+export interface ContextVisualStyle {
+  fill: string;
+  line?: string;
+  stroke?: string;
+  labelColor?: string;
+  pattern?: ContextPatternName;
+  dashed?: boolean;
+  dotted?: boolean;
+  strokeWidth?: number;
+  vars?: Record<string, string>;
+}
+
+export interface ContextLegendItemSpec {
+  id: string;
+  label: string;
+  description?: string;
+  styleKey?: string;
+  order?: number;
+  hidden?: boolean;
+}
+
+export interface ContextStyleSet {
+  id?: string;
+  name?: string;
+  styles: Record<string, ContextVisualStyle>;
+  legend: ContextLegendItemSpec[];
+  fallbackStyle?: ContextVisualStyle;
+  legendSize?: ContextStyleSize;
+  swatchSize?: ContextStyleSize;
+}
+
 export interface ContextWindowPart {
   id: string;
   label: string;
-  kind: ContextPartKind;
+  styleKey: string;
   tokens: number;
   note?: string;
   contentPreview?: string;
@@ -52,12 +78,11 @@ export interface ContextWindowSnapshot {
 }
 
 export type ContextDiagramView = 'strip' | 'stack' | 'budget' | 'treemap';
-export type ContextDiagramStyle = 'pattern' | 'tone' | 'outline';
 
 export interface ContextDiagramSegment {
   id: string;
   label: string;
-  kind: ContextPartKind;
+  styleKey: string;
   tokens: number;
   note?: string;
   metadata?: ContextJsonRecord;
@@ -66,7 +91,7 @@ export interface ContextDiagramSegment {
 export interface TranscriptAnnotation {
   id: string;
   targetMessageId: string;
-  kind: ContextPartKind;
+  styleKey: string;
   label: string;
   text: string;
   confidence?: number;

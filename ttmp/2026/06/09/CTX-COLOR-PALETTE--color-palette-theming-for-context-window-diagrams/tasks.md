@@ -53,6 +53,21 @@
 - [ ] Update `ContextStripDiagram.widget.tsx`, `ContextStackDiagram.widget.tsx`, `ContextBudgetBar.widget.tsx`, and `ContextTreemap.widget.tsx` to pass required `styleSet`.
 - [ ] Update `WidgetRenderer.context-diagrams.stories.tsx` examples so every context diagram component includes `styleSet`.
 
+### Goja DSL hard cutover
+
+- [ ] Create/maintain `design-doc/03-goja-dsl-styleset-cutover.md` as the Goja DSL contract for style-set helpers.
+- [ ] Remove `contextKindSwatch` from `pkg/widgetdsl` `contextWindowHelpers`.
+- [ ] Add `contextWindow.visualStyle(options)` helper returning a JSON-compatible `ContextVisualStyle`.
+- [ ] Add `contextWindow.legendItem(id, label, options?)` helper returning a `ContextLegendItemSpec`.
+- [ ] Add `contextWindow.styleSet(options)` helper returning a `ContextStyleSet`.
+- [ ] Add `contextWindow.contextPart(id, label, styleKey, tokens, options?)` helper returning a `ContextWindowPart` with required `styleKey`.
+- [ ] Add `contextWindow.contextSnapshot(options)` helper returning a normalized context window snapshot.
+- [ ] Add `contextWindow.paletteStyleSet(options)` helper for preferred palette + entry definitions.
+- [ ] Update `contextWindow.recipes.contextDiagram(options)` to require `styleSet` or enough palette data to construct one; throw a useful error otherwise.
+- [ ] Update Goja DSL tests so snapshots use `styleKey`, recipe IR includes `styleSet`, and missing `styleSet` errors.
+- [ ] Update `pkg/widgetschema/schema.go` component list to remove `ContextKindSwatch` and include `ContextStyleSwatch` if exposed through Widget IR.
+- [ ] Update `schema/dsl-modules.yaml` or generated manifests if helper/component ownership metadata changes.
+
 ### Storybook and examples
 
 - [ ] Add `ContextDiagramPanel.configurable-legend.stories.tsx` with a custom three-label diagram (`prompt`, `evidence`, `answer`) that uses no `kind` fields.
