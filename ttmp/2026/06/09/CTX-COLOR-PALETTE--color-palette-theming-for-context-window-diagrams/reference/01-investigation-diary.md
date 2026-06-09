@@ -1136,7 +1136,7 @@ The updated rule keeps each note chip readable by default: it uses a neutral whi
 
 **Inferred user intent:** The user wants every transcript annotation affordance to remain readable across all palettes, including compact note buttons embedded in message headers.
 
-**Commit (code):** pending — "Frontend: improve transcript note-link contrast"
+**Commit (code):** d5226ac — "Frontend: improve transcript note-link contrast"
 
 ### What I did
 
