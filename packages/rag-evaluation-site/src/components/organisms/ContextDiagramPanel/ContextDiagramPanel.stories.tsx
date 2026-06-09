@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { contextCobaltSandStyleSet, contextDefaultStyleSet, contextSignalOrangeStyleSet, contextSlateCoralStyleSet, contextThreeLabelStyleSets, contextWindowSnapshots, type ContextStyleSet, type ContextWindowSnapshot } from '../../../context';
 import { Button } from '../../atoms';
 import { Inline, Stack } from '../../layout';
-import { ContextDiagramPanel } from './ContextDiagramPanel';
+import { ContextDiagramPanel, type ContextDiagramPanelProps } from './ContextDiagramPanel';
 
 const [, deepBug, atLimit, overBudget] = contextWindowSnapshots;
 
@@ -94,6 +94,41 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+type PaletteName = 'Dusty Magenta / Blue' | 'Signal Orange / Cyan' | 'Slate / Coral' | 'Cobalt / Sand';
+type PaletteControlsArgs = Omit<ContextDiagramPanelProps, 'styleSet'> & { palette: PaletteName };
+
+const paletteControlStyleSets: Record<PaletteName, ContextStyleSet> = {
+  'Dusty Magenta / Blue': contextDefaultStyleSet,
+  'Signal Orange / Cyan': contextSignalOrangeStyleSet,
+  'Slate / Coral': contextSlateCoralStyleSet,
+  'Cobalt / Sand': contextCobaltSandStyleSet,
+};
+
+export const PaletteControls: StoryObj<PaletteControlsArgs> = {
+  args: {
+    snapshot: deepBug!,
+    palette: 'Dusty Magenta / Blue',
+    initialView: 'strip',
+    views: ['strip', 'stack', 'budget', 'treemap'],
+    showPartDetails: true,
+  },
+  argTypes: {
+    palette: { control: 'select', options: Object.keys(paletteControlStyleSets) },
+    initialView: { control: 'select', options: ['strip', 'stack', 'budget', 'treemap'] },
+    showLegend: { control: 'boolean' },
+    showPartDetails: { control: 'boolean' },
+    snapshot: { control: false },
+    selectedPartId: { control: false },
+    views: { control: false },
+  },
+  render: ({ palette, ...args }) => (
+    <ContextDiagramPanel
+      {...args}
+      styleSet={paletteControlStyleSets[palette]}
+    />
+  ),
+};
 
 export const InteractiveViews: Story = {
   render: () => <ContextDiagramPanel snapshot={deepBug!} styleSet={contextDefaultStyleSet} />,
