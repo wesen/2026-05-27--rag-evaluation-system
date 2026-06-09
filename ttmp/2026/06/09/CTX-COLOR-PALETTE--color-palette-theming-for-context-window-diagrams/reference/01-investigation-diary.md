@@ -468,3 +468,475 @@ Validation passed:
 - `pnpm typecheck` in `ClubMedMeetup/minitrace-viz/webapp`
 - `make build` in `ClubMedMeetup/minitrace-viz`
 - active-code old API search excluding historical `ttmp/`, `node_modules`, and build output
+
+## Step 7: First Storybook Palette Control for ContextDiagramPanel
+
+This step made palette switching directly tryable from Storybook controls for the primary `ContextDiagramPanel` organism. Before this, palette switching existed only as in-canvas buttons on a custom story, which made it harder to exercise through the standard Storybook Controls panel and harder to compare with normal Storybook workflows.
+
+### Prompt Context
+
+**User prompt (verbatim):** "can we use controls in storybook to switch palette? or how can I try it?"
+
+**Assistant interpretation:** Add a Storybook Controls dropdown for palette switching and explain where to try it in Storybook.
+
+**Inferred user intent:** The user wants palette theming to be discoverable through standard Storybook controls, not only via custom in-canvas UI.
+
+**Commit (code):** 080dbbd2526ff83ae9e559a1d4032a1e820804d0 — "Storybook: add context palette controls"
+
+### What I did
+
+- Inspected `packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.stories.tsx`.
+- Confirmed `InteractiveStyleSwitcher` already existed but used local React state and in-canvas buttons.
+- Added a `PaletteControls` story for `ContextDiagramPanel` with a Storybook `select` control.
+- Added palette options for:
+  - `Dusty Magenta / Blue`,
+  - `Signal Orange / Cyan`,
+  - `Slate / Coral`,
+  - `Cobalt / Sand`.
+- Added controls for `initialView`, `showLegend`, and `showPartDetails`.
+- Kept `snapshot`, `selectedPartId`, and `views` non-editable where editing them via Controls would be noisy or structurally unsafe.
+
+### Why
+
+Storybook users expect visual variants to be controlled through the Controls panel. The hard-cutover introduced explicit `ContextStyleSet` props, so Storybook needed an ergonomic way to swap those style sets without editing code or relying on custom story buttons.
+
+### What worked
+
+- The existing style-set fixtures made the control mapping simple.
+- TypeScript accepted `PaletteControlsArgs = Omit<ContextDiagramPanelProps, 'styleSet'> & { palette: PaletteName }` for a standalone controls story.
+- `pnpm typecheck` passed after the story was added.
+
+### What didn't work
+
+- At this stage, only one dedicated `PaletteControls` story was added. Existing stories such as `InteractiveViews` and `StartingViews` still rendered fixed `contextDefaultStyleSet` values.
+- The implementation did not yet solve the user's later concern that every relevant story should expose palette controls directly.
+
+### What I learned
+
+- A separate controls story is a useful first test, but it is not enough when the user wants to browse existing stories and switch palettes there.
+- Storybook story args can carry a palette key and map it to a full `ContextStyleSet` at render time.
+
+### What was tricky to build
+
+- The actual React component requires `styleSet`; Storybook controls should expose a simple string dropdown rather than the full nested style-set object.
+- The safe pattern is to hide the raw `styleSet` prop from controls and introduce a story-only `palette` arg.
+
+### What warrants a second pair of eyes
+
+- Whether `initialView` should stay as a story control even though the panel has its own in-component view buttons.
+- Whether `views` should be exposed in controls later via a multiselect-like control, or kept fixed to avoid invalid combinations.
+
+### What should be done in the future
+
+- Add the same palette control to context molecule stories and Widget IR stories.
+- Promote `palette` controls onto the existing stories rather than only adding dedicated `PaletteControls` variants.
+
+### Code review instructions
+
+- Start at `packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.stories.tsx`.
+- Review the `PaletteControlsArgs` type and `paletteControlStyleSets` map.
+- Validate with `pnpm --dir packages/rag-evaluation-site typecheck`.
+
+### Technical details
+
+Validation passed:
+
+- `pnpm typecheck` in `packages/rag-evaluation-site`
+
+## Step 8: Palette Controls Across Context Stories and Widget IR
+
+This step expanded the initial single-story controls approach across the Storybook surface. It added palette controls to context atoms, molecules, organisms, layout wrappers that embed context visuals, and Widget IR stories that render context diagrams or context-toned badges/swatches.
+
+### Prompt Context
+
+**User prompt (verbatim):** "make it for all stories with context molecules / organisms"
+
+**Assistant interpretation:** Add palette controls to every context-related molecule and organism Storybook story, not just `ContextDiagramPanel`.
+
+**Inferred user intent:** The user wants consistent palette exploration across the design-system surface so every context visualization can be tested under alternate palettes.
+
+**Commit (code):** 1392962d2367b48c19fd0042bf2b342547869246 — "Storybook: add palette controls across context stories"
+
+### What I did
+
+- Added `packages/rag-evaluation-site/src/context/storyPalettes.ts` as a shared Storybook helper module.
+- Exported `storyPalettes.ts` from `packages/rag-evaluation-site/src/context/index.ts`.
+- Defined:
+  - `ContextPaletteName`,
+  - `contextPaletteStyleSets`,
+  - `contextPaletteOptions`,
+  - `contextStyleSetForPalette(palette)`.
+- Added palette controls to context atoms:
+  - `AnnotationBadge.stories.tsx`,
+  - `ContextStyleSwatch.stories.tsx`.
+- Added palette controls to context molecules:
+  - `ContextBudgetBar.stories.tsx`,
+  - `ContextLegend.stories.tsx`,
+  - `ContextStackDiagram.stories.tsx`,
+  - `ContextStripDiagram.stories.tsx`,
+  - `ContextTreemap.stories.tsx`,
+  - `FigureBlock.stories.tsx`.
+- Added palette controls to context/layout/organism wrappers:
+  - `ContextDiagramPanel.stories.tsx`,
+  - `CourseSlidePanel.stories.tsx`,
+  - `CourseStudioShell.stories.tsx`,
+  - `SlideShell.stories.tsx`.
+- Added palette-controlled Widget IR stories:
+  - `WidgetRenderer.context-diagrams.stories.tsx`,
+  - `WidgetRenderer.foundation-atoms.stories.tsx`,
+  - `WidgetRenderer.layout-recipes.stories.tsx`,
+  - `WidgetRenderer.course-handout.stories.tsx`.
+- Updated Widget IR course/handout stories where context visuals previously relied on implicit/default style behavior, making explicit `styleSet` props visible in the IR examples.
+
+### Why
+
+The style-set hard cutover affects both direct React components and server-provided Widget IR. If only direct component stories can switch palettes, the Widget IR path can still regress unnoticed. The user explicitly called out molecules/organisms and then the IR renderer as part of the same UX requirement.
+
+### What worked
+
+- A shared palette helper avoided duplicating the same `Record<PaletteName, ContextStyleSet>` in every story file.
+- The same story-only `palette` arg pattern worked for direct React stories and Widget IR stories.
+- Storybook build remained successful after broadening controls coverage.
+
+### What didn't work
+
+- The first implementation mostly added separate `PaletteControls` stories, leaving many existing/full stories with fixed palettes.
+- Some Widget IR stories contained context-style props only indirectly through badges or nested slide visuals; these required additional helper functions to rebuild a `WidgetNode` tree from the selected palette.
+
+### What I learned
+
+- For Widget IR, palette switching must rebuild the serialized node tree because the palette is embedded in `props.styleSet` or `props.visualStyle`.
+- Storybook controls over deeply nested React nodes are much cleaner when the story exposes one small `palette` arg and regenerates the tree in `render`.
+
+### What was tricky to build
+
+- Distinguishing stories that use context palette data as primary subject matter from stories that only include a context badge incidentally.
+- Avoiding raw `styleSet` controls, which would expose a large nested JSON object that is hard to manipulate and easy to corrupt.
+- Keeping the Widget IR examples JSON-compatible while still passing full style objects as serializable props.
+
+### What warrants a second pair of eyes
+
+- Whether all incidentally context-toned stories should keep a palette control, or whether controls should be limited to stories whose title/subject is context visualization.
+- Whether `storyPalettes.ts` belongs in `src/context` long-term or should live under a Storybook-specific helpers directory.
+
+### What should be done in the future
+
+- Replace separate `PaletteControls` variants with full-story controls where the user wants the existing story names to support palette switching.
+- Add visual regression coverage for a few palette permutations.
+
+### Code review instructions
+
+- Start with `src/context/storyPalettes.ts` to understand the shared helper.
+- Then review one direct React story (`ContextBudgetBar.stories.tsx`) and one Widget IR story (`WidgetRenderer.context-diagrams.stories.tsx`) to compare the two control patterns.
+- Validate with `pnpm --dir packages/rag-evaluation-site typecheck` and `pnpm --dir packages/rag-evaluation-site build-storybook`.
+
+### Technical details
+
+Validation passed:
+
+- `pnpm typecheck` in `packages/rag-evaluation-site`
+- `pnpm build-storybook` in `packages/rag-evaluation-site`
+
+## Step 9: Promoting Palette Controls onto the Full Context Stories
+
+This step corrected the Storybook UX from “there is a separate controls story” to “the real stories have palette controls.” The user pointed out that stories such as `Widget IR / Renderer / Context Diagrams` and `Component Library / Molecules / ContextStackDiagram` should expose palette switching directly in their existing story variants.
+
+### Prompt Context
+
+**User prompt (verbatim):** "can't we add the palette control for say, Widget IR / Renderer / Context Diagrams in full? for and  
+ say Component Library / Molecules / ContextStackDiagram, etc..."
+
+**Assistant interpretation:** Move the palette control into the main/full stories themselves, especially Widget IR context diagrams and context diagram molecules, rather than limiting controls to separate `PaletteControls` stories.
+
+**Inferred user intent:** The user wants normal Storybook navigation to support palette switching on the stories they are already inspecting.
+
+**Commit (code):** f8ec7f5bfa700999f512941728594724080becd2 — "Storybook: promote palette controls to full context stories"
+
+### What I did
+
+- Updated `ContextBudgetBar.stories.tsx` so `BudgetStates`, `SelectedSegment`, and `SameBudgetDifferentPalettes` all respond to a `palette` control.
+- Updated `ContextStackDiagram.stories.tsx` so `GroupedContextWindow`, `SelectedLayer`, and `Comparison` all respond to a `palette` control.
+- Updated `ContextStripDiagram.stories.tsx` so `DenseSegments`, `SelectedSegment`, `LimitComparison`, and `InteractiveStyleSwitcher` all respond to a `palette` control.
+- Updated `ContextTreemap.stories.tsx` so `ProportionalTokens`, `SelectedTile`, and `Comparison` all respond to a `palette` control.
+- Updated `ContextDiagramPanel.stories.tsx` so existing stories such as `InteractiveViews`, `StartingViews`, `ContentBlocksWithPartDetails`, and `LegendDerivedFromSnapshotParts` use the selected palette.
+- Rewrote `WidgetRenderer.context-diagrams.stories.tsx` so the main Widget IR stories rebuild their `WidgetNode` trees from the selected palette:
+  - `ContextDiagramGallery`,
+  - `ContextDiagramPanelViews`,
+  - `ContextDiagramPanelContentDetails`,
+  - `ContextDiagramWithMetadataSidebar`,
+  - `OverBudgetContextWindow`.
+
+### Why
+
+A separate `PaletteControls` story is discoverable only if the user knows to open it. Putting the control on the existing/full stories makes palette switching part of the normal inspection workflow and avoids duplicate near-identical stories.
+
+### What worked
+
+- After typing adjustments, `pnpm typecheck` and `pnpm build-storybook` passed.
+- The same palette control now works on the requested `Widget IR / Renderer / Context Diagrams / ContextDiagramPanelViews` story.
+- Widget IR examples proved that server-provided style sets can be swapped by rebuilding the serialized IR tree.
+
+### What didn't work
+
+- The first refactor attempt typed story meta as `Meta<StoryArgs>` while also keeping `component: ContextStackDiagram` / `component: WidgetRenderer`. TypeScript inferred the component prop type and rejected the story-only `palette` arg.
+- Removing `component` from the typed meta was not sufficient by itself; `StoryObj<typeof meta>` still inferred `{}` in several files.
+- The fix was to type story aliases directly as `StoryObj<StoryArgs>` (or `StoryObj<PaletteControlsArgs>` for `ContextDiagramPanel`) so the render function sees `palette` and other story-only args.
+
+### What I learned
+
+- Storybook + TypeScript is sensitive to extra story args when `component` is present in `Meta`. For story-only args that deliberately do not exist on the React component, typing stories directly against a custom args type is more reliable.
+- A Storybook story can still document/render a component without setting `component` in the meta if the story requires a synthetic arg model.
+
+### What was tricky to build
+
+- Balancing Storybook docs/autodocs convenience against type-safe custom args. Keeping `component` gave better component metadata but broke story-only args; removing it plus direct `StoryObj<StoryArgs>` typing resolved the type errors.
+- Ensuring `selectedPartId`, `showLegend`, and `showLabels` remained useful controls while hiding large object props such as `snapshot` and raw `node`.
+
+### What warrants a second pair of eyes
+
+- Whether losing `component` metadata in these story files is acceptable for Storybook docs. If not, a custom wrapper component could be introduced solely for Storybook args.
+- Whether `CustomThreeLabelWidgetIR` should keep controls disabled or expose a separate custom label-set selector.
+
+### What should be done in the future
+
+- Consider a small Storybook wrapper utility that standardizes the `palette` control pattern and preserves component docs where possible.
+- Add a short Storybook note explaining that `palette` controls are story-only args mapped to `ContextStyleSet` props.
+
+### Code review instructions
+
+- Review the `StoryArgs`/`PaletteControlsArgs` types in the modified story files.
+- Pay special attention to `WidgetRenderer.context-diagrams.stories.tsx`, where `render` rebuilds Widget IR nodes from palette selection.
+- Validate with `pnpm --dir packages/rag-evaluation-site typecheck` and `pnpm --dir packages/rag-evaluation-site build-storybook`.
+
+### Technical details
+
+Validation passed:
+
+- `pnpm typecheck` in `packages/rag-evaluation-site`
+- `pnpm build-storybook` in `packages/rag-evaluation-site`
+
+## Step 10: Varied Legend Vocabulary and Legend Size in Storybook
+
+This step changed the Storybook examples from “same default 15-entry legend under different colors” to “different caller-defined vocabularies with smaller legend sets.” It specifically targeted the `Widget IR / Renderer / Context Diagrams / ContextDiagramPanelViews` story and the `ContextStackDiagram` molecule stories.
+
+### Prompt Context
+
+**User prompt (verbatim):** "be more varied in the naming and amount of legend entries in say, http://localhost:6007/?path=/story/widget-ir-renderer-context-diagrams--context-diagram-panel-views
+
+no need to always have 15 legend members, now that we can configure them."
+
+**Assistant interpretation:** Update the story data so configurable legends are demonstrated with different labels and different legend lengths, rather than always using the default full context-window style set.
+
+**Inferred user intent:** The user wants Storybook to prove that `ContextStyleSet.legend` is genuinely caller-defined and can be much smaller than the built-in context-window vocabulary.
+
+**Commit (code):** 4523db6551e17a87f9509cd803f1bdcddf2aa367 — "Storybook: vary context legend vocabularies"
+
+### What I did
+
+- Added compact style-set helpers inside `WidgetRenderer.context-diagrams.stories.tsx`:
+  - `fallbackVisualStyle`,
+  - `visual(base, key)`,
+  - `compactStyleSet(base, id, name, entries)`,
+  - `compactPanelExamples(base)`.
+- Reworked `ContextDiagramPanelViews` to render four different mini-vocabulary examples:
+  - 3 visible labels: `Brief`, `Evidence`, `Draft` with hidden `Headroom`.
+  - 4 visible labels: `Guardrails`, `Chat`, `Commands`, `Output` with hidden `Free`.
+  - 5 labels: `Spec`, `Source files`, `Test logs`, `Answer`, `Spare room`.
+  - 6 labels: `Keep verbatim`, `Summarize`, `Archive refs`, `Drop noise`, `New turn`, `Room after trim`.
+- Ensured each example uses a different `initialView` (`strip`, `budget`, `stack`, `treemap`) and its own `ContextWindowSnapshot` with matching `styleKey` values.
+- Reworked `ContextStackDiagram.stories.tsx` to show compact caller-defined vocabularies instead of default context kinds:
+  - `Triage lanes`: `Must read`, `Reference`, `Noise`, with hidden `Room`.
+  - `Turn timeline`: `Setup`, `Question`, `Work`, `Result`, `Reply`, `Unused`.
+- Added visible `ContextLegend` instances to the stack diagram stories so the reduced legend sizes are obvious.
+
+### Why
+
+The hard cutover was not just about colors. It was about replacing baked-in context kinds with caller-provided `styleKey` and `ContextStyleSet`. Storybook needed to show smaller, domain-specific legends to make that capability obvious.
+
+### What worked
+
+- The same palette dropdown still changes the underlying colors/patterns while the legend vocabulary remains product/domain-specific.
+- Hidden legend entries work as intended: snapshots can include style keys like `free` or `room`, while those entries do not have to appear in the visible legend.
+- `ContextDiagramPanelViews` now demonstrates multiple legend sizes in a single Storybook view.
+
+### What didn't work
+
+- The first generation of controls made palette switching visible, but still used the full default legend almost everywhere. That visually implied the legend vocabulary was still fixed, even though the code was configurable.
+- The story helper logic became longer because each compact example needs both a matching `styleSet` and matching `snapshot.parts[].styleKey` values.
+
+### What I learned
+
+- A good Storybook example for a configurable API should vary the shape of the data, not just the color values.
+- Keeping palette and vocabulary separate is important: palette controls change color/pattern tones, while the story-specific style sets define the legend semantics.
+
+### What was tricky to build
+
+- Avoiding a mismatch between compact style-set keys and snapshot part `styleKey` values. Every mini snapshot needed to be authored as a coherent pair with its style set.
+- Reusing visual styles from the selected base palette while replacing the legend vocabulary. The helper maps compact keys such as `brief` or `mustRead` to visual sources like `system`, `result`, or `active`.
+
+### What warrants a second pair of eyes
+
+- Whether the specific mini vocabularies are the best examples for the product audience.
+- Whether helper logic should move from the story file into a reusable `storyPalettes` utility if more stories need compact vocabularies.
+
+### What should be done in the future
+
+- Add one Goja DSL example that emits a compact style set with hidden free-space entries.
+- Consider snapshot/story tests that assert legends do not always include the default 15 entries.
+
+### Code review instructions
+
+- Start at `WidgetRenderer.context-diagrams.stories.tsx` and inspect `compactPanelExamples`.
+- Then review `ContextStackDiagram.stories.tsx` for the triage/timeline vocabularies.
+- Validate with `pnpm --dir packages/rag-evaluation-site typecheck` and `pnpm --dir packages/rag-evaluation-site build-storybook`.
+
+### Technical details
+
+Validation passed:
+
+- `pnpm typecheck` in `packages/rag-evaluation-site`
+- `pnpm build-storybook` in `packages/rag-evaluation-site`
+
+## Step 11: Transcript Palette/Halftone Support — Work in Progress
+
+This step began extending the context palette and halftone system from diagrams into transcript widgets. The screenshot showed transcript message cards, role labels, note chips, note cards, and a notes rail that still looked mostly neutral/static compared with the newly configurable context diagrams.
+
+### Prompt Context
+
+**User prompt (verbatim):** "add palette support / halftoning / tones for the transcript widgets too: /tmp/pi-clipboard-9007faaa-1c13-42f3-9332-5b4453ff691d.png"
+
+**Assistant interpretation:** Extend `ContextStyleSet`-driven visual styling to transcript-related widgets and use the screenshot as a target for which areas need tone/halftone treatment.
+
+**Inferred user intent:** The user wants transcript UI elements to share the same palette-controlled visual language as context diagrams, including role tones, halftone textures, note tones, and Storybook/Widget IR configurability.
+
+**Commit (code):** pending — transcript palette/halftone support is currently uncommitted and mid-edit
+
+### What I did
+
+- Used `ask_questions_about_images` on `/tmp/pi-clipboard-9007faaa-1c13-42f3-9332-5b4453ff691d.png` to identify visible transcript widgets and styling targets.
+- The image analysis identified:
+  - `TranscriptWorkspacePanel`,
+  - `TranscriptReaderPanel`,
+  - `TranscriptMessageCard`,
+  - `AnnotationRailPanel`,
+  - `AnnotationNoteCard`,
+  - transcript/session header chrome,
+  - inline note chips,
+  - role glyphs/labels,
+  - tool/code output blocks.
+- Inspected transcript source files:
+  - `TranscriptMessageCard.tsx`,
+  - `TranscriptMessageCard.module.css`,
+  - `TranscriptReaderPanel.tsx`,
+  - `TranscriptWorkspacePanel.tsx`,
+  - `AnnotationRailPanel.tsx`,
+  - `AnnotationRailPanel.module.css`,
+  - `AnnotationNoteCard.tsx`,
+  - `AnnotationNoteCard.module.css`,
+  - `TranscriptSessionHeader.tsx`,
+  - `widgets/ir.ts`,
+  - transcript widget adapters in `*.widget.tsx`.
+- Added `transcriptStyleSet(...)` to `packages/rag-evaluation-site/src/context/styles.ts` with transcript-oriented entries:
+  - `system`,
+  - `developer`,
+  - `user`,
+  - `assistant`,
+  - `tool`,
+  - `result`,
+  - `note`,
+  - `header`,
+  - `rail`,
+  - `code`,
+  - `other`.
+- Added transcript palette fixtures in `packages/rag-evaluation-site/src/context/fixtures.ts`:
+  - `transcriptDefaultStyleSet`,
+  - `transcriptSignalOrangeStyleSet`,
+  - `transcriptSlateCoralStyleSet`,
+  - `transcriptCobaltSandStyleSet`.
+- Extended `packages/rag-evaluation-site/src/context/storyPalettes.ts` with:
+  - `transcriptPaletteStyleSets`,
+  - `transcriptStyleSetForPalette(palette)`.
+- Began modifying `TranscriptMessageCard.tsx`:
+  - added optional `styleSet?: ContextStyleSet`,
+  - defaulted it to `transcriptDefaultStyleSet`,
+  - resolved role style by transcript role (`user`, `assistant`, `tool`, etc.),
+  - applied `contextVisualStyleToCssVars(...)`,
+  - styled note chips with annotation style keys,
+  - added code/tool-output CSS variables.
+- Rewrote `TranscriptMessageCard.module.css` to support CSS variable-driven tones and halftone pattern classes:
+  - `.pattern_none`,
+  - `.pattern_solid`,
+  - `.pattern_checker`,
+  - `.pattern_diagonal`,
+  - `.pattern_diagonalDense`,
+  - `.pattern_stipple`,
+  - `.pattern_cross`,
+  - `.pattern_overflow`.
+
+### Why
+
+The diagrams now use palette-controlled halftone styles, but transcript widgets still used fixed role colors and neutral panels. This creates a split visual language. Transcript messages and notes are part of the same context-window product surface, so they should accept the same palette/tone infrastructure.
+
+### What worked
+
+- `ContextStyleSet` is general enough to represent transcript role tones as well as diagram segment styles.
+- `contextVisualStyleToCssVars(...)` and `resolveContextVisualStyle(...)` can be reused directly by transcript components.
+- Tool output blocks can use separate `code` tone variables while the outer message card uses the role tone.
+
+### What didn't work
+
+- I initially answered the screenshot question by using the image-analysis tool, not the `read` tool. The user then asked: `did you lok at the image with the read tool?`
+- The transcript implementation is not complete yet. At the time of this diary backfill, these files are modified and uncommitted:
+  - `packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx`,
+  - `packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.module.css`,
+  - `packages/rag-evaluation-site/src/context/styles.ts`,
+  - `packages/rag-evaluation-site/src/context/fixtures.ts`,
+  - `packages/rag-evaluation-site/src/context/storyPalettes.ts`.
+- `TranscriptReaderPanel`, `TranscriptWorkspacePanel`, `AnnotationRailPanel`, widget prop types, widget adapters, and Storybook stories still need to be finished and validated.
+
+### What I learned
+
+- Transcript styling has more surfaces than diagram styling: role card, title bar, role glyph, token chip, note chip, body, code/tool output block, selected state, rail chrome, and note card all need consistent treatment.
+- Annotation DTOs already have `styleKey`, which can be used for note chips and note cards without inventing a second annotation tone system.
+- Role styling should use transcript-specific style keys (`user`, `assistant`, `tool`, `system`, etc.) rather than diagram defaults like `conversation` or `result` alone.
+
+### What was tricky to build
+
+- The screenshot showed several nested components that visually belong together but are implemented in different files. Passing `styleSet` through the component tree needs to be done deliberately:
+  - `TranscriptWorkspacePanel` should pass it to `TranscriptReaderPanel` and `AnnotationRailPanel`.
+  - `TranscriptReaderPanel` should pass it to `TranscriptSessionHeader` and each `TranscriptMessageCard`.
+  - `AnnotationRailPanel` should pass it to each `AnnotationNoteCard`.
+  - Widget IR prop types and adapters need to expose the same optional `styleSet` prop.
+- `kind` still exists legitimately in unrelated Widget IR action specs and annotation/message role data, so transcript styling must not repeat the earlier context-part hard cutover mistake of over-broad replacements.
+
+### What warrants a second pair of eyes
+
+- Whether transcript role styles should be part of `ContextStyleSet` or a separate `TranscriptStyleSet` type. Reusing `ContextStyleSet` is pragmatic and keeps palettes unified, but the naming is diagram-originated.
+- Whether selected/focused states should use the role's `line` color or a distinct global focus color.
+- Whether code/tool-output halftoning is visually too busy for long logs.
+
+### What should be done in the future
+
+- Finish threading `styleSet` through transcript panels, annotation rail, note cards, and widget adapters.
+- Add Storybook palette controls for transcript component and Widget IR stories.
+- Run `pnpm typecheck` and `pnpm build-storybook`.
+- Optionally use the `read` tool on the screenshot path if the user wants the image handled directly by the file reader, not just the VLM image-analysis tool.
+
+### Code review instructions
+
+- Start with `context/styles.ts` and inspect `transcriptStyleSet(...)`.
+- Then review `TranscriptMessageCard.tsx` and `TranscriptMessageCard.module.css` for how role tones and halftone classes are applied.
+- Continue with the still-needed pass-through work in `TranscriptReaderPanel`, `TranscriptWorkspacePanel`, `AnnotationRailPanel`, and widget adapters once implemented.
+- Validate with `pnpm --dir packages/rag-evaluation-site typecheck` and `pnpm --dir packages/rag-evaluation-site build-storybook` after finishing the WIP.
+
+### Technical details
+
+Current WIP status at diary backfill time:
+
+```text
+ M packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.module.css
+ M packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.tsx
+ M packages/rag-evaluation-site/src/context/fixtures.ts
+ M packages/rag-evaluation-site/src/context/storyPalettes.ts
+ M packages/rag-evaluation-site/src/context/styles.ts
+```
