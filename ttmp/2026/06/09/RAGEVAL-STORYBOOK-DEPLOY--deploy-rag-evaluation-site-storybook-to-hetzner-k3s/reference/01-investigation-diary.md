@@ -16,7 +16,7 @@ RelatedFiles:
       Note: Primary design guide produced in this investigation
 ExternalSources: []
 Summary: Chronological diary for the rag-evaluation-site Storybook deployment design work.
-LastUpdated: 2026-06-09T20:59:15-04:00
+LastUpdated: 2026-06-09T23:33:30-04:00
 WhatFor: Use this to understand how the deployment guide was researched, what evidence was inspected, and what remains to implement.
 WhenToUse: Before continuing implementation of the Storybook deployment ticket.
 ---
@@ -650,3 +650,144 @@ The upload replaced the previous bundle with the updated implementation-aware ve
 ### Technical details
 - reMarkable path: `/ai/2026/06/09/RAGEVAL-STORYBOOK-DEPLOY`
 - Uploaded file name: `RAGEVAL-STORYBOOK-DEPLOY Guide.pdf`
+
+
+## Step 9: Deploy web app Storybook under the wildcard Storybook domain
+
+I deployed the `web/` workspace Storybook as `rag-evaluation-page.storybook.yolo.scapegoat.dev` and generalized static-sites hosting so future Storybook bundles can live under `*.storybook.yolo.scapegoat.dev`. This step completed the full cross-repo path: source packaging, GHCR image publication, wildcard DNS, wildcard DNS-01 TLS, K3s GitOps, Vault image-pull wiring, Argo rollout, and HTTPS smoke testing.
+
+The final live result is `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/`, served by the shared `static-sites-host` Caddy deployment from `/srv/sites/rag-evaluation-page.storybook.yolo.scapegoat.dev/current` and backed by the image `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-2670bc8`.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Deploy the `2026-05-27--rag-evaluation-system/web/package.json` Storybook as `rag-evaluation-page.storybook.yolo.scapegoat.dev`, keep a diary, and commit at appropriate intervals."
+
+**Assistant interpretation:** Build and deploy the app-level `web` Storybook, not only the package Storybook, using the static-sites K3s platform and recording the implementation journey.
+
+**Inferred user intent:** Make the page/application Storybook publicly available under a reusable wildcard Storybook hosting pattern and preserve the runbook details for future deployments.
+
+**Commit (code):** `97790b14122a053a9d6bd812a0c2bdd526b18d83` — PR #6 squash merge, "Package RAG Evaluation web Storybook as static artifact".
+
+### What I did
+- Created clean worktrees for source, K3s, and Terraform changes:
+  - `/tmp/rag-web-storybook-source`
+  - `/tmp/storybook-wildcard-k3s`
+  - `/tmp/storybook-dns-tf`
+- Fixed stale `web/` page Storybook usage against the current `@go-go-golems/rag-evaluation-site` API:
+  - `web/src/components/pages/DslPreviewPage/DslPreviewPage.tsx`
+  - `web/src/components/pages/TranscriptAnnotationPage/TranscriptAnnotationPage.tsx`
+  - `web/src/components/pages/ContextVisualizerPage/ContextVisualizerPage.tsx`
+  - `web/src/components/pages/ContextVisualizerPage/ContextVisualizerPage.module.css`
+- Added `Dockerfile.web-storybook-static` and ignored `web/storybook-static/`.
+- Validated source packaging with:
+  - `pnpm --dir web typecheck`
+  - `pnpm --dir web build-storybook`
+  - `docker build -f Dockerfile.web-storybook-static -t rag-evaluation-page-storybook:test .`
+  - `docker run --rm rag-evaluation-page-storybook:test sh -c 'test -f /site/index.html && find /site -maxdepth 2 -type f | sort | head -20'`
+- Pushed the first image manually:
+  - `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-2670bc8`
+- Added Terraform DNS in `/tmp/storybook-dns-tf/dns/zones/scapegoat-dev/envs/prod/main.tf`:
+  - `*.storybook.yolo.scapegoat.dev` -> `91.98.46.169`
+- Added K3s wildcard Storybook hosting in `/tmp/storybook-wildcard-k3s`:
+  - `gitops/kustomize/static-sites-host/storybook-wildcard-certificate.yaml`
+  - `gitops/kustomize/static-sites-host/storybook-wildcard-ingress.yaml`
+  - `gitops/kustomize/rag-evaluation-page-storybook/*`
+  - `gitops/applications/rag-evaluation-page-storybook.yaml`
+  - `vault/policies/kubernetes/rag-evaluation-page-storybook.hcl`
+  - `vault/roles/kubernetes/rag-evaluation-page-storybook.json`
+- Opened and merged PRs:
+  - Source PR #6: `https://github.com/go-go-golems/rag-evaluation-system/pull/6`
+  - K3s PR #111: `https://github.com/wesen/2026-03-27--hetzner-k3s/pull/111`
+  - Terraform PR #5: `https://github.com/wesen/terraform/pull/5`
+- Applied Terraform after merge:
+  - `terraform -chdir=dns/zones/scapegoat-dev/envs/prod plan -out=/tmp/storybook-yolo-dns.tfplan`
+  - `terraform -chdir=dns/zones/scapegoat-dev/envs/prod apply -auto-approve /tmp/storybook-yolo-dns.tfplan`
+- Bootstrapped Vault Kubernetes access:
+  - `vault policy write rag-evaluation-page-storybook vault/policies/kubernetes/rag-evaluation-page-storybook.hcl`
+  - `vault write auth/kubernetes/role/rag-evaluation-page-storybook @vault/roles/kubernetes/rag-evaluation-page-storybook.json`
+- Seeded the image-pull secret by copying the existing Storybook GHCR pull secret data into:
+  - `kv/apps/rag-evaluation-page-storybook/prod/image-pull`
+- Applied/refreshed Argo resources and waited for rollout:
+  - `kubectl apply -f /tmp/storybook-wildcard-k3s/gitops/applications/rag-evaluation-page-storybook.yaml`
+  - `kubectl -n argocd annotate applications.argoproj.io static-sites-host argocd.argoproj.io/refresh=hard --overwrite`
+  - `kubectl -n argocd annotate applications.argoproj.io rag-evaluation-page-storybook argocd.argoproj.io/refresh=hard --overwrite`
+- Smoke tested the live site:
+  - `dig +short rag-evaluation-page.storybook.yolo.scapegoat.dev A` returned `91.98.46.169`
+  - `curl -fsSI https://rag-evaluation-page.storybook.yolo.scapegoat.dev/` returned `HTTP/2 200`
+  - `curl -fsS https://rag-evaluation-page.storybook.yolo.scapegoat.dev/index.html | grep -o '<title>[^<]*'` returned `<title>storybook - Storybook`
+
+### Why
+- The user asked for the `web/package.json` Storybook specifically, so this deployment needed to target `pnpm --dir web build-storybook` rather than `packages/rag-evaluation-site`.
+- A wildcard Storybook domain avoids one-off DNS/TLS work for every future Storybook deployment.
+- Keeping one shared `static-sites-host` preserves the existing static artifact contract: image contains `/site`, publisher Job copies `/site` into the hostname-specific release directory, Caddy serves by `{host}`.
+
+### What worked
+- Source CI checks passed on PR #6: test, lint, CodeQL, dependency review, Go vulnerability check, GoSec, and TruffleHog.
+- Local Storybook build and Docker packaging passed after the stale page API fixes.
+- Terraform applied exactly one new DNS record: `wildcard_storybook_yolo_a`.
+- cert-manager issued `storybook-yolo-wildcard-tls` using DNS-01.
+- Argo reported both applications healthy at revision `1b0408eabac766d48f65324d582d03a9329eda5b`:
+  - `static-sites-host`: `Synced Healthy`
+  - `rag-evaluation-page-storybook`: `Synced Healthy`
+- The publisher Job completed and wrote the Storybook files under the expected host directory.
+- HTTPS smoke test returned `HTTP/2 200`.
+
+### What didn't work
+- The first `pnpm --dir web typecheck` failed because several `web/` page components still used stale APIs from `@go-go-golems/rag-evaluation-site`.
+- The first `pnpm --dir web build-storybook` failed because `contextTranscriptFixture` is no longer exported. The current fixture is `transcriptFixture`.
+- My first Terraform apply attempt failed because a Python parser assumed the old `doctl` config shape and exported an invalid DigitalOcean token:
+  - error: `Error retrieving domain: GET https://api.digitalocean.com/v2/domains/scapegoat.dev: 401 ... Unable to authenticate you`
+  - fix: use `DIGITALOCEAN_TOKEN=$(doctl auth token)`.
+- `gh pr merge` printed local worktree checkout errors because the target `main` branch was already checked out by other worktrees, but the remote PR merges succeeded.
+- Two PR descriptions lost backtick-wrapped values because the shell interpreted them as command substitutions. The commits and manifests were unaffected.
+- The first Argo rollout got stuck in `ImagePullBackOff` because the Vault path `kv/apps/rag-evaluation-page-storybook/prod/image-pull` did not exist yet:
+  - VSO error: `empty response from Vault, path="kv/data/apps/rag-evaluation-page-storybook/prod/image-pull"`
+  - pod error: `Unable to retrieve some image pull secrets (rag-evaluation-page-storybook-ghcr-pull)`
+  - fix: copy the existing GHCR pull secret data from `kv/apps/rag-evaluation-storybook/prod/image-pull`, wait for `VaultStaticSecret` to become ready, then delete the failed Job pod so the Job retried.
+
+### What I learned
+- The `web/` Storybook is a good integration test for the package API: it caught fixture and component prop drift that package-level stories did not catch.
+- Wildcard Storybook hosting only needs three platform-level pieces once: wildcard DNS, wildcard DNS-01 certificate, and wildcard ingress into the shared static host.
+- Vault secret seeding remains an operator step unless a source workflow or bootstrap script explicitly creates the per-site image-pull path.
+- Argo can be made to pick up a merged static-sites-host revision by hard-refreshing the existing application; a new app can be created directly with `kubectl apply -f gitops/applications/...` if the app-of-apps has not discovered it yet.
+
+### What was tricky to build
+- The hardest part was separating the reusable wildcard platform change from the one concrete `rag-evaluation-page` publisher. The wildcard ingress and certificate belong to `static-sites-host`; the release-specific image, Vault auth, Vault static secret, and publisher Job belong to `rag-evaluation-page-storybook`.
+- The image-pull failure was subtle because the Vault policy and Kubernetes auth role were correct, but the underlying secret path did not exist. VSO surfaced this as an `empty response from Vault`, while kubelet surfaced only a missing image pull secret and then a GHCR authorization failure.
+- The Storybook page fixes required mapping old app code to current package exports rather than adding compatibility shims. I updated the app pages to current props/fixtures instead of changing the package API.
+
+### What warrants a second pair of eyes
+- Review whether each future `*.storybook.yolo.scapegoat.dev` app should get its own Vault path or whether a shared static-sites GHCR pull secret is acceptable.
+- Review whether `storybook-yolo-wildcard-tls` should include the apex `storybook.yolo.scapegoat.dev` as a DNS name; the current certificate intentionally covers only `*.storybook.yolo.scapegoat.dev` because the deployed target is a subdomain.
+- Review whether the manually created Argo Application should also be added to any app-of-apps index if one exists beyond `gitops/applications/` discovery.
+
+### What should be done in the future
+- Add a reusable source workflow for `web` Storybook releases so future updates do not require manual Docker build/push.
+- Consider adding a small operator script that creates/copies per-site image-pull Vault paths for static Storybook publishers.
+- Consider documenting `*.storybook.yolo.scapegoat.dev` as a platform convention in the static-site playbook.
+
+### Code review instructions
+- Source review starts with PR #6 and these files:
+  - `/tmp/rag-web-storybook-source/Dockerfile.web-storybook-static`
+  - `/tmp/rag-web-storybook-source/web/src/components/pages/DslPreviewPage/DslPreviewPage.tsx`
+  - `/tmp/rag-web-storybook-source/web/src/components/pages/TranscriptAnnotationPage/TranscriptAnnotationPage.tsx`
+  - `/tmp/rag-web-storybook-source/web/src/components/pages/ContextVisualizerPage/ContextVisualizerPage.tsx`
+- Platform review starts with PR #111 and these files:
+  - `/tmp/storybook-wildcard-k3s/gitops/kustomize/static-sites-host/storybook-wildcard-certificate.yaml`
+  - `/tmp/storybook-wildcard-k3s/gitops/kustomize/static-sites-host/storybook-wildcard-ingress.yaml`
+  - `/tmp/storybook-wildcard-k3s/gitops/kustomize/rag-evaluation-page-storybook/publish-job.yaml`
+- DNS review starts with PR #5 and:
+  - `/tmp/storybook-dns-tf/dns/zones/scapegoat-dev/envs/prod/main.tf`
+- Validate live state with:
+  - `kubectl -n argocd get applications.argoproj.io static-sites-host rag-evaluation-page-storybook -o wide`
+  - `kubectl -n static-sites get ingress,certificate,job,pod,secret | rg 'storybook|NAME'`
+  - `curl -fsSI https://rag-evaluation-page.storybook.yolo.scapegoat.dev/`
+
+### Technical details
+- Live URL: `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/`
+- Image: `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-2670bc8`
+- DNS record: `*.storybook.yolo.scapegoat.dev A 91.98.46.169`
+- Wildcard certificate: `static-sites/storybook-yolo-wildcard-tls`
+- Wildcard ingress: `static-sites/storybook-yolo-wildcard`
+- Publisher Job: `static-sites/publish-rag-evaluation-page-storybook-sha-2670bc8`
+- Argo revision: `1b0408eabac766d48f65324d582d03a9329eda5b`

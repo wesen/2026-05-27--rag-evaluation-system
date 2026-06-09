@@ -35,3 +35,14 @@ Implemented Storybook static artifact packaging, source CI/GitOps handoff, K3s s
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/Dockerfile.storybook-static — Source packaging implementation
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/09/RAGEVAL-STORYBOOK-DEPLOY--deploy-rag-evaluation-site-storybook-to-hetzner-k3s/reference/01-investigation-diary.md — Playbook-quality implementation diary
 
+
+## 2026-06-09
+
+Deployed web Storybook at https://rag-evaluation-page.storybook.yolo.scapegoat.dev/ with wildcard Storybook DNS/TLS and recorded rollout diary.
+
+### Related Files
+
+- /tmp/rag-web-storybook-source/Dockerfile.web-storybook-static — Packages the web Storybook static output as /site
+- /tmp/storybook-dns-tf/dns/zones/scapegoat-dev/envs/prod/main.tf — Adds wildcard Storybook DNS record
+- /tmp/storybook-wildcard-k3s/gitops/kustomize/static-sites-host/storybook-wildcard-ingress.yaml — Adds wildcard Storybook routing to static-sites-host
+
