@@ -35,10 +35,10 @@
 
 ## Phase 4 — K3s Vault policy and role manifests
 
-- [ ] Add Kubernetes Vault policy and role for the Storybook image-pull secret
-- [ ] Add GitHub Actions Vault policy and role for the source workflow GitOps PR token
-- [ ] Validate generated files for placeholder-free secret paths and expected role names
-- [ ] Record Phase 4 diary entry and commit focused K3s Vault wiring changes
+- [x] Add Kubernetes Vault policy and role for the Storybook image-pull secret
+- [x] Add GitHub Actions Vault policy and role for the source workflow GitOps PR token
+- [x] Validate generated files for placeholder-free secret paths and expected role names
+- [x] Record Phase 4 diary entry and commit focused K3s Vault wiring changes
 
 ## Phase 5 — Documentation, validation, and reMarkable update
 
