@@ -9,12 +9,12 @@
 
 ## Phase 1 — Source repository static artifact contract
 
-- [ ] Add `Dockerfile.storybook-static` that packages `packages/rag-evaluation-site/storybook-static/` as `/site`
-- [ ] Add `.dockerignore` tuned for the Storybook static artifact build context
-- [ ] Update `.gitignore` so generated package Storybook output is not accidentally committed
-- [ ] Validate package-local typecheck and Storybook build
-- [ ] Validate local Docker artifact image contains `/site/index.html`
-- [ ] Record Phase 1 diary entry and commit focused source artifact changes
+- [x] Add `Dockerfile.storybook-static` that packages `packages/rag-evaluation-site/storybook-static/` as `/site`
+- [x] Add `.dockerignore` tuned for the Storybook static artifact build context
+- [x] Update `.gitignore` so generated package Storybook output is not accidentally committed
+- [x] Validate package-local typecheck and Storybook build
+- [x] Validate local Docker artifact image contains `/site/index.html`
+- [x] Record Phase 1 diary entry and commit focused source artifact changes
 
 ## Phase 2 — Source repository CI and GitOps handoff
 
