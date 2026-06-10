@@ -35,7 +35,7 @@ export function ContextStripDiagram({ snapshot, styleSet, selectedPartId, showLa
               key={part.id}
               className={[styles.segment, patternClass(visualStyle.pattern), selected ? styles.selected : ''].filter(Boolean).join(' ')}
               style={{ width: `${width}%`, ...contextVisualStyleToCssVars(visualStyle) }}
-              title={`${part.label}: ${formatTokens(part.tokens)} (${styleName(styleSet, part.styleKey)})`}
+              data-tooltip={`${part.label}: ${formatTokens(part.tokens)} (${styleName(styleSet, part.styleKey)})${part.note ? `\n${part.note}` : ''}`}
               role={interactive ? 'button' : undefined}
               tabIndex={interactive ? 0 : undefined}
               aria-pressed={interactive ? selected : undefined}

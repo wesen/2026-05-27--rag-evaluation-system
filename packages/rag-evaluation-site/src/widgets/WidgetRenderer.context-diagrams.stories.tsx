@@ -36,6 +36,28 @@ const contentSnapshot: ContextWindowSnapshot = {
   ],
 };
 const overBudgetSnapshot: ContextWindowSnapshot = { ...contextWindowSnapshots[1]!, id: 'over-budget-widget-ir', title: 'Over budget context window', limit: 12_000 };
+const groupedSessionSnapshot: ContextWindowSnapshot = {
+  ...contentSnapshot,
+  id: 'widget-ir-grouped-session',
+  title: 'Uploaded session context by turn',
+  selectedPartId: 'tool-result',
+  parts: contentSnapshot.parts.map((part) => ({
+    ...part,
+    metadata: { ...(part.metadata ?? {}), turnIndex: part.id === 'system' || part.id === 'free' ? 'global' : part.id === 'user-turn' ? 4 : part.id === 'answer' ? 6 : 5 },
+  })),
+};
+const turnPagerSnapshots: ContextWindowSnapshot[] = [4, 5, 6].map((turn) => ({
+  ...groupedSessionSnapshot,
+  id: `widget-ir-turn-${turn}`,
+  title: `Turn ${turn} context window`,
+  subtitle: turn === 4 ? 'User request enters the window.' : turn === 5 ? 'Tool call/result dominate the working set.' : 'Assistant answer becomes active.',
+  selectedPartId: turn === 4 ? 'user-turn' : turn === 5 ? 'tool-result' : 'answer',
+  metadata: { turnIndex: turn },
+  parts: groupedSessionSnapshot.parts.map((part) => ({
+    ...part,
+    tokens: part.id === 'free' ? Math.max(2000, part.tokens - turn * 320) : Math.max(1, part.tokens + (part.metadata?.turnIndex === turn ? 260 : 0)),
+  })),
+}));
 const threeLabelStyleSet = contextThreeLabelStyleSets[0]!;
 const threeLabelSnapshot: ContextWindowSnapshot = {
   id: 'widget-ir-three-label',
@@ -222,6 +244,15 @@ export const ContextDiagramPanelViews: Story = {
 
 export const ContextDiagramPanelContentDetails: Story = {
   render: ({ palette, registry }) => renderNode(component('ContextDiagramPanel', { snapshot: contentSnapshot, styleSet: contextStyleSetForPalette(palette), initialView: 'stack', views: ['stack', 'strip', 'budget'], showPartDetails: true }), registry),
+};
+
+export const ContextGroupedStripByTurn: Story = {
+  render: ({ palette, registry }) => renderNode(component('ContextGroupedStripDiagram', { snapshot: groupedSessionSnapshot, styleSet: contextStyleSetForPalette(palette), groupBy: 'turn', showGroupLabels: true, showPartLabels: true }), registry),
+};
+
+export const ContextTurnPagerPanelStory: Story = {
+  name: 'ContextTurnPagerPanel',
+  render: ({ palette, registry }) => renderNode(component('ContextTurnPagerPanel', { snapshots: turnPagerSnapshots, styleSet: contextStyleSetForPalette(palette), initialSnapshotId: 'widget-ir-turn-5', title: 'Uploaded session turn pager', diagram: 'grouped-strip', groupBy: 'turn', showLegend: true }), registry),
 };
 
 export const CustomThreeLabelWidgetIR: Story = {

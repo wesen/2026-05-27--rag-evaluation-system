@@ -1,0 +1,7 @@
+type: ContextTurnPagerPanel
+category: organism
+props: ContextTurnPagerPanelWidgetProps
+entry:
+  path: ./ContextTurnPagerPanel.widget.tsx
+  export: contextTurnPagerPanelWidget
+reactComponent: ContextTurnPagerPanel
