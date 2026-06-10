@@ -38,6 +38,12 @@ function tableCells(line: string) {
   return line.split('|').slice(1, -1).map((cell) => cell.trim());
 }
 
+function parseImageMarkdown(value: string) {
+  const match = value.trim().match(/^!\[([^\]]*)\]\((\S+?)(?:\s+"([^"]*)")?\)$/);
+  if (!match) return null;
+  return { alt: match[1] ?? '', src: match[2] ?? '', title: match[3] };
+}
+
 export function MarkdownArticle({ source, className, ...rest }: MarkdownArticleProps) {
   const lines = source.replace(/\r\n/g, '\n').split('\n');
   const nodes: ReactNode[] = [];
@@ -72,6 +78,18 @@ export function MarkdownArticle({ source, className, ...rest }: MarkdownArticleP
 
     if (trimmed === '---' || trimmed === '***') {
       nodes.push(<hr key={key++} className={styles.hr} />);
+      i += 1;
+      continue;
+    }
+
+    const image = parseImageMarkdown(trimmed);
+    if (image) {
+      nodes.push(
+        <figure key={key++} className={styles.figure} data-rag-article-block="image">
+          <img className={styles.image} src={image.src} alt={image.alt} title={image.title} loading="lazy" />
+          {(image.title || image.alt) && <figcaption className={styles.figcaption}>{image.title || image.alt}</figcaption>}
+        </figure>,
+      );
       i += 1;
       continue;
     }
@@ -168,7 +186,7 @@ export function MarkdownArticle({ source, className, ...rest }: MarkdownArticleP
     while (i < lines.length) {
       const current = lines[i] ?? '';
       const currentTrimmed = current.trim();
-      if (!currentTrimmed || /^(#{1,3}\s|>|```|---|\*\*\*|\||\s*-\s+|\s*\d+\.\s+)/.test(currentTrimmed)) break;
+      if (!currentTrimmed || /^(#{1,3}\s|>|```|---|\*\*\*|\||!\[[^\]]*\]\(|\s*-\s+|\s*\d+\.\s+)/.test(currentTrimmed)) break;
       paragraph.push(currentTrimmed);
       i += 1;
     }

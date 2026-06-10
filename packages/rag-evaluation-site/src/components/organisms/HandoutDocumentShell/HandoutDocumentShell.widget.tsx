@@ -20,6 +20,7 @@ export const handoutDocumentShellWidget = defineWidget<HandoutDocumentShellWidge
       onDownloadAll={props.onDownloadAllAction
         ? () => ctx.dispatchAction(props.onDownloadAllAction!, { componentType: 'HandoutDocumentShell' })
         : undefined}
+      styleSet={props.styleSet}
       title={ctx.renderValue(props.title)}
       emptyMessage={ctx.renderValue(props.emptyMessage)}
     />

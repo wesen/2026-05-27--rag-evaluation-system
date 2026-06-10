@@ -142,3 +142,38 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.figure {
+  margin: 14px 0;
+  padding: 10px;
+  border: 1px solid var(--mac-border-subtle);
+  background: var(--mac-surface-2);
+}
+
+.image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border: 1px solid var(--mac-border-subtle);
+  background: var(--mac-surface);
+}
+
+.figcaption {
+  margin-top: 7px;
+  color: var(--mac-text-dim);
+  font: var(--rag-font-role-caption);
+  text-align: center;
+}
+
+@media print {
+  .figure {
+    break-inside: avoid;
+    background: transparent;
+  }
+
+  .image {
+    max-height: 45vh;
+    object-fit: contain;
+  }
+}

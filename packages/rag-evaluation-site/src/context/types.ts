@@ -157,6 +157,30 @@ export interface ContextSlide {
   notes: string[];
 }
 
+export interface ArticleMarkdownBlock {
+  kind: 'markdown';
+  id: string;
+  source: string;
+}
+
+export interface ArticleContextWindowBlock {
+  kind: 'context-window';
+  id: string;
+  snapshot: ContextWindowSnapshot;
+  view?: ContextDiagramView;
+  caption?: string;
+}
+
+export interface ArticleImageBlock {
+  kind: 'image';
+  id: string;
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+export type ArticleBlock = ArticleMarkdownBlock | ArticleContextWindowBlock | ArticleImageBlock;
+
 export interface ContextHandoutDocument {
   id: string;
   title: string;
@@ -165,6 +189,9 @@ export interface ContextHandoutDocument {
   size?: string;
   description: string;
   body: string;
+  blocks?: ArticleBlock[];
+  downloadHref?: string;
+  printHref?: string;
 }
 
 export type AnchoredCommentStatus = 'open' | 'resolved';
