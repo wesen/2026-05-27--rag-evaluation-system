@@ -214,6 +214,7 @@ export interface ContextStripDiagramWidgetProps extends BaseWidgetProps {
   styleSet: ContextStyleSet;
   selectedPartId?: string;
   showLabels?: boolean;
+  showSelection?: boolean;
 }
 
 export interface ContextGroupedStripDiagramWidgetProps extends BaseWidgetProps {
@@ -223,6 +224,7 @@ export interface ContextGroupedStripDiagramWidgetProps extends BaseWidgetProps {
   groupBy?: 'turn' | 'styleKey' | 'sourceId';
   showGroupLabels?: boolean;
   showPartLabels?: boolean;
+  showSelection?: boolean;
 }
 
 export interface ContextStackDiagramWidgetProps extends BaseWidgetProps {

@@ -1,5 +1,6 @@
-import type { HTMLAttributes, KeyboardEvent } from 'react';
+import { useState, type HTMLAttributes, type KeyboardEvent, type ReactNode } from 'react';
 import { contextVisualStyleToCssVars, resolveContextVisualStyle, type ContextStyleSet, type ContextWindowPart, type ContextWindowSnapshot } from '../../../context';
+import { Text } from '../../foundation';
 import styles from './ContextGroupedStripDiagram.module.css';
 
 export type ContextGroupedStripGroupBy = 'turn' | 'styleKey' | 'sourceId';
@@ -11,7 +12,9 @@ export interface ContextGroupedStripDiagramProps extends HTMLAttributes<HTMLDivE
   groupBy?: ContextGroupedStripGroupBy;
   showGroupLabels?: boolean;
   showPartLabels?: boolean;
+  showSelection?: boolean;
   onPartSelect?: (partId: string) => void;
+  renderPartTooltip?: (part: ContextWindowPart) => ReactNode;
 }
 
 interface Group {
@@ -52,9 +55,12 @@ function groupedParts(parts: ContextWindowPart[], groupBy: ContextGroupedStripGr
   }
   return groups;
 }
-function tooltip(part: ContextWindowPart, styleSet: ContextStyleSet) {
-  const note = part.note ? `\n${part.note}` : '';
-  return `${part.label}: ${formatTokens(part.tokens)} (${styleName(styleSet, part.styleKey)})${note}`;
+function defaultPartTooltip(part: ContextWindowPart, styleSet: ContextStyleSet) {
+  return <div className={styles.tooltipContent}>
+    <Text as="strong" size="compact">{part.label}</Text>
+    <Text as="span" size="metadata" tone="muted">{formatTokens(part.tokens)} · {styleName(styleSet, part.styleKey)}</Text>
+    {part.note && <Text as="span" size="metadata">{part.note}</Text>}
+  </div>;
 }
 function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
   if (!onPartSelect) return;
@@ -68,10 +74,13 @@ export function ContextGroupedStripDiagram({
   groupBy = 'turn',
   showGroupLabels = true,
   showPartLabels = false,
+  showSelection,
   onPartSelect,
+  renderPartTooltip,
   className,
   ...rest
 }: ContextGroupedStripDiagramProps) {
+  const [tooltipPartId, setTooltipPartId] = useState<string | undefined>();
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
   const totalWidth = snapshot.limit || snapshot.parts.reduce((sum, part) => sum + part.tokens, 0) || 1;
   const groups = groupedParts(snapshot.parts, groupBy, styleSet);
@@ -89,14 +98,18 @@ export function ContextGroupedStripDiagram({
                 {group.parts.map((part) => {
                   const visualStyle = resolveContextVisualStyle(part.styleKey, styleSet);
                   const width = Math.max(2, (part.tokens / groupTotal) * 100);
-                  const selected = effectiveSelectedPartId === part.id;
                   const interactive = Boolean(onPartSelect);
+                  const selected = (showSelection ?? interactive) && effectiveSelectedPartId === part.id;
+                  const tooltipOpen = tooltipPartId === part.id;
                   return (
                     <div
                       key={part.id}
                       className={[styles.segment, patternClass(visualStyle.pattern), selected ? styles.selected : ''].filter(Boolean).join(' ')}
                       style={{ width: `${width}%`, ...contextVisualStyleToCssVars(visualStyle) }}
-                      data-tooltip={tooltip(part, styleSet)}
+                      onMouseEnter={() => setTooltipPartId(part.id)}
+                      onMouseLeave={() => setTooltipPartId(undefined)}
+                      onFocus={() => setTooltipPartId(part.id)}
+                      onBlur={() => setTooltipPartId(undefined)}
                       role={interactive ? 'button' : undefined}
                       tabIndex={interactive ? 0 : undefined}
                       aria-pressed={interactive ? selected : undefined}
@@ -104,6 +117,9 @@ export function ContextGroupedStripDiagram({
                       onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
                     >
                       {showPartLabels && width >= 12 && <span className={styles.partLabel}>{part.label}</span>}
+                      {tooltipOpen && <div className={styles.tooltip} role="tooltip">
+                        {renderPartTooltip ? renderPartTooltip(part) : defaultPartTooltip(part, styleSet)}
+                      </div>}
                     </div>
                   );
                 })}
