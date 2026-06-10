@@ -254,6 +254,8 @@ export interface ContextTurnPagerPanelWidgetProps extends BaseWidgetProps {
   selectedPartId?: string;
   diagram?: 'grouped-strip' | 'strip';
   groupBy?: 'turn' | 'styleKey' | 'sourceId';
+  mode?: 'turn-only' | 'snapshot';
+  includeGlobalParts?: boolean;
   showLegend?: boolean;
   title?: string;
 }

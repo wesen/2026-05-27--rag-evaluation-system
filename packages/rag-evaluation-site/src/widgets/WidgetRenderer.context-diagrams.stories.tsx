@@ -252,7 +252,7 @@ export const ContextGroupedStripByTurn: Story = {
 
 export const ContextTurnPagerPanelStory: Story = {
   name: 'ContextTurnPagerPanel',
-  render: ({ palette, registry }) => renderNode(component('ContextTurnPagerPanel', { snapshots: turnPagerSnapshots, styleSet: contextStyleSetForPalette(palette), initialSnapshotId: 'widget-ir-turn-5', title: 'Uploaded session turn pager', diagram: 'grouped-strip', groupBy: 'turn', showLegend: true }), registry),
+  render: ({ palette, registry }) => renderNode(component('ContextTurnPagerPanel', { snapshots: turnPagerSnapshots, styleSet: contextStyleSetForPalette(palette), initialSnapshotId: 'widget-ir-turn-5', title: 'Uploaded session turn pager', diagram: 'grouped-strip', groupBy: 'turn', mode: 'turn-only', includeGlobalParts: true, showLegend: true }), registry),
 };
 
 export const CustomThreeLabelWidgetIR: Story = {
