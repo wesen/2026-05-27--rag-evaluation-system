@@ -375,3 +375,89 @@ Search commands used during orientation:
 rg -n "LiveSession|live session|live-session|Live Session|session view|SessionView|active session|realtime|real-time" packages/rag-evaluation-site/src pkg internal cmd .github --glob '!node_modules/**' --glob '!dist/**' --glob '!storybook-static/**' -S
 rg -n "CourseLessonLanding|CourseSlide|TeachingSlide|Handout|CoursePlusHandout|course|slides|comments|handout|Present|Take-home|Workshop|Course Studio|live session|Live on a real session" packages/rag-evaluation-site/src/components/organisms/CourseStudioShell packages/rag-evaluation-site/src/widgets packages/rag-evaluation-site/src/context packages/rag-evaluation-site/README.md packages/rag-evaluation-site/GUIDELINES.md -S
 ```
+
+## Step 4: Ground the design in go-minitrace schema and DSL outputs
+
+This step corrected the design assumptions before further cleanup. The earlier guide treated uploaded JSON as a mostly arbitrary source format. The actual integration uses go-minitrace and minitracejs, so the right input to the widgets is the normalized minitrace session schema and DSL query/view rows.
+
+The guide now explains session metadata, ordered turns, tool calls, per-turn token usage, transcript rows, timeline rows, token usage rows, and turn frames. It also adds precise mappings from minitrace rows to transcript messages and context-window parts, including file read/write detection from normalized tool `operation_type` values.
+
+### Prompt Context
+
+**User prompt (verbatim):** "it could be that the docs are not precise enough and need to be expanded, in cas eyou find things that are unclear. 
+
+But yes, first update the design documentation with th eminitrace schema and mapping updates, then restore the stuff you removed, then remove only the litellm-live-service.js.
+
+Before you start working on that, add phases + for each phase, a detailed list oif tasks to the ticket. then implement them in sequence, committing at appropriate intervals, keeping a freqeunt diary.
+
+Once you are done with all the cleanup, add phases and tasks for the widget improvements, then implement them, making sure to adhere to the proper guidelines. Start with what can be done entirely on the clubmeetup/minitrace-viz side, then to the changes that rqeuire upstream schanges in 2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/ and the goja DSL. Make sure to adhere to the @2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/GUIDELINES.md  and the style of the react design system, the structure of it is really at the heart of the whole system."
+
+**Assistant interpretation:** Add phased ticket tasks first, then update the design guide with concrete minitrace schema/DSL mappings before touching code. After that, restore my over-broad removals and remove only the LiteLLM live service.
+
+**Inferred user intent:** The user wants the work sequenced carefully, with the design grounded in actual go-minitrace data contracts and with any unclear documentation gaps surfaced instead of guessed around.
+
+**Commit (code):** N/A — documentation interval before code cleanup.
+
+### What I did
+
+- Replaced `tasks.md` with phased task groups covering recovery, minitrace mapping design, ClubMeetup/minitrace-viz local improvements, upstream widget package changes, DSL/schema support, and final validation.
+- Read go-minitrace schema and DSL references:
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/doc/minitrace-schema.md`
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/doc/js-api-reference.md`
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/minitracejs/query_view_session.go`
+- Added a new `go-minitrace Data Contract for Uploaded Sessions` section to the design guide.
+- Documented concrete output fields for `TranscriptRows`, `TurnRows`, `ToolRows`, `TimelineRows`, `TokenUsageRows`, and `TurnFrames`.
+- Added mapping sketches for `TranscriptRow -> TranscriptMessage` and `TranscriptRow + ToolRow -> ContextWindowPart`.
+- Added a documentation-gap list for unclear go-minitrace behavior, such as exact context-window membership and tool-call request row availability.
+
+### Why
+
+- The widgets should consume normalized minitrace rows, not re-parse raw uploaded JSON.
+- The presence of `operation_type` and per-turn usage data changes the implementation strategy: file read/write and token sizes can be more precise than originally documented.
+- The design doc needs to be accurate before cleanup and implementation continue.
+
+### What worked
+
+- The minitrace schema gives enough structure for transcript widgets and context block diagrams.
+- `TranscriptRows` already flatten messages, thinking, and optional tool rows into a widget-friendly order.
+- `ToolRows` provides normalized operation metadata that can drive `file_read`, `file_write`, `tool_call`, `tool_result`, and `tool_error` styles.
+
+### What didn't work
+
+- The docs do not yet appear to answer whether exact model context-window membership is available for every adapter. That remains a documented gap.
+- It is also unclear whether `TranscriptRows` should include explicit tool-call request rows, or only result/error rows with command/file fallback text.
+
+### What I learned
+
+- go-minitrace is the correct normalization boundary for uploaded session data.
+- Context block conversion should be based on minitrace DSL rows and tool operation types.
+- The design-system work can likely start locally in ClubMeetup/minitrace-viz before requiring upstream package or Goja DSL changes.
+
+### What was tricky to build
+
+- The original design had a generic normalizer section. I kept a normalized app-side representation, but reframed it as derived from minitrace rows so the guide remains useful without fighting the existing architecture.
+- The word "thinking" needs explicit caveats: minitrace can expose `turns[].thinking` when captured, but the UI must not imply hidden reasoning reconstruction.
+
+### What warrants a second pair of eyes
+
+- Confirm whether the minitrace DSL should add a first-class view that already emits `ContextWindowPart`-ready rows.
+- Confirm how LiteLLM live service removal affects the upload/import path, if at all.
+- Confirm whether go-minitrace docs should expand `TranscriptRows` field definitions and exact row-kind semantics.
+
+### What should be done in the future
+
+- Expand go-minitrace docs if implementation discovers undocumented row shapes or adapter-specific behavior.
+- Consider adding a reusable minitrace-to-widget mapping helper after the local ClubMeetup/minitrace-viz implementation proves stable.
+
+### Code review instructions
+
+- Review the new `go-minitrace Data Contract for Uploaded Sessions` section in the design guide.
+- Check that it references minitrace schema/DSL source files and does not invent raw-upload behavior.
+
+### Technical details
+
+Relevant source files:
+
+- `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/doc/minitrace-schema.md`
+- `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/doc/js-api-reference.md`
+- `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/minitracejs/query_view_session.go`

@@ -12,6 +12,12 @@ DocType: design-doc
 Intent: long-term
 Owners: []
 RelatedFiles:
+    - Path: ../../../../../../../go-minitrace/pkg/doc/js-api-reference.md
+      Note: minitracejs importer/session/view DSL used by uploaded-session flow
+    - Path: ../../../../../../../go-minitrace/pkg/doc/minitrace-schema.md
+      Note: Authoritative minitrace session JSON schema used for widget mapping
+    - Path: ../../../../../../../go-minitrace/pkg/minitracejs/query_view_session.go
+      Note: Concrete SQL recipe outputs for TranscriptRows
     - Path: README.md
       Note: Repository architecture and Widget IR runtime overview used by the guide
     - Path: packages/rag-evaluation-site/README.md
@@ -46,6 +52,7 @@ LastUpdated: 2026-06-10T15:06:51.76997905-04:00
 WhatFor: Use before implementing the uploaded-session context-window visualization; explains the existing style-set/Widget IR/DSL system and proposes a phased implementation.
 WhenToUse: Use when adding real session parsing, block classification, turn paging, or new context-window widget variants.
 ---
+
 
 
 
@@ -319,9 +326,223 @@ This section is retained only as a future design note. The current implementatio
 
 This can be a useful analysis UX, but it needs more data and is out of current scope. The runtime must know which blocks were present after each turn. If the uploaded file only has final transcript messages, the application can derive "blocks by turn" but not exact context-window membership after compaction/eviction.
 
+## go-minitrace Data Contract for Uploaded Sessions
+
+The uploaded-session flow is not starting from arbitrary JSON once the app uses go-minitrace. The expected pipeline is:
+
+```text
+raw uploaded agent transcript/session JSON
+  -> go-minitrace importer / converter
+  -> .minitrace.json session or temporary minitrace DB
+  -> minitracejs DSL views / SQL recipes
+  -> Widget IR props for ContextDiagramPanel and TranscriptWorkspacePanel
+```
+
+This matters because go-minitrace already provides a normalized schema and query DSL. The widget layer should consume those normalized rows rather than inventing a separate ad-hoc parser for every raw source format.
+
+### Authoritative minitrace session fields
+
+The authoritative schema docs live in `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/doc/minitrace-schema.md`, with Go structs in `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/minitrace/schema.go`. Important fields for widget population are:
+
+- **Session metadata**: `id`, `schema_version`, `profile`, `quality`, `title`, `summary`, `classification`.
+- **Provenance**: `provenance.source_format`, `source_path`, `converted_at`, `converter_version`, `original_session_id`.
+- **Environment**: `environment.model`, `tools_enabled`, `system_prompt`, `agent_framework`, `platform_type`, `provider_hint`.
+- **Operational context**: `operational_context.working_directory`, `git_branch`, `git_ref`, `autonomy_level`, `sandbox`, `framework_config`.
+- **Timing**: `started_at`, `ended_at`, `duration_seconds`, `active_duration_seconds`, `hour_of_day`, `day_of_week`.
+- **Turns**: ordered `turns[]` with `index`, `timestamp`, `role`, `source`, `model`, `content_type`, `content`, `framework_metadata`, `tool_calls_in_turn`, `thinking`, `streaming`, and `usage`.
+- **Per-turn usage**: `input_tokens`, `output_tokens`, `cache_read_tokens`, `cache_creation_tokens`, `reasoning_tokens`, and `tool_tokens`.
+- **Tool calls**: ordered `tool_calls[]` with `id`, `emitting_turn_index`, `timestamp`, `tool_name`, normalized `operation_type`, shared `input.file_path`, `input.command`, `input.justification`, raw `input.arguments`, `output.result`, `output.error`, `output.full_bytes`, `output.truncated`, and `output.content_origin`.
+- **Annotations**: session/turn/tool annotations with target metadata; these can become transcript notes or side rail cards.
+- **Metrics**: summary counts and token totals suitable for headers and compact metadata.
+
+The key correction to the original design is that block classification can use `tool_calls[].operation_type` and the minitrace DSL rows. It does not need to infer file reads/writes only from string matching.
+
+### minitracejs importer flow
+
+The JavaScript API reference in `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/doc/js-api-reference.md` describes the upload/import path:
+
+```js
+const importer = mt.importer()
+  .Content(uploadText)
+  .Name(filename)
+  .AutoDetect()
+  .Strict()
+  .Convert();
+
+const preview = importer.Preview();
+const saved = importer.Into(sessionsDir).SessionID(sessionId).Save();
+```
+
+Useful preview fields include diagnostics, role/tool counts, sampled turns/tools, `hasSystemPrompt`, thinking signals, image signals, and subagent count. The upload widget can use the preview before saving/rendering to show whether the file is supported and whether sensitive/full-content previews are being used.
+
+### minitracejs view/query outputs
+
+The DSL implementation in `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/minitracejs/query_view_session.go` exposes these recipes/views:
+
+| Builder/view | Output shape | Widget use |
+| --- | --- | --- |
+| `mt.query().SessionSummary().SessionID(id).Build()` | one `SessionSummary` row | Header metadata and selected-session summary. |
+| `mt.query().TurnRows().SessionID(id).Build()` | ordered turn rows | Transcript messages and turn-level context blocks. |
+| `mt.query().ToolRows().SessionID(id).Build()` | ordered tool rows | Tool/file context blocks and detail metadata. |
+| `mt.query().EventRows()` / `TurnBlockRows()` | renderable event/block rows | Fine-grained transcript frame rendering if needed. |
+| `mt.query().TranscriptRows().IncludeTools().SessionID(id).Build()` | flattened transcript rows | Best initial source for `TranscriptWorkspacePanel` and a block strip. |
+| `mt.query().TimelineRows().SessionID(id).Build()` | turn-level timeline rows | Turn overview, warning badges, and optional grouping labels. |
+| `mt.query().TokenUsageRows().ByTurn()` | token usage grouped by turn | Per-turn budget summary and proportional context blocks. |
+| `mt.query().TokenUsageRows().ByRole()` | token usage grouped by role | Summary chart/legend validation. |
+| `mt.query().TokenUsageRows().ByTool()` | estimated tool output token rows | Tool/file block sizing when exact token usage is absent. |
+| `session.view().Transcript().IncludeTools().Run()` | plain transcript rows | Direct app flow for transcript widgets. |
+| `session.view().Timeline().Run()` | timeline rows | Turn navigation metadata without adding a live view. |
+| `session.view().TokenUsage().ByTurn().Run()` | token usage rows | Context budget summaries. |
+| `session.view().TurnFrames().Run()` | frames with `blocks`, `toolCalls`, `stats` | Future grouped-turn details if needed. |
+
+`TranscriptRows` is especially useful because it already flattens messages, thinking, and optional tools into rows with fields that map almost directly to widgets:
+
+```text
+id, session_id, turn_index, ordinal, role, kind, name, title, text,
+timestamp, tokens, tool_call_id, severity, collapsed_by_default, metadata
+```
+
+The implementation currently labels row kinds such as `message`, `thinking`, `tool_result`, and `tool_error`. Tool rows add stronger operation metadata through `operation_type`, `file_path`, `command`, `success`, `result`, `error`, `truncated`, and `full_bytes`.
+
+### Mapping minitrace rows to transcript widgets
+
+`TranscriptRows` can populate transcript widgets without a bespoke parser:
+
+```ts
+function transcriptRowToMessage(row: MinitraceTranscriptRow): TranscriptMessage {
+  return {
+    id: row.id,
+    role: row.role === 'tool' ? 'tool' : row.role,
+    name: row.name || row.kind,
+    text: row.text ?? '',
+    tokens: row.tokens ?? undefined,
+    timestamp: row.timestamp ?? undefined,
+    metadata: {
+      sessionId: row.session_id,
+      turnIndex: row.turn_index,
+      ordinal: row.ordinal,
+      kind: row.kind,
+      toolCallId: row.tool_call_id,
+      severity: row.severity,
+      collapsedByDefault: Boolean(row.collapsed_by_default),
+      raw: row.metadata,
+    },
+  };
+}
+```
+
+Recommended transcript style mapping:
+
+| minitrace row | Widget role/style |
+| --- | --- |
+| `role = system`, `kind = message` | `role: 'system'`, `styleKey: 'system'` |
+| `role = user`, `kind = message` | `role: 'user'`, `styleKey: 'user'` |
+| `role = assistant`, `kind = message` | `role: 'assistant'`, `styleKey: 'assistant'` or `agent` |
+| `kind = thinking` | `role: 'assistant'`, `styleKey: 'thinking'`, collapsed by default |
+| `kind = tool_result` | `role: 'tool'`, `styleKey: 'result'` or `tool_result` |
+| `kind = tool_error` | `role: 'tool'`, `styleKey: 'tool_error'`, danger/error metadata |
+
+### Mapping minitrace rows to context-window blocks
+
+For the context block view, prefer a two-source strategy:
+
+1. Use `TranscriptRows` for ordered visible rows: messages, thinking, and tool result/error text.
+2. Join or correlate `ToolRows` when the block needs operation-aware classification: file read/write, shell execute, delegate, or unknown tool operation.
+
+Pseudo-code:
+
+```ts
+function transcriptRowToContextPart(row: MinitraceTranscriptRow, toolById: Map<string, MinitraceToolRow>): ContextWindowPart {
+  const tool = row.tool_call_id ? toolById.get(row.tool_call_id) : undefined;
+  const styleKey = row.kind === 'message'
+    ? roleToStyleKey(row.role)
+    : row.kind === 'thinking'
+      ? 'thinking'
+      : tool
+        ? toolRowToStyleKey(tool, row.kind)
+        : row.kind === 'tool_error'
+          ? 'tool_error'
+          : 'tool_result';
+
+  return {
+    id: row.id,
+    label: compactBlockLabel(row, tool),
+    styleKey,
+    tokens: Math.max(1, Number(row.tokens ?? estimateTokens(row.text))),
+    contentPreview: preview(row.text),
+    content: row.text,
+    sourceId: row.session_id,
+    metadata: {
+      turnIndex: row.turn_index,
+      ordinal: row.ordinal,
+      kind: row.kind,
+      role: row.role,
+      toolCallId: row.tool_call_id,
+      toolName: tool?.tool_name,
+      operationType: tool?.operation_type,
+      filePath: tool?.file_path,
+      command: tool?.command,
+      success: tool?.success,
+      truncated: tool?.truncated,
+      fullBytes: tool?.full_bytes,
+    },
+  };
+}
+
+function roleToStyleKey(role: string): string {
+  if (role === 'system') return 'system';
+  if (role === 'user') return 'user';
+  if (role === 'assistant') return 'agent';
+  if (role === 'tool') return 'tool_result';
+  return 'other';
+}
+
+function toolRowToStyleKey(tool: MinitraceToolRow, rowKind: string): string {
+  if (rowKind === 'tool_error' || tool.success === false) return 'tool_error';
+  switch (tool.operation_type) {
+    case 'READ': return 'file_read';
+    case 'MODIFY': return 'file_write';
+    case 'NEW': return 'file_write';
+    case 'EXECUTE': return 'tool_call';
+    case 'DELEGATE': return 'agent';
+    default: return 'tool_result';
+  }
+}
+```
+
+Recommended context style keys:
+
+| styleKey | Source condition | Label |
+| --- | --- | --- |
+| `system` | turn/row role `system` | System |
+| `user` | turn/row role `user` | User |
+| `agent` | assistant message | Agent |
+| `thinking` | row kind `thinking` or reasoning text | Thinking |
+| `tool_call` | tool `operation_type = EXECUTE` where command itself is the meaningful block | Tool call |
+| `tool_result` | generic successful tool output | Tool result |
+| `tool_error` | failed tool output or row kind `tool_error` | Tool error |
+| `file_read` | `operation_type = READ` | File read |
+| `file_write` | `operation_type in (MODIFY, NEW)` | File write |
+| `delegate` | `operation_type = DELEGATE` | Delegated agent |
+| `summary` | source marks summary/compaction rows | Summary |
+| `headroom` | computed model context headroom when known | Headroom |
+| `other` | unknown rows/tools | Other |
+
+### What remains unclear in go-minitrace docs/API
+
+The current docs are strong enough for transcript and tool widgets, but the following areas should be expanded if implementation exposes them:
+
+- Whether `TranscriptRows` should include explicit tool-call request rows in addition to tool result rows. Current SQL emits tool result/error rows from `tool_calls`; the command/input can appear in `text` only as fallback when result/error is empty.
+- Whether exact context-window membership is available for any adapter. The minitrace schema provides turns, usage, and tools, but not necessarily the exact prompt assembled for a model call after compaction or hidden system injections.
+- Whether token usage is adapter-provided or estimated for each source. Turns can have usage fields, while tool rows estimate tokens from `full_bytes`/result length.
+- How thinking/reasoning should be labeled for each framework. The schema exposes `turns[].thinking` if captured, but UI language should avoid implying hidden chain-of-thought reconstruction.
+- Whether `operation_type` values are complete enough for all file read/write detection, or whether some adapters require fallback inspection of `tool_name` and `input.arguments`.
+
+These should become go-minitrace documentation improvements if they are encountered during implementation.
+
 ## Proposed Data Model for Uploaded Session Normalization
 
-The implementation should introduce an internal normalized representation before creating Widget IR. This can live in the host application or in a shared package if multiple apps need it.
+The implementation should introduce a small app-side normalized representation before creating Widget IR, but that representation should be derived from go-minitrace/minitracejs rows rather than raw uploaded JSON. This can live in the ClubMeetup/minitrace-viz side first, then move upstream only if multiple applications need the same mapping.
 
 ### Block type vocabulary
 
