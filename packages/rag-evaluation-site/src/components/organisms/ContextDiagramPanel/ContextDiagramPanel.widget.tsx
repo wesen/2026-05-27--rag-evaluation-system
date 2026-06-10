@@ -9,12 +9,11 @@ export const contextDiagramPanelWidget = defineWidget<ContextDiagramPanelWidgetP
     <ContextDiagramPanel
       className={props.className}
       snapshot={props.snapshot}
+      styleSet={props.styleSet}
       initialView={props.initialView}
       selectedPartId={props.selectedPartId}
       views={props.views}
       showLegend={props.showLegend}
-      legendKinds={props.legendKinds}
-      legendMode={props.legendMode}
       showPartDetails={props.showPartDetails}
     />
   ),

@@ -1,19 +1,16 @@
 .root { display: flex; flex-direction: column; gap: 6px; }
 .strip { display: flex; width: 100%; min-height: 54px; border: 1px solid var(--mac-border); background: var(--mac-surface); overflow: hidden; }
-.segment { position: relative; display: flex; align-items: center; justify-content: center; min-width: 2px; border-right: 1px solid var(--mac-border); box-sizing: border-box; overflow: hidden; }
+.segment { position: relative; display: flex; align-items: center; justify-content: center; min-width: 2px; border-right: var(--ctx-stroke-width, 1px) solid var(--ctx-stroke, var(--mac-border)); box-sizing: border-box; overflow: hidden; background-color: var(--ctx-fill, var(--mac-surface)); color: var(--ctx-label, var(--mac-text)); }
 .segment:last-child { border-right: 0; }
 .segment[role='button'] { cursor: pointer; }
 .segment[role='button']:focus-visible { outline: 2px solid var(--mac-accent); outline-offset: -3px; z-index: 2; }
-.label { padding: 1px 3px; color: var(--mac-text); font: var(--rag-font-role-metadata); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; background: var(--mac-surface); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.label { padding: 1px 3px; color: var(--ctx-label, var(--mac-text)); font: var(--rag-font-role-metadata); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; background: color-mix(in srgb, var(--ctx-fill, var(--mac-surface)) 86%, white); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .selected { outline: 3px solid var(--mac-accent); outline-offset: -4px; z-index: 1; }
 .caption { color: var(--mac-text-dim); font: var(--rag-font-role-caption, var(--rag-font-role-metadata)); }
-.kind_system,.kind_instruction { background: repeating-linear-gradient(45deg, var(--mac-border) 0 1px, var(--mac-surface) 1px 4px); }
-.kind_context,.kind_conversation,.kind_course,.kind_other { background: var(--mac-surface); }
-.kind_summary,.kind_annotation { background: repeating-linear-gradient(45deg, var(--mac-border) 0 1px, var(--mac-surface) 1px 7px); }
-.kind_retrieval,.kind_tool,.kind_result { background: radial-gradient(var(--mac-border) 1px, var(--mac-surface) 1px); background-size: 4px 4px; }
-.kind_generated { background: repeating-linear-gradient(45deg, var(--mac-border) 0 1px, var(--mac-surface) 1px 3px); }
-.kind_evicted { background: var(--mac-text-dim); }
-.kind_evicted .label { color: var(--mac-text-inv); background: rgba(0,0,0,0.42); }
-.kind_active { background: var(--mac-accent); }
-.kind_active .label { color: var(--mac-text-inv); background: transparent; }
-.kind_empty { background: var(--mac-surface); opacity: .72; }
+.pattern_none,.pattern_solid { background: var(--ctx-fill, var(--mac-surface)); }
+.pattern_checker { background-color: var(--ctx-fill, var(--mac-surface)); background-image: linear-gradient(45deg, var(--ctx-line, var(--mac-border)) 25%, transparent 25%), linear-gradient(-45deg, var(--ctx-line, var(--mac-border)) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--ctx-line, var(--mac-border)) 75%), linear-gradient(-45deg, transparent 75%, var(--ctx-line, var(--mac-border)) 75%); background-position: 0 0, 0 2px, 2px -2px, -2px 0; background-size: 4px 4px; }
+.pattern_diagonal { background-color: var(--ctx-fill, var(--mac-surface)); background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-border)) 0 1px, transparent 1px 7px); }
+.pattern_diagonalDense { background-color: var(--ctx-fill, var(--mac-surface)); background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-border)) 0 1px, transparent 1px 3px); }
+.pattern_stipple { background-color: var(--ctx-fill, var(--mac-surface)); background-image: radial-gradient(var(--ctx-line, var(--mac-border)) 1px, transparent 1px); background-size: 4px 4px; }
+.pattern_cross { background-color: var(--ctx-fill, var(--mac-surface)); background-image: repeating-linear-gradient(45deg, transparent 0 3px, var(--ctx-line, var(--mac-border)) 3px 4px), repeating-linear-gradient(-45deg, transparent 0 3px, var(--ctx-line, var(--mac-border)) 3px 4px); }
+.pattern_overflow { background-color: var(--ctx-fill, var(--mac-surface)); background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-accent-2)) 0 2px, transparent 2px 5px); }

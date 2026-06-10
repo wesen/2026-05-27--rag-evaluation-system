@@ -14,6 +14,7 @@ export const transcriptReaderPanelWidget = defineWidget<TranscriptReaderPanelWid
       annotations={props.annotations}
       selectedAnnotationId={props.selectedAnnotationId}
       showAnnotationChips={props.showAnnotationChips}
+      styleSet={props.styleSet}
       onAnnotationSelect={props.onAnnotationSelectAction
         ? (annotationId) => ctx.dispatchAction(props.onAnnotationSelectAction!, { annotationId, value: annotationId, componentType: 'TranscriptReaderPanel' })
         : undefined}

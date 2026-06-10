@@ -21,7 +21,7 @@ When adding a component that should later be available from the Widget IR/Goja D
 
 `WidgetRenderer` supports both the original dashboard vocabulary and the newer semantic context-viewer vocabulary:
 
-- foundation/atoms/layout nodes such as `Text`, `CodeText`, `ContextKindSwatch`, `SectionBlock`, `SplitPane`, `SlideShell`, and `SidebarShell`;
+- foundation/atoms/layout nodes such as `Text`, `CodeText`, `ContextStyleSwatch`, `SectionBlock`, `SplitPane`, `SlideShell`, and `SidebarShell`;
 - context diagram nodes such as `ContextBudgetBar`, `ContextStripDiagram`, `ContextTreemap`, and `ContextDiagramPanel`;
 - transcript/comment nodes such as `TranscriptWorkspacePanel`, `AnnotationRailPanel`, and `AnchoredCommentRail`;
 - course/handout nodes such as `CourseStudioShell`, `CourseSlidePanel`, `MarkdownArticle`, and `HandoutDocumentShell`.
@@ -29,6 +29,42 @@ When adding a component that should later be available from the Widget IR/Goja D
 Review package Storybook under `Widget IR/Renderer/...` for IR-authored examples grouped by Foundation and Atoms, Layout Recipes, Context Diagrams, Transcript and Notes, and Course Studio.
 
 Goja authors can use direct helpers from split modules such as `require("ui.dsl")`, `require("data.dsl")`, `require("context_window.dsl")`, and `require("course.dsl")`. Semantic recipes live under their owning domains, for example `contextWindow.recipes.contextDiagram`, `contextWindow.recipes.annotatedTranscript`, `course.recipes.courseStudio`, `course.recipes.courseSlide`, and `course.recipes.handout`.
+
+## Context and transcript style sets
+
+Context-window diagrams and transcript widgets use a hard-cutover `styleKey + ContextStyleSet` contract. Snapshot parts carry a caller-defined `styleKey`; the companion `ContextStyleSet` supplies `styles` and `legend` entries for those keys. Do not send or document legacy context-window `kind`, `ContextPartKind`, `ContextKindSwatch`, `legendKinds`, or `legendMode` values.
+
+```ts
+const styleSet = createContextStyleSetFromPalette({
+  palette: signalOrangeCyan,
+  entries: [
+    { id: 'prompt', label: 'Prompt', accent: 'b', pattern: 'checker' },
+    { id: 'evidence', label: 'Evidence', accent: 'a', pattern: 'stipple' },
+    { id: 'answer', label: 'Answer', accent: 'b', pattern: 'solid', solid: true },
+    { id: 'free', label: 'Headroom', accent: 'grid', pattern: 'none', hidden: true },
+  ],
+});
+
+const snapshot = {
+  id: 'rag-window',
+  title: 'RAG answer window',
+  limit: 32000,
+  parts: [
+    { id: 'p', label: 'Prompt', styleKey: 'prompt', tokens: 1400 },
+    { id: 'e', label: 'Evidence', styleKey: 'evidence', tokens: 9200 },
+    { id: 'a', label: 'Draft', styleKey: 'answer', tokens: 1800 },
+    { id: 'h', label: 'Headroom', styleKey: 'free', tokens: 19600 },
+  ],
+};
+```
+
+`ContextVisualStyle.labelColor` is part of the foreground contract. Components expose it as `--ctx-label` so labels, token chips, note chips, and selected states remain readable over palette fills. Transcript bodies and side-note bodies intentionally stay neutral by default; palette colors should decorate title bars, borders, glyphs, swatches, and compact chips.
+
+Storybook exposes the four preferred palettes (`Dusty Magenta / Blue`, `Signal Orange / Cyan`, `Slate / Coral`, `Cobalt / Sand`) through a `palette` control on context and transcript stories. For iframe-only screenshots, Storybook args can be encoded in the URL, for example:
+
+```text
+/iframe.html?id=widget-ir-renderer-transcript-and-notes--message-card-states&viewMode=story&args=palette:'Signal+Orange+/+Cyan'
+```
 
 ## Install
 

@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react';
-import type { TranscriptAnnotation, TranscriptMessage } from '../../../context';
+import type { ContextStyleSet, TranscriptAnnotation, TranscriptMessage } from '../../../context';
 import { AnnotationRailPanel } from '../AnnotationRailPanel';
 import { TranscriptReaderPanel } from '../TranscriptReaderPanel';
 import styles from './TranscriptWorkspacePanel.module.css';
@@ -12,6 +12,7 @@ export interface TranscriptWorkspacePanelProps extends Omit<HTMLAttributes<HTMLD
   selectedAnnotationId?: string;
   onAnnotationSelect?: (annotationId: string) => void;
   showNotes?: boolean;
+  styleSet?: ContextStyleSet;
 }
 
 export function TranscriptWorkspacePanel({
@@ -22,6 +23,7 @@ export function TranscriptWorkspacePanel({
   selectedAnnotationId,
   onAnnotationSelect,
   showNotes = annotations.length > 0,
+  styleSet,
   className,
   ...rest
 }: TranscriptWorkspacePanelProps) {
@@ -36,12 +38,14 @@ export function TranscriptWorkspacePanel({
         selectedAnnotationId={selectedAnnotationId}
         onAnnotationSelect={onAnnotationSelect}
         showAnnotationChips={hasNotes}
+        styleSet={styleSet}
       />
       {hasNotes && (
         <AnnotationRailPanel
           annotations={annotations}
           selectedAnnotationId={selectedAnnotationId}
           onAnnotationSelect={onAnnotationSelect}
+          styleSet={styleSet}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 import { annotationBadgeWidget } from '../components/atoms/AnnotationBadge/AnnotationBadge.widget';
 import { buttonWidget } from '../components/atoms/Button/Button.widget';
-import { contextKindSwatchWidget } from '../components/atoms/ContextKindSwatch/ContextKindSwatch.widget';
+import { contextStyleSwatchWidget } from '../components/atoms/ContextStyleSwatch/ContextStyleSwatch.widget';
 import { contextStudioNavIconWidget } from '../components/atoms/ContextStudioNavIcon/ContextStudioNavIcon.widget';
 import { selectInputWidget } from '../components/atoms/SelectInput/SelectInput.widget';
 import { textInputWidget } from '../components/atoms/TextInput/TextInput.widget';
@@ -100,7 +100,7 @@ export const contextWindowWidgetRegistry = createWidgetRegistry([
   annotationRailPanelWidget,
   contextBudgetBarWidget,
   contextDiagramPanelWidget,
-  contextKindSwatchWidget,
+  contextStyleSwatchWidget,
   contextLegendWidget,
   contextStackDiagramWidget,
   contextStripDiagramWidget,

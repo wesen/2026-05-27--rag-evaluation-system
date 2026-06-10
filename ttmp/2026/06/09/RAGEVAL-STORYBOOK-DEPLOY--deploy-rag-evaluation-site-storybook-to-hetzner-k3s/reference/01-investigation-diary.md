@@ -16,7 +16,7 @@ RelatedFiles:
       Note: Primary design guide produced in this investigation
 ExternalSources: []
 Summary: Chronological diary for the rag-evaluation-site Storybook deployment design work.
-LastUpdated: 2026-06-09T20:59:15-04:00
+LastUpdated: 2026-06-10T00:17:30-04:00
 WhatFor: Use this to understand how the deployment guide was researched, what evidence was inspected, and what remains to implement.
 WhenToUse: Before continuing implementation of the Storybook deployment ticket.
 ---
@@ -653,21 +653,279 @@ The upload replaced the previous bundle with the updated implementation-aware ve
 
 ## Step 9: Roll out the Storybook static site live
 
+## Step 9: Deploy web app Storybook under the wildcard Storybook domain
+
+I deployed the `web/` workspace Storybook as `rag-evaluation-page.storybook.yolo.scapegoat.dev` and generalized static-sites hosting so future Storybook bundles can live under `*.storybook.yolo.scapegoat.dev`. This step completed the full cross-repo path: source packaging, GHCR image publication, wildcard DNS, wildcard DNS-01 TLS, K3s GitOps, Vault image-pull wiring, Argo rollout, and HTTPS smoke testing.
+
+The final live result is `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/`, served by the shared `static-sites-host` Caddy deployment from `/srv/sites/rag-evaluation-page.storybook.yolo.scapegoat.dev/current` and backed by the image `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-2670bc8`.
+
+### Prompt Context
+
+**User prompt (verbatim):** "Deploy the `2026-05-27--rag-evaluation-system/web/package.json` Storybook as `rag-evaluation-page.storybook.yolo.scapegoat.dev`, keep a diary, and commit at appropriate intervals."
+
+**Assistant interpretation:** Build and deploy the app-level `web` Storybook, not only the package Storybook, using the static-sites K3s platform and recording the implementation journey.
+
+**Inferred user intent:** Make the page/application Storybook publicly available under a reusable wildcard Storybook hosting pattern and preserve the runbook details for future deployments.
+
+**Commit (code):** `97790b14122a053a9d6bd812a0c2bdd526b18d83` — PR #6 squash merge, "Package RAG Evaluation web Storybook as static artifact".
+
+### What I did
+- Created clean worktrees for source, K3s, and Terraform changes:
+  - `/tmp/rag-web-storybook-source`
+  - `/tmp/storybook-wildcard-k3s`
+  - `/tmp/storybook-dns-tf`
+- Fixed stale `web/` page Storybook usage against the current `@go-go-golems/rag-evaluation-site` API:
+  - `web/src/components/pages/DslPreviewPage/DslPreviewPage.tsx`
+  - `web/src/components/pages/TranscriptAnnotationPage/TranscriptAnnotationPage.tsx`
+  - `web/src/components/pages/ContextVisualizerPage/ContextVisualizerPage.tsx`
+  - `web/src/components/pages/ContextVisualizerPage/ContextVisualizerPage.module.css`
+- Added `Dockerfile.web-storybook-static` and ignored `web/storybook-static/`.
+- Validated source packaging with:
+  - `pnpm --dir web typecheck`
+  - `pnpm --dir web build-storybook`
+  - `docker build -f Dockerfile.web-storybook-static -t rag-evaluation-page-storybook:test .`
+  - `docker run --rm rag-evaluation-page-storybook:test sh -c 'test -f /site/index.html && find /site -maxdepth 2 -type f | sort | head -20'`
+- Pushed the first image manually:
+  - `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-2670bc8`
+- Added Terraform DNS in `/tmp/storybook-dns-tf/dns/zones/scapegoat-dev/envs/prod/main.tf`:
+  - `*.storybook.yolo.scapegoat.dev` -> `91.98.46.169`
+- Added K3s wildcard Storybook hosting in `/tmp/storybook-wildcard-k3s`:
+  - `gitops/kustomize/static-sites-host/storybook-wildcard-certificate.yaml`
+  - `gitops/kustomize/static-sites-host/storybook-wildcard-ingress.yaml`
+  - `gitops/kustomize/rag-evaluation-page-storybook/*`
+  - `gitops/applications/rag-evaluation-page-storybook.yaml`
+  - `vault/policies/kubernetes/rag-evaluation-page-storybook.hcl`
+  - `vault/roles/kubernetes/rag-evaluation-page-storybook.json`
+- Opened and merged PRs:
+  - Source PR #6: `https://github.com/go-go-golems/rag-evaluation-system/pull/6`
+  - K3s PR #111: `https://github.com/wesen/2026-03-27--hetzner-k3s/pull/111`
+  - Terraform PR #5: `https://github.com/wesen/terraform/pull/5`
+- Applied Terraform after merge:
+  - `terraform -chdir=dns/zones/scapegoat-dev/envs/prod plan -out=/tmp/storybook-yolo-dns.tfplan`
+  - `terraform -chdir=dns/zones/scapegoat-dev/envs/prod apply -auto-approve /tmp/storybook-yolo-dns.tfplan`
+- Bootstrapped Vault Kubernetes access:
+  - `vault policy write rag-evaluation-page-storybook vault/policies/kubernetes/rag-evaluation-page-storybook.hcl`
+  - `vault write auth/kubernetes/role/rag-evaluation-page-storybook @vault/roles/kubernetes/rag-evaluation-page-storybook.json`
+- Seeded the image-pull secret by copying the existing Storybook GHCR pull secret data into:
+  - `kv/apps/rag-evaluation-page-storybook/prod/image-pull`
+- Applied/refreshed Argo resources and waited for rollout:
+  - `kubectl apply -f /tmp/storybook-wildcard-k3s/gitops/applications/rag-evaluation-page-storybook.yaml`
+  - `kubectl -n argocd annotate applications.argoproj.io static-sites-host argocd.argoproj.io/refresh=hard --overwrite`
+  - `kubectl -n argocd annotate applications.argoproj.io rag-evaluation-page-storybook argocd.argoproj.io/refresh=hard --overwrite`
+- Smoke tested the live site:
+  - `dig +short rag-evaluation-page.storybook.yolo.scapegoat.dev A` returned `91.98.46.169`
+  - `curl -fsSI https://rag-evaluation-page.storybook.yolo.scapegoat.dev/` returned `HTTP/2 200`
+  - `curl -fsS https://rag-evaluation-page.storybook.yolo.scapegoat.dev/index.html | grep -o '<title>[^<]*'` returned `<title>storybook - Storybook`
+
+### Why
+- The user asked for the `web/package.json` Storybook specifically, so this deployment needed to target `pnpm --dir web build-storybook` rather than `packages/rag-evaluation-site`.
+- A wildcard Storybook domain avoids one-off DNS/TLS work for every future Storybook deployment.
+- Keeping one shared `static-sites-host` preserves the existing static artifact contract: image contains `/site`, publisher Job copies `/site` into the hostname-specific release directory, Caddy serves by `{host}`.
+
+### What worked
+- Source CI checks passed on PR #6: test, lint, CodeQL, dependency review, Go vulnerability check, GoSec, and TruffleHog.
+- Local Storybook build and Docker packaging passed after the stale page API fixes.
+- Terraform applied exactly one new DNS record: `wildcard_storybook_yolo_a`.
+- cert-manager issued `storybook-yolo-wildcard-tls` using DNS-01.
+- Argo reported both applications healthy at revision `1b0408eabac766d48f65324d582d03a9329eda5b`:
+  - `static-sites-host`: `Synced Healthy`
+  - `rag-evaluation-page-storybook`: `Synced Healthy`
+- The publisher Job completed and wrote the Storybook files under the expected host directory.
+- HTTPS smoke test returned `HTTP/2 200`.
+
+### What didn't work
+- The first `pnpm --dir web typecheck` failed because several `web/` page components still used stale APIs from `@go-go-golems/rag-evaluation-site`.
+- The first `pnpm --dir web build-storybook` failed because `contextTranscriptFixture` is no longer exported. The current fixture is `transcriptFixture`.
+- My first Terraform apply attempt failed because a Python parser assumed the old `doctl` config shape and exported an invalid DigitalOcean token:
+  - error: `Error retrieving domain: GET https://api.digitalocean.com/v2/domains/scapegoat.dev: 401 ... Unable to authenticate you`
+  - fix: use `DIGITALOCEAN_TOKEN=$(doctl auth token)`.
+- `gh pr merge` printed local worktree checkout errors because the target `main` branch was already checked out by other worktrees, but the remote PR merges succeeded.
+- Two PR descriptions lost backtick-wrapped values because the shell interpreted them as command substitutions. The commits and manifests were unaffected.
+- The first Argo rollout got stuck in `ImagePullBackOff` because the Vault path `kv/apps/rag-evaluation-page-storybook/prod/image-pull` did not exist yet:
+  - VSO error: `empty response from Vault, path="kv/data/apps/rag-evaluation-page-storybook/prod/image-pull"`
+  - pod error: `Unable to retrieve some image pull secrets (rag-evaluation-page-storybook-ghcr-pull)`
+  - fix: copy the existing GHCR pull secret data from `kv/apps/rag-evaluation-storybook/prod/image-pull`, wait for `VaultStaticSecret` to become ready, then delete the failed Job pod so the Job retried.
+
+### What I learned
+- The `web/` Storybook is a good integration test for the package API: it caught fixture and component prop drift that package-level stories did not catch.
+- Wildcard Storybook hosting only needs three platform-level pieces once: wildcard DNS, wildcard DNS-01 certificate, and wildcard ingress into the shared static host.
+- Vault secret seeding remains an operator step unless a source workflow or bootstrap script explicitly creates the per-site image-pull path.
+- Argo can be made to pick up a merged static-sites-host revision by hard-refreshing the existing application; a new app can be created directly with `kubectl apply -f gitops/applications/...` if the app-of-apps has not discovered it yet.
+
+### What was tricky to build
+- The hardest part was separating the reusable wildcard platform change from the one concrete `rag-evaluation-page` publisher. The wildcard ingress and certificate belong to `static-sites-host`; the release-specific image, Vault auth, Vault static secret, and publisher Job belong to `rag-evaluation-page-storybook`.
+- The image-pull failure was subtle because the Vault policy and Kubernetes auth role were correct, but the underlying secret path did not exist. VSO surfaced this as an `empty response from Vault`, while kubelet surfaced only a missing image pull secret and then a GHCR authorization failure.
+- The Storybook page fixes required mapping old app code to current package exports rather than adding compatibility shims. I updated the app pages to current props/fixtures instead of changing the package API.
+
+### What warrants a second pair of eyes
+- Review whether each future `*.storybook.yolo.scapegoat.dev` app should get its own Vault path or whether a shared static-sites GHCR pull secret is acceptable.
+- Review whether `storybook-yolo-wildcard-tls` should include the apex `storybook.yolo.scapegoat.dev` as a DNS name; the current certificate intentionally covers only `*.storybook.yolo.scapegoat.dev` because the deployed target is a subdomain.
+- Review whether the manually created Argo Application should also be added to any app-of-apps index if one exists beyond `gitops/applications/` discovery.
+
+### What should be done in the future
+- Add a reusable source workflow for `web` Storybook releases so future updates do not require manual Docker build/push.
+- Consider adding a small operator script that creates/copies per-site image-pull Vault paths for static Storybook publishers.
+- Consider documenting `*.storybook.yolo.scapegoat.dev` as a platform convention in the static-site playbook.
+
+### Code review instructions
+- Source review starts with PR #6 and these files:
+  - `/tmp/rag-web-storybook-source/Dockerfile.web-storybook-static`
+  - `/tmp/rag-web-storybook-source/web/src/components/pages/DslPreviewPage/DslPreviewPage.tsx`
+  - `/tmp/rag-web-storybook-source/web/src/components/pages/TranscriptAnnotationPage/TranscriptAnnotationPage.tsx`
+  - `/tmp/rag-web-storybook-source/web/src/components/pages/ContextVisualizerPage/ContextVisualizerPage.tsx`
+- Platform review starts with PR #111 and these files:
+  - `/tmp/storybook-wildcard-k3s/gitops/kustomize/static-sites-host/storybook-wildcard-certificate.yaml`
+  - `/tmp/storybook-wildcard-k3s/gitops/kustomize/static-sites-host/storybook-wildcard-ingress.yaml`
+  - `/tmp/storybook-wildcard-k3s/gitops/kustomize/rag-evaluation-page-storybook/publish-job.yaml`
+- DNS review starts with PR #5 and:
+  - `/tmp/storybook-dns-tf/dns/zones/scapegoat-dev/envs/prod/main.tf`
+- Validate live state with:
+  - `kubectl -n argocd get applications.argoproj.io static-sites-host rag-evaluation-page-storybook -o wide`
+  - `kubectl -n static-sites get ingress,certificate,job,pod,secret | rg 'storybook|NAME'`
+  - `curl -fsSI https://rag-evaluation-page.storybook.yolo.scapegoat.dev/`
+
+### Technical details
+- Live URL: `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/`
+- Image: `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-2670bc8`
+- DNS record: `*.storybook.yolo.scapegoat.dev A 91.98.46.169`
+- Wildcard certificate: `static-sites/storybook-yolo-wildcard-tls`
+- Wildcard ingress: `static-sites/storybook-yolo-wildcard`
+- Publisher Job: `static-sites/publish-rag-evaluation-page-storybook-sha-2670bc8`
+- Argo revision: `1b0408eabac766d48f65324d582d03a9329eda5b`
+
+
+## Step 10: Fix Storybook module MIME errors on encoded backtick paths
+
+A browser console report showed Storybook manager modules being requested below `/%60/` and rejected because Caddy returned `text/html` instead of JavaScript. The deployed bundle itself was valid at `/`, but Storybook's generated HTML used relative manager asset URLs, so a malformed entry path such as `/%60/` caused imports like `./sb-manager/runtime.js` to resolve as `/%60/sb-manager/runtime.js`.
+
+I fixed the static artifact packaging so `index.html` and `iframe.html` use root-absolute asset URLs. The repaired deployment uses image `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-e78da8f` and validates both the normal root URL and the encoded-backtick URL without the MIME errors.
+
+### Prompt Context
+
+**User prompt (verbatim):** "globals-runtime.js:4145:206
+[Obsidian Clipper] Initializing content script, generation 1 content.js:1:910451
+Loading module from “https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/sb-manager/runtime.js” was blocked because of a disallowed MIME type (“text/html”). iframe.html
+Loading module from “https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/sb-addons/common-manager-bundle.js” was blocked because of a disallowed MIME type (“text/html”). iframe.html
+Loading module from “https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/sb-manager/globals-runtime.js” was blocked because of a disallowed MIME type (“text/html”)."
+
+**Assistant interpretation:** Diagnose and fix the live Storybook deployment so manager JavaScript modules are not fetched from the accidental `/%60/` prefix and served as HTML.
+
+**Inferred user intent:** Make the deployed Storybook robust enough to load cleanly in the browser, including after a bad/deep URL gets into the address bar.
+
+**Commit (code):** `518e1021f5eec443250e11f6616564557557e792` — PR #7 squash merge, "Fix web Storybook asset URLs for deep links".
+
+### What I did
+- Reproduced the URL-shape issue by checking the live fallback behavior for `/%60/sb-manager/runtime.js`, which returned `content-type: text/html` due to SPA fallback.
+- Updated `/tmp/rag-web-storybook-source/Dockerfile.web-storybook-static` to rewrite generated Storybook HTML at image build time:
+  - `href="./..."` -> `href="/..."`
+  - `src="./..."` -> `src="/..."`
+  - `import './...'` -> `import '/...'`
+  - `url('./...'` -> `url('/...'`
+- Validated the image contains absolute paths with `docker run` and `grep`.
+- Built and pushed:
+  - `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-e78da8f`
+- Opened and merged source PR #7:
+  - `https://github.com/go-go-golems/rag-evaluation-system/pull/7`
+- Updated and merged K3s PR #112 to publish the new image:
+  - `https://github.com/wesen/2026-03-27--hetzner-k3s/pull/112`
+- Refreshed Argo and observed the new Job complete:
+  - `publish-rag-evaluation-page-storybook-sha-e78da8f`
+- Verified live HTML now imports root-absolute Storybook manager assets.
+- Used Playwright to open:
+  - `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/`
+  - result: page title `Storybook`, no console errors/warnings returned for the problematic module MIME issue.
+
+### Why
+- The static-sites host deliberately falls back to `index.html` for unknown paths to support SPAs. That is correct for Storybook navigation, but relative asset URLs become dangerous when the entry path has an unintended prefix.
+- Root-absolute asset URLs keep the Storybook bundle host-relative while avoiding path-prefix poisoning.
+
+### What worked
+- The Dockerfile post-processing is simple and local to the static artifact image; it does not require changing Storybook internals or the shared Caddy config.
+- Source PR #7 passed checks.
+- Argo rolled out revision `6ec7bbaea63f1d8119fb7dc7e30b5ebb372b4741` and the new publisher Job completed.
+- Playwright verified the exact encoded-backtick path no longer emits the reported module MIME errors.
+
+### What didn't work
+- The first version of the deployment relied on Storybook's default relative URLs. That works at `/` but fails when the browser resolves imports relative to a bad path segment.
+- A quick shell validation command initially had an unterminated quote; I reran it with corrected quoting.
+
+### What I learned
+- Storybook's static manager output can be sensitive to the entry URL path because manager imports are relative by default.
+- For hostname-root static-sites deployments, root-absolute Storybook asset URLs are safer than relative URLs.
+
+### What was tricky to build
+- The Caddy fallback response is not itself wrong; the bug is the combination of fallback plus relative module resolution. The symptom appears as a MIME error, but the root cause is a URL prefix leak from the entry page.
+
+### What warrants a second pair of eyes
+- Review whether this root-absolute rewrite should become the default pattern for all Storybook static artifacts in the playbook.
+- Confirm no future deployment needs Storybook served from a subpath; root-absolute URLs assume host-root serving.
+
+### What should be done in the future
+- Fold this fix into the reusable CI workflow once the web Storybook publisher is automated.
+- Add a smoke test for `/%60/` or another synthetic deep path to catch relative asset regressions.
+
+### Code review instructions
+- Review source PR #7 first, especially `Dockerfile.web-storybook-static`.
+- Review K3s PR #112 to confirm all release tokens changed from `sha-2670bc8` to `sha-e78da8f`.
+- Validate with:
+  - `curl -fsS https://rag-evaluation-page.storybook.yolo.scapegoat.dev/ | rg "import '/sb-manager"`
+  - browser open `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/`
+
+### Technical details
+- Fixed image: `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-e78da8f`
+- K3s Argo revision: `6ec7bbaea63f1d8119fb7dc7e30b5ebb372b4741`
+- Fixed Job: `static-sites/publish-rag-evaluation-page-storybook-sha-e78da8f`
+
+
+## Step 11: Normalize backtick-prefixed entry paths before Storybook manager starts
+
+The first asset-URL fix stopped the browser from loading manager JavaScript from `/%60/sb-manager/...`, but it did not fix Storybook's own preview URL construction. When opened at `/%60?path=...`, the manager still used the current pathname and requested ``/`/iframe.html`` and ``/`/index.json``, which returned the manager fallback instead of the preview data.
 I completed the live rollout after the implementation commits were merged. The happy path was mostly successful, but the source GitHub Actions workflow failed at startup, so I used the same artifact and GitOps contracts manually for the first deployment: build/push the GHCR image, patch the K3s publisher Job from `sha-0000000` to `sha-09d7628`, merge that GitOps PR, apply the Argo CD Application, and smoke test HTTPS.
 
+I added an earlier guard in the packaged `index.html`: if the browser enters through `/%60...` or a literal backtick path, it redirects to the same query/hash at `/` before Storybook manager runtime starts. The deployed image is now `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-eb4b80c`, and the exact user-reported URL redirects to the clean root URL while preserving the requested story.
 The site is now live at `https://rag-evaluation-storybook.yolo.scapegoat.dev/`. The Argo CD Application is `Synced Healthy`, the publisher Job completed, Vault Secret Operator created the GHCR pull secret, cert-manager issued the TLS secret, and Caddy serves the Storybook HTML with HTTP 200.
 
 ### Prompt Context
 
-**User prompt (verbatim):** "go ahead"
+**User prompt (verbatim):** "ceived preloadStories but was unable to determine the source of the event 4 globals-runtime.js:5814:58
+Navigated to https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60?path=/story/component-library-corpus-documentbrowser--loading
+GET
+https://rag-evaluation-page.storybook.yolo.scapegoat.dev/`?path=/story/component-library-corpus-documentbrowser--loading
+[HTTP/2 200  366ms]
+...
+I still don't see the story though"
 
+**Assistant interpretation:** The previous fix resolved module MIME errors but not actual story rendering; investigate why Storybook still loads preview resources under the stray backtick path and deploy a fix.
 **Assistant interpretation:** Proceed from the planned next steps into the live rollout: merge scaffolding, bootstrap Vault, publish the first static image, patch GitOps to a real release token, apply Argo, and validate the public URL.
 
+**Inferred user intent:** Make the exact shared URL render the requested story visibly, not merely load the manager shell without module errors.
 **Inferred user intent:** Move beyond documentation/scaffold into an actual deployed Storybook site.
 
+**Commit (code):** `4d9ff169177011feba7eb6f3e793a1621a3eddd6` — PR #8 squash merge, "Normalize malformed web Storybook entry paths".
 **Commit (code):** pending — rollout diary update.
 
 ### What I did
+- Identified that the manager was still constructing preview resources under the bad path:
+  - ``/`/iframe.html?id=...``
+  - ``/`/index.json``
+- Updated `/tmp/rag-web-storybook-source/Dockerfile.web-storybook-static` to inject an early `index.html` script that redirects:
+  - `/%60?path=...` -> `/?path=...`
+  - ``/`?path=...`` -> `/?path=...`
+  - with query string and hash preserved.
+- Built and pushed:
+  - `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-eb4b80c`
+- Merged source PR #8:
+  - `https://github.com/go-go-golems/rag-evaluation-system/pull/8`
+- Merged K3s PR #113:
+  - `https://github.com/wesen/2026-03-27--hetzner-k3s/pull/113`
+- Refreshed Argo and observed the new publisher Job complete:
+  - `publish-rag-evaluation-page-storybook-sha-eb4b80c`
+- Verified the exact URL in Playwright:
+  - input: `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60?path=/story/component-library-corpus-documentbrowser--loading`
+  - final URL: `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/?path=/story/component-library-corpus-documentbrowser--loading`
+  - page title: `Component Library / Corpus / DocumentBrowser - Loading ⋅ Storybook`
+  - iframe URL: `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/iframe.html?id=component-library-corpus-documentbrowser--loading&viewMode=story`
+  - iframe body text included: `TTC GUIDES — DOCUMENTS`, `0 DOCS`, `Loading...`
 - Created clean worktrees to avoid unrelated local changes:
   - `/tmp/rag-storybook-source-deploy`
   - `/tmp/rag-storybook-k3s-deploy`
@@ -703,6 +961,8 @@ The site is now live at `https://rag-evaluation-storybook.yolo.scapegoat.dev/`. 
   - `curl -fsSL https://rag-evaluation-storybook.yolo.scapegoat.dev/ | head`
 
 ### Why
+- Storybook manager derives iframe and index URLs from the current page path. Root-absolute asset URLs fix JavaScript imports, but they do not change Storybook's notion of its base path.
+- Normalizing the entry URL before Storybook runtime starts prevents both manager-module and preview-iframe path poisoning.
 - The static-site scaffold needed a real immutable release image before it could be safely applied.
 - The source workflow startup failure blocked the intended automated first publish, but the artifact contract was simple enough to execute manually without changing the target architecture.
 - The shared VaultConnection warning would have left Argo in an undesirable state, so I fixed the manifest ownership boundary with a dedicated VaultConnection.
@@ -717,6 +977,9 @@ The site is now live at `https://rag-evaluation-storybook.yolo.scapegoat.dev/`. 
 - `VaultAuth` and `VaultStaticSecret` became healthy/ready.
 - TLS secret `rag-evaluation-storybook-tls` was issued.
 - HTTPS returned `HTTP/2 200` and served Storybook HTML.
+- Source PR #8 passed CI checks.
+- K3s rollout completed at revision `a41be908ff98d4e8c22bcc3f03b6c4dfa17809f9`.
+- Playwright confirmed the requested story now visibly renders inside the preview iframe.
 
 ### What didn't work
 - The source workflow run on `main` failed before creating jobs:
@@ -726,25 +989,34 @@ The site is now live at `https://rag-evaluation-storybook.yolo.scapegoat.dev/`. 
   - jobs: `[]`
 - Because no job existed, there was no job log to inspect with `gh run view --log-failed`.
 - The first Argo sync reported `OutOfSync Healthy` due to a shared `VaultConnection/vault` resource also owned by `dmeta-examples`. This was fixed in PR #110 by renaming Storybook's VaultConnection to `rag-evaluation-storybook-vault`.
+- Fixing only asset URLs was incomplete because Storybook's runtime also constructs data/preview URLs from `window.location.pathname`.
 
 ### What I learned
 - The static artifact contract is robust enough to recover from CI handoff failure: as long as `/site/index.html` can be built and pushed to GHCR, the K3s static-sites flow works.
 - Argo shared-resource ownership matters for reusable VSO support resources. Static-site packages should use unique `VaultConnection` names unless the shared resource is intentionally managed by a separate platform app.
 - A completed publisher Job and successful HTTPS smoke test are the strongest rollout proof for this pattern.
+- For Storybook static hosting, two path classes matter:
+  - static asset URLs (`sb-manager`, `assets`, fonts), and
+  - Storybook runtime base URLs (`iframe.html`, `index.json`).
+- A malformed entry path must be normalized before the manager runtime starts, otherwise the manager can load but the preview still fails.
 
 ### What was tricky to build
 - The workflow startup failure happened after merge and before any reusable-workflow job logs existed. I did not block the rollout on it because manual publish plus GitOps PR preserved the same deployment artifact and release-token semantics. The follow-up is to debug/fix the reusable workflow invocation or replace it with an in-repo workflow that calls infra-tooling differently.
 - The Argo app was healthy but out of sync because of shared `VaultConnection/vault`, which is a subtle ownership issue rather than a runtime failure. The symptom was `SharedResourceWarning` and `VaultConnection/vault` shown as `OutOfSync`; the fix was a dedicated VaultConnection name and matching VaultAuth reference.
+- The console errors changed from hard module failures to softer Storybook manager warnings, which made the page look closer to working while the preview iframe was still pointed at the wrong path.
 
 ### What warrants a second pair of eyes
 - Debug the GitHub Actions `startup_failure` for `.github/workflows/publish-rag-evaluation-storybook.yml`; future automated releases are not proven until that is fixed.
 - Decide whether all static-site packages should use dedicated VaultConnection names to avoid shared-resource warnings.
 - Confirm GHCR package visibility and long-term token scope for image pulls.
+- Review whether this redirect should be implemented at Caddy level for all static Storybook hosts instead of per-artifact.
+- Review if other malformed prefixes besides backtick should be normalized.
 
 ### What should be done in the future
 - Fix and re-run the source workflow so future Storybook releases are fully automated.
 - Consider extracting the final diary into a standalone static Storybook deployment playbook.
 - Add a cleanup policy for old `/srv/sites/rag-evaluation-storybook.yolo.scapegoat.dev/releases/sha-*` directories if releases become frequent.
+- Add a smoke test that opens `/%60?path=/story/...` and asserts the iframe URL starts at `/iframe.html` and contains story body text.
 
 ### Code review instructions
 - Review K3s PRs #108, #109, and #110 in order.
@@ -754,9 +1026,16 @@ The site is now live at `https://rag-evaluation-storybook.yolo.scapegoat.dev/`. 
   - `kubectl -n static-sites get job,pod,vaultauth,vaultstaticsecret,secret,ingress | rg 'rag-evaluation-storybook|NAME'`
 - Verify the public site with:
   - `curl -fsSI https://rag-evaluation-storybook.yolo.scapegoat.dev/`
+- Review PR #8 for the source artifact normalization script.
+- Review PR #113 for the K3s release token update to `sha-eb4b80c`.
+- Validate with Playwright or browser devtools on the exact reported URL.
 
 ### Technical details
 - Live URL: `https://rag-evaluation-storybook.yolo.scapegoat.dev/`
 - Release image: `ghcr.io/go-go-golems/rag-evaluation-storybook:sha-09d7628`
 - K3s final sync revision: `982d63aa2f69d118b7aa7bdd6fc0673beedadc21`
 - Successful HTTP status: `HTTP/2 200`
+- Fixed image: `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-eb4b80c`
+- K3s Argo revision: `a41be908ff98d4e8c22bcc3f03b6c4dfa17809f9`
+- Fixed Job: `static-sites/publish-rag-evaluation-page-storybook-sha-eb4b80c`
+- Remaining browser warning: Storybook 11 deprecation for `PopoverProvider ariaLabel`; not a rendering blocker.

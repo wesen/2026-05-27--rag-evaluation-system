@@ -14,6 +14,7 @@ export const transcriptWorkspacePanelWidget = defineWidget<TranscriptWorkspacePa
       annotations={props.annotations}
       selectedAnnotationId={props.selectedAnnotationId}
       showNotes={props.showNotes}
+      styleSet={props.styleSet}
       onAnnotationSelect={props.onAnnotationSelectAction
         ? (annotationId) => ctx.dispatchAction(props.onAnnotationSelectAction!, { annotationId, value: annotationId, componentType: 'TranscriptWorkspacePanel' })
         : undefined}

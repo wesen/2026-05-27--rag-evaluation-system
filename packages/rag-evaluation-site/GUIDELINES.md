@@ -61,7 +61,7 @@ Use these roles instead of local typography whenever possible.
 
 Atoms own small controls and semantic markers. They may use foundation typography and theme tokens, but they should not own page layout.
 
-Examples: `Button`, `TextInput`, `SelectInput`, `CheckboxRow`, `IconButton`, `ContextKindSwatch`, `AnnotationBadge`.
+Examples: `Button`, `TextInput`, `SelectInput`, `CheckboxRow`, `IconButton`, `ContextStyleSwatch`, `AnnotationBadge`.
 
 ### Layout
 
@@ -209,6 +209,21 @@ Avoid in CSS modules:
 - broad styling props that turn components into style systems
 
 Inline styles are allowed only for truly dynamic geometry, CSS variable plumbing, or Storybook-only swatches.
+
+## Context/transcript palette rules
+
+Context-window diagrams and transcript widgets use a `styleKey + ContextStyleSet` contract:
+
+- `ContextWindowPart.styleKey` is the data-side lookup key. Do not reintroduce `ContextPartKind` or `kind` for context-window diagram parts.
+- `ContextStyleSet.styles` defines visual styles keyed by `styleKey`.
+- `ContextStyleSet.legend` defines the visible legend vocabulary and may hide render-only entries such as free/headroom space.
+- `ContextVisualStyle` must include enough foreground information for readable text. Use `labelColor` / `--ctx-label` whenever text appears on top of `--ctx-fill`.
+- Generic CSS pattern classes should be named `.pattern_*`, not `.kind_*`.
+- Storybook controls should expose a simple `palette` arg and map it to `ContextStyleSet` in `render`; do not expose raw nested style-set objects as controls.
+
+Transcript-specific rule: palette color is chrome, not body content. Message bodies and side-note bodies should stay on `var(--mac-surface)` by default. Apply palette fills/halftones to title bars, borders, glyphs, swatches, token chips, note links, and selected states with explicit foregrounds.
+
+Widget IR / Goja DSL rule: context diagram widgets must carry `styleSet`, and DSL examples should use `contextWindow.styleSet(...)` or `contextWindow.paletteStyleSet(...)`. Do not document or generate `contextKindSwatch`, `legendKinds`, `legendMode`, or diagram `mode` as current API.
 
 ## Prototype-source usage
 

@@ -5,5 +5,5 @@ import type { ContextBudgetBarWidgetProps } from '../../../widgets/ir';
 export const contextBudgetBarWidget = defineWidget<ContextBudgetBarWidgetProps>({
   type: 'ContextBudgetBar',
   module: 'context_window.dsl',
-  render: (props) => <ContextBudgetBar className={props.className} snapshot={props.snapshot} mode={props.mode} showLegend={props.showLegend} selectedPartId={props.selectedPartId} />,
+  render: (props) => <ContextBudgetBar className={props.className} snapshot={props.snapshot} styleSet={props.styleSet} showLegend={props.showLegend} selectedPartId={props.selectedPartId} />,
 });

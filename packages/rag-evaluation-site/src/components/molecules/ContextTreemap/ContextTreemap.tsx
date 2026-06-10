@@ -1,38 +1,39 @@
 import type { HTMLAttributes, KeyboardEvent } from 'react';
-import { contextWindowTokenTotal, getContextKindLabel, type ContextWindowSnapshot } from '../../../context';
+import { contextVisualStyleToCssVars, contextWindowHeadroomStyleKeys, contextWindowIsHeadroomPart, contextWindowTokenTotal, resolveContextVisualStyle, type ContextStyleSet, type ContextWindowSnapshot } from '../../../context';
 import styles from './ContextTreemap.module.css';
 
 export interface ContextTreemapProps extends HTMLAttributes<HTMLDivElement> {
   snapshot: ContextWindowSnapshot;
+  styleSet: ContextStyleSet;
   selectedPartId?: string;
   onPartSelect?: (partId: string) => void;
 }
 
 function formatTokens(tokens: number) { return `${tokens.toLocaleString()} tok`; }
-
+function styleName(styleSet: ContextStyleSet, styleKey: string) { return styleSet.legend.find((item) => (item.styleKey ?? item.id) === styleKey)?.label ?? styleKey; }
+function patternClass(pattern: string | undefined) { return styles[`pattern_${pattern ?? 'none'}`] ?? styles.pattern_none; }
 function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
   if (!onPartSelect) return;
-  if (event.key === 'Enter' || event.key === ' ') {
-    event.preventDefault();
-    onPartSelect(partId);
-  }
+  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onPartSelect(partId); }
 }
 
-export function ContextTreemap({ snapshot, selectedPartId, onPartSelect, className, ...rest }: ContextTreemapProps) {
+export function ContextTreemap({ snapshot, styleSet, selectedPartId, onPartSelect, className, ...rest }: ContextTreemapProps) {
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
-  const parts = snapshot.parts.filter((part) => part.kind !== 'empty' && part.tokens > 0);
-  const total = contextWindowTokenTotal(snapshot) || 1;
+  const headroomStyleKeys = contextWindowHeadroomStyleKeys(styleSet);
+  const parts = snapshot.parts.filter((part) => !contextWindowIsHeadroomPart(part, { headroomStyleKeys }) && part.tokens > 0);
+  const total = contextWindowTokenTotal(snapshot, { headroomStyleKeys }) || 1;
   return <div className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="ContextTreemap" {...rest}>
     <div className={styles.map} role="img" aria-label={`${snapshot.title} token treemap`}>
       {parts.map((part) => {
+        const visualStyle = resolveContextVisualStyle(part.styleKey, styleSet);
         const area = Math.max(7, (part.tokens / total) * 100);
         const selected = effectiveSelectedPartId === part.id;
         const interactive = Boolean(onPartSelect);
         return <div
           key={part.id}
-          className={[styles.tile, styles[`kind_${part.kind}`] ?? styles.kind_other, selected ? styles.selected : ''].filter(Boolean).join(' ')}
-          style={{ flexBasis: `${area}%`, flexGrow: part.tokens }}
-          title={`${part.label}: ${formatTokens(part.tokens)} (${getContextKindLabel(part.kind)})`}
+          className={[styles.tile, patternClass(visualStyle.pattern), selected ? styles.selected : ''].filter(Boolean).join(' ')}
+          style={{ flexBasis: `${area}%`, flexGrow: part.tokens, ...contextVisualStyleToCssVars(visualStyle) }}
+          title={`${part.label}: ${formatTokens(part.tokens)} (${styleName(styleSet, part.styleKey)})`}
           role={interactive ? 'button' : undefined}
           tabIndex={interactive ? 0 : undefined}
           aria-pressed={interactive ? selected : undefined}

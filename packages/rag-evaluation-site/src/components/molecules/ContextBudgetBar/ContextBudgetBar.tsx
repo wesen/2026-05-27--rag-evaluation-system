@@ -1,54 +1,47 @@
 import type { HTMLAttributes, KeyboardEvent } from 'react';
 import {
+  contextVisualStyleToCssVars,
   contextWindowFillRatio,
+  contextWindowHeadroomStyleKeys,
+  contextWindowIsHeadroomPart,
   contextWindowTokenTotal,
-  getContextKindLabel,
-  type ContextDiagramStyle,
+  resolveContextVisualStyle,
+  type ContextStyleSet,
   type ContextWindowPart,
   type ContextWindowSnapshot,
 } from '../../../context';
 import { Caption } from '../../foundation';
+import { ContextStyleSwatch } from '../../atoms';
 import styles from './ContextBudgetBar.module.css';
 
 export interface ContextBudgetBarProps extends HTMLAttributes<HTMLDivElement> {
   snapshot: ContextWindowSnapshot;
-  mode?: ContextDiagramStyle;
+  styleSet: ContextStyleSet;
   showLegend?: boolean;
   selectedPartId?: string;
   onPartSelect?: (partId: string) => void;
 }
 
-function formatTokens(tokens: number) {
-  return `${Math.round(tokens).toLocaleString()} tok`;
-}
-
-function usedParts(parts: ContextWindowPart[]) {
-  return parts.filter((part) => part.kind !== 'empty' && part.tokens > 0);
-}
-
+function formatTokens(tokens: number) { return `${Math.round(tokens).toLocaleString()} tok`; }
+function usedParts(parts: ContextWindowPart[], headroomStyleKeys: Iterable<string>) { return parts.filter((part) => !contextWindowIsHeadroomPart(part, { headroomStyleKeys }) && part.tokens > 0); }
+function styleName(styleSet: ContextStyleSet, styleKey: string) { return styleSet.legend.find((item) => (item.styleKey ?? item.id) === styleKey)?.label ?? styleKey; }
+function patternClass(pattern: string | undefined) { return styles[`pattern_${pattern ?? 'none'}`] ?? styles.pattern_none; }
 function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
   if (!onPartSelect) return;
-  if (event.key === 'Enter' || event.key === ' ') {
-    event.preventDefault();
-    onPartSelect(partId);
-  }
+  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onPartSelect(partId); }
 }
 
-export function ContextBudgetBar({ snapshot, mode = 'pattern', showLegend = true, selectedPartId, onPartSelect, className, ...rest }: ContextBudgetBarProps) {
-  const total = contextWindowTokenTotal(snapshot);
-  const ratio = contextWindowFillRatio(snapshot);
+export function ContextBudgetBar({ snapshot, styleSet, showLegend = true, selectedPartId, onPartSelect, className, ...rest }: ContextBudgetBarProps) {
+  const headroomStyleKeys = contextWindowHeadroomStyleKeys(styleSet);
+  const total = contextWindowTokenTotal(snapshot, { headroomStyleKeys });
+  const ratio = contextWindowFillRatio(snapshot, { headroomStyleKeys });
   const overBudget = total > snapshot.limit;
   const nearBudget = !overBudget && ratio >= 0.8;
-  const parts = usedParts(snapshot.parts);
+  const parts = usedParts(snapshot.parts, headroomStyleKeys);
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
 
   return (
-    <div
-      className={[styles.root, overBudget ? styles.overBudget : nearBudget ? styles.nearBudget : '', className ?? ''].filter(Boolean).join(' ')}
-      data-rag-molecule="ContextBudgetBar"
-      data-mode={mode}
-      {...rest}
-    >
+    <div className={[styles.root, overBudget ? styles.overBudget : nearBudget ? styles.nearBudget : '', className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="ContextBudgetBar" {...rest}>
       <div className={styles.header}>
         <Caption transform="uppercase">{snapshot.title}</Caption>
         <Caption tone={overBudget ? 'danger' : nearBudget ? 'warning' : 'muted'}>
@@ -57,15 +50,16 @@ export function ContextBudgetBar({ snapshot, mode = 'pattern', showLegend = true
       </div>
       <div className={styles.track} role="img" aria-label={`${snapshot.title}: ${formatTokens(total)} of ${formatTokens(snapshot.limit)} used`}>
         {parts.map((part) => {
+          const visualStyle = resolveContextVisualStyle(part.styleKey, styleSet);
           const width = snapshot.limit > 0 ? Math.max(0.5, (part.tokens / snapshot.limit) * 100) : 0;
           const selected = effectiveSelectedPartId === part.id;
           const interactive = Boolean(onPartSelect);
           return (
             <div
               key={part.id}
-              className={[styles.segment, styles[`kind_${part.kind}`] ?? styles.kind_other, selected ? styles.selected : ''].filter(Boolean).join(' ')}
-              style={{ width: `${width}%` }}
-              title={`${part.label}: ${formatTokens(part.tokens)} (${getContextKindLabel(part.kind)})`}
+              className={[styles.segment, patternClass(visualStyle.pattern), selected ? styles.selected : ''].filter(Boolean).join(' ')}
+              style={{ width: `${width}%`, ...contextVisualStyleToCssVars(visualStyle) }}
+              title={`${part.label}: ${formatTokens(part.tokens)} (${styleName(styleSet, part.styleKey)})`}
               role={interactive ? 'button' : undefined}
               tabIndex={interactive ? 0 : undefined}
               aria-pressed={interactive ? selected : undefined}
@@ -78,13 +72,16 @@ export function ContextBudgetBar({ snapshot, mode = 'pattern', showLegend = true
       </div>
       {showLegend && (
         <div className={styles.legend}>
-          {parts.map((part) => (
-            <span key={part.id} className={styles.legendItem} data-selected={effectiveSelectedPartId === part.id ? 'true' : undefined}>
-              <span className={[styles.dot, styles[`kind_${part.kind}`] ?? styles.kind_other].join(' ')} />
-              <span>{part.label}</span>
-              <span className={styles.tokens}>{formatTokens(part.tokens)}</span>
-            </span>
-          ))}
+          {parts.map((part) => {
+            const visualStyle = resolveContextVisualStyle(part.styleKey, styleSet);
+            return (
+              <span key={part.id} className={styles.legendItem} data-selected={effectiveSelectedPartId === part.id ? 'true' : undefined}>
+                <ContextStyleSwatch visualStyle={visualStyle} size="sm" />
+                <span>{part.label}</span>
+                <span className={styles.tokens}>{formatTokens(part.tokens)}</span>
+              </span>
+            );
+          })}
         </div>
       )}
     </div>

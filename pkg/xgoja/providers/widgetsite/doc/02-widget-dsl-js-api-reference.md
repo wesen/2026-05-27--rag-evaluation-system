@@ -139,25 +139,82 @@ data.recipes.masterDetailTable({
 
 ## `context_window.dsl` helpers
 
-`context_window.dsl` exports:
+`context_window.dsl` exports context-window diagrams, transcript surfaces, annotations, anchored comments, upload widgets, and the style-set helpers that make those widgets palette-aware.
 
-- `contextKindSwatch`, `annotationBadge`, `transcriptRoleBadge`
+Component helpers:
+
+- `contextStyleSwatch`, `annotationBadge`, `transcriptRoleBadge`
 - `contextLegend`, `contextBudgetBar`, `contextStripDiagram`, `contextStackDiagram`, `contextTreemap`, `contextDiagramPanel`
 - `transcriptSessionHeader`, `transcriptMessageCard`, `annotationNoteCard`, `annotationRailPanel`, `transcriptReaderPanel`, `transcriptWorkspacePanel`
 - `anchoredCommentCard`, `anchoredCommentRail`
 - `contextUploadDropArea`
 
-Example:
+Style-set helpers:
+
+- `visualStyle(options)` returns a JSON-compatible `ContextVisualStyle` object. Useful fields are `fill`, `line`, `stroke`, `labelColor`, `pattern`, `strokeWidth`, and `vars`.
+- `legendItem(id, label, options?)` returns a `ContextLegendItemSpec`; pass `hidden: true` for style keys that should render but not appear in the visible legend.
+- `styleSet(options)` returns a `ContextStyleSet` and normalizes missing `legend` / `styles` to empty containers.
+- `paletteStyleSet(options)` builds a palette-derived `ContextStyleSet` from `palette` plus `entries`.
+- `contextPart(id, label, styleKey, tokens, options?)` creates a context-window part with required `styleKey`.
+- `contextSnapshot(options)` creates a normalized context-window snapshot.
+
+The hard-cutover contract is `styleKey + styleSet`. Context-window parts do not use `kind`, and context diagram widgets must receive a `styleSet` explicitly or through `recipes.contextDiagram({ palette, entries, ... })`.
+
+Example with a caller-defined legend:
 
 ```js
 const contextWindow = require("context_window.dsl")
 
+const styleSet = contextWindow.styleSet({
+  legend: [
+    contextWindow.legendItem("prompt", "Prompt"),
+    contextWindow.legendItem("evidence", "Evidence"),
+    contextWindow.legendItem("answer", "Answer"),
+    contextWindow.legendItem("free", "Headroom", { hidden: true }),
+  ],
+  styles: {
+    prompt: contextWindow.visualStyle({ pattern: "checker", fill: "#f2eee8", line: "#5f7f89", stroke: "#111314", labelColor: "#111314" }),
+    evidence: contextWindow.visualStyle({ pattern: "stipple", fill: "#f6e6df", line: "#c46a55", stroke: "#111314", labelColor: "#111314" }),
+    answer: contextWindow.visualStyle({ pattern: "solid", fill: "#5f7f89", stroke: "#111314", labelColor: "#ffffff" }),
+    free: contextWindow.visualStyle({ pattern: "none", fill: "#f2f3ef", stroke: "#b8bdbb", labelColor: "#111314" }),
+  },
+})
+
+const snapshot = contextWindow.contextSnapshot({
+  id: "rag-window",
+  title: "RAG answer window",
+  limit: 32000,
+  parts: [
+    contextWindow.contextPart("p", "Prompt", "prompt", 1400),
+    contextWindow.contextPart("e", "Evidence", "evidence", 9200),
+    contextWindow.contextPart("a", "Draft", "answer", 1800),
+    contextWindow.contextPart("h", "Headroom", "free", 19600),
+  ],
+})
+
 contextWindow.contextDiagramPanel({
   snapshot,
+  styleSet,
   initialView: "budget",
-  selectedPartId: "retrieval"
+  selectedPartId: "e",
 })
 ```
+
+Example with a preferred palette:
+
+```js
+const styleSet = contextWindow.paletteStyleSet({
+  palette: "Signal Orange / Cyan",
+  entries: [
+    { id: "guardrails", label: "Guardrails", accent: "b", pattern: "checker", fillPct: 16, linePct: 70 },
+    { id: "chat", label: "Chat", accent: "grid", pattern: "none" },
+    { id: "commands", label: "Commands", accent: "a", pattern: "stipple", fillPct: 16, linePct: 60 },
+    { id: "free", label: "Free", accent: "grid", pattern: "none", hidden: true },
+  ],
+})
+```
+
+Transcript widgets also accept `styleSet` so role title bars, note chips, and side-note headers share the same palette. Transcript bodies remain neutral by design; palette colors should live in chrome and small affordances with explicit `labelColor` foregrounds.
 
 Action contexts:
 
@@ -167,8 +224,9 @@ Action contexts:
 
 ### Context-window recipes
 
-- `contextWindow.recipes.contextDiagram({ snapshot, view?, initialView?, selectedPartId? })`
-- `contextWindow.recipes.annotatedTranscript({ transcript?, title?, subtitle?, messages?, annotations?, selectedAnnotationId?, showNotes?, onAnnotationSelect? })`
+- `contextWindow.recipes.contextDiagram({ snapshot, styleSet, view?, initialView?, selectedPartId? })`
+- `contextWindow.recipes.contextDiagram({ snapshot, palette, entries, view?, initialView?, selectedPartId? })`
+- `contextWindow.recipes.annotatedTranscript({ transcript?, title?, subtitle?, messages?, annotations?, selectedAnnotationId?, showNotes?, styleSet?, onAnnotationSelect? })`
 
 ## `course.dsl` helpers
 

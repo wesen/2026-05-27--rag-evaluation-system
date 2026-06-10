@@ -38,9 +38,31 @@ Implemented Storybook static artifact packaging, source CI/GitOps handoff, K3s s
 
 ## 2026-06-09
 
-Rolled out rag-evaluation-storybook live at https://rag-evaluation-storybook.yolo.scapegoat.dev/ using image sha-09d7628; recorded workflow startup_failure and VaultConnection ownership fix.
+Deployed web Storybook at https://rag-evaluation-page.storybook.yolo.scapegoat.dev/ with wildcard Storybook DNS/TLS and recorded rollout diary.
 
 ### Related Files
 
-- /tmp/rag-storybook-source-deploy/ttmp/2026/06/09/RAGEVAL-STORYBOOK-DEPLOY--deploy-rag-evaluation-site-storybook-to-hetzner-k3s/reference/01-investigation-diary.md — Live rollout evidence and follow-ups
+- /tmp/rag-web-storybook-source/Dockerfile.web-storybook-static — Packages the web Storybook static output as /site
+- /tmp/storybook-dns-tf/dns/zones/scapegoat-dev/envs/prod/main.tf — Adds wildcard Storybook DNS record
+- /tmp/storybook-wildcard-k3s/gitops/kustomize/static-sites-host/storybook-wildcard-ingress.yaml — Adds wildcard Storybook routing to static-sites-host
+
+
+## 2026-06-09
+
+Fixed web Storybook MIME errors on /%60/ paths by publishing sha-e78da8f with root-absolute Storybook asset URLs.
+
+### Related Files
+
+- /tmp/rag-web-storybook-source/Dockerfile.web-storybook-static — Rewrites generated Storybook asset URLs to host-root absolute paths
+- /tmp/storybook-wildcard-k3s/gitops/kustomize/rag-evaluation-page-storybook/publish-job.yaml — Publishes fixed sha-e78da8f image
+
+
+## 2026-06-09
+
+Fixed remaining backtick-path preview issue by publishing sha-eb4b80c, which redirects /%60?path=... to /?path=... before Storybook manager starts.
+
+### Related Files
+
+- /tmp/rag-web-storybook-source/Dockerfile.web-storybook-static — Injects early Storybook entry path normalization
+- /tmp/storybook-wildcard-k3s/gitops/kustomize/rag-evaluation-page-storybook/publish-job.yaml — Publishes fixed sha-eb4b80c image
 

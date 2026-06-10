@@ -1,0 +1,226 @@
+[
+  {
+    "name": "Signal Orange / Cyan",
+    "mood": "warm terminal + cool selection",
+    "colors": {
+      "paper": "#F5F1E8",
+      "ink": "#141414",
+      "grid": "#BDB7AA",
+      "shadow": "#7E7A72",
+      "accent_a": "#D86F2A",
+      "accent_b": "#2EA6A6",
+      "accent_c": "#F0B45A"
+    },
+    "use": "Orange for alerts/active states; cyan for links, cursor, selection."
+  },
+  {
+    "name": "Amber Phosphor",
+    "mood": "old monitor, low burn",
+    "colors": {
+      "paper": "#F3EBD7",
+      "ink": "#181610",
+      "grid": "#C9BEA3",
+      "shadow": "#8C8167",
+      "accent_a": "#C88924",
+      "accent_b": "#7A5A22",
+      "accent_c": "#E0B45A"
+    },
+    "use": "Use amber sparingly for focused controls and timestamps."
+  },
+  {
+    "name": "Ice Blue Ledger",
+    "mood": "cold office machine",
+    "colors": {
+      "paper": "#EFF3F2",
+      "ink": "#101314",
+      "grid": "#B8C2C4",
+      "shadow": "#717C80",
+      "accent_a": "#4B91B8",
+      "accent_b": "#7FA6B1",
+      "accent_c": "#D6E6EA"
+    },
+    "use": "Good for dense tables, inspectors, status panels."
+  },
+  {
+    "name": "Vermilion Drafting",
+    "mood": "Swiss proof mark",
+    "colors": {
+      "paper": "#F6F2EA",
+      "ink": "#111111",
+      "grid": "#C5BDB0",
+      "shadow": "#82796D",
+      "accent_a": "#C6402D",
+      "accent_b": "#E6A098",
+      "accent_c": "#5A5A52"
+    },
+    "use": "Red only for decisions, errors, revision marks."
+  },
+  {
+    "name": "Sage Terminal",
+    "mood": "quiet green-grey workstation",
+    "colors": {
+      "paper": "#EEF0E7",
+      "ink": "#111512",
+      "grid": "#BCC3B4",
+      "shadow": "#758070",
+      "accent_a": "#63896A",
+      "accent_b": "#9AAE85",
+      "accent_c": "#D8DEC8"
+    },
+    "use": "Use for calm always-on dashboards."
+  },
+  {
+    "name": "Plum / Bone",
+    "mood": "muted editorial system",
+    "colors": {
+      "paper": "#F4EFE7",
+      "ink": "#161316",
+      "grid": "#C2B7B9",
+      "shadow": "#7D7079",
+      "accent_a": "#7D4F73",
+      "accent_b": "#B78CA9",
+      "accent_c": "#DED0D8"
+    },
+    "use": "Good for writing tools, hierarchy labels, archive views."
+  },
+  {
+    "name": "Ultramarine Punch",
+    "mood": "IBM-ish, modern contrast",
+    "colors": {
+      "paper": "#F1F1EC",
+      "ink": "#111111",
+      "grid": "#BBBBB2",
+      "shadow": "#74746B",
+      "accent_a": "#3056A3",
+      "accent_b": "#8298CE",
+      "accent_c": "#D6DEF0"
+    },
+    "use": "Blue for primary action and current navigation."
+  },
+  {
+    "name": "Rose Carbon",
+    "mood": "soft warning layer",
+    "colors": {
+      "paper": "#F6F0ED",
+      "ink": "#151313",
+      "grid": "#C5B7B1",
+      "shadow": "#7B6E6A",
+      "accent_a": "#B95D58",
+      "accent_b": "#D6A29D",
+      "accent_c": "#4B4544"
+    },
+    "use": "Rose works well for human comments and annotations."
+  },
+  {
+    "name": "Ochre / Teal Proof",
+    "mood": "print shop calibration",
+    "colors": {
+      "paper": "#F4EEDC",
+      "ink": "#161512",
+      "grid": "#C7BFA5",
+      "shadow": "#81785F",
+      "accent_a": "#B7862F",
+      "accent_b": "#3F8078",
+      "accent_c": "#A7C1B9"
+    },
+    "use": "Ochre for section headers; teal for selected rows."
+  },
+  {
+    "name": "Dusty Magenta / Blue",
+    "mood": "subtle synthwave, not neon",
+    "colors": {
+      "paper": "#F2EEF2",
+      "ink": "#141214",
+      "grid": "#C0B5C1",
+      "shadow": "#776C7A",
+      "accent_a": "#9C527E",
+      "accent_b": "#4F74A8",
+      "accent_c": "#D6B8CB"
+    },
+    "use": "Use magenta for agent/persona tags; blue for machine state."
+  },
+  {
+    "name": "Olive / Rust",
+    "mood": "industrial manual",
+    "colors": {
+      "paper": "#F0EEE0",
+      "ink": "#13140F",
+      "grid": "#BBBCA6",
+      "shadow": "#747760",
+      "accent_a": "#717A3B",
+      "accent_b": "#B15F38",
+      "accent_c": "#D3C68E"
+    },
+    "use": "Olive for stable status; rust for pending/dirty state."
+  },
+  {
+    "name": "Slate / Coral",
+    "mood": "modern mac-like restraint",
+    "colors": {
+      "paper": "#F2F3EF",
+      "ink": "#111314",
+      "grid": "#B8BDBB",
+      "shadow": "#707878",
+      "accent_a": "#5F7F89",
+      "accent_b": "#C46A55",
+      "accent_c": "#D8E0DF"
+    },
+    "use": "Slate as primary accent; coral only for interruption."
+  },
+  {
+    "name": "Sepia Data Room",
+    "mood": "archive terminal",
+    "colors": {
+      "paper": "#F1E8D6",
+      "ink": "#18130D",
+      "grid": "#C8B58E",
+      "shadow": "#7B6849",
+      "accent_a": "#8F6634",
+      "accent_b": "#D2A15A",
+      "accent_c": "#E5D1A8"
+    },
+    "use": "Strong for logs, notes, historical records."
+  },
+  {
+    "name": "Mint / Charcoal",
+    "mood": "lab instrument",
+    "colors": {
+      "paper": "#EEF2EB",
+      "ink": "#111412",
+      "grid": "#B7C1B4",
+      "shadow": "#6F7A6D",
+      "accent_a": "#5E9B83",
+      "accent_b": "#A7CBB7",
+      "accent_c": "#313735"
+    },
+    "use": "Mint for measurements, success, live telemetry."
+  },
+  {
+    "name": "Cobalt / Sand",
+    "mood": "technical atlas",
+    "colors": {
+      "paper": "#F3EEDC",
+      "ink": "#111318",
+      "grid": "#BFB59A",
+      "shadow": "#766F5E",
+      "accent_a": "#315D91",
+      "accent_b": "#D2A84A",
+      "accent_c": "#A8B8CC"
+    },
+    "use": "Cobalt for active navigation; sand for passive emphasis."
+  },
+  {
+    "name": "Pink Noise",
+    "mood": "soft diagnostic overlay",
+    "colors": {
+      "paper": "#F5EFEF",
+      "ink": "#141111",
+      "grid": "#C7B7B7",
+      "shadow": "#7F6D6D",
+      "accent_a": "#C7798D",
+      "accent_b": "#E0B5BF",
+      "accent_c": "#8F6972"
+    },
+    "use": "Good for review mode, diffs, comments, nonfatal warnings."
+  }
+]

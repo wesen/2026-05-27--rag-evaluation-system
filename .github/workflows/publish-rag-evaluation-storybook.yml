@@ -44,6 +44,7 @@ jobs:
       go_cache_dependency_path: go.sum
       test_command: |
         corepack enable
+        corepack prepare pnpm@10 --activate
         pnpm install --frozen-lockfile
         pnpm --dir packages/rag-evaluation-site typecheck
         pnpm --dir packages/rag-evaluation-site build-storybook

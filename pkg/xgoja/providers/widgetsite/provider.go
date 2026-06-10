@@ -23,24 +23,28 @@ func Register(registry *providerapi.ProviderRegistry) error {
 			Name:             widgetdsl.UIModuleName,
 			DefaultAs:        widgetdsl.UIModuleName,
 			Description:      "Generic Widget IR page, layout, primitive, and foundation helpers.",
+			TypeScript:       widgetdsl.TypeScriptModule(widgetdsl.UIModuleName),
 			NewModuleFactory: loader(widgetdsl.UIModuleName),
 		},
 		providerapi.Module{
 			Name:             widgetdsl.DataModuleName,
 			DefaultAs:        widgetdsl.DataModuleName,
 			Description:      "Widget IR data-display helpers, table cell helpers, and data recipes.",
+			TypeScript:       widgetdsl.TypeScriptModule(widgetdsl.DataModuleName),
 			NewModuleFactory: loader(widgetdsl.DataModuleName),
 		},
 		providerapi.Module{
 			Name:             widgetdsl.ContextWindowModuleName,
 			DefaultAs:        widgetdsl.ContextWindowModuleName,
 			Description:      "Context-window, transcript, annotation, and anchored-comment Widget IR helpers.",
+			TypeScript:       widgetdsl.TypeScriptModule(widgetdsl.ContextWindowModuleName),
 			NewModuleFactory: loader(widgetdsl.ContextWindowModuleName),
 		},
 		providerapi.Module{
 			Name:             widgetdsl.CourseModuleName,
 			DefaultAs:        widgetdsl.CourseModuleName,
 			Description:      "Course, lesson, slide, handout, and course-studio Widget IR helpers.",
+			TypeScript:       widgetdsl.TypeScriptModule(widgetdsl.CourseModuleName),
 			NewModuleFactory: loader(widgetdsl.CourseModuleName),
 		},
 		providerapi.HelpSource{

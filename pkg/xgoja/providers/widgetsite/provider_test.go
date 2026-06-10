@@ -31,6 +31,9 @@ func TestRegisterExposesSplitWidgetModules(t *testing.T) {
 		if !ok {
 			t.Fatalf("expected module %q", tc.name)
 		}
+		if mod.TypeScript == nil {
+			t.Fatalf("expected module %q to carry TypeScript descriptor", tc.name)
+		}
 		loader, err := mod.NewModuleFactory(providerapi.ModuleSetupContext{Context: context.Background(), Name: tc.name, As: tc.name})
 		if err != nil {
 			t.Fatalf("new loader for %s: %v", tc.name, err)
