@@ -1220,7 +1220,7 @@ The package docs now describe the full `styleKey + ContextStyleSet` contract, th
 
 **Inferred user intent:** The user wants the reusable package docs to be self-contained enough for future Widget IR/Goja authors, not just backed by ticket diaries and Obsidian reports.
 
-**Commit (code):** pending — "Docs: document context style-set DSL"
+**Commit (code):** e968218 — "Docs: document context style-set DSL"
 
 ### What I did
 
