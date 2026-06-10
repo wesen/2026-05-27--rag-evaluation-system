@@ -54,7 +54,7 @@ export function ContextStripDiagram({ snapshot, styleSet, selectedPartId, showLa
               tabIndex={interactive ? 0 : undefined}
               aria-pressed={interactive ? selected : undefined}
               onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
-              onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, effectiveSelectedPartId ?? part.id, orderedPartIds, onPartSelect, 'horizontal') : undefined}
+              onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, part.id, orderedPartIds, onPartSelect, 'horizontal', effectiveSelectedPartId) : undefined}
             >
               {showLabels && width >= 7 && <span className={styles.label}>{part.label}</span>}
             </div>

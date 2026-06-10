@@ -36,7 +36,7 @@ export function ContextStackDiagram({ snapshot, styleSet, selectedPartId, onPart
               tabIndex={interactive ? 0 : undefined}
               aria-pressed={interactive ? selected : undefined}
               onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
-              onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, effectiveSelectedPartId ?? part.id, orderedPartIds, onPartSelect, 'vertical') : undefined}
+              onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, part.id, orderedPartIds, onPartSelect, 'vertical', effectiveSelectedPartId) : undefined}
             >
               <span className={styles.label}>{part.label}</span>
               <span className={styles.tokens}>{formatTokens(part.tokens)}</span>
