@@ -11,6 +11,10 @@ RelatedFiles:
       Note: Consumer styleSet wiring recorded in Step 6
     - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/slide-loader.js
       Note: Markdown context-window parts normalize styleKey
+    - Path: packages/rag-evaluation-site/GUIDELINES.md
+      Note: Future package contributor palette rules recorded in Step 15
+    - Path: packages/rag-evaluation-site/README.md
+      Note: Package style-set docs recorded in Step 15
     - Path: packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.module.css
       Note: Side-note title-bar palette chrome and neutral body rules recorded in Step 13
     - Path: packages/rag-evaluation-site/src/components/molecules/AnnotationNoteCard/AnnotationNoteCard.tsx
@@ -23,12 +27,17 @@ RelatedFiles:
       Note: Transcript palette foreground and token chip behavior recorded in Step 12
     - Path: packages/rag-evaluation-site/src/widgets/WidgetRenderer.transcript-notes.stories.tsx
       Note: Widget IR transcript palette control coverage recorded in Step 12
+    - Path: pkg/widgetdsl/typescript.go
+      Note: TypeScript descriptor update recorded in Step 15
+    - Path: pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md
+      Note: DSL helper reference recorded in Step 15
 ExternalSources: []
 Summary: ""
 LastUpdated: 0001-01-01T00:00:00Z
 WhatFor: ""
 WhenToUse: ""
 ---
+
 
 
 
@@ -1196,3 +1205,79 @@ The updated rule keeps each note chip readable by default: it uses a neutral whi
 
 - Default note-link foreground is `var(--mac-text)`.
 - Selected/hover foreground is `var(--ctx-label)` over `var(--ctx-fill)`.
+
+## Step 15: Package and DSL Documentation Audit
+
+This step checked whether the reusable package documentation and Goja DSL API reference still described the old context-window API after the style-set hard cutover. The audit found one important stale path: the JavaScript API reference and generated TypeScript descriptor still mentioned `contextKindSwatch` / `kind` terminology even though the runtime helper had already been removed.
+
+The package docs now describe the full `styleKey + ContextStyleSet` contract, the style-set DSL helpers, the Storybook palette selector pattern, and the transcript-specific colored-chrome/neutral-body rule.
+
+### Prompt Context
+
+**User prompt (verbatim):** "do we have documentation in the package to update? I think in general we might not be describing everything about the DSLs and stuff?"
+
+**Assistant interpretation:** Audit package and provider documentation for missing/stale coverage of palette style sets, Widget IR, and Goja DSL helpers, then update the docs where gaps are obvious.
+
+**Inferred user intent:** The user wants the reusable package docs to be self-contained enough for future Widget IR/Goja authors, not just backed by ticket diaries and Obsidian reports.
+
+**Commit (code):** pending — "Docs: document context style-set DSL"
+
+### What I did
+
+- Searched package docs and DSL sources for old/new style-set API names.
+- Updated `packages/rag-evaluation-site/README.md` with a `Context and transcript style sets` section.
+- Updated `packages/rag-evaluation-site/GUIDELINES.md` with context/transcript palette rules for future package work.
+- Updated `pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md` to replace `contextKindSwatch` with `contextStyleSwatch`, `visualStyle`, `legendItem`, `styleSet`, `paletteStyleSet`, `contextPart`, and `contextSnapshot` documentation.
+- Updated `pkg/widgetdsl/typescript.go` so generated TypeScript descriptors expose current style-set helpers and no longer describe `contextKindSwatch` or a `kind` argument for `contextPart`.
+- Ran validation:
+  - `go test ./pkg/widgetdsl ./pkg/xgoja/providers/widgetsite ./pkg/widgetschema -count=1`
+  - `cd packages/rag-evaluation-site && pnpm typecheck`
+
+### Why
+
+The implementation had moved faster than the package-facing documentation. Without updating the reusable docs, future users would discover `styleSet` through Storybook or source code rather than the API reference, and the stale TypeScript descriptor would actively point them back to removed helpers.
+
+### What worked
+
+- The stale references were concentrated in the JS API reference and generated TypeScript descriptor.
+- The README and guidelines were good places to document the high-level package contract and future contributor rules.
+- Go tests and TypeScript typecheck passed after the docs/descriptor changes.
+
+### What didn't work
+
+- A broad forbidden-name search still reports negative guidance such as "do not use `ContextPartKind`" and unrelated Widget IR action `kind` fields, so search results must be interpreted rather than treated as pure failures.
+- The normal `git commit` pre-commit hook failed when it ran `GOWORK=off go test ./pkg/... ./internal/chunking ./internal/db ./internal/ingest ./internal/services/... ./internal/web -count=1`. Exact error class: `pkg/xgoja/providers/widgetsite/provider.go:26:4: unknown field TypeScript in struct literal of type providerapi.Module` and `pkg/xgoja/providers/widgetsite/provider_test.go:34:10: mod.TypeScript undefined`. Targeted workspace validation passed, but `GOWORK=off` uses `github.com/go-go-golems/go-go-goja v0.8.4`; the current workspace depends on a local unpublished `go-go-goja` commit (`8c23432`) that added `providerapi.Module.TypeScript`. Attempting `GOWORK=off go get github.com/go-go-golems/go-go-goja@8c23432` failed with `invalid version: unknown revision 8c23432`.
+
+### What I learned
+
+- The implementation has three documentation audiences: React package users, Goja DSL authors, and future design-system contributors. Each needs a slightly different explanation of the same style-set contract.
+- Generated TypeScript descriptor code is documentation too; stale descriptors can mislead users even when runtime helpers are correct.
+
+### What was tricky to build
+
+- The docs need to forbid old context-window `kind` without implying all `kind` fields are invalid. Widget IR still uses `kind` legitimately for node/action discriminators.
+- The API reference needed both low-level helper docs and an example showing caller-defined legends so authors understand that palette and vocabulary are separate concerns.
+
+### What warrants a second pair of eyes
+
+- Whether `pkg/widgetdsl/typescript.go` should grow stronger concrete TypeScript interfaces for `ContextVisualStyle`, `ContextStyleSet`, and `ContextLegendItemSpec` instead of returning `any` for style-set helper constructors.
+- Whether the package README should link directly to the long-form Obsidian article or keep external knowledge out of package docs.
+
+### What should be done in the future
+
+- Add snapshot/assertion coverage for generated TypeScript descriptors so stale helper names are caught by tests.
+- Consider adding a dedicated `docs/context-style-sets.md` inside the package if this grows beyond the README section.
+
+### Code review instructions
+
+- Start with `pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md` and confirm the example matches current helper names.
+- Then review `pkg/widgetdsl/typescript.go` to ensure generated descriptors match runtime exports from `pkg/widgetdsl/module.go`.
+- Validate with:
+  - `go test ./pkg/widgetdsl ./pkg/xgoja/providers/widgetsite ./pkg/widgetschema -count=1`
+  - `cd packages/rag-evaluation-site && pnpm typecheck`
+
+### Technical details
+
+- Current contract: `styleKey + ContextStyleSet`.
+- Diagram widgets require `styleSet`; transcript widgets accept optional `styleSet` and use transcript defaults when omitted.
+- Goja `recipes.contextDiagram` requires either `styleSet` or `palette + entries`.

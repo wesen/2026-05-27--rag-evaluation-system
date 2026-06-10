@@ -95,3 +95,14 @@ Step 14: improved inline transcript note-link contrast
 
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/TranscriptMessageCard/TranscriptMessageCard.module.css — Inline note-chip contrast and selected foreground rules
 
+
+## 2026-06-09
+
+Step 15: documented context style-set and Goja DSL contracts in package docs
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/README.md — Package style-set contract and Storybook palette docs
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/pkg/widgetdsl/typescript.go — Generated TypeScript descriptor for current context DSL helpers
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/pkg/xgoja/providers/widgetsite/doc/02-widget-dsl-js-api-reference.md — Goja context_window.dsl style-set helper reference
+

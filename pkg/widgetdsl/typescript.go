@@ -69,10 +69,13 @@ func TypeScriptModule(moduleName string) *spec.Module {
 	}
 	if moduleSpec.name == ContextWindowModuleName {
 		lines = append(lines,
-			"export function contextKindSwatch(kind: string, options?: Props): WidgetNode;",
+			"export function contextStyleSwatch(options?: Props): WidgetNode;",
+			"export function visualStyle(options: Props): any;",
+			"export function legendItem(id: string, label: string, options?: Props): any;",
+			"export function styleSet(options: Props): any;",
 			"export function paletteStyleSet(options: Props): any;",
 			"export function contextSnapshot(options: Props): any;",
-			"export function contextPart(id: string, label: string, kind: string, tokens: number, options?: Props): any;",
+			"export function contextPart(id: string, label: string, styleKey: string, tokens: number, options?: Props): any;",
 		)
 	}
 	if len(moduleSpec.recipes) > 0 {
