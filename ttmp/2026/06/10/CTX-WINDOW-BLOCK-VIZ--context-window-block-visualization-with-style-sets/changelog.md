@@ -195,3 +195,12 @@ Step 15: added arrow-key navigation for selectable context diagram blocks across
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.tsx — Horizontal arrow navigation
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/contextKeyboardNavigation.ts — Shared context block keyboard navigation helper
 
+
+## 2026-06-10
+
+Updated the design guide with context diagram keyboard navigation behavior
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/design-doc/01-design-and-implementation-guide.md — Keyboard navigation behavior for selectable context blocks
+

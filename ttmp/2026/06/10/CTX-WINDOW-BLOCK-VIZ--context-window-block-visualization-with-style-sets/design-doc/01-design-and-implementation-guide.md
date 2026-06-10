@@ -1404,6 +1404,30 @@ The docked detail panel:
 - avoids rounded popup styling,
 - renders once per hovered/focused segment.
 
+
+### Keyboard navigation for selectable context blocks
+
+Selectable context diagram blocks support keyboard movement through a shared helper, `components/molecules/contextKeyboardNavigation.ts`.
+
+When a diagram receives `onPartSelect`, blocks keep their existing Enter/Space activation and also support directional movement:
+
+```text
+ContextStripDiagram:         ArrowLeft / ArrowRight
+ContextGroupedStripDiagram:  ArrowLeft / ArrowRight
+ContextBudgetBar:            ArrowLeft / ArrowRight
+ContextStackDiagram:         ArrowUp / ArrowDown
+ContextTreemap:              ArrowLeft / ArrowRight and ArrowUp / ArrowDown
+All selectable diagrams:     Home / End
+```
+
+Each renderer passes the ordered list of selectable part IDs that matches its visual model:
+
+- stack uses visible vertical layer order,
+- strip and grouped strip use strip order,
+- budget and treemap exclude headroom/free-space parts.
+
+The current implementation moves selected part state by calling `onPartSelect(nextPartId)`. It does not yet implement roving focus; focus remains on the active block while the owning panel updates selected-part details. If future accessibility review requires focus to follow selection, add roving `tabIndex` as a separate behavior change.
+
 ### Storybook review surfaces
 
 Use these Storybook iframe URLs for focused visual review:
