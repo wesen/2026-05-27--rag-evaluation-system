@@ -114,7 +114,7 @@ export function ContextGroupedStripDiagram({
                       tabIndex={interactive ? 0 : undefined}
                       aria-pressed={interactive ? selected : undefined}
                       onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
-                      onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, part.id, orderedPartIds, onPartSelect, 'horizontal') : undefined}
+                      onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, effectiveSelectedPartId ?? part.id, orderedPartIds, onPartSelect, 'horizontal') : undefined}
                     >
                       {showPartLabels && width >= 12 && <span className={styles.partLabel}>{part.label}</span>}
                     </div>
