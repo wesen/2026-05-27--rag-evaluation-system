@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "storybook-context-diagram",
+  "url": "http://127.0.0.1:6007/iframe.html?id=widget-ir-renderer-context-diagrams--custom-three-label-widget-ir\u0026viewMode=story",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "name": "context-panel",
+  "selector": "[data-rag-organism=\"ContextDiagramPanel\"]",
+  "selector_source": "",
+  "format": "css-json",
+  "created_at": "2026-06-10T19:45:41.997117322Z"
+}

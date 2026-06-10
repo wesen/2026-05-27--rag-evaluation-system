@@ -4,9 +4,9 @@
 
 - [x] 0.1 Confirm current git state, mistaken local commits, and uncommitted files before further changes.
 - [x] 0.2 Update the design documentation with the actual go-minitrace/minitracejs schema, DSL query outputs, and widget mapping implications.
-- [ ] 0.3 Restore the over-removed slides/handouts/course Storybook and nav surfaces while preserving the design note that live/realtime service is out of scope.
-- [ ] 0.4 Remove only the `litellm-live-service.js` live/realtime service integration and any direct references to it.
-- [ ] 0.5 Validate cleanup with typecheck/builds/tests appropriate to changed files.
+- [x] 0.3 Restore the over-removed slides/handouts/course Storybook and nav surfaces while preserving the design note that live/realtime service is out of scope.
+- [x] 0.4 Remove only the `litellm-live-service.js` live/realtime service integration and any direct references to it.
+- [x] 0.5 Validate cleanup with typecheck/builds/tests appropriate to changed files.
 - [ ] 0.6 Commit cleanup in focused intervals and record each interval in the diary.
 
 ## Phase 1 — Minitrace-driven widget mapping design

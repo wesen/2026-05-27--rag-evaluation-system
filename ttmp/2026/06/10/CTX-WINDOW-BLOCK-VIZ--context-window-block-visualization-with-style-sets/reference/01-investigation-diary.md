@@ -12,6 +12,12 @@ DocType: reference
 Intent: long-term
 Owners: []
 RelatedFiles:
+    - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/course-pages.js
+      Note: Live page/nav removed while preserving course surfaces in Step 6
+    - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/server.js
+      Note: LiteLLM live routes removed in Step 6
+    - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/webapp/src/main.tsx
+      Note: Removed live refresh bridge in Step 6
     - Path: packages/rag-evaluation-site/src/components/organisms/ContextDiagramPanel/ContextDiagramPanel.tsx
       Note: Key source file inspected for current interaction capabilities
     - Path: packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.stories.tsx
@@ -22,16 +28,19 @@ RelatedFiles:
       Note: Key source file inspected for the data model
     - Path: packages/rag-evaluation-site/src/widgets/WidgetRenderer.course-handout.stories.tsx
       Note: Storybook surface rewritten as Session Workspace with Upload/Visualize/Transcript only (commit 2edac8e)
+    - Path: packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx
+      Note: Keyed child rendering fix from Playwright smoke
     - Path: pkg/widgetdsl/module.go
       Note: Key source file inspected for DSL emission path
     - Path: ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/design-doc/01-design-and-implementation-guide.md
       Note: Primary planning deliverable written in this step
 ExternalSources: []
 Summary: Chronological diary for the context-window block visualization planning ticket.
-LastUpdated: 2026-06-10T15:06:52.458941129-04:00
+LastUpdated: 2026-06-10T15:46:00-04:00
 WhatFor: Use to resume or review the planning work for uploaded-session context-window block visualization.
 WhenToUse: Read before implementing the normalizer, Widget IR integration, turn pager, or grouped strip design.
 ---
+
 
 
 
@@ -461,3 +470,279 @@ Relevant source files:
 - `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/doc/minitrace-schema.md`
 - `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/doc/js-api-reference.md`
 - `/home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/minitracejs/query_view_session.go`
+
+## Step 5: Restore the over-removed course, slide, and handout surfaces
+
+This step recovered from the earlier misunderstanding. The user clarified that slides and handouts should stay; only the recently added LiteLLM live service should be removed. I restored the course workspace navigation and Storybook course/handout examples from the merge baseline while keeping the new minitrace design documentation.
+
+The recovery was done as a focused commit after a frontend typecheck. This puts the React package back into the expected state before removing the actual live-service code.
+
+### Prompt Context
+
+**User prompt (verbatim):** (same as Step 4)
+
+**Assistant interpretation:** Restore the course/slides/handouts work I removed by mistake, then proceed to the narrow LiteLLM live-service cleanup.
+
+**Inferred user intent:** Preserve the workshop/course material and handout surfaces; remove only the real-time LiteLLM service addition.
+
+**Commit (code):** 5cd3fb1 — "Frontend: restore course workspace surfaces"
+
+### What I did
+
+- Restored these files from commit `3a4cc1f`:
+  - `packages/rag-evaluation-site/src/widgets/WidgetRenderer.domain-registry.stories.tsx`
+  - `packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/courseStudioNav.ts`
+  - `packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.stories.tsx`
+  - `packages/rag-evaluation-site/src/widgets/WidgetRenderer.course-handout.stories.tsx`
+  - `packages/rag-evaluation-site/README.md`
+- Ran `pnpm --dir packages/rag-evaluation-site typecheck`.
+- Committed the restoration as `5cd3fb1`.
+
+### Why
+
+- The previous removal was too broad and conflicted with the clarified product intent.
+- Restoring from the merge baseline avoids manually reconstructing course/handout examples and reduces risk.
+
+### What worked
+
+- TypeScript passed after restoring the files.
+- The recovery commit was focused and did not undo the new minitrace design documentation.
+
+### What didn't work
+
+- N/A for the recovery itself. The earlier mistake is documented in Step 3.
+
+### What I learned
+
+- The phrase "live session view" referred specifically to `litellm-live-service.js`, not the course/session workspace shell.
+- When a requested deletion is ambiguous, locate the exact file/symbol before removing UI surfaces.
+
+### What was tricky to build
+
+- The docs commit that introduced the ticket also included an over-narrow package README change. Restoring specific files from `3a4cc1f` was safer than reverting entire commits because the ticket docs and minitrace mapping updates should remain.
+
+### What warrants a second pair of eyes
+
+- Confirm no course/handout story or nav surface remains unintentionally changed after the restore.
+
+### What should be done in the future
+
+- Continue with the narrow `litellm-live-service.js` removal only.
+
+### Code review instructions
+
+- Review commit `5cd3fb1` to verify it restores course/slides/handouts and does not introduce new behavior.
+- Validate with:
+
+```bash
+pnpm --dir packages/rag-evaluation-site typecheck
+```
+
+### Technical details
+
+Commands run:
+
+```bash
+git checkout 3a4cc1f -- \
+  packages/rag-evaluation-site/src/widgets/WidgetRenderer.domain-registry.stories.tsx \
+  packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/courseStudioNav.ts \
+  packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/CourseStudioShell.stories.tsx \
+  packages/rag-evaluation-site/src/widgets/WidgetRenderer.course-handout.stories.tsx \
+  packages/rag-evaluation-site/README.md
+pnpm --dir packages/rag-evaluation-site typecheck
+git commit -m "Frontend: restore course workspace surfaces"
+```
+
+## Step 6: Remove LiteLLM live integration and run visual smoke tests
+
+This step completed the Phase 0 cleanup that had been blocked on scope precision: remove the local JavaScript LiteLLM live/realtime service, but keep the course, slides, handouts, upload, transcript, and context-window surfaces. After the cleanup, I treated validation as a visual workflow, not just a typecheck: server smoke, Storybook build, Pi Playwright browser smoke, and css-visual-diff overlay/CSS capture all ran against the restored pages.
+
+The smoke work also found a real upstream React warning in Storybook. `WidgetRenderer` was returning arrays of unkeyed rendered children, which surfaced when the course/handout registry story rendered `CourseStudioShell`; I fixed that by wrapping rendered children in keyed fragments.
+
+### Prompt Context
+
+**User prompt (verbatim):** "continue and do proper storybook / playwright / css-visual-diff smoke tests, using past tickets or docs for the expected procedure."
+
+**Assistant interpretation:** Continue the cleanup, use the prior visual-quality ticket as the test procedure model, validate both the ClubMed minitrace-viz app and Storybook surfaces in a real browser, and record/fix issues found during smoke testing.
+
+**Inferred user intent:** The user wants confidence that the narrow LiteLLM live-service removal did not regress restored course/slides/handouts or the context/transcript visual surfaces.
+
+**Commit (code):** Pending in this step.
+
+### What I did
+
+- Removed the JavaScript live service file:
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/litellm-live-service.js`
+- Removed direct live-service integration points from:
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/server.js`
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-pages.js`
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/webapp/src/main.tsx`
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/test-fixtures/smoke-test.sh`
+- Preserved the restored course/slides/handouts pages and their Storybook surfaces.
+- Added a ticket-local css-visual-diff script:
+  - `ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/scripts/01-capture-clubmed-visual-smoke.js`
+- Ran package and app validation:
+  - `pnpm --dir packages/rag-evaluation-site typecheck`
+  - `pnpm --dir packages/rag-evaluation-site build`
+  - `pnpm --dir packages/rag-evaluation-site build-storybook`
+  - `pnpm --dir webapp typecheck`
+  - `scripts/sync-widget-spa.sh`
+  - `GOFLAGS=-buildvcs=false make build`
+  - `GOFLAGS=-buildvcs=false make test`
+- Ran Pi Playwright smoke against:
+  - `http://127.0.0.1:18787/pages/course`
+  - `http://127.0.0.1:18787/pages/upload`
+  - `http://127.0.0.1:18787/pages/slides`
+  - `http://127.0.0.1:18787/pages/handouts`
+  - Storybook `widget-ir-renderer-context-diagrams--custom-three-label-widget-ir`
+  - Storybook `widget-ir-renderer-transcript-and-notes--annotated-transcript-with-notes-rail`
+  - Storybook `widget-ir-renderer-domain-registry-coverage--course-handout-registry-surface`
+- Ran css-visual-diff capture successfully into:
+  - `ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/sources/visual-smoke/run-20260610-154533`
+- Fixed a React key warning surfaced by Playwright in:
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx`
+
+### Why
+
+- The user explicitly narrowed cleanup to `litellm-live-service.js` and direct live/realtime integration references.
+- Server smoke verifies the uploaded-session APIs still work after removing the old live endpoints.
+- Storybook and browser smoke verify that restored course/slides/handouts remain visually reachable and that the context/transcript Storybook surfaces still render.
+- css-visual-diff gives durable visual evidence: overlay screenshots, preflight JSON, and computed CSS JSON for each page/story.
+
+### What worked
+
+- Source grep after cleanup found no remaining direct source references to:
+  - `litellm-live-service`
+  - `live-litellm`
+  - `/api/live/litellm`
+  - `clear-litellm-live`
+  - `refresh-litellm-live`
+- Clean server smoke passed after stopping the stale test server:
+
+```text
+=== Results: 6 passed, 0 failed ===
+```
+
+- RAG package validation passed:
+
+```text
+pnpm --dir packages/rag-evaluation-site typecheck
+pnpm --dir packages/rag-evaluation-site build
+pnpm --dir packages/rag-evaluation-site build-storybook
+```
+
+- ClubMed webapp/app validation passed:
+
+```text
+pnpm --dir webapp typecheck
+scripts/sync-widget-spa.sh
+GOFLAGS=-buildvcs=false make build
+GOFLAGS=-buildvcs=false make test
+```
+
+- Pi Playwright rerun passed with no non-favicon console errors for all seven checked pages/stories.
+- css-visual-diff succeeded after script fixes and produced overlays for all seven targets.
+
+### What didn't work
+
+- Initial `make build` failed from Go VCS stamping in the generated temporary xgoja module:
+
+```text
+Error: go build -o /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/dist/minitrace-viz . failed: exit status 1
+error obtaining VCS status: exit status 128
+	Use -buildvcs=false to disable VCS stamping.
+```
+
+- Fix: reran xgoja build/test with `GOFLAGS=-buildvcs=false`.
+- My first helper script used an over-broad `pkill -f` pattern and interrupted itself before starting the smoke servers. I restarted without pre-killing by broad pattern.
+- The first Playwright smoke found a real React console error:
+
+```text
+Each child in a list should have a unique "key" prop.
+Check the render method of `CourseStudioShell`.  It was passed a child from WidgetRenderer.
+```
+
+- Fix: changed `WidgetRenderer.renderChildren()` to return keyed fragments based on component `key`, `id`, type/tag, and index.
+- The first css-visual-diff run failed during summary writing because I used a non-existent `cvd.read.json` helper:
+
+```text
+Error: promise rejected: TypeError: Cannot read property 'json' of undefined or null
+```
+
+- Fix: tracked missing preflight probes in memory while writing each preflight file.
+- The second css-visual-diff run failed because I required a `ContextDiagramPanel` probe on the slides page, but the slide surface renders direct diagram content instead:
+
+```text
+Error: promise rejected: Error: Missing required visual probes: clubmed-slides:context-panel
+```
+
+- Fix: relaxed the slides probe to require `CourseSlidePanel` only.
+
+### What I learned
+
+- The ClubMed app's normal validation path is `make build`/`make test`, but on this machine xgoja's generated temp module needs `GOFLAGS=-buildvcs=false` for reliable local builds.
+- The prior WIDGETDSL visual-quality ticket provides a good pattern: serve the app and static Storybook, capture overlays and computed CSS JSON with css-visual-diff, and store the script/artifacts under the ticket.
+- Browser smoke is useful even when TypeScript/builds pass; it caught the unkeyed children warning in a restored Storybook surface.
+- The slides page should be probed by its course-level organism (`CourseSlidePanel`) rather than assuming it wraps content in `ContextDiagramPanel`.
+
+### What was tricky to build
+
+- The tricky scope issue was separating direct LiteLLM live-service references from unrelated course/slides/handout surfaces. I removed the JS service, HTTP routes, page/nav entry, refresh bridge, and smoke checks while preserving the upload/session workflow and course materials.
+- The tricky validation issue was stale server state. A first `make test` appeared to pass after a bind error because an old server was still listening on the same port; I stopped the stale smoke server and reran `GOFLAGS=-buildvcs=false make test` cleanly.
+- The css-visual-diff script needed selectors that match actual rendered surfaces. Over-specific component assumptions created false failures, so I adjusted the script to require semantic page-level organisms and keep overlay targets focused.
+
+### What warrants a second pair of eyes
+
+- Review whether the Python `minitrace_viz_litellm/` callback helper and `test-fixtures/litellm-chat-completion.json` should remain as historical/reference material or be removed in a later, explicitly scoped cleanup. I did not remove them in this step because the user asked for the JS live service and direct references only.
+- Review the `WidgetRenderer` keyed-fragment fix because it changes the generic Widget IR rendering path, even though it is intended to be a React correctness fix.
+- Review generated SPA asset diffs to confirm they only reflect the removed refresh bridge and the rebuilt package dependency.
+
+### What should be done in the future
+
+- Add a small committed wrapper script for starting/stopping the visual smoke servers if this becomes a repeated workflow.
+- Decide whether `GOFLAGS=-buildvcs=false` belongs in the minitrace-viz Makefile or xgoja build command for local generated-module builds.
+- If visual smoke artifacts become too large for normal commits, keep only the script and summary, or move screenshots to ignored evidence storage.
+
+### Code review instructions
+
+- Start with the narrow cleanup files:
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/server.js`
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-pages.js`
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/webapp/src/main.tsx`
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/test-fixtures/smoke-test.sh`
+- Then review the React correctness fix:
+  - `/home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx`
+- Validate with:
+
+```bash
+cd /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system
+pnpm --dir packages/rag-evaluation-site typecheck
+pnpm --dir packages/rag-evaluation-site build
+pnpm --dir packages/rag-evaluation-site build-storybook
+
+cd /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz
+pnpm --dir webapp typecheck
+scripts/sync-widget-spa.sh
+GOFLAGS=-buildvcs=false make test
+```
+
+### Technical details
+
+Successful css-visual-diff command:
+
+```bash
+cd /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system
+OUT=ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/sources/visual-smoke/run-20260610-154533
+css-visual-diff verbs \
+  --repository ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/scripts \
+  clubmed visual-smoke capture "$OUT" \
+  --appUrl http://127.0.0.1:18787 \
+  --storybookUrl http://127.0.0.1:6007 \
+  --output json
+```
+
+Playwright screenshot artifacts were written under:
+
+```text
+/home/manuel/workspaces/2026-06-07/club-meetup-site/.playwright-mcp/*-smoke-rerun-2026-06-10.png
+```

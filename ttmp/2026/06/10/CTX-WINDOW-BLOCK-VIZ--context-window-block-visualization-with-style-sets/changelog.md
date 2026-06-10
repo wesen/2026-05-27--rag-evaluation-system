@@ -62,3 +62,25 @@ Expanded the design guide with concrete go-minitrace schema and minitracejs DSL 
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/design-doc/01-design-and-implementation-guide.md — go-minitrace mapping update
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/go-minitrace/pkg/minitracejs/query_view_session.go — DSL row output source
 
+
+## 2026-06-10
+
+Restored course/slides/handout workspace surfaces after narrowing cleanup scope to only LiteLLM live service; commit 5cd3fb1.
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/CourseStudioShell/courseStudioNav.ts — Restored default course studio nav
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.course-handout.stories.tsx — Restored course/handout Storybook surface
+
+
+## 2026-06-10
+
+Step 6: removed JS LiteLLM live-service integration, fixed WidgetRenderer child keys found by Playwright smoke, and captured Storybook/ClubMed visual evidence
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx — Fixed child key warning found by Playwright smoke
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/scripts/01-capture-clubmed-visual-smoke.js — Reusable css-visual-diff smoke capture script
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-pages.js — Removed live-litellm nav/page while preserving course/slides/handouts
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/server.js — Removed direct LiteLLM live routes and actions
+
