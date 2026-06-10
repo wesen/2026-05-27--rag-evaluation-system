@@ -1,6 +1,7 @@
-import { useState, type HTMLAttributes, type KeyboardEvent, type ReactNode } from 'react';
+import { useState, type HTMLAttributes, type ReactNode } from 'react';
 import { contextVisualStyleToCssVars, resolveContextVisualStyle, type ContextStyleSet, type ContextWindowPart, type ContextWindowSnapshot } from '../../../context';
 import { Text } from '../../foundation';
+import { handleContextPartKeyDown } from '../contextKeyboardNavigation';
 import styles from './ContextGroupedStripDiagram.module.css';
 
 export type ContextGroupedStripGroupBy = 'turn' | 'styleKey' | 'sourceId';
@@ -64,11 +65,6 @@ function defaultPartTooltip(part: ContextWindowPart, styleSet: ContextStyleSet) 
     {part.note && <Text as="span" size="metadata">{part.note}</Text>}
   </div>;
 }
-function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
-  if (!onPartSelect) return;
-  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onPartSelect(partId); }
-}
-
 export function ContextGroupedStripDiagram({
   snapshot,
   styleSet,
@@ -86,6 +82,7 @@ export function ContextGroupedStripDiagram({
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
   const totalWidth = snapshot.limit || snapshot.parts.reduce((sum, part) => sum + part.tokens, 0) || 1;
   const groups = groupedParts(snapshot.parts, groupBy, styleSet);
+  const orderedPartIds = groups.flatMap((group) => group.parts.map((part) => part.id));
 
   const tooltipPart = snapshot.parts.find((part) => part.id === tooltipPartId);
 
@@ -117,7 +114,7 @@ export function ContextGroupedStripDiagram({
                       tabIndex={interactive ? 0 : undefined}
                       aria-pressed={interactive ? selected : undefined}
                       onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
-                      onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
+                      onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, part.id, orderedPartIds, onPartSelect, 'horizontal') : undefined}
                     >
                       {showPartLabels && width >= 12 && <span className={styles.partLabel}>{part.label}</span>}
                     </div>

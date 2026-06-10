@@ -1,5 +1,6 @@
-import type { HTMLAttributes, KeyboardEvent } from 'react';
+import type { HTMLAttributes } from 'react';
 import { contextVisualStyleToCssVars, resolveContextVisualStyle, type ContextStyleSet, type ContextWindowSnapshot } from '../../../context';
+import { handleContextPartKeyDown } from '../contextKeyboardNavigation';
 import styles from './ContextStackDiagram.module.css';
 
 export interface ContextStackDiagramProps extends HTMLAttributes<HTMLDivElement> {
@@ -12,14 +13,10 @@ export interface ContextStackDiagramProps extends HTMLAttributes<HTMLDivElement>
 function formatTokens(tokens: number) { return `${tokens.toLocaleString()} tok`; }
 function styleName(styleSet: ContextStyleSet, styleKey: string) { return styleSet.legend.find((item) => (item.styleKey ?? item.id) === styleKey)?.label ?? styleKey; }
 function patternClass(pattern: string | undefined) { return styles[`pattern_${pattern ?? 'none'}`] ?? styles.pattern_none; }
-function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
-  if (!onPartSelect) return;
-  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onPartSelect(partId); }
-}
-
 export function ContextStackDiagram({ snapshot, styleSet, selectedPartId, onPartSelect, className, ...rest }: ContextStackDiagramProps) {
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
   const visible = snapshot.parts.filter((part) => part.tokens > 0);
+  const orderedPartIds = visible.map((part) => part.id);
   const maxTokens = Math.max(...visible.map((part) => part.tokens), 1);
   return (
     <div className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="ContextStackDiagram" {...rest}>
@@ -39,7 +36,7 @@ export function ContextStackDiagram({ snapshot, styleSet, selectedPartId, onPart
               tabIndex={interactive ? 0 : undefined}
               aria-pressed={interactive ? selected : undefined}
               onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
-              onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
+              onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, part.id, orderedPartIds, onPartSelect, 'vertical') : undefined}
             >
               <span className={styles.label}>{part.label}</span>
               <span className={styles.tokens}>{formatTokens(part.tokens)}</span>

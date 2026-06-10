@@ -1,6 +1,7 @@
-import { useState, type HTMLAttributes, type KeyboardEvent, type ReactNode } from 'react';
+import { useState, type HTMLAttributes, type ReactNode } from 'react';
 import { contextVisualStyleToCssVars, resolveContextVisualStyle, type ContextStyleSet, type ContextWindowPart, type ContextWindowSnapshot } from '../../../context';
 import { Text } from '../../foundation';
+import { handleContextPartKeyDown } from '../contextKeyboardNavigation';
 import styles from './ContextStripDiagram.module.css';
 
 export interface ContextStripDiagramProps extends HTMLAttributes<HTMLDivElement> {
@@ -16,11 +17,6 @@ export interface ContextStripDiagramProps extends HTMLAttributes<HTMLDivElement>
 function formatTokens(tokens: number) { return `${tokens.toLocaleString()} tok`; }
 function styleName(styleSet: ContextStyleSet, styleKey: string) { return styleSet.legend.find((item) => (item.styleKey ?? item.id) === styleKey)?.label ?? styleKey; }
 function patternClass(pattern: string | undefined) { return styles[`pattern_${pattern ?? 'none'}`] ?? styles.pattern_none; }
-function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
-  if (!onPartSelect) return;
-  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onPartSelect(partId); }
-}
-
 function defaultPartTooltip(part: ContextWindowPart, styleSet: ContextStyleSet) {
   return <div className={styles.tooltipContent}>
     <Text as="strong" size="compact">{part.label}</Text>
@@ -33,6 +29,7 @@ export function ContextStripDiagram({ snapshot, styleSet, selectedPartId, showLa
   const [tooltipPartId, setTooltipPartId] = useState<string | undefined>();
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
   const totalWidth = snapshot.limit || snapshot.parts.reduce((sum, part) => sum + part.tokens, 0);
+  const orderedPartIds = snapshot.parts.map((part) => part.id);
 
   const tooltipPart = snapshot.parts.find((part) => part.id === tooltipPartId);
 
@@ -57,7 +54,7 @@ export function ContextStripDiagram({ snapshot, styleSet, selectedPartId, showLa
               tabIndex={interactive ? 0 : undefined}
               aria-pressed={interactive ? selected : undefined}
               onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
-              onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
+              onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, part.id, orderedPartIds, onPartSelect, 'horizontal') : undefined}
             >
               {showLabels && width >= 7 && <span className={styles.label}>{part.label}</span>}
             </div>
