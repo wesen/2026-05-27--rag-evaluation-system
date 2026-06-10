@@ -37,14 +37,22 @@ const contentSnapshot: ContextWindowSnapshot = {
 };
 const overBudgetSnapshot: ContextWindowSnapshot = { ...contextWindowSnapshots[1]!, id: 'over-budget-widget-ir', title: 'Over budget context window', limit: 12_000 };
 const groupedSessionSnapshot: ContextWindowSnapshot = {
-  ...contentSnapshot,
   id: 'widget-ir-grouped-session',
   title: 'Uploaded session context by turn',
+  subtitle: 'Balanced fixture with visible turn boundaries.',
+  limit: 12_000,
   selectedPartId: 'tool-result',
-  parts: contentSnapshot.parts.map((part) => ({
-    ...part,
-    metadata: { ...(part.metadata ?? {}), turnIndex: part.id === 'system' || part.id === 'free' ? 'global' : part.id === 'user-turn' ? 4 : part.id === 'answer' ? 6 : 5 },
-  })),
+  parts: [
+    { id: 'system', label: 'system', styleKey: 'system', tokens: 700, note: 'Stable system/developer instructions.', metadata: { turnIndex: 'global', blockType: 'system' } },
+    { id: 't4-user', label: 'T4 user', styleKey: 'conversation', tokens: 1800, note: 'User request enters the window.', metadata: { turnIndex: 4 } },
+    { id: 't4-context', label: 'T4 context', styleKey: 'context', tokens: 1100, note: 'Existing working context before tool use.', metadata: { turnIndex: 4 } },
+    { id: 'tool-call', label: 'T5 bash call', styleKey: 'tool', tokens: 900, note: 'Search command.', metadata: { turnIndex: 5, toolName: 'bash' } },
+    { id: 'tool-result', label: 'T5 search output', styleKey: 'result', tokens: 2200, note: 'Search results showing the files to change.', metadata: { turnIndex: 5, fullBytes: 4720 } },
+    { id: 't5-file', label: 'T5 file read', styleKey: 'retrieval', tokens: 950, note: 'Source file content used for implementation.', metadata: { turnIndex: 5 } },
+    { id: 'answer', label: 'T6 assistant', styleKey: 'active', tokens: 1700, note: 'Current answer draft.', metadata: { turnIndex: 6 } },
+    { id: 't6-summary', label: 'T6 summary', styleKey: 'summary', tokens: 1050, note: 'Condensed implementation summary.', metadata: { turnIndex: 6 } },
+    { id: 'free', label: 'headroom', styleKey: 'empty', tokens: 1600, metadata: { turnIndex: 'headroom', blockType: 'headroom' } },
+  ],
 };
 const turnPagerSnapshots: ContextWindowSnapshot[] = [4, 5, 6].map((turn) => ({
   ...groupedSessionSnapshot,

@@ -48,7 +48,12 @@ function turnOnlySnapshot(snapshot: ContextWindowSnapshot, includeGlobalParts: b
   const headroom = snapshot.parts.find(isHeadroomPart);
   const visibleParts = snapshot.parts.filter((part) => partTurnKey(part) === turn || (includeGlobalParts && isGlobalPart(part)));
   const usedTokens = visibleParts.reduce((sum, part) => sum + part.tokens, 0);
-  const recomputedHeadroom = headroom ? [{ ...headroom, tokens: Math.max(0, snapshot.limit - usedTokens) }] : [];
+  const recomputedHeadroom = headroom ? [{
+    ...headroom,
+    label: headroom.label || 'headroom',
+    tokens: Math.max(0, snapshot.limit - usedTokens),
+    metadata: { ...(headroom.metadata ?? {}), turnIndex: 'headroom', blockType: 'headroom' },
+  }] : [];
   const parts = [...visibleParts, ...recomputedHeadroom];
   const selectedPartId = parts.some((part) => part.id === snapshot.selectedPartId)
     ? snapshot.selectedPartId

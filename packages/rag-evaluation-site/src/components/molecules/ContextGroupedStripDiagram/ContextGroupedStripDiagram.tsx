@@ -43,15 +43,17 @@ function groupLabel(key: string, groupBy: ContextGroupedStripGroupBy, firstPart:
 }
 function groupedParts(parts: ContextWindowPart[], groupBy: ContextGroupedStripGroupBy, styleSet: ContextStyleSet): Group[] {
   const groups: Group[] = [];
-  let current: Group | undefined;
+  const byKey = new Map<string, Group>();
   for (const part of parts) {
     const key = groupKey(part, groupBy);
-    if (!current || current.id !== key) {
-      current = { id: key, label: groupLabel(key, groupBy, part, styleSet), tokens: 0, parts: [] };
-      groups.push(current);
+    let group = byKey.get(key);
+    if (!group) {
+      group = { id: key, label: groupLabel(key, groupBy, part, styleSet), tokens: 0, parts: [] };
+      byKey.set(key, group);
+      groups.push(group);
     }
-    current.parts.push(part);
-    current.tokens += part.tokens;
+    group.parts.push(part);
+    group.tokens += part.tokens;
   }
   return groups;
 }
@@ -85,6 +87,8 @@ export function ContextGroupedStripDiagram({
   const totalWidth = snapshot.limit || snapshot.parts.reduce((sum, part) => sum + part.tokens, 0) || 1;
   const groups = groupedParts(snapshot.parts, groupBy, styleSet);
 
+  const tooltipPart = snapshot.parts.find((part) => part.id === tooltipPartId);
+
   return (
     <div className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="ContextGroupedStripDiagram" {...rest}>
       <div className={styles.groups} role="img" aria-label={`${snapshot.title} grouped context strip`}>
@@ -100,14 +104,13 @@ export function ContextGroupedStripDiagram({
                   const width = Math.max(2, (part.tokens / groupTotal) * 100);
                   const interactive = Boolean(onPartSelect);
                   const selected = (showSelection ?? interactive) && effectiveSelectedPartId === part.id;
-                  const tooltipOpen = tooltipPartId === part.id;
                   return (
                     <div
                       key={part.id}
                       className={[styles.segment, patternClass(visualStyle.pattern), selected ? styles.selected : ''].filter(Boolean).join(' ')}
                       style={{ width: `${width}%`, ...contextVisualStyleToCssVars(visualStyle) }}
-                      onMouseEnter={() => setTooltipPartId(part.id)}
-                      onMouseLeave={() => setTooltipPartId(undefined)}
+                      onPointerEnter={() => setTooltipPartId(part.id)}
+                      onPointerLeave={() => setTooltipPartId(undefined)}
                       onFocus={() => setTooltipPartId(part.id)}
                       onBlur={() => setTooltipPartId(undefined)}
                       role={interactive ? 'button' : undefined}
@@ -117,9 +120,6 @@ export function ContextGroupedStripDiagram({
                       onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
                     >
                       {showPartLabels && width >= 12 && <span className={styles.partLabel}>{part.label}</span>}
-                      {tooltipOpen && <div className={styles.tooltip} role="tooltip">
-                        {renderPartTooltip ? renderPartTooltip(part) : defaultPartTooltip(part, styleSet)}
-                      </div>}
                     </div>
                   );
                 })}
@@ -129,6 +129,9 @@ export function ContextGroupedStripDiagram({
         })}
       </div>
       <div className={styles.caption}>{snapshot.title} · {snapshot.limit.toLocaleString()} token window · grouped by {groupBy}</div>
+      <div className={styles.tooltipPanel} role="tooltip" aria-live="polite">
+        {tooltipPart ? (renderPartTooltip ? renderPartTooltip(tooltipPart) : defaultPartTooltip(tooltipPart, styleSet)) : <Text as="span" size="metadata" tone="muted">Hover a block for details.</Text>}
+      </div>
     </div>
   );
 }

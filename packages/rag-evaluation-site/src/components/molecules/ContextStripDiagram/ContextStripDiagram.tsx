@@ -34,6 +34,8 @@ export function ContextStripDiagram({ snapshot, styleSet, selectedPartId, showLa
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
   const totalWidth = snapshot.limit || snapshot.parts.reduce((sum, part) => sum + part.tokens, 0);
 
+  const tooltipPart = snapshot.parts.find((part) => part.id === tooltipPartId);
+
   return (
     <div className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="ContextStripDiagram" {...rest}>
       <div className={styles.strip} role="img" aria-label={`${snapshot.title} context strip`}>
@@ -42,14 +44,13 @@ export function ContextStripDiagram({ snapshot, styleSet, selectedPartId, showLa
           const width = Math.max(2, (part.tokens / totalWidth) * 100);
           const interactive = Boolean(onPartSelect);
           const selected = (showSelection ?? interactive) && effectiveSelectedPartId === part.id;
-          const tooltipOpen = tooltipPartId === part.id;
           return (
             <div
               key={part.id}
               className={[styles.segment, patternClass(visualStyle.pattern), selected ? styles.selected : ''].filter(Boolean).join(' ')}
               style={{ width: `${width}%`, ...contextVisualStyleToCssVars(visualStyle) }}
-              onMouseEnter={() => setTooltipPartId(part.id)}
-              onMouseLeave={() => setTooltipPartId(undefined)}
+              onPointerEnter={() => setTooltipPartId(part.id)}
+              onPointerLeave={() => setTooltipPartId(undefined)}
               onFocus={() => setTooltipPartId(part.id)}
               onBlur={() => setTooltipPartId(undefined)}
               role={interactive ? 'button' : undefined}
@@ -59,14 +60,14 @@ export function ContextStripDiagram({ snapshot, styleSet, selectedPartId, showLa
               onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
             >
               {showLabels && width >= 7 && <span className={styles.label}>{part.label}</span>}
-              {tooltipOpen && <div className={styles.tooltip} role="tooltip">
-                {renderPartTooltip ? renderPartTooltip(part) : defaultPartTooltip(part, styleSet)}
-              </div>}
             </div>
           );
         })}
       </div>
       <div className={styles.caption}>{snapshot.title} · {snapshot.limit.toLocaleString()} token window</div>
+      <div className={styles.tooltipPanel} role="tooltip" aria-live="polite">
+        {tooltipPart ? (renderPartTooltip ? renderPartTooltip(tooltipPart) : defaultPartTooltip(tooltipPart, styleSet)) : <Text as="span" size="metadata" tone="muted">Hover a block for details.</Text>}
+      </div>
     </div>
   );
 }
