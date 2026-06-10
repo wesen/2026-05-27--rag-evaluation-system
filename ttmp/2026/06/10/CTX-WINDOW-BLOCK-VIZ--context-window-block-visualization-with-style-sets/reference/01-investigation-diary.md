@@ -42,7 +42,7 @@ RelatedFiles:
       Note: Primary planning deliverable written in this step
 ExternalSources: []
 Summary: Chronological diary for the context-window block visualization planning ticket.
-LastUpdated: 2026-06-10T18:08:00-04:00
+LastUpdated: 2026-06-10T18:42:00-04:00
 WhatFor: Use to resume or review the planning work for uploaded-session context-window block visualization.
 WhenToUse: Read before implementing the normalizer, Widget IR integration, turn pager, or grouped strip design.
 ---
@@ -1730,4 +1730,89 @@ ArrowLeft / ArrowRight: previous/next for horizontal diagrams
 ArrowUp / ArrowDown: previous/next for vertical diagrams
 ArrowLeft/Right and ArrowUp/Down: previous/next for treemap
 Home / End: first/last block
+```
+
+## Step 16: Fix Repeated Arrow Navigation
+
+This step fixed the first-pass keyboard navigation bug reported during review. The first arrow key moved selection correctly, but subsequent arrow presses were stuck toggling from the originally focused block because focus stayed in place while selection state moved.
+
+The fix makes each key handler navigate from the current selected block ID when available, falling back to the focused block only when there is no selected part yet.
+
+### Prompt Context
+
+**User prompt (verbatim):** "first arrow goes left or right, but then either to the beginning or back, it's stuck on either one."
+
+**Assistant interpretation:** Repeated arrow presses should continue moving through blocks from the current selected state, not from the originally focused block.
+
+**Inferred user intent:** The user wants keyboard navigation to behave like continuous selection traversal rather than a one-step toggle.
+
+**Commit (code):** 3e35ecb — "Context diagrams: navigate arrows from selected block"
+
+### What I did
+
+- Updated strip, grouped strip, stack, budget, and treemap key handlers to pass `effectiveSelectedPartId ?? part.id` into the shared keyboard navigation helper.
+- Preserved focus behavior; this is a selected-state traversal fix, not a roving-focus implementation.
+
+### Why
+
+- The focused DOM element does not change after `onPartSelect(nextPartId)` updates panel state.
+- Therefore the keydown handler must use current selected state as the navigation origin.
+
+### What worked
+
+- Typecheck passed:
+
+```bash
+pnpm --dir packages/rag-evaluation-site typecheck
+```
+
+- Storybook build passed:
+
+```bash
+pnpm --dir packages/rag-evaluation-site build-storybook
+```
+
+- Browser smoke confirmed repeated movement:
+  - Strip: first block + `ArrowRight` three times produced `user-turn`, then `tool-call`, then `tool-result`.
+  - Stack: first block + `ArrowDown` twice produced `user-turn`, then `tool-call`.
+
+### What didn't work
+
+- The original Step 15 implementation computed previous/next from the focused block ID. Because focus did not move, every subsequent arrow press reused the same origin.
+
+### What I learned
+
+- Selection traversal and focus traversal are distinct. Until we implement roving focus, keyboard movement must be selected-state-relative.
+
+### What was tricky to build
+
+- The fix is small but important: changing the origin ID at each call site avoids changing the shared helper or adding focus management prematurely.
+
+### What warrants a second pair of eyes
+
+- Decide later whether focus should visually/DOM-wise follow selection. That would require roving `tabIndex` and likely explicit focus refs.
+
+### What should be done in the future
+
+- Add automated interaction tests for repeated arrow navigation when component testing is available.
+
+### Code review instructions
+
+- Review the five call sites that now pass `effectiveSelectedPartId ?? part.id`.
+- Reproduce by focusing the first block in strip/stack and pressing the relevant arrow multiple times.
+
+### Technical details
+
+Bug pattern:
+
+```text
+focused block = system
+selection after ArrowRight = user-turn
+next keydown still originated from focused block system
+```
+
+Fixed pattern:
+
+```text
+keydown origin = effectiveSelectedPartId ?? focused block id
 ```

@@ -204,3 +204,13 @@ Updated the design guide with context diagram keyboard navigation behavior
 
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/design-doc/01-design-and-implementation-guide.md — Keyboard navigation behavior for selectable context blocks
 
+
+## 2026-06-10
+
+Step 16: fixed repeated arrow navigation to advance from selected block state instead of the originally focused block (commit 3e35ecb)
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.tsx — Selected-state-relative arrow navigation
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.tsx — Selected-state-relative arrow navigation
+
