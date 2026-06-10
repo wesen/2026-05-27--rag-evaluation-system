@@ -36,7 +36,7 @@ RelatedFiles:
       Note: Primary planning deliverable written in this step
 ExternalSources: []
 Summary: Chronological diary for the context-window block visualization planning ticket.
-LastUpdated: 2026-06-10T15:46:00-04:00
+LastUpdated: 2026-06-10T15:50:00-04:00
 WhatFor: Use to resume or review the planning work for uploaded-session context-window block visualization.
 WhenToUse: Read before implementing the normalizer, Widget IR integration, turn pager, or grouped strip design.
 ---
@@ -567,7 +567,7 @@ The smoke work also found a real upstream React warning in Storybook. `WidgetRen
 
 **Inferred user intent:** The user wants confidence that the narrow LiteLLM live-service removal did not regress restored course/slides/handouts or the context/transcript visual surfaces.
 
-**Commit (code):** Pending in this step.
+**Commit (code):** ace0505 — "Tests: add ClubMed visual smoke coverage"; 49fd9fa — "Frontend: remove LiteLLM live service"
 
 ### What I did
 

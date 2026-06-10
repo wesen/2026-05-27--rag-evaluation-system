@@ -7,7 +7,7 @@
 - [x] 0.3 Restore the over-removed slides/handouts/course Storybook and nav surfaces while preserving the design note that live/realtime service is out of scope.
 - [x] 0.4 Remove only the `litellm-live-service.js` live/realtime service integration and any direct references to it.
 - [x] 0.5 Validate cleanup with typecheck/builds/tests appropriate to changed files.
-- [ ] 0.6 Commit cleanup in focused intervals and record each interval in the diary.
+- [x] 0.6 Commit cleanup in focused intervals and record each interval in the diary.
 
 ## Phase 1 — Minitrace-driven widget mapping design
 

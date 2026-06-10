@@ -84,3 +84,13 @@ Step 6: removed JS LiteLLM live-service integration, fixed WidgetRenderer child 
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-pages.js — Removed live-litellm nav/page while preserving course/slides/handouts
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/server.js — Removed direct LiteLLM live routes and actions
 
+
+## 2026-06-10
+
+Step 6 committed: visual-smoke/key fix in RAG repo (ace0505) and LiteLLM live-service removal in ClubMed repo (49fd9fa)
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx — Committed keyed child rendering fix (ace0505)
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/litellm-live-service.js — Deleted JS LiteLLM live service (49fd9fa)
+
