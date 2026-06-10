@@ -42,7 +42,7 @@ RelatedFiles:
       Note: Primary planning deliverable written in this step
 ExternalSources: []
 Summary: Chronological diary for the context-window block visualization planning ticket.
-LastUpdated: 2026-06-10T16:12:00-04:00
+LastUpdated: 2026-06-10T16:31:00-04:00
 WhatFor: Use to resume or review the planning work for uploaded-session context-window block visualization.
 WhenToUse: Read before implementing the normalizer, Widget IR integration, turn pager, or grouped strip design.
 ---
@@ -1136,4 +1136,110 @@ http://127.0.0.1:18789/pages/handouts
 http://127.0.0.1:6009/iframe.html?id=widget-ir-renderer-context-diagrams--custom-three-label-widget-ir&viewMode=story
 http://127.0.0.1:6009/iframe.html?id=widget-ir-renderer-transcript-and-notes--annotated-transcript-with-notes-rail&viewMode=story
 http://127.0.0.1:6009/iframe.html?id=widget-ir-renderer-domain-registry-coverage--course-handout-registry-surface&viewMode=story
+```
+
+## Step 10: Remove Noisy Derived Annotations
+
+This step followed up on review feedback that the auto-generated transcript/context annotations were noisy. The implementation now suppresses token-spike, cache-activity, failed-tool, large-output, and file-heavy derived annotations. Only model-change and explicit compaction/context-summary annotations remain.
+
+The context diagram still keeps per-part `note` fields for selected-part details. What changed is the side annotation/note rails: they no longer get populated with a note for every block or every tool heuristic.
+
+### Prompt Context
+
+**User prompt (verbatim):** "remove the derived annotations, they're just noise, except model changes and compaction."
+
+**Assistant interpretation:** Remove heuristic derived annotations from minitrace-viz transcript/context outputs, preserving only high-signal annotations for model switches and compaction events.
+
+**Inferred user intent:** The user wants the transcript and context note rails to stop showing generic noise so reviewers focus on actual session content and exceptional events.
+
+**Commit (code):** d38d877 — "Minitrace viz: reduce derived annotations"
+
+### What I did
+
+- Updated `ClubMedMeetup/minitrace-viz/lib/course-session-data.js`.
+- Removed tool-level derived annotation generation entirely.
+- Changed turn-level annotation generation to emit only:
+  - model-change annotations when a non-empty model changes from the previous non-empty model,
+  - compaction annotations when a turn explicitly looks like a compaction/context-summary event.
+- Changed context side notes to include only model-change or compaction parts.
+- Kept part-level `note` text intact for selected context-block details.
+
+### Why
+
+- The prior derived annotations were heuristic and mostly restated data already visible in the transcript or context blocks.
+- Model changes and compaction are exceptional session events that are worth keeping in review rails.
+
+### What worked
+
+- Syntax check passed:
+
+```bash
+node --check lib/course-session-data.js
+```
+
+- Local smoke passed:
+
+```text
+=== Results: 7 passed, 0 failed ===
+```
+
+- API check on the sample upload now reports no noisy derived annotations:
+
+```text
+transcript annotations 0 []
+context notes 0 []
+```
+
+### What didn't work
+
+- `make test` regenerated unrelated xgoja/embed artifacts and changed `minitrace-viz/Makefile` in the working tree. I inspected the diff, confirmed it was not part of the annotation cleanup, restored those files, and removed newly generated untracked asset files.
+
+### What I learned
+
+- The context selected-part details and annotation rails serve different purposes. Keeping `part.note` is useful; auto-populating side rails from every part is noisy.
+- Model-change detection needs previous non-empty model state; annotating every model-bearing turn is not helpful.
+
+### What was tricky to build
+
+- The tricky part was preserving useful selected-part details while removing noisy side-rail annotations. I changed `contextNotes()` rather than deleting block notes from the model.
+- Another subtlety was build-tool noise: validation touched generated files that were not related to the requested change, so I restored them before committing.
+
+### What warrants a second pair of eyes
+
+- Confirm the compaction detector's string matching is conservative enough. It only looks for explicit compaction/context-summary terms.
+- Confirm whether cache creation/read tokens should ever be considered compaction in this UI; they are currently not annotated.
+
+### What should be done in the future
+
+- Add a fixture with explicit model changes and compaction events to cover the two remaining allowed annotation types.
+
+### Code review instructions
+
+- Review `deriveTurnAnnotations()`, `isCompactionTurn()`, and `contextNotes()` in `ClubMedMeetup/minitrace-viz/lib/course-session-data.js`.
+- Validate with:
+
+```bash
+cd /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz
+GOFLAGS=-buildvcs=false make test
+```
+
+### Technical details
+
+Removed annotation categories:
+
+```text
+token spike
+cache activity
+failed tool
+tool failure
+large tool output
+file-heavy tool
+per-block context notes
+```
+
+Kept annotation categories:
+
+```text
+model change
+explicit compaction/context summary
 ```

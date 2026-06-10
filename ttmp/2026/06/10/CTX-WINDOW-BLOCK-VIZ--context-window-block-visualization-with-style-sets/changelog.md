@@ -125,3 +125,12 @@ Step 9: completed Phase 5 final validation with uploaded-session API check, Play
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/design-doc/01-design-and-implementation-guide.md — Implementation outcome and final validation summary
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/ttmp/2026/06/10/CTX-WINDOW-BLOCK-VIZ--context-window-block-visualization-with-style-sets/sources/visual-smoke/run-phase5-20260610-160514/01-visual-smoke-summary.md — Final css-visual-diff evidence summary
 
+
+## 2026-06-10
+
+Step 10: removed noisy derived annotations, preserving only model-change and explicit compaction annotations (ClubMed commit d38d877)
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-session-data.js — Derived annotation filtering and context-note cleanup
+
