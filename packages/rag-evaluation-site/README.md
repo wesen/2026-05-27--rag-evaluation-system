@@ -24,9 +24,9 @@ When adding a component that should later be available from the Widget IR/Goja D
 - foundation/atoms/layout nodes such as `Text`, `CodeText`, `ContextStyleSwatch`, `SectionBlock`, `SplitPane`, `SlideShell`, and `SidebarShell`;
 - context diagram nodes such as `ContextBudgetBar`, `ContextStripDiagram`, `ContextTreemap`, and `ContextDiagramPanel`;
 - transcript/comment nodes such as `TranscriptWorkspacePanel`, `AnnotationRailPanel`, and `AnchoredCommentRail`;
-- session workspace and document nodes such as `CourseStudioShell`, `ContextUploadDropArea`, `MarkdownArticle`, and `HandoutDocumentShell`.
+- course/handout nodes such as `CourseStudioShell`, `CourseSlidePanel`, `MarkdownArticle`, and `HandoutDocumentShell`.
 
-Review package Storybook under `Widget IR/Renderer/...` for IR-authored examples grouped by Foundation and Atoms, Layout Recipes, Context Diagrams, Transcript and Notes, and Session Workspace. The active session workspace flow is upload → visualize / transcript; live/course-style session views are intentionally not part of that surface.
+Review package Storybook under `Widget IR/Renderer/...` for IR-authored examples grouped by Foundation and Atoms, Layout Recipes, Context Diagrams, Transcript and Notes, and Course Studio.
 
 Goja authors can use direct helpers from split modules such as `require("ui.dsl")`, `require("data.dsl")`, `require("context_window.dsl")`, and `require("course.dsl")`. Semantic recipes live under their owning domains, for example `contextWindow.recipes.contextDiagram`, `contextWindow.recipes.annotatedTranscript`, `course.recipes.courseStudio`, `course.recipes.courseSlide`, and `course.recipes.handout`.
 

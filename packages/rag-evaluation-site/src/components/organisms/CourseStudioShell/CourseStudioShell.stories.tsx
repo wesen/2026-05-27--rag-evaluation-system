@@ -50,9 +50,9 @@ const meta = {
   component: CourseStudioShell,
   args: {
     sections: courseStudioNavSections,
-    activeItemId: 'visualize',
+    activeItemId: 'slides',
     children: slideContent,
-    sidebarFooter: <Caption>Session workspace · upload / visualize / transcript</Caption>,
+    sidebarFooter: <Caption>Workshop draft · v0.4</Caption>,
   },
 } satisfies Meta<typeof CourseStudioShell>;
 export default meta;
@@ -61,9 +61,9 @@ type Story = StoryObj<typeof meta>;
 export const PaletteControls: StoryObj<PaletteControlsArgs> = {
   args: {
     sections: courseStudioNavSections,
-    activeItemId: 'visualize',
+    activeItemId: 'slides',
     palette: 'Dusty Magenta / Blue',
-    sidebarFooter: <Caption>Session workspace · upload / visualize / transcript</Caption>,
+    sidebarFooter: <Caption>Workshop draft · v0.4</Caption>,
   },
   argTypes: {
     palette: { control: 'select', options: contextPaletteOptions },
@@ -79,7 +79,7 @@ export const SlidesActive: Story = {};
 
 export const Interactive: Story = {
   render: () => {
-    const [active, setActive] = useState('visualize');
+    const [active, setActive] = useState('slides');
     return (
       <CourseStudioShell sections={courseStudioNavSections} activeItemId={active} onNavigate={setActive} sidebarFooter={<Caption>Selected: {active}</Caption>} >
         {slideContent}
