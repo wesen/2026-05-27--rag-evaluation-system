@@ -18,7 +18,7 @@
 
 ## Phase 2 — ClubMeetup/minitrace-viz local widget improvements
 
-- [ ] 2.1 Locate the ClubMeetup/minitrace-viz code path that consumes go-minitrace or minitracejs output.
+- [x] 2.1 Locate the ClubMeetup/minitrace-viz code path that consumes go-minitrace or minitracejs output.
 - [ ] 2.2 Implement all improvements possible locally: convert minitrace transcript/tool/token rows into uploaded-session context block snapshots and transcript widgets without upstream API changes.
 - [ ] 2.3 Add local fixtures or examples for uploaded session JSON/minitrace-derived rows.
 - [ ] 2.4 Validate local minitrace-viz output and document any limits caused by current upstream widget contracts.

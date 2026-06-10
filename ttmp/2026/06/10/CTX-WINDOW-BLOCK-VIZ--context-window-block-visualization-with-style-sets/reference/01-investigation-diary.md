@@ -14,6 +14,12 @@ Owners: []
 RelatedFiles:
     - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/course-pages.js
       Note: Live page/nav removed while preserving course surfaces in Step 6
+    - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/course-session-data.js
+      Note: Phase 2 local context block mapping (commit 58ee4d3)
+    - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/session-service.js
+      Note: Persists original upload for fallback mapping (commit 58ee4d3)
+    - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/lib/timeline-data.js
+      Note: Phase 2 fallback source rows (commit 58ee4d3)
     - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/server.js
       Note: LiteLLM live routes removed in Step 6
     - Path: ../../../../../../../ClubMedMeetup/minitrace-viz/webapp/src/main.tsx
@@ -36,10 +42,11 @@ RelatedFiles:
       Note: Primary planning deliverable written in this step
 ExternalSources: []
 Summary: Chronological diary for the context-window block visualization planning ticket.
-LastUpdated: 2026-06-10T15:50:00-04:00
+LastUpdated: 2026-06-10T16:02:00-04:00
 WhatFor: Use to resume or review the planning work for uploaded-session context-window block visualization.
 WhenToUse: Read before implementing the normalizer, Widget IR integration, turn pager, or grouped strip design.
 ---
+
 
 
 
@@ -745,4 +752,144 @@ Playwright screenshot artifacts were written under:
 
 ```text
 /home/manuel/workspaces/2026-06-07/club-meetup-site/.playwright-mcp/*-smoke-rerun-2026-06-10.png
+```
+
+## Step 7: Implement Local Uploaded-Session Context Blocks in minitrace-viz
+
+This step completed the local-first Phase 2 implementation in the ClubMed minitrace-viz app. The uploaded-session visualization now emits block-specific `styleKey` values for user turns, agent responses, thinking/scratchpad text, tool calls, tool results, and file read/write context instead of collapsing everything into generic conversation/tool/result buckets.
+
+The implementation stayed local to minitrace-viz. I did not need upstream React component changes or Goja DSL/schema helpers for this phase because the existing `ContextDiagramPanel`, `ContextWindowPart`, `ContextStyleSet`, Widget IR, and palette DSL were already expressive enough once the app emitted richer session-derived parts.
+
+### Prompt Context
+
+**User prompt (verbatim):** "do phase 1 - 5, i'm going to run some errands and i expect you to be done when i come back."
+
+**Assistant interpretation:** Continue through the remaining CTX-WINDOW-BLOCK-VIZ phases, implementing the local widget improvements first, then only upstreaming design-system or DSL changes if the local implementation proves they are required.
+
+**Inferred user intent:** The user wants the full ticket implementation completed while they are away, with focused commits and enough validation/documentation to review afterward.
+
+**Commit (code):** 58ee4d3 — "Minitrace viz: emit uploaded session context blocks"
+
+### What I did
+
+- Confirmed Phase 1 was already documented and checked in the ticket: minitrace schema, minitracejs row outputs, and mapping tables were already present from the prior design pass.
+- Updated `ClubMedMeetup/minitrace-viz/lib/course-pages.js` with a session-specific legend vocabulary:
+  - `system`, `user`, `agent`, `thinking`, `tool_call`, `tool_result`, `file_read`, `file_write`, `summary`, `tool_error`, `active`, `empty`, `other`.
+- Updated `ClubMedMeetup/minitrace-viz/lib/course-session-data.js` so context snapshots emit:
+  - role-specific message blocks (`user`, `agent`, `system`),
+  - `thinking` blocks from reasoning/scratchpad text,
+  - small `tool_call` blocks,
+  - `tool_result` / `tool_error` status/result blocks,
+  - explicit `file_read` / `file_write` blocks derived from minitrace file rows and operation metadata.
+- Updated `ClubMedMeetup/minitrace-viz/lib/session-service.js` to persist the raw upload as `original-upload.txt` next to the converted minitrace archive.
+- Updated `ClubMedMeetup/minitrace-viz/lib/timeline-data.js` with a local fallback parser for simple JSONL uploads when go-minitrace conversion yields an empty normalized `turns` table.
+- Updated `ClubMedMeetup/minitrace-viz/test-fixtures/smoke-test.sh` to assert that uploaded-session context data includes `user`, `agent`, `tool_call`, `tool_result`, and `file_read` style keys.
+
+### Why
+
+- The design guide required local-first implementation in ClubMed/minitrace-viz before changing upstream package contracts.
+- The existing widget contracts could already render colored, token-proportional blocks as long as the local app emitted precise `styleKey`s and parts.
+- The sample fixture converted through go-minitrace but produced zero normalized turns/tools, so the app needed a local fallback to keep uploaded-session demos useful and testable.
+
+### What worked
+
+- Syntax checks passed:
+
+```bash
+node --check minitrace-viz/lib/timeline-data.js
+node --check minitrace-viz/lib/course-session-data.js
+node --check minitrace-viz/lib/session-service.js
+```
+
+- Local validation passed on the first attempt:
+
+```bash
+pnpm --dir webapp typecheck
+scripts/sync-widget-spa.sh
+GOFLAGS=-buildvcs=false make test
+```
+
+- The smoke test now reports:
+
+```text
+=== Results: 7 passed, 0 failed ===
+```
+
+- Manual API inspection of the sample upload reported:
+
+```text
+turns 6 tools 5
+messages 11
+style keys: ['agent', 'empty', 'file_read', 'system', 'thinking', 'tool_call', 'tool_result', 'user']
+```
+
+### What didn't work
+
+- Before adding the fallback parser, the uploaded sample produced only the system estimate:
+
+```text
+style keys: ['empty', 'system']
+system system 1200 system + tool policy
+```
+
+- Inspecting the converted native minitrace JSON showed why: the importer metadata said conversion succeeded, but the resulting `turns` and `tool_calls` arrays were empty for the sample fixture. The normalized SQL timeline therefore had no rows to map.
+- Fix: persist the original upload and use a local JSONL fallback when normalized rows are empty.
+
+### What I learned
+
+- The upstream `ContextDiagramPanel` and current Widget IR contracts are sufficient for the requested block categories; the missing piece was local normalization/classification.
+- For realistic uploaded-session demos, preserving the raw upload is valuable even when go-minitrace conversion succeeds nominally, because adapters may still produce an empty normalized session for a lightweight fixture.
+- File-context visualization needs to avoid double-counting: when a tool has file rows, file blocks carry most of the file context weight and the tool-result block becomes a small status/result block.
+
+### What was tricky to build
+
+- The tricky part was balancing minitrace-derived rows with a fallback path without changing go-minitrace itself. I kept the fallback inside minitrace-viz and only activate it when normalized `turns` are empty.
+- The second tricky part was token accounting for file-heavy tools. A single opaque tool result hides whether the context came from file reads or command output, but naively adding file blocks on top of the full tool result double-counts. The current compromise splits file-heavy outputs into per-file blocks and caps the remaining successful tool-result/status block.
+- The selected-turn highlight used to depend on an `active` style key. The new model keeps semantic block style keys stable and records `selectedTurn` in metadata, with selection handled by `selectedPartId` instead of changing the part category.
+
+### What warrants a second pair of eyes
+
+- Review the fallback JSONL parser in `timeline-data.js`; it intentionally handles simple Pi-style rows and should not become a replacement for go-minitrace adapter work.
+- Review operation inference for file read/write classification, especially command/tool names that imply writes without explicit file operation metadata.
+- Review whether the app should persist raw uploads long-term or eventually store a smaller debug/fallback representation.
+
+### What should be done in the future
+
+- Add a richer fixture with explicit file write/patch operations so `file_write` is covered by smoke tests, not just by implementation logic.
+- If go-minitrace adapters are expected to parse this sample fully, record a go-minitrace documentation/adapter follow-up.
+- Consider a UI affordance for selected-turn metadata if reviewers want visible turn grouping beyond labels like `T1 read result`.
+
+### Code review instructions
+
+- Start in `ClubMedMeetup/minitrace-viz/lib/timeline-data.js` and review `fallbackRowsFromOriginalUpload()`.
+- Then review `ClubMedMeetup/minitrace-viz/lib/course-session-data.js`, especially `contextPartsForTurn()`, `contextFilePartsForTool()`, and `toolResultTokens()`.
+- Check the legend entries in `ClubMedMeetup/minitrace-viz/lib/course-pages.js` match emitted style keys.
+- Validate with:
+
+```bash
+cd /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz
+pnpm --dir webapp typecheck
+scripts/sync-widget-spa.sh
+GOFLAGS=-buildvcs=false make test
+```
+
+### Technical details
+
+Manual API inspection command shape:
+
+```bash
+./dist/minitrace-viz serve site start --http-listen 127.0.0.1:18787
+# POST test-fixtures/sample-pi-session.jsonl to /upload
+# GET /api/timeline/:id, /api/sessions/:id/transcript-data, /api/sessions/:id/context-window-data
+```
+
+The successful sample emitted block IDs such as:
+
+```text
+turn-0-user user 30 T0 user
+turn-1-assistant agent 11 T1 assistant
+turn-1-thinking thinking 22 T1 thinking
+turn-1-tool-call-tc-001 tool_call 20 T1 read call
+turn-1-file-1-project-config-yaml file_read 21 T1 file read config.yaml
+turn-1-tool-result-tc-001 tool_result 20 T1 read result
 ```

@@ -94,3 +94,14 @@ Step 6 committed: visual-smoke/key fix in RAG repo (ace0505) and LiteLLM live-se
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/widgets/WidgetRenderer.tsx — Committed keyed child rendering fix (ace0505)
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/litellm-live-service.js — Deleted JS LiteLLM live service (49fd9fa)
 
+
+## 2026-06-10
+
+Step 7: implemented local minitrace-viz uploaded-session context block mapping with user/agent/thinking/tool/file style keys (ClubMed commit 58ee4d3)
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/course-session-data.js — Maps timeline/tool/file rows into ContextWindowPart blocks
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/lib/timeline-data.js — Adds original-upload fallback rows when normalized minitrace rows are empty
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/ClubMedMeetup/minitrace-viz/test-fixtures/smoke-test.sh — Asserts uploaded-session style keys in smoke test
+
