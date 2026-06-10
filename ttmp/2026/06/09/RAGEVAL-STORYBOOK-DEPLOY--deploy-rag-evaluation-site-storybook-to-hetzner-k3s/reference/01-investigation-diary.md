@@ -16,7 +16,7 @@ RelatedFiles:
       Note: Primary design guide produced in this investigation
 ExternalSources: []
 Summary: Chronological diary for the rag-evaluation-site Storybook deployment design work.
-LastUpdated: 2026-06-09T23:33:30-04:00
+LastUpdated: 2026-06-10T00:08:30-04:00
 WhatFor: Use this to understand how the deployment guide was researched, what evidence was inspected, and what remains to implement.
 WhenToUse: Before continuing implementation of the Storybook deployment ticket.
 ---
@@ -791,3 +791,86 @@ The final live result is `https://rag-evaluation-page.storybook.yolo.scapegoat.d
 - Wildcard ingress: `static-sites/storybook-yolo-wildcard`
 - Publisher Job: `static-sites/publish-rag-evaluation-page-storybook-sha-2670bc8`
 - Argo revision: `1b0408eabac766d48f65324d582d03a9329eda5b`
+
+
+## Step 10: Fix Storybook module MIME errors on encoded backtick paths
+
+A browser console report showed Storybook manager modules being requested below `/%60/` and rejected because Caddy returned `text/html` instead of JavaScript. The deployed bundle itself was valid at `/`, but Storybook's generated HTML used relative manager asset URLs, so a malformed entry path such as `/%60/` caused imports like `./sb-manager/runtime.js` to resolve as `/%60/sb-manager/runtime.js`.
+
+I fixed the static artifact packaging so `index.html` and `iframe.html` use root-absolute asset URLs. The repaired deployment uses image `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-e78da8f` and validates both the normal root URL and the encoded-backtick URL without the MIME errors.
+
+### Prompt Context
+
+**User prompt (verbatim):** "globals-runtime.js:4145:206
+[Obsidian Clipper] Initializing content script, generation 1 content.js:1:910451
+Loading module from “https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/sb-manager/runtime.js” was blocked because of a disallowed MIME type (“text/html”). iframe.html
+Loading module from “https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/sb-addons/common-manager-bundle.js” was blocked because of a disallowed MIME type (“text/html”). iframe.html
+Loading module from “https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/sb-manager/globals-runtime.js” was blocked because of a disallowed MIME type (“text/html”)."
+
+**Assistant interpretation:** Diagnose and fix the live Storybook deployment so manager JavaScript modules are not fetched from the accidental `/%60/` prefix and served as HTML.
+
+**Inferred user intent:** Make the deployed Storybook robust enough to load cleanly in the browser, including after a bad/deep URL gets into the address bar.
+
+**Commit (code):** `518e1021f5eec443250e11f6616564557557e792` — PR #7 squash merge, "Fix web Storybook asset URLs for deep links".
+
+### What I did
+- Reproduced the URL-shape issue by checking the live fallback behavior for `/%60/sb-manager/runtime.js`, which returned `content-type: text/html` due to SPA fallback.
+- Updated `/tmp/rag-web-storybook-source/Dockerfile.web-storybook-static` to rewrite generated Storybook HTML at image build time:
+  - `href="./..."` -> `href="/..."`
+  - `src="./..."` -> `src="/..."`
+  - `import './...'` -> `import '/...'`
+  - `url('./...'` -> `url('/...'`
+- Validated the image contains absolute paths with `docker run` and `grep`.
+- Built and pushed:
+  - `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-e78da8f`
+- Opened and merged source PR #7:
+  - `https://github.com/go-go-golems/rag-evaluation-system/pull/7`
+- Updated and merged K3s PR #112 to publish the new image:
+  - `https://github.com/wesen/2026-03-27--hetzner-k3s/pull/112`
+- Refreshed Argo and observed the new Job complete:
+  - `publish-rag-evaluation-page-storybook-sha-e78da8f`
+- Verified live HTML now imports root-absolute Storybook manager assets.
+- Used Playwright to open:
+  - `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/`
+  - result: page title `Storybook`, no console errors/warnings returned for the problematic module MIME issue.
+
+### Why
+- The static-sites host deliberately falls back to `index.html` for unknown paths to support SPAs. That is correct for Storybook navigation, but relative asset URLs become dangerous when the entry path has an unintended prefix.
+- Root-absolute asset URLs keep the Storybook bundle host-relative while avoiding path-prefix poisoning.
+
+### What worked
+- The Dockerfile post-processing is simple and local to the static artifact image; it does not require changing Storybook internals or the shared Caddy config.
+- Source PR #7 passed checks.
+- Argo rolled out revision `6ec7bbaea63f1d8119fb7dc7e30b5ebb372b4741` and the new publisher Job completed.
+- Playwright verified the exact encoded-backtick path no longer emits the reported module MIME errors.
+
+### What didn't work
+- The first version of the deployment relied on Storybook's default relative URLs. That works at `/` but fails when the browser resolves imports relative to a bad path segment.
+- A quick shell validation command initially had an unterminated quote; I reran it with corrected quoting.
+
+### What I learned
+- Storybook's static manager output can be sensitive to the entry URL path because manager imports are relative by default.
+- For hostname-root static-sites deployments, root-absolute Storybook asset URLs are safer than relative URLs.
+
+### What was tricky to build
+- The Caddy fallback response is not itself wrong; the bug is the combination of fallback plus relative module resolution. The symptom appears as a MIME error, but the root cause is a URL prefix leak from the entry page.
+
+### What warrants a second pair of eyes
+- Review whether this root-absolute rewrite should become the default pattern for all Storybook static artifacts in the playbook.
+- Confirm no future deployment needs Storybook served from a subpath; root-absolute URLs assume host-root serving.
+
+### What should be done in the future
+- Fold this fix into the reusable CI workflow once the web Storybook publisher is automated.
+- Add a smoke test for `/%60/` or another synthetic deep path to catch relative asset regressions.
+
+### Code review instructions
+- Review source PR #7 first, especially `Dockerfile.web-storybook-static`.
+- Review K3s PR #112 to confirm all release tokens changed from `sha-2670bc8` to `sha-e78da8f`.
+- Validate with:
+  - `curl -fsS https://rag-evaluation-page.storybook.yolo.scapegoat.dev/ | rg "import '/sb-manager"`
+  - browser open `https://rag-evaluation-page.storybook.yolo.scapegoat.dev/%60/`
+
+### Technical details
+- Fixed image: `ghcr.io/go-go-golems/rag-evaluation-page-storybook:sha-e78da8f`
+- K3s Argo revision: `6ec7bbaea63f1d8119fb7dc7e30b5ebb372b4741`
+- Fixed Job: `static-sites/publish-rag-evaluation-page-storybook-sha-e78da8f`

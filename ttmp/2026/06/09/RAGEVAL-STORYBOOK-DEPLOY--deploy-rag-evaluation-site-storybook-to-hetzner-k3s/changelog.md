@@ -46,3 +46,13 @@ Deployed web Storybook at https://rag-evaluation-page.storybook.yolo.scapegoat.d
 - /tmp/storybook-dns-tf/dns/zones/scapegoat-dev/envs/prod/main.tf — Adds wildcard Storybook DNS record
 - /tmp/storybook-wildcard-k3s/gitops/kustomize/static-sites-host/storybook-wildcard-ingress.yaml — Adds wildcard Storybook routing to static-sites-host
 
+
+## 2026-06-09
+
+Fixed web Storybook MIME errors on /%60/ paths by publishing sha-e78da8f with root-absolute Storybook asset URLs.
+
+### Related Files
+
+- /tmp/rag-web-storybook-source/Dockerfile.web-storybook-static — Rewrites generated Storybook asset URLs to host-root absolute paths
+- /tmp/storybook-wildcard-k3s/gitops/kustomize/rag-evaluation-page-storybook/publish-job.yaml — Publishes fixed sha-e78da8f image
+
