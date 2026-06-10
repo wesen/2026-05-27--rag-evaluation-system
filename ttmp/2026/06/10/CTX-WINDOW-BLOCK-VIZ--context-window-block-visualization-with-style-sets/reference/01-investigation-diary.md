@@ -42,7 +42,7 @@ RelatedFiles:
       Note: Primary planning deliverable written in this step
 ExternalSources: []
 Summary: Chronological diary for the context-window block visualization planning ticket.
-LastUpdated: 2026-06-10T16:52:00-04:00
+LastUpdated: 2026-06-10T17:04:00-04:00
 WhatFor: Use to resume or review the planning work for uploaded-session context-window block visualization.
 WhenToUse: Read before implementing the normalizer, Widget IR integration, turn pager, or grouped strip design.
 ---
@@ -1424,4 +1424,92 @@ Default behavior:
 ```text
 mode = 'turn-only'
 includeGlobalParts = true
+```
+
+## Step 13: Align Strip Tooltips and Selection with the Design System
+
+This step addressed review feedback on the new grouped strip and turn pager UI. Static strip diagrams no longer show a blue selected outline unless the component is interactive or a caller explicitly opts into `showSelection`.
+
+The tooltip implementation was also changed from CSS pseudo-elements backed by `data-tooltip` text to a real rendered tooltip body. The default tooltip uses foundation `Text` primitives, has square design-system styling rather than rounded corners, and callers can provide a custom `renderPartTooltip` React node if they want to compose existing atoms, molecules, or other renderable UI.
+
+### Prompt Context
+
+**User prompt (verbatim):** "i still see the selected block blue inline border, even though I can't move it. same in \"context grouped by strip and such... no rounded corners on the popup, allow using existing atoms/molecules/irwidget that can be rendererd. Stick with the existing design system, see @2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/GUIDELINES.md ."
+
+**Assistant interpretation:** Remove non-interactive selected outlines, make tooltip visuals match the design system, and allow tooltip content to be rendered as normal component content instead of a CSS-only string.
+
+**Inferred user intent:** The user wants the new visualization components to behave consistently with existing design-system semantics instead of adding one-off UI affordances.
+
+**Commit (code):** e6460bf — "Context diagrams: align tooltips and selection with design system"
+
+### What I did
+
+- Read `packages/rag-evaluation-site/GUIDELINES.md` before changing the components.
+- Changed `ContextStripDiagram` and `ContextGroupedStripDiagram` so selected outlines only appear by default when the diagram is interactive.
+- Added explicit `showSelection` props for callers that intentionally want a static selected state.
+- Replaced CSS `data-tooltip` pseudo-elements with rendered tooltip markup.
+- Used foundation `Text` primitives inside the default tooltip content.
+- Removed rounded tooltip corners and kept tooltip styling token-based.
+- Added `renderPartTooltip` React render props so callers can provide richer renderable content.
+
+### Why
+
+- A blue selected border implies a movable/interactive selection. Showing it in static Widget IR stories was misleading.
+- CSS pseudo tooltips cannot render existing atoms/molecules and are too one-off for the package design-system rules.
+- Rounded popup styling did not match the requested visual direction.
+
+### What worked
+
+- Typecheck passed:
+
+```bash
+pnpm --dir packages/rag-evaluation-site typecheck
+```
+
+- Storybook build passed:
+
+```bash
+pnpm --dir packages/rag-evaluation-site build-storybook
+```
+
+### What didn't work
+
+- N/A
+
+### What I learned
+
+- Static context diagrams and interactive context diagrams need different selected-state defaults.
+- A render prop is a better component-level extension point than encoding tooltip body content into a string attribute.
+
+### What was tricky to build
+
+- The existing context diagrams used `selectedPartId` both as semantic data and visual state. The fix keeps the data prop but gates the visual outline behind interactivity or explicit `showSelection`.
+- The tooltip needed to remain fast while becoming renderable; hover/focus state now controls a real tooltip node.
+
+### What warrants a second pair of eyes
+
+- Confirm whether `showSelection` should be exposed in all context diagram widgets, including budget/treemap/stack, for consistency.
+- Confirm whether a shared tooltip molecule should be extracted if more components need this pattern.
+
+### What should be done in the future
+
+- Add direct component stories for `ContextGroupedStripDiagram` and `ContextTurnPagerPanel`, per design-system guidelines, rather than relying only on Widget IR stories.
+
+### Code review instructions
+
+- Review `ContextStripDiagram.tsx` and `ContextGroupedStripDiagram.tsx` for selected-state gating and tooltip render props.
+- Hover/focus segments in the Storybook context diagram stories and confirm the tooltip is square, fast, and token-styled.
+
+### Technical details
+
+Selection default:
+
+```text
+selected = (showSelection ?? Boolean(onPartSelect)) && selectedPartId === part.id
+```
+
+Tooltip extension point:
+
+```text
+renderPartTooltip?: (part: ContextWindowPart) => ReactNode
 ```

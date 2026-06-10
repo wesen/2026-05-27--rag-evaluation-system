@@ -154,3 +154,13 @@ Step 12: changed ContextTurnPagerPanel to default to turn-only context-window sl
 
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/organisms/ContextTurnPagerPanel/ContextTurnPagerPanel.tsx — Turn-only snapshot filtering and headroom recomputation
 
+
+## 2026-06-10
+
+Step 13: aligned strip/grouped-strip selection and tooltips with design-system guidelines (commit e6460bf)
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextGroupedStripDiagram/ContextGroupedStripDiagram.tsx — Selection gating and renderable tooltip
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.tsx — Selection gating and renderable tooltip
+
