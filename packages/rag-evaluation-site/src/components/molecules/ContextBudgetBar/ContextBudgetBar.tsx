@@ -2,6 +2,8 @@ import type { HTMLAttributes, KeyboardEvent } from 'react';
 import {
   contextVisualStyleToCssVars,
   contextWindowFillRatio,
+  contextWindowHeadroomStyleKeys,
+  contextWindowIsHeadroomPart,
   contextWindowTokenTotal,
   resolveContextVisualStyle,
   type ContextStyleSet,
@@ -21,7 +23,7 @@ export interface ContextBudgetBarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 function formatTokens(tokens: number) { return `${Math.round(tokens).toLocaleString()} tok`; }
-function usedParts(parts: ContextWindowPart[]) { return parts.filter((part) => part.styleKey !== 'empty' && part.tokens > 0); }
+function usedParts(parts: ContextWindowPart[], headroomStyleKeys: Iterable<string>) { return parts.filter((part) => !contextWindowIsHeadroomPart(part, { headroomStyleKeys }) && part.tokens > 0); }
 function styleName(styleSet: ContextStyleSet, styleKey: string) { return styleSet.legend.find((item) => (item.styleKey ?? item.id) === styleKey)?.label ?? styleKey; }
 function patternClass(pattern: string | undefined) { return styles[`pattern_${pattern ?? 'none'}`] ?? styles.pattern_none; }
 function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
@@ -30,11 +32,12 @@ function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string,
 }
 
 export function ContextBudgetBar({ snapshot, styleSet, showLegend = true, selectedPartId, onPartSelect, className, ...rest }: ContextBudgetBarProps) {
-  const total = contextWindowTokenTotal(snapshot);
-  const ratio = contextWindowFillRatio(snapshot);
+  const headroomStyleKeys = contextWindowHeadroomStyleKeys(styleSet);
+  const total = contextWindowTokenTotal(snapshot, { headroomStyleKeys });
+  const ratio = contextWindowFillRatio(snapshot, { headroomStyleKeys });
   const overBudget = total > snapshot.limit;
   const nearBudget = !overBudget && ratio >= 0.8;
-  const parts = usedParts(snapshot.parts);
+  const parts = usedParts(snapshot.parts, headroomStyleKeys);
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
 
   return (

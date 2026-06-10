@@ -3,6 +3,8 @@ import type {
   AnchoredComment,
   ContextHandoutBundle,
   ContextSlide,
+  ContextStyleSet,
+  ContextWindowPart,
   ContextWindowSnapshot,
   TranscriptFixture,
 } from './types';
@@ -443,18 +445,37 @@ Track \`tokens_by_kind\` for system, context, conversation, results, generated t
   ],
 };
 
-export function contextWindowTokenTotal(snapshot: ContextWindowSnapshot, options: { includeEmpty?: boolean } = {}) {
+export const DEFAULT_CONTEXT_HEADROOM_STYLE_KEYS = ['empty', 'free', 'headroom'] as const;
+
+export function contextWindowHeadroomStyleKeys(styleSet?: ContextStyleSet) {
+  const keys = new Set<string>(DEFAULT_CONTEXT_HEADROOM_STYLE_KEYS);
+  for (const item of styleSet?.legend ?? []) {
+    if (item.hidden) {
+      keys.add(item.styleKey ?? item.id);
+    }
+  }
+  return keys;
+}
+
+export function contextWindowIsHeadroomPart(part: ContextWindowPart, options: { includeEmpty?: boolean; headroomStyleKeys?: Iterable<string> } = {}) {
+  if (options.includeEmpty) {
+    return false;
+  }
+  return new Set(options.headroomStyleKeys ?? DEFAULT_CONTEXT_HEADROOM_STYLE_KEYS).has(part.styleKey);
+}
+
+export function contextWindowTokenTotal(snapshot: ContextWindowSnapshot, options: { includeEmpty?: boolean; headroomStyleKeys?: Iterable<string> } = {}) {
   return snapshot.parts.reduce((total, part) => {
-    if (!options.includeEmpty && part.styleKey === 'empty') {
+    if (contextWindowIsHeadroomPart(part, options)) {
       return total;
     }
     return total + part.tokens;
   }, 0);
 }
 
-export function contextWindowFillRatio(snapshot: ContextWindowSnapshot) {
+export function contextWindowFillRatio(snapshot: ContextWindowSnapshot, options: { includeEmpty?: boolean; headroomStyleKeys?: Iterable<string> } = {}) {
   if (snapshot.limit <= 0) {
     return 0;
   }
-  return contextWindowTokenTotal(snapshot) / snapshot.limit;
+  return contextWindowTokenTotal(snapshot, options) / snapshot.limit;
 }

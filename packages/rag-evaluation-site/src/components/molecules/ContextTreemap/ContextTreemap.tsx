@@ -1,5 +1,5 @@
 import type { HTMLAttributes, KeyboardEvent } from 'react';
-import { contextVisualStyleToCssVars, contextWindowTokenTotal, resolveContextVisualStyle, type ContextStyleSet, type ContextWindowSnapshot } from '../../../context';
+import { contextVisualStyleToCssVars, contextWindowHeadroomStyleKeys, contextWindowIsHeadroomPart, contextWindowTokenTotal, resolveContextVisualStyle, type ContextStyleSet, type ContextWindowSnapshot } from '../../../context';
 import styles from './ContextTreemap.module.css';
 
 export interface ContextTreemapProps extends HTMLAttributes<HTMLDivElement> {
@@ -19,8 +19,9 @@ function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string,
 
 export function ContextTreemap({ snapshot, styleSet, selectedPartId, onPartSelect, className, ...rest }: ContextTreemapProps) {
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
-  const parts = snapshot.parts.filter((part) => part.styleKey !== 'empty' && part.tokens > 0);
-  const total = contextWindowTokenTotal(snapshot) || 1;
+  const headroomStyleKeys = contextWindowHeadroomStyleKeys(styleSet);
+  const parts = snapshot.parts.filter((part) => !contextWindowIsHeadroomPart(part, { headroomStyleKeys }) && part.tokens > 0);
+  const total = contextWindowTokenTotal(snapshot, { headroomStyleKeys }) || 1;
   return <div className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="ContextTreemap" {...rest}>
     <div className={styles.map} role="img" aria-label={`${snapshot.title} token treemap`}>
       {parts.map((part) => {
