@@ -214,3 +214,12 @@ Step 16: fixed repeated arrow navigation to advance from selected block state in
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextStackDiagram/ContextStackDiagram.tsx — Selected-state-relative arrow navigation
 - /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.tsx — Selected-state-relative arrow navigation
 
+
+## 2026-06-10
+
+Step 17: addressed PR review by separating focused-block activation from selected-state arrow navigation (commit 01b4343)
+
+### Related Files
+
+- /home/manuel/workspaces/2026-06-07/club-meetup-site/2026-05-27--rag-evaluation-system/packages/rag-evaluation-site/src/components/molecules/contextKeyboardNavigation.ts — Focused activation and navigation-origin split
+

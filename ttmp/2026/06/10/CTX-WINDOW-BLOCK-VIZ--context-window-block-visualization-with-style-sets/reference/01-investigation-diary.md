@@ -42,7 +42,7 @@ RelatedFiles:
       Note: Primary planning deliverable written in this step
 ExternalSources: []
 Summary: Chronological diary for the context-window block visualization planning ticket.
-LastUpdated: 2026-06-10T18:42:00-04:00
+LastUpdated: 2026-06-10T19:12:00-04:00
 WhatFor: Use to resume or review the planning work for uploaded-session context-window block visualization.
 WhenToUse: Read before implementing the normalizer, Widget IR integration, turn pager, or grouped strip design.
 ---
@@ -1815,4 +1815,102 @@ Fixed pattern:
 
 ```text
 keydown origin = effectiveSelectedPartId ?? focused block id
+```
+
+## Step 17: Preserve Focused-Block Activation While Navigating from Selection
+
+This step addressed PR review feedback from the chatgpt-codex-connector bot. The Step 16 fix made repeated arrows navigate from selected state, but it also caused Enter/Space on a different focused block to activate the selected block rather than the focused block.
+
+The keyboard helper now separates the focused activation target from the navigation origin: Enter/Space use the focused part, while arrow/Home/End use the selected part as the origin when available.
+
+### Prompt Context
+
+**User prompt (verbatim):** "...ges/rag-evaluation-site/src/components/molecules/ContextStripDiagram/ContextStripDiagram.tsx
+              aria-pressed={interactive ? selected : undefined}
+              onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
+              onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
+              onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, effectiveSelectedPartId ?? part.id, orderedPartIds, onPartSelect, 'horizontal') : undefined}
+@chatgpt-codex-connector
+chatgpt-codex-connector Bot
+now
+
+P2 Badge Use the focused block for activation keys
+
+When a diagram is interactive and selectedPartId is set, this passes the selected block into the shared key handler instead of the block that actually has focus. That fixes repeated arrow traversal, but it also means Enter/Space on any other focused segment re-selects the already selected block rather than activating the focused segment; the same pattern was added to the stack, budget, treemap, and grouped strip handlers. Keep the selected id as the navigation origin only for arrow/Home/End, and use part.id for Enter/Space activation.
+
+Useful? React with 👍 / 👎."
+
+**Assistant interpretation:** Fix the keyboard helper/call sites so activation keys target the focused block and traversal keys use the selected block as navigation origin.
+
+**Inferred user intent:** The user wants the PR review finding handled correctly while preserving the repeated-arrow fix.
+
+**Commit (code):** 01b4343 — "Context diagrams: keep activation on focused block"
+
+### What I did
+
+- Changed `handleContextPartKeyDown()` to accept:
+  - `focusedPartId`, used by Enter/Space,
+  - optional `navigationOriginPartId`, used by arrow/Home/End.
+- Updated strip, grouped strip, stack, budget, and treemap call sites to pass `part.id` as the focused part and `effectiveSelectedPartId` as the navigation origin.
+
+### Why
+
+- Enter/Space are activation keys and should activate the focused control.
+- Arrow/Home/End are traversal keys and should continue from selected state when focus does not move.
+
+### What worked
+
+- Typecheck passed:
+
+```bash
+pnpm --dir packages/rag-evaluation-site typecheck
+```
+
+- Storybook build passed:
+
+```bash
+pnpm --dir packages/rag-evaluation-site build-storybook
+```
+
+- Browser smoke confirmed both behaviors:
+  - Click first strip block, press `ArrowRight`: selected part becomes `user-turn`.
+  - Press `Enter` while focus remains on first strip block: selected part returns to `system`.
+  - Press `ArrowRight` twice more: selected part advances to `tool-call`, confirming repeated traversal still works.
+
+### What didn't work
+
+- The Step 16 implementation passed `effectiveSelectedPartId ?? part.id` as the only part ID, which conflated activation target and navigation origin.
+
+### What I learned
+
+- The non-roving-focus implementation still needs two concepts: DOM-focused part and selected/navigation-origin part.
+- This is still not roving focus; focus does not move, but keyboard semantics now match focused activation plus selected-state traversal.
+
+### What was tricky to build
+
+- The helper API needed a minimal extension rather than adding roving focus or changing component state ownership.
+- The same call-site pattern had to be corrected across five context diagram renderers.
+
+### What warrants a second pair of eyes
+
+- Confirm reviewers agree that this non-roving split is sufficient for the PR, and that roving focus can remain a future enhancement.
+
+### What should be done in the future
+
+- Add component interaction tests for activation-vs-traversal semantics.
+- Consider roving focus in a separate accessibility-focused change.
+
+### Code review instructions
+
+- Review `contextKeyboardNavigation.ts` first.
+- Verify each diagram call site passes `part.id` and `effectiveSelectedPartId` separately.
+- Manual smoke: focus a block, arrow to another selected block, then press Enter and confirm the focused block activates.
+
+### Technical details
+
+Current split:
+
+```text
+Enter / Space -> focusedPartId
+Arrow/Home/End -> navigationOriginPartId ?? focusedPartId
 ```
