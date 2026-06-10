@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "clubmed-handouts",
+  "url": "http://127.0.0.1:18787/pages/handouts",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "name": "handout-shell",
+  "selector": "[data-rag-organism=\"HandoutDocumentShell\"]",
+  "selector_source": "",
+  "format": "css-json",
+  "created_at": "2026-06-10T19:45:40.124761071Z"
+}

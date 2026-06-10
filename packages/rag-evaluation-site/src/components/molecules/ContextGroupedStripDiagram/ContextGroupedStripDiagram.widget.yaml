@@ -1,0 +1,7 @@
+type: ContextGroupedStripDiagram
+category: molecule
+props: ContextGroupedStripDiagramWidgetProps
+entry:
+  path: ./ContextGroupedStripDiagram.widget.tsx
+  export: contextGroupedStripDiagramWidget
+reactComponent: ContextGroupedStripDiagram

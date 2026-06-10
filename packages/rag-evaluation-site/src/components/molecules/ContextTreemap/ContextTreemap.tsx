@@ -1,5 +1,6 @@
-import type { HTMLAttributes, KeyboardEvent } from 'react';
+import type { HTMLAttributes } from 'react';
 import { contextVisualStyleToCssVars, contextWindowHeadroomStyleKeys, contextWindowIsHeadroomPart, contextWindowTokenTotal, resolveContextVisualStyle, type ContextStyleSet, type ContextWindowSnapshot } from '../../../context';
+import { handleContextPartKeyDown } from '../contextKeyboardNavigation';
 import styles from './ContextTreemap.module.css';
 
 export interface ContextTreemapProps extends HTMLAttributes<HTMLDivElement> {
@@ -12,15 +13,11 @@ export interface ContextTreemapProps extends HTMLAttributes<HTMLDivElement> {
 function formatTokens(tokens: number) { return `${tokens.toLocaleString()} tok`; }
 function styleName(styleSet: ContextStyleSet, styleKey: string) { return styleSet.legend.find((item) => (item.styleKey ?? item.id) === styleKey)?.label ?? styleKey; }
 function patternClass(pattern: string | undefined) { return styles[`pattern_${pattern ?? 'none'}`] ?? styles.pattern_none; }
-function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
-  if (!onPartSelect) return;
-  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onPartSelect(partId); }
-}
-
 export function ContextTreemap({ snapshot, styleSet, selectedPartId, onPartSelect, className, ...rest }: ContextTreemapProps) {
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
   const headroomStyleKeys = contextWindowHeadroomStyleKeys(styleSet);
   const parts = snapshot.parts.filter((part) => !contextWindowIsHeadroomPart(part, { headroomStyleKeys }) && part.tokens > 0);
+  const orderedPartIds = parts.map((part) => part.id);
   const total = contextWindowTokenTotal(snapshot, { headroomStyleKeys }) || 1;
   return <div className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="ContextTreemap" {...rest}>
     <div className={styles.map} role="img" aria-label={`${snapshot.title} token treemap`}>
@@ -38,7 +35,7 @@ export function ContextTreemap({ snapshot, styleSet, selectedPartId, onPartSelec
           tabIndex={interactive ? 0 : undefined}
           aria-pressed={interactive ? selected : undefined}
           onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
-          onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
+          onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, part.id, orderedPartIds, onPartSelect, 'both', effectiveSelectedPartId) : undefined}
         >
           <span className={styles.label}>{part.label}</span><span className={styles.tokens}>{formatTokens(part.tokens)}</span>
         </div>;

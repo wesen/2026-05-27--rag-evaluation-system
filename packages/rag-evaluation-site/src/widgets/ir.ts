@@ -33,6 +33,7 @@ export type RagWidgetType =
   | 'ContextLegend'
   | 'ContextBudgetBar'
   | 'ContextStripDiagram'
+  | 'ContextGroupedStripDiagram'
   | 'ContextStackDiagram'
   | 'ContextTreemap'
   | 'ContextDiagramPanel'
@@ -213,6 +214,17 @@ export interface ContextStripDiagramWidgetProps extends BaseWidgetProps {
   styleSet: ContextStyleSet;
   selectedPartId?: string;
   showLabels?: boolean;
+  showSelection?: boolean;
+}
+
+export interface ContextGroupedStripDiagramWidgetProps extends BaseWidgetProps {
+  snapshot: ContextWindowSnapshot;
+  styleSet: ContextStyleSet;
+  selectedPartId?: string;
+  groupBy?: 'turn' | 'styleKey' | 'sourceId';
+  showGroupLabels?: boolean;
+  showPartLabels?: boolean;
+  showSelection?: boolean;
 }
 
 export interface ContextStackDiagramWidgetProps extends BaseWidgetProps {
@@ -235,6 +247,19 @@ export interface ContextDiagramPanelWidgetProps extends BaseWidgetProps {
   views?: ContextDiagramView[];
   showLegend?: boolean;
   showPartDetails?: boolean;
+}
+
+export interface ContextTurnPagerPanelWidgetProps extends BaseWidgetProps {
+  snapshots: ContextWindowSnapshot[];
+  styleSet: ContextStyleSet;
+  initialSnapshotId?: string;
+  selectedPartId?: string;
+  diagram?: 'grouped-strip' | 'strip';
+  groupBy?: 'turn' | 'styleKey' | 'sourceId';
+  mode?: 'turn-only' | 'snapshot';
+  includeGlobalParts?: boolean;
+  showLegend?: boolean;
+  title?: string;
 }
 
 export interface TranscriptSessionHeaderWidgetProps extends BaseWidgetProps {
@@ -546,9 +571,11 @@ export type WidgetProps =
   | ContextLegendWidgetProps
   | ContextBudgetBarWidgetProps
   | ContextStripDiagramWidgetProps
+  | ContextGroupedStripDiagramWidgetProps
   | ContextStackDiagramWidgetProps
   | ContextTreemapWidgetProps
   | ContextDiagramPanelWidgetProps
+  | ContextTurnPagerPanelWidgetProps
   | TranscriptSessionHeaderWidgetProps
   | TranscriptMessageCardWidgetProps
   | AnnotationNoteCardWidgetProps

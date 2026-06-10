@@ -4,6 +4,7 @@ export * from './AppNav';
 export * from './ContextLegend';
 export * from './ContextBudgetBar';
 export * from './ContextStripDiagram';
+export * from './ContextGroupedStripDiagram';
 export * from './ContextStackDiagram';
 export * from './ContextTreemap';
 export * from './TranscriptMessageCard';

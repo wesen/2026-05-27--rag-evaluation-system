@@ -1,4 +1,4 @@
-import { createElement, type CSSProperties, type ReactNode } from 'react';
+import { Fragment, createElement, type CSSProperties, type ReactNode } from 'react';
 import { ErrorCallout } from '../components/atoms';
 import { bindAction, dispatchWidgetAction, type WidgetActionHandler } from './actions';
 import type { ComponentNode, WidgetNode } from './ir';
@@ -54,7 +54,25 @@ function renderComponentNode(node: ComponentNode, ctx: RenderContext, registry: 
 }
 
 function renderChildren(children: WidgetNode[] | undefined, ctx: RenderContext, registry: WidgetRegistry): ReactNode[] {
-  return (children ?? []).map((child) => renderWidgetNode(child, ctx, registry));
+  return (children ?? []).map((child, index) => (
+    <Fragment key={widgetNodeKey(child, index)}>{renderWidgetNode(child, ctx, registry)}</Fragment>
+  ));
+}
+
+function widgetNodeKey(node: WidgetNode, index: number): string | number {
+  if (node.kind === 'component') {
+    const props = node.props ?? {};
+    if (typeof props.key === 'string' || typeof props.key === 'number') return props.key;
+    if (typeof props.id === 'string' || typeof props.id === 'number') return props.id;
+    return `${node.type}-${index}`;
+  }
+  if (node.kind === 'element') {
+    const attrs = node.attrs ?? {};
+    if (typeof attrs.key === 'string' || typeof attrs.key === 'number') return attrs.key;
+    if (typeof attrs.id === 'string' || typeof attrs.id === 'number') return attrs.id;
+    return `${node.tag}-${index}`;
+  }
+  return index;
 }
 
 function renderRenderableValue(value: unknown, ctx: RenderContext, registry: WidgetRegistry): ReactNode {

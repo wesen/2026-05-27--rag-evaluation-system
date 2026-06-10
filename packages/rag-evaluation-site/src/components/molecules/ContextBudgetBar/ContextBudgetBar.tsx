@@ -1,4 +1,4 @@
-import type { HTMLAttributes, KeyboardEvent } from 'react';
+import type { HTMLAttributes } from 'react';
 import {
   contextVisualStyleToCssVars,
   contextWindowFillRatio,
@@ -12,6 +12,7 @@ import {
 } from '../../../context';
 import { Caption } from '../../foundation';
 import { ContextStyleSwatch } from '../../atoms';
+import { handleContextPartKeyDown } from '../contextKeyboardNavigation';
 import styles from './ContextBudgetBar.module.css';
 
 export interface ContextBudgetBarProps extends HTMLAttributes<HTMLDivElement> {
@@ -26,11 +27,6 @@ function formatTokens(tokens: number) { return `${Math.round(tokens).toLocaleStr
 function usedParts(parts: ContextWindowPart[], headroomStyleKeys: Iterable<string>) { return parts.filter((part) => !contextWindowIsHeadroomPart(part, { headroomStyleKeys }) && part.tokens > 0); }
 function styleName(styleSet: ContextStyleSet, styleKey: string) { return styleSet.legend.find((item) => (item.styleKey ?? item.id) === styleKey)?.label ?? styleKey; }
 function patternClass(pattern: string | undefined) { return styles[`pattern_${pattern ?? 'none'}`] ?? styles.pattern_none; }
-function handlePartKeyDown(event: KeyboardEvent<HTMLDivElement>, partId: string, onPartSelect?: (partId: string) => void) {
-  if (!onPartSelect) return;
-  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onPartSelect(partId); }
-}
-
 export function ContextBudgetBar({ snapshot, styleSet, showLegend = true, selectedPartId, onPartSelect, className, ...rest }: ContextBudgetBarProps) {
   const headroomStyleKeys = contextWindowHeadroomStyleKeys(styleSet);
   const total = contextWindowTokenTotal(snapshot, { headroomStyleKeys });
@@ -38,6 +34,7 @@ export function ContextBudgetBar({ snapshot, styleSet, showLegend = true, select
   const overBudget = total > snapshot.limit;
   const nearBudget = !overBudget && ratio >= 0.8;
   const parts = usedParts(snapshot.parts, headroomStyleKeys);
+  const orderedPartIds = parts.map((part) => part.id);
   const effectiveSelectedPartId = selectedPartId ?? snapshot.selectedPartId;
 
   return (
@@ -64,7 +61,7 @@ export function ContextBudgetBar({ snapshot, styleSet, showLegend = true, select
               tabIndex={interactive ? 0 : undefined}
               aria-pressed={interactive ? selected : undefined}
               onClick={interactive ? () => onPartSelect?.(part.id) : undefined}
-              onKeyDown={interactive ? (event) => handlePartKeyDown(event, part.id, onPartSelect) : undefined}
+              onKeyDown={interactive ? (event) => handleContextPartKeyDown(event, part.id, orderedPartIds, onPartSelect, 'horizontal', effectiveSelectedPartId) : undefined}
             />
           );
         })}

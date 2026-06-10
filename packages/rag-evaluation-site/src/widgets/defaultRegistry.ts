@@ -28,6 +28,7 @@ import { appNavWidget } from '../components/molecules/AppNav/AppNav.widget';
 import { checkListWidget } from '../components/molecules/CheckList/CheckList.widget';
 import { contextBudgetBarWidget } from '../components/molecules/ContextBudgetBar/ContextBudgetBar.widget';
 import { contextLegendWidget } from '../components/molecules/ContextLegend/ContextLegend.widget';
+import { contextGroupedStripDiagramWidget } from '../components/molecules/ContextGroupedStripDiagram/ContextGroupedStripDiagram.widget';
 import { contextStackDiagramWidget } from '../components/molecules/ContextStackDiagram/ContextStackDiagram.widget';
 import { contextStripDiagramWidget } from '../components/molecules/ContextStripDiagram/ContextStripDiagram.widget';
 import { contextTreemapWidget } from '../components/molecules/ContextTreemap/ContextTreemap.widget';
@@ -48,6 +49,7 @@ import { transcriptSessionHeaderWidget } from '../components/molecules/Transcrip
 import { anchoredCommentRailWidget } from '../components/organisms/AnchoredCommentRail/AnchoredCommentRail.widget';
 import { annotationRailPanelWidget } from '../components/organisms/AnnotationRailPanel/AnnotationRailPanel.widget';
 import { contextDiagramPanelWidget } from '../components/organisms/ContextDiagramPanel/ContextDiagramPanel.widget';
+import { contextTurnPagerPanelWidget } from '../components/organisms/ContextTurnPagerPanel/ContextTurnPagerPanel.widget';
 import { contextUploadDropAreaWidget } from '../components/organisms/ContextUploadDropArea/ContextUploadDropArea.widget';
 import { courseLessonPanelWidget } from '../components/organisms/CourseLessonPanel/CourseLessonPanel.widget';
 import { courseSlidePanelWidget } from '../components/organisms/CourseSlidePanel/CourseSlidePanel.widget';
@@ -100,11 +102,13 @@ export const contextWindowWidgetRegistry = createWidgetRegistry([
   annotationRailPanelWidget,
   contextBudgetBarWidget,
   contextDiagramPanelWidget,
+  contextGroupedStripDiagramWidget,
   contextStyleSwatchWidget,
   contextLegendWidget,
   contextStackDiagramWidget,
   contextStripDiagramWidget,
   contextTreemapWidget,
+  contextTurnPagerPanelWidget,
   contextUploadDropAreaWidget,
   transcriptMessageCardWidget,
   transcriptReaderPanelWidget,

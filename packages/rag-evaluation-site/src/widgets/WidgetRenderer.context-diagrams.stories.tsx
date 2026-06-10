@@ -36,6 +36,36 @@ const contentSnapshot: ContextWindowSnapshot = {
   ],
 };
 const overBudgetSnapshot: ContextWindowSnapshot = { ...contextWindowSnapshots[1]!, id: 'over-budget-widget-ir', title: 'Over budget context window', limit: 12_000 };
+const groupedSessionSnapshot: ContextWindowSnapshot = {
+  id: 'widget-ir-grouped-session',
+  title: 'Uploaded session context by turn',
+  subtitle: 'Balanced fixture with visible turn boundaries.',
+  limit: 12_000,
+  selectedPartId: 'tool-result',
+  parts: [
+    { id: 'system', label: 'system', styleKey: 'system', tokens: 700, note: 'Stable system/developer instructions.', metadata: { turnIndex: 'global', blockType: 'system' } },
+    { id: 't4-user', label: 'T4 user', styleKey: 'conversation', tokens: 1800, note: 'User request enters the window.', metadata: { turnIndex: 4 } },
+    { id: 't4-context', label: 'T4 context', styleKey: 'context', tokens: 1100, note: 'Existing working context before tool use.', metadata: { turnIndex: 4 } },
+    { id: 'tool-call', label: 'T5 bash call', styleKey: 'tool', tokens: 900, note: 'Search command.', metadata: { turnIndex: 5, toolName: 'bash' } },
+    { id: 'tool-result', label: 'T5 search output', styleKey: 'result', tokens: 2200, note: 'Search results showing the files to change.', metadata: { turnIndex: 5, fullBytes: 4720 } },
+    { id: 't5-file', label: 'T5 file read', styleKey: 'retrieval', tokens: 950, note: 'Source file content used for implementation.', metadata: { turnIndex: 5 } },
+    { id: 'answer', label: 'T6 assistant', styleKey: 'active', tokens: 1700, note: 'Current answer draft.', metadata: { turnIndex: 6 } },
+    { id: 't6-summary', label: 'T6 summary', styleKey: 'summary', tokens: 1050, note: 'Condensed implementation summary.', metadata: { turnIndex: 6 } },
+    { id: 'free', label: 'headroom', styleKey: 'empty', tokens: 1600, metadata: { turnIndex: 'headroom', blockType: 'headroom' } },
+  ],
+};
+const turnPagerSnapshots: ContextWindowSnapshot[] = [4, 5, 6].map((turn) => ({
+  ...groupedSessionSnapshot,
+  id: `widget-ir-turn-${turn}`,
+  title: `Turn ${turn} context window`,
+  subtitle: turn === 4 ? 'User request enters the window.' : turn === 5 ? 'Tool call/result dominate the working set.' : 'Assistant answer becomes active.',
+  selectedPartId: turn === 4 ? 'user-turn' : turn === 5 ? 'tool-result' : 'answer',
+  metadata: { turnIndex: turn },
+  parts: groupedSessionSnapshot.parts.map((part) => ({
+    ...part,
+    tokens: part.id === 'free' ? Math.max(2000, part.tokens - turn * 320) : Math.max(1, part.tokens + (part.metadata?.turnIndex === turn ? 260 : 0)),
+  })),
+}));
 const threeLabelStyleSet = contextThreeLabelStyleSets[0]!;
 const threeLabelSnapshot: ContextWindowSnapshot = {
   id: 'widget-ir-three-label',
@@ -222,6 +252,15 @@ export const ContextDiagramPanelViews: Story = {
 
 export const ContextDiagramPanelContentDetails: Story = {
   render: ({ palette, registry }) => renderNode(component('ContextDiagramPanel', { snapshot: contentSnapshot, styleSet: contextStyleSetForPalette(palette), initialView: 'stack', views: ['stack', 'strip', 'budget'], showPartDetails: true }), registry),
+};
+
+export const ContextGroupedStripByTurn: Story = {
+  render: ({ palette, registry }) => renderNode(component('ContextGroupedStripDiagram', { snapshot: groupedSessionSnapshot, styleSet: contextStyleSetForPalette(palette), groupBy: 'turn', showGroupLabels: true, showPartLabels: true }), registry),
+};
+
+export const ContextTurnPagerPanelStory: Story = {
+  name: 'ContextTurnPagerPanel',
+  render: ({ palette, registry }) => renderNode(component('ContextTurnPagerPanel', { snapshots: turnPagerSnapshots, styleSet: contextStyleSetForPalette(palette), initialSnapshotId: 'widget-ir-turn-5', title: 'Uploaded session turn pager', diagram: 'grouped-strip', groupBy: 'turn', mode: 'turn-only', includeGlobalParts: true, showLegend: true }), registry),
 };
 
 export const CustomThreeLabelWidgetIR: Story = {

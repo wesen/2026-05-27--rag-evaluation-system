@@ -1,4 +1,5 @@
 export * from './ContextDiagramPanel';
+export * from './ContextTurnPagerPanel';
 export * from './TranscriptReaderPanel';
 export * from './TranscriptWorkspacePanel';
 export * from './AnnotationRailPanel';

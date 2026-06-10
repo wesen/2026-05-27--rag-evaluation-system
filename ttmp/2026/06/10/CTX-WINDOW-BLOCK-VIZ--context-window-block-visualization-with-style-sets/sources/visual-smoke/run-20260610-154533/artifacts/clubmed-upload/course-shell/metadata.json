@@ -1,0 +1,14 @@
+{
+  "side": "script",
+  "target_name": "clubmed-upload",
+  "url": "http://127.0.0.1:18787/pages/upload",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "name": "course-shell",
+  "selector": "[data-rag-organism=\"CourseStudioShell\"]",
+  "selector_source": "",
+  "format": "css-json",
+  "created_at": "2026-06-10T19:45:36.963350331Z"
+}
