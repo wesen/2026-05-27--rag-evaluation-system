@@ -144,6 +144,32 @@
 .course-material-table th:nth-child(6),
 .course-material-table td:nth-child(6) { width: 11%; }
 
+.uploaded-sessions-table {
+  table-layout: fixed;
+}
+
+.uploaded-sessions-table th,
+.uploaded-sessions-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uploaded-sessions-table th:nth-child(1),
+.uploaded-sessions-table td:nth-child(1) { width: 38%; }
+
+.uploaded-sessions-table th:nth-child(2),
+.uploaded-sessions-table td:nth-child(2) { width: 17%; }
+
+.uploaded-sessions-table th:nth-child(3),
+.uploaded-sessions-table td:nth-child(3) { width: 20%; }
+
+.uploaded-sessions-table th:nth-child(4),
+.uploaded-sessions-table td:nth-child(4) { width: 10%; }
+
+.uploaded-sessions-table th:nth-child(5),
+.uploaded-sessions-table td:nth-child(5) { width: 15%; }
+
 @keyframes rag-route-pending-slide {
   0% { transform: translateX(-110%); }
   50% { transform: translateX(80%); }

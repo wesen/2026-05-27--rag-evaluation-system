@@ -10,9 +10,22 @@ export interface CourseLessonPanelProps extends Omit<HTMLAttributes<HTMLDivEleme
   course: ContextCourse;
   activeAgendaItemId?: string;
   onAgendaItemSelect?: (itemId: string) => void;
+  onPrimaryCta?: () => void;
+  onSecondaryCta?: () => void;
 }
 
-export function CourseLessonPanel({ course, activeAgendaItemId, onAgendaItemSelect, className, ...rest }: CourseLessonPanelProps) {
+export function CourseLessonPanel({ course, activeAgendaItemId, onAgendaItemSelect, onPrimaryCta, onSecondaryCta, className, ...rest }: CourseLessonPanelProps) {
+  const labels = {
+    outcomes: "What you'll leave with",
+    agenda: 'Agenda · 2 hours',
+    instructor: 'Instructor',
+    when: 'When',
+    where: 'Where',
+    format: 'Format',
+    primaryCta: 'Reserve a seat',
+    secondaryCta: 'Preview the deck',
+    ...course.labels,
+  };
   const agendaItems = course.agenda.map((item) => ({
     id: item.id,
     index: item.number,
@@ -28,14 +41,14 @@ export function CourseLessonPanel({ course, activeAgendaItemId, onAgendaItemSele
         <h1 className={styles.title}>{course.title}</h1>
         <p className={styles.lead}>{course.tagline}</p>
         <div className={styles.ctaRow}>
-          <Button variant="primary">Reserve a seat</Button>
-          <Button>Preview the deck</Button>
+          <Button variant="primary" onClick={onPrimaryCta}>{labels.primaryCta}</Button>
+          <Button onClick={onSecondaryCta}>{labels.secondaryCta}</Button>
           {course.price && <Caption>{course.price}</Caption>}
         </div>
         <KeyValueStrip className={styles.metaStrip} items={[
-          { key: 'When', value: course.when ?? 'TBD' },
-          { key: 'Where', value: course.where ?? 'TBD' },
-          { key: 'Format', value: course.format ?? 'TBD' },
+          { key: labels.when, value: course.when ?? 'TBD' },
+          { key: labels.where, value: course.where ?? 'TBD' },
+          { key: labels.format, value: course.format ?? 'TBD' },
         ]} />
       </SectionBlock>
 
@@ -43,18 +56,18 @@ export function CourseLessonPanel({ course, activeAgendaItemId, onAgendaItemSele
         ratio="course"
         divider
         left={(
-          <SectionBlock label="What you'll leave with" density="spacious">
+          <SectionBlock label={labels.outcomes} density="spacious">
             <CheckList items={course.outcomes} />
             {course.instructor && (
               <div className={styles.instructorBlock}>
-                <div className={styles.sectionLabel}>Instructor</div>
+                <div className={styles.sectionLabel}>{labels.instructor}</div>
                 <PersonSummary name={course.instructor.name} subtitle={course.instructor.role} bio={course.instructor.bio} />
               </div>
             )}
           </SectionBlock>
         )}
         right={(
-          <SectionBlock label="Agenda · 2 hours" density="spacious">
+          <SectionBlock label={labels.agenda} density="spacious">
             <StepList items={agendaItems} activeItemId={activeAgendaItemId} onItemSelect={onAgendaItemSelect} />
           </SectionBlock>
         )}
