@@ -145,9 +145,6 @@
 
 .figure {
   margin: 14px 0;
-  padding: 10px;
-  border: 1px solid var(--mac-border-subtle);
-  background: var(--mac-surface-2);
 }
 
 .image {
@@ -155,8 +152,6 @@
   max-width: 100%;
   height: auto;
   margin: 0 auto;
-  border: 1px solid var(--mac-border-subtle);
-  background: var(--mac-surface);
 }
 
 .figcaption {
@@ -169,7 +164,6 @@
 @media print {
   .figure {
     break-inside: avoid;
-    background: transparent;
   }
 
   .image {

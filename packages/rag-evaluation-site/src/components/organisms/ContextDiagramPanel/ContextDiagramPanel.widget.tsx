@@ -15,6 +15,7 @@ export const contextDiagramPanelWidget = defineWidget<ContextDiagramPanelWidgetP
       views={props.views}
       showLegend={props.showLegend}
       showPartDetails={props.showPartDetails}
+      chrome={props.chrome}
     />
   ),
 });

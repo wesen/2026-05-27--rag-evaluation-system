@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from 'react';
 import { useEffect, useState } from 'react';
 import type { ContextDiagramView, ContextStyleSet, ContextWindowPart, ContextWindowSnapshot } from '../../../context';
-import { legendItemsForStyleSet } from '../../../context';
+import { contextWindowHeadroomStyleKeys, contextWindowIsHeadroomPart, legendItemsForStyleSet } from '../../../context';
 import { Button } from '../../atoms';
 import { Caption, Text } from '../../foundation';
 import { Inline, Panel, Stack } from '../../layout';
@@ -16,6 +16,7 @@ export interface ContextDiagramPanelProps extends HTMLAttributes<HTMLDivElement>
   views?: ContextDiagramView[];
   showLegend?: boolean;
   showPartDetails?: boolean;
+  chrome?: 'panel' | 'inline';
 }
 
 const defaultViews: ContextDiagramView[] = ['strip', 'stack', 'budget', 'treemap'];
@@ -23,6 +24,17 @@ const defaultViews: ContextDiagramView[] = ['strip', 'stack', 'budget', 'treemap
 function formatTokens(tokens: number) { return `${Math.round(tokens || 0).toLocaleString()} tok`; }
 function metadataEntries(part: ContextWindowPart) { return Object.entries(part.metadata ?? {}).filter(([, value]) => value !== undefined && value !== null && value !== ''); }
 function styleLabel(styleSet: ContextStyleSet, styleKey: string) { return styleSet.legend.find((item) => (item.styleKey ?? item.id) === styleKey)?.label ?? styleKey; }
+
+function legendItemsForSnapshot(snapshot: ContextWindowSnapshot, styleSet: ContextStyleSet, view: ContextDiagramView) {
+  const headroomStyleKeys = contextWindowHeadroomStyleKeys(styleSet);
+  const visibleStyleKeys = new Set(
+    snapshot.parts
+      .filter((part) => part.tokens > 0)
+      .filter((part) => view !== 'budget' || !contextWindowIsHeadroomPart(part, { headroomStyleKeys }))
+      .map((part) => part.styleKey),
+  );
+  return legendItemsForStyleSet(styleSet).filter((item) => visibleStyleKeys.has(item.styleKey ?? item.id));
+}
 
 function renderPartDetail(part: ContextWindowPart | undefined, styleSet: ContextStyleSet) {
   if (!part) return null;
@@ -58,6 +70,7 @@ export function ContextDiagramPanel({
   views = defaultViews,
   showLegend = true,
   showPartDetails = false,
+  chrome = 'panel',
   className,
   ...rest
 }: ContextDiagramPanelProps) {
@@ -71,9 +84,9 @@ export function ContextDiagramPanel({
   }, [selectedPartId, snapshot]);
   const selected = activePartId;
   const selectedPart = selected ? snapshot.parts.find((part) => part.id === selected) : undefined;
-  const legendItems = legendItemsForStyleSet(styleSet);
-
-  return <Panel title={snapshot.title} actions={<Inline gap="xs">{availableViews.map(v => <Button key={v} size="compact" selected={view === v} aria-pressed={view === v} onClick={() => setView(v)}>{v}</Button>)}</Inline>} className={className} data-rag-organism="ContextDiagramPanel" {...rest}>
+  const legendItems = legendItemsForSnapshot(snapshot, styleSet, view);
+  const actions = <Inline gap="xs">{availableViews.map(v => <Button key={v} size="compact" selected={view === v} aria-pressed={view === v} onClick={() => setView(v)}>{v}</Button>)}</Inline>;
+  const content = (
     <Stack gap="sm">
       {snapshot.subtitle && <Caption>{snapshot.subtitle}</Caption>}
       <div className={styles.viewport}>
@@ -85,5 +98,19 @@ export function ContextDiagramPanel({
       {showLegend && <ContextLegend items={legendItems} styles={styleSet.styles} size={styleSet.legendSize ?? 'sm'} selectedId={selectedPart?.styleKey} />}
       {showPartDetails && renderPartDetail(selectedPart, styleSet)}
     </Stack>
-  </Panel>;
+  );
+
+  if (chrome === 'inline') {
+    return (
+      <div className={[styles.inlineRoot, className ?? ''].filter(Boolean).join(' ')} data-rag-organism="ContextDiagramPanel" {...rest}>
+        <div className={styles.inlineHeader}>
+          <Caption transform="uppercase">{snapshot.title}</Caption>
+          {actions}
+        </div>
+        {content}
+      </div>
+    );
+  }
+
+  return <Panel title={snapshot.title} actions={actions} className={className} data-rag-organism="ContextDiagramPanel" {...rest}>{content}</Panel>;
 }

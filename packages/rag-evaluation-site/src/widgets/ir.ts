@@ -247,6 +247,7 @@ export interface ContextDiagramPanelWidgetProps extends BaseWidgetProps {
   views?: ContextDiagramView[];
   showLegend?: boolean;
   showPartDetails?: boolean;
+  chrome?: 'panel' | 'inline';
 }
 
 export interface ContextTurnPagerPanelWidgetProps extends BaseWidgetProps {

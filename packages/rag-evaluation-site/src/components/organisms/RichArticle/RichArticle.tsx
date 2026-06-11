@@ -24,7 +24,8 @@ export function RichArticle({ blocks, styleSet = contextDefaultStyleSet, classNa
                 snapshot={block.snapshot}
                 styleSet={styleSet}
                 initialView={block.view ?? 'budget'}
-                views={['budget', 'strip', 'stack', 'treemap']}
+                views={['budget', 'strip', 'stack']}
+                chrome="inline"
                 showLegend
                 showPartDetails={false}
               />
