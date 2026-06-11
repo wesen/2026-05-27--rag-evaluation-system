@@ -272,6 +272,11 @@ func (r *runtime) actionObject() *goja.Object {
 		mergeOptions(out, exportOptions(options))
 		return out
 	})
+	setExport(action, "download", func(to string, options ...goja.Value) map[string]any {
+		out := map[string]any{"kind": "download", "to": to}
+		mergeOptions(out, exportOptions(options))
+		return out
+	})
 	setExport(action, "event", func(event string, options ...goja.Value) map[string]any {
 		out := map[string]any{"kind": "event", "event": event}
 		mergeOptions(out, exportOptions(options))

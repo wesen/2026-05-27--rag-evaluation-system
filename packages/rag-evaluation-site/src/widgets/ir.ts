@@ -94,12 +94,19 @@ export type RenderableValue = WidgetNode | string | number | boolean | null;
 
 export type ActionSpec =
   | NavigateActionSpec
+  | DownloadActionSpec
   | ServerActionSpec
   | EventActionSpec
   | CopyActionSpec;
 
 export interface NavigateActionSpec {
   kind: 'navigate';
+  to: string;
+  params?: JsonObject;
+}
+
+export interface DownloadActionSpec {
+  kind: 'download';
   to: string;
   params?: JsonObject;
 }
