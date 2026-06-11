@@ -47,7 +47,7 @@ function courseSlideWithContextVisualNode(styleSet: ContextStyleSet): WidgetNode
 export const PaletteControls: StoryObj<PaletteControlsArgs> = {
   args: {
     registry: defaultWidgetRegistry,
-    palette: 'Dusty Magenta / Blue',
+    palette: "Slate / Coral",
     node: courseSlideWithContextVisualNode(contextDefaultStyleSet),
   },
   argTypes: {
