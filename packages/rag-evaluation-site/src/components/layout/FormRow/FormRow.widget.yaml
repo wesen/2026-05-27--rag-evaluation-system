@@ -11,7 +11,11 @@ children: false
 slots:
   - label
   - control
+  - description
   - hint
+  - error
+  - success
+  - counter
 actions: []
 status: stable
-docs: Form row layout primitive that renders a label, a widget-node control slot, and optional renderable hint.
+docs: Form row layout primitive that renders a label, widget-node control slot, and optional description, hint, validation, and counter slots.

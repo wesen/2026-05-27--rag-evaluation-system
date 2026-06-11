@@ -40,6 +40,7 @@ var uiHelpers = map[string]string{
 	"dashboardGrid": "DashboardGrid",
 	"divider":       "Divider",
 	"figureBlock":   "FigureBlock",
+	"formPanel":     "FormPanel",
 	"formRow":       "FormRow",
 	"inline":        "Inline",
 	"keyPointList":  "KeyPointList",

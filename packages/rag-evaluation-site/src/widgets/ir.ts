@@ -40,6 +40,7 @@ export type RagWidgetType =
   | 'DashboardGrid'
   | 'DataTable'
   | 'Divider'
+  | 'FormPanel'
   | 'FormRow'
   | 'Inline'
   | 'MetadataGrid'
@@ -442,10 +443,30 @@ export interface ConstantCellSpec {
   value: RenderableValue;
 }
 
+export interface FormPanelWidgetProps extends BaseWidgetProps {
+  title: RenderableValue;
+  subtitle?: RenderableValue;
+  actions?: RenderableValue;
+  formAction?: string;
+  method?: 'get' | 'post';
+  status?: 'idle' | 'saving' | 'success' | 'error';
+  statusMessage?: RenderableValue;
+  submitLabel?: RenderableValue;
+  resetLabel?: RenderableValue;
+  footer?: RenderableValue;
+  disabled?: boolean;
+}
+
 export interface FormRowWidgetProps extends BaseWidgetProps {
   label: RenderableValue;
   control: WidgetNode;
+  description?: RenderableValue;
   hint?: RenderableValue;
+  error?: RenderableValue;
+  success?: RenderableValue;
+  counter?: RenderableValue;
+  required?: boolean;
+  orientation?: 'inline' | 'stacked';
 }
 
 export interface InlineWidgetProps extends BaseWidgetProps {
@@ -517,7 +538,10 @@ export interface SlideShellWidgetProps extends BaseWidgetProps {
 export interface SelectInputWidgetProps extends BaseWidgetProps {
   name?: string;
   value?: string | number;
+  defaultValue?: string | number;
   disabled?: boolean;
+  required?: boolean;
+  ariaInvalid?: boolean;
   options?: SelectOptionSpec[];
 }
 
@@ -553,11 +577,18 @@ export interface TabListItemSpec {
 export interface TextInputWidgetProps extends BaseWidgetProps {
   name?: string;
   value?: string | number;
+  defaultValue?: string | number;
   placeholder?: string;
   type?: string;
   disabled?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
   min?: number;
   max?: number;
+  minLength?: number;
+  maxLength?: number;
+  autoComplete?: string;
+  ariaInvalid?: boolean;
 }
 
 export type WidgetProps =
@@ -607,6 +638,7 @@ export type WidgetProps =
   | CaptionWidgetProps
   | DashboardGridWidgetProps
   | DataTableWidgetProps
+  | FormPanelWidgetProps
   | FormRowWidgetProps
   | InlineWidgetProps
   | MetadataGridWidgetProps
