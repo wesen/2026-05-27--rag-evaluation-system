@@ -8,13 +8,18 @@
 
 .header {
   flex: 0 0 auto;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--mac-border);
+}
+
+.title {
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 
 .description {
   display: block;
-  margin-top: 6px;
+  margin-top: 5px;
 }
 
 .list {
@@ -88,7 +93,6 @@
 .itemTitle {
   color: currentColor;
   font: var(--rag-font-role-compact);
-  font-weight: 700;
 }
 
 .itemMeta {
@@ -100,7 +104,7 @@
 .itemDescription {
   color: currentColor;
   opacity: .78;
-  font: var(--rag-font-role-compact);
+  font: var(--rag-font-role-metadata);
 }
 
 .footer {
