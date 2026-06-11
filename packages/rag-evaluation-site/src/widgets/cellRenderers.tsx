@@ -25,6 +25,24 @@ export function renderCell(spec: CellSpec, row: JsonObject, renderWidgetNode: Re
       const label = stringify(getPath(row, spec.labelField), spec.fallbackLabel ?? href);
       return <a href={href} target={spec.target} rel={spec.target === '_blank' ? 'noreferrer' : undefined}>{label}</a>;
     }
+    case 'linkButton': {
+      const href = stringify(getPath(row, spec.hrefField), '#');
+      const label = stringify(getPath(row, spec.labelField), spec.fallbackLabel ?? href);
+      return (
+        <Button
+          variant={spec.variant}
+          size={spec.size ?? 'compact'}
+          onClick={(event) => {
+            event.stopPropagation();
+            if (!href || href === '#') return;
+            window.history.pushState({}, '', href);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }}
+        >
+          {label}
+        </Button>
+      );
+    }
     case 'actionButton':
       return (
         <Button
