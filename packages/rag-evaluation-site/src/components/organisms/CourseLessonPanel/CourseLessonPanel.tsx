@@ -10,9 +10,11 @@ export interface CourseLessonPanelProps extends Omit<HTMLAttributes<HTMLDivEleme
   course: ContextCourse;
   activeAgendaItemId?: string;
   onAgendaItemSelect?: (itemId: string) => void;
+  onPrimaryCta?: () => void;
+  onSecondaryCta?: () => void;
 }
 
-export function CourseLessonPanel({ course, activeAgendaItemId, onAgendaItemSelect, className, ...rest }: CourseLessonPanelProps) {
+export function CourseLessonPanel({ course, activeAgendaItemId, onAgendaItemSelect, onPrimaryCta, onSecondaryCta, className, ...rest }: CourseLessonPanelProps) {
   const labels = {
     outcomes: "What you'll leave with",
     agenda: 'Agenda · 2 hours',
@@ -39,8 +41,8 @@ export function CourseLessonPanel({ course, activeAgendaItemId, onAgendaItemSele
         <h1 className={styles.title}>{course.title}</h1>
         <p className={styles.lead}>{course.tagline}</p>
         <div className={styles.ctaRow}>
-          <Button variant="primary">{labels.primaryCta}</Button>
-          <Button>{labels.secondaryCta}</Button>
+          <Button variant="primary" onClick={onPrimaryCta}>{labels.primaryCta}</Button>
+          <Button onClick={onSecondaryCta}>{labels.secondaryCta}</Button>
           {course.price && <Caption>{course.price}</Caption>}
         </div>
         <KeyValueStrip className={styles.metaStrip} items={[
