@@ -58,11 +58,28 @@ function groupedParts(parts: ContextWindowPart[], groupBy: ContextGroupedStripGr
   }
   return groups;
 }
+function metadataEntries(part: ContextWindowPart) {
+  return Object.entries(part.metadata ?? {})
+    .filter(([, value]) => value !== undefined && value !== null && value !== '')
+    .slice(0, 6);
+}
+
 function defaultPartTooltip(part: ContextWindowPart, styleSet: ContextStyleSet) {
+  const preview = part.contentPreview || part.content || '';
+  const metadata = metadataEntries(part);
   return <div className={styles.tooltipContent}>
-    <Text as="strong" size="compact">{part.label}</Text>
-    <Text as="span" size="metadata" tone="muted">{formatTokens(part.tokens)} · {styleName(styleSet, part.styleKey)}</Text>
+    <div className={styles.tooltipTitleRow}>
+      <Text as="strong" size="compact">{part.label}</Text>
+      <Text as="span" size="metadata" tone="muted">{formatTokens(part.tokens)} · {styleName(styleSet, part.styleKey)}</Text>
+    </div>
     {part.note && <Text as="span" size="metadata">{part.note}</Text>}
+    {preview && <pre className={styles.tooltipPreview}>{preview}</pre>}
+    {metadata.length > 0 && <dl className={styles.tooltipMetadata}>
+      {metadata.map(([key, value]) => <div key={key} className={styles.tooltipMetadataItem}>
+        <dt>{key}</dt>
+        <dd>{String(value)}</dd>
+      </div>)}
+    </dl>}
   </div>;
 }
 export function ContextGroupedStripDiagram({

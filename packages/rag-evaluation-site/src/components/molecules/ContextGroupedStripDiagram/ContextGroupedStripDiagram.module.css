@@ -12,7 +12,13 @@
 .selected { outline: 3px solid var(--mac-accent); outline-offset: -4px; z-index: 2; }
 .caption { color: var(--mac-text-dim); font: var(--rag-font-role-caption, var(--rag-font-role-metadata)); }
 .tooltipPanel { min-height: 46px; padding: 6px 8px; border: 1px solid var(--mac-border); background: var(--mac-surface); color: var(--mac-text); box-sizing: border-box; }
-.tooltipContent { display: flex; flex-direction: column; gap: 2px; white-space: normal; }
+.tooltipContent { display: flex; flex-direction: column; gap: 4px; white-space: normal; }
+.tooltipTitleRow { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.tooltipPreview { max-height: 96px; margin: 2px 0 0; padding: 5px 6px; overflow: auto; border: 1px solid color-mix(in srgb, var(--mac-border) 72%, transparent); background: color-mix(in srgb, var(--mac-surface) 88%, var(--mac-text) 4%); color: var(--mac-text); font: var(--rag-font-role-metadata); white-space: pre-wrap; }
+.tooltipMetadata { display: flex; flex-wrap: wrap; gap: 4px 8px; margin: 0; color: var(--mac-text-dim); font: var(--rag-font-role-metadata); }
+.tooltipMetadataItem { display: flex; gap: 3px; }
+.tooltipMetadataItem dt { margin: 0; font-weight: 700; }
+.tooltipMetadataItem dd { margin: 0; }
 .pattern_none,.pattern_solid { background: var(--ctx-fill, var(--mac-surface)); }
 .pattern_checker { background-color: var(--ctx-fill, var(--mac-surface)); background-image: linear-gradient(45deg, var(--ctx-line, var(--mac-border)) 25%, transparent 25%), linear-gradient(-45deg, var(--ctx-line, var(--mac-border)) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--ctx-line, var(--mac-border)) 75%), linear-gradient(-45deg, transparent 75%, var(--ctx-line, var(--mac-border)) 75%); background-position: 0 0, 0 2px, 2px -2px, -2px 0; background-size: 4px 4px; }
 .pattern_diagonal { background-color: var(--ctx-fill, var(--mac-surface)); background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-border)) 0 1px, transparent 1px 7px); }
