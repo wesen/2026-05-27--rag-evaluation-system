@@ -174,6 +174,7 @@ function renderCourseStudioShellPage(node: ComponentNode, onAction: (action: Act
       title={renderRenderableValue(props.title, onAction)}
       subtitle={renderRenderableValue(props.subtitle, onAction)}
       sidebarFooter={props.sidebarFooter ? <WidgetRenderer node={props.sidebarFooter} registry={defaultWidgetRegistry} onAction={onAction} /> : undefined}
+      contentPadding={props.contentPadding}
     >
       {(node.children ?? []).map((child, index) => <WidgetRenderer key={widgetNodeKey(child, index)} node={child} registry={defaultWidgetRegistry} onAction={onAction} />)}
     </CourseStudioShell>
