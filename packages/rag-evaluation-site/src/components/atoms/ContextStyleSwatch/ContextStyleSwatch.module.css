@@ -37,6 +37,11 @@
   background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-border)) 0 1px, transparent 1px 6px);
 }
 
+.pattern_diagonalWide {
+  background-color: var(--ctx-fill, var(--mac-surface));
+  background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-border)) 0 1px, transparent 1px 14px);
+}
+
 .pattern_diagonalDense {
   background-color: var(--ctx-fill, var(--mac-surface));
   background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-border)) 0 1px, transparent 1px 3px);

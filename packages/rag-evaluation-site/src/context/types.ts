@@ -15,6 +15,7 @@ export type ContextPatternName =
   | 'solid'
   | 'checker'
   | 'diagonal'
+  | 'diagonalWide'
   | 'diagonalDense'
   | 'stipple'
   | 'cross'
