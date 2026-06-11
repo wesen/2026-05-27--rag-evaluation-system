@@ -277,6 +277,10 @@ function readSearchFromLocation(_locationVersion: number): string {
     url.searchParams.set('doc', parts[2]);
     return url.search;
   }
+  if (parts[0] === 'present' && parts[1] === 'slides' && parts[2] && !url.searchParams.has('slide')) {
+    url.searchParams.set('slide', parts[2]);
+    return url.search;
+  }
   return window.location.search || '';
 }
 
@@ -288,5 +292,6 @@ function readPageIdFromLocation(defaultPageId: string): string {
   const parts = url.pathname.split('/').filter(Boolean);
   if (parts[0] === 'pages' && parts[1]) return parts[1];
   if (parts[0] === 'print' && parts[1] === 'handouts') return 'print-handout';
+  if (parts[0] === 'present' && parts[1] === 'slides') return 'present-slide';
   return defaultPageId;
 }

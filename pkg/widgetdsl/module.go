@@ -676,11 +676,18 @@ func (r *runtime) courseSlideRecipe(call goja.FunctionCall) goja.Value {
 	copyIfPresent(props, options, "index")
 	copyIfPresent(props, options, "total")
 	copyIfPresent(props, options, "visualSide")
+	copyIfPresent(props, options, "mode")
 	if act, ok := normalizeActionSpec(options["onPrevious"], nil, nil); ok {
 		props["onPreviousAction"] = act
 	}
 	if act, ok := normalizeActionSpec(options["onNext"], nil, nil); ok {
 		props["onNextAction"] = act
+	}
+	if act, ok := normalizeActionSpec(options["onPresent"], nil, nil); ok {
+		props["onPresentAction"] = act
+	}
+	if act, ok := normalizeActionSpec(options["onFullscreen"], nil, nil); ok {
+		props["onFullscreenAction"] = act
 	}
 	return r.vm.ToValue(componentNode("CourseSlidePanel", props))
 }

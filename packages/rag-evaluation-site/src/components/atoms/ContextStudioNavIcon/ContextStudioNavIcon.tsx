@@ -1,7 +1,7 @@
 import type { SVGAttributes } from 'react';
 import styles from './ContextStudioNavIcon.module.css';
 
-export type ContextStudioNavIconId = 'course' | 'slides' | 'visualize' | 'upload' | 'transcript' | 'comments' | 'handout';
+export type ContextStudioNavIconId = 'course' | 'slides' | 'visualize' | 'upload' | 'transcript' | 'comments' | 'handout' | 'handouts';
 
 export interface ContextStudioNavIconProps extends Omit<SVGAttributes<SVGSVGElement>, 'id'> {
   id: ContextStudioNavIconId;
@@ -43,6 +43,7 @@ function renderIcon(id: ContextStudioNavIconId) {
     case 'comments':
       return <path d="M2 2 L13 2 L13 9 L7 9 L4 12 L4 9 L2 9 Z" />;
     case 'handout':
-      return <><path d="M3 1.5 L10 1.5 L12.5 4 L12.5 13.5 L3 13.5 Z" /><path d="M10 1.5 L10 4 L12.5 4" /></>;
+    case 'handouts':
+      return <><path d="M3 1.5 L10 1.5 L12.5 4 L12.5 13.5 L3 13.5 Z" /><path d="M10 1.5 L10 4 L12.5 4" /><line x1="5" y1="7" x2="10.5" y2="7" /><line x1="5" y1="9.5" x2="10.5" y2="9.5" /></>;
   }
 }
