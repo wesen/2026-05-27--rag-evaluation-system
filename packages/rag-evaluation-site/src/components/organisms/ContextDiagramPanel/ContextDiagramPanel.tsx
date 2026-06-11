@@ -85,7 +85,7 @@ export function ContextDiagramPanel({
   const selected = activePartId;
   const selectedPart = selected ? snapshot.parts.find((part) => part.id === selected) : undefined;
   const legendItems = legendItemsForSnapshot(snapshot, styleSet, view);
-  const actions = <Inline gap="xs">{availableViews.map(v => <Button key={v} size="compact" selected={view === v} aria-pressed={view === v} onClick={() => setView(v)}>{v}</Button>)}</Inline>;
+  const actions = <Inline className={styles.viewActions} gap="xs">{availableViews.map(v => <Button key={v} size="compact" selected={view === v} aria-pressed={view === v} onClick={() => setView(v)}>{v}</Button>)}</Inline>;
   const content = (
     <Stack gap="sm">
       {snapshot.subtitle && <Caption>{snapshot.subtitle}</Caption>}

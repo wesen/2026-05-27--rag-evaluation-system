@@ -8,6 +8,7 @@
 }
 
 .diagramBlock {
+  max-width: 640px;
   break-inside: avoid;
 }
 

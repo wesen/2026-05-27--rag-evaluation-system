@@ -66,3 +66,17 @@
   white-space: nowrap;
   font: var(--rag-font-role-metadata);
 }
+
+@media print {
+  .inlineRoot,
+  .viewport,
+  .detail,
+  .preview {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .viewActions {
+    display: none;
+  }
+}

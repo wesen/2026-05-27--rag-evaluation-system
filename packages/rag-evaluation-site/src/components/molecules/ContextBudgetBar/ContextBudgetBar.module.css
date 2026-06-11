@@ -19,3 +19,24 @@
 .pattern_stipple { background-color: var(--ctx-fill, var(--mac-surface)); background-image: radial-gradient(var(--ctx-line, var(--mac-border)) 1px, transparent 1px); background-size: 4px 4px; }
 .pattern_cross { background-color: var(--ctx-fill, var(--mac-surface)); background-image: repeating-linear-gradient(45deg, transparent 0 3px, var(--ctx-line, var(--mac-border)) 3px 4px), repeating-linear-gradient(-45deg, transparent 0 3px, var(--ctx-line, var(--mac-border)) 3px 4px); }
 .pattern_overflow { background-color: var(--ctx-fill, var(--mac-surface)); background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-accent-2)) 0 2px, transparent 2px 5px); }
+
+@media print {
+  .root,
+  .track,
+  .segment,
+  .limitMarker,
+  .legendItem {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .segment[role='button']:focus-visible,
+  .selected {
+    outline: 0;
+  }
+
+  .legendItem[data-selected='true'] {
+    color: var(--mac-text-dim);
+    font-weight: inherit;
+  }
+}

@@ -59,3 +59,14 @@
   background-color: var(--ctx-fill, var(--mac-surface));
   background-image: repeating-linear-gradient(45deg, var(--ctx-line, var(--mac-accent-2)) 0 2px, transparent 2px 5px);
 }
+
+@media print {
+  .root {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .selected {
+    outline: 0;
+  }
+}
