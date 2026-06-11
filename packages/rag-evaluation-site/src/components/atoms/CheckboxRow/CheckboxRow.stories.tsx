@@ -39,12 +39,8 @@ export const States: Story = {
       <Section title="Common states">
         <CheckboxRow checked={true} onChange={() => {}}>Checked option</CheckboxRow>
         <CheckboxRow checked={false} onChange={() => {}}>Unchecked option</CheckboxRow>
-        <fieldset disabled style={{ border: 0, padding: 0, margin: 0 }}>
-          <CheckboxRow checked={true} onChange={() => {}}>Disabled checked option</CheckboxRow>
-        </fieldset>
-        <fieldset disabled style={{ border: 0, padding: 0, margin: 0 }}>
-          <CheckboxRow checked={false} onChange={() => {}}>Disabled unchecked option</CheckboxRow>
-        </fieldset>
+        <CheckboxRow checked={true} onChange={() => {}} disabled>Disabled checked option</CheckboxRow>
+        <CheckboxRow checked={false} onChange={() => {}} disabled>Disabled unchecked option</CheckboxRow>
         <ControlledCheckbox />
       </Section>
       <Section title="Long label wrapping">
