@@ -96,6 +96,7 @@ var courseHelpers = map[string]string{
 	"documentPreviewToolbar": "DocumentPreviewToolbar",
 	"handoutDocumentShell":   "HandoutDocumentShell",
 	"markdownArticle":        "MarkdownArticle",
+	"richArticle":            "RichArticle",
 	"slideShell":             "SlideShell",
 }
 

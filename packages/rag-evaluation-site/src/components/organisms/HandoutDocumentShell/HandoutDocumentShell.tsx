@@ -12,6 +12,7 @@ export interface HandoutDocumentShellProps extends Omit<HTMLAttributes<HTMLDivEl
   onDocumentSelect?: (documentId: string) => void;
   onDownload?: (documentId: string) => void;
   onDownloadAll?: () => void;
+  onPrint?: (documentId: string) => void;
   styleSet?: ContextStyleSet;
   title?: ReactNode;
   emptyMessage?: ReactNode;
@@ -28,6 +29,7 @@ export function HandoutDocumentShell({
   onDocumentSelect,
   onDownload,
   onDownloadAll,
+  onPrint,
   styleSet,
   title = 'Handout',
   emptyMessage = 'Select a document to preview it.',
@@ -61,6 +63,8 @@ export function HandoutDocumentShell({
               format={activeDocument.format}
               size={activeDocument.size}
               onDownload={onDownload ? () => onDownload(activeDocument.id) : undefined}
+              downloadLabel="Download Markdown"
+              onPrint={onPrint ? () => onPrint(activeDocument.id) : undefined}
             />
             <div className={styles.articleWrap}>
               {activeDocument.blocks && activeDocument.blocks.length > 0 ? (

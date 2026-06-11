@@ -9,10 +9,12 @@ export interface DocumentPreviewToolbarProps extends HTMLAttributes<HTMLDivEleme
   size?: ReactNode;
   onDownload?: () => void;
   downloadLabel?: ReactNode;
+  onPrint?: () => void;
+  printLabel?: ReactNode;
   rightSlot?: ReactNode;
 }
 
-export function DocumentPreviewToolbar({ file, format, size, onDownload, downloadLabel = '⤓ Download', rightSlot, className, ...rest }: DocumentPreviewToolbarProps) {
+export function DocumentPreviewToolbar({ file, format, size, onDownload, downloadLabel = '⤓ Download', onPrint, printLabel = 'Print', rightSlot, className, ...rest }: DocumentPreviewToolbarProps) {
   return (
     <div className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="DocumentPreviewToolbar" {...rest}>
       <div className={styles.meta}>
@@ -22,6 +24,7 @@ export function DocumentPreviewToolbar({ file, format, size, onDownload, downloa
       </div>
       <div className={styles.actions}>
         {rightSlot}
+        {onPrint && <Button size="compact" onClick={onPrint}>{printLabel}</Button>}
         {onDownload && <Button size="compact" onClick={onDownload}>{downloadLabel}</Button>}
       </div>
     </div>

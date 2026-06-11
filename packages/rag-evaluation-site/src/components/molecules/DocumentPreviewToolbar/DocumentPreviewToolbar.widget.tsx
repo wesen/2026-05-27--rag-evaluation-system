@@ -15,6 +15,10 @@ export const documentPreviewToolbarWidget = defineWidget<DocumentPreviewToolbarW
         ? () => ctx.dispatchAction(props.onDownloadAction!, { componentType: 'DocumentPreviewToolbar' })
         : undefined}
       downloadLabel={ctx.renderValue(props.downloadLabel)}
+      onPrint={props.onPrintAction
+        ? () => ctx.dispatchAction(props.onPrintAction!, { componentType: 'DocumentPreviewToolbar' })
+        : undefined}
+      printLabel={ctx.renderValue(props.printLabel)}
       rightSlot={props.rightSlot ? ctx.renderNode(props.rightSlot) : undefined}
     />
   ),

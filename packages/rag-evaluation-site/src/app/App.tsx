@@ -271,6 +271,12 @@ function navigateToPage(pageId: string): void {
 
 function readSearchFromLocation(_locationVersion: number): string {
   if (typeof window === 'undefined') return '';
+  const url = new URL(window.location.href);
+  const parts = url.pathname.split('/').filter(Boolean);
+  if (parts[0] === 'print' && parts[1] === 'handouts' && parts[2] && !url.searchParams.has('doc')) {
+    url.searchParams.set('doc', parts[2]);
+    return url.search;
+  }
   return window.location.search || '';
 }
 
@@ -281,5 +287,6 @@ function readPageIdFromLocation(defaultPageId: string): string {
   if (queryPage) return queryPage;
   const parts = url.pathname.split('/').filter(Boolean);
   if (parts[0] === 'pages' && parts[1]) return parts[1];
+  if (parts[0] === 'print' && parts[1] === 'handouts') return 'print-handout';
   return defaultPageId;
 }

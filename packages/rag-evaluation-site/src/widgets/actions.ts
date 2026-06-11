@@ -33,6 +33,10 @@ export function dispatchWidgetAction(action: ActionSpec, context: WidgetActionCo
   }
 
   if (action.kind === 'event') {
+    if (action.event === 'print') {
+      window.print();
+      return;
+    }
     window.dispatchEvent(new CustomEvent(action.event, { detail: { ...(action.detail ?? {}), context } }));
     return;
   }
