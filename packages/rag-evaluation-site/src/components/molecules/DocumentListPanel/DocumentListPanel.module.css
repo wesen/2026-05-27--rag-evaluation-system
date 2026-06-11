@@ -47,6 +47,16 @@
   background: var(--mac-surface-2);
 }
 
+.item[data-active='true']:hover:not(:disabled) {
+  background: var(--mac-bg-dark);
+  color: var(--mac-text-inv);
+}
+
+:global([data-rag-molecule='DocumentListPanel'] [role='option'][aria-selected='true']:hover:not(:disabled)) {
+  background: var(--mac-bg-dark);
+  color: var(--mac-text-inv);
+}
+
 .item:focus-visible {
   outline: 2px solid var(--mac-accent);
   outline-offset: -2px;
