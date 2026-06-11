@@ -25,6 +25,7 @@ export const courseStudioShellWidget = defineWidget<CourseStudioShellWidgetProps
       title={ctx.renderValue(props.title)}
       subtitle={ctx.renderValue(props.subtitle)}
       sidebarFooter={props.sidebarFooter ? ctx.renderNode(props.sidebarFooter) : undefined}
+      contentPadding={props.contentPadding}
     >
       {children}
     </CourseStudioShell>

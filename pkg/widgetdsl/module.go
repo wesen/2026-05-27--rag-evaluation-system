@@ -656,6 +656,7 @@ func (r *runtime) courseStudioRecipe(call goja.FunctionCall) goja.Value {
 	}
 	copyIfPresent(props, options, "subtitle")
 	copyIfPresent(props, options, "activeItemId")
+	copyIfPresent(props, options, "contentPadding")
 	if act, ok := normalizeActionSpec(options["onNavigate"], nil, nil); ok {
 		props["onNavigateAction"] = act
 	}
