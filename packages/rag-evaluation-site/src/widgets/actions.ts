@@ -62,6 +62,11 @@ export function dispatchWidgetAction(action: ActionSpec, context: WidgetActionCo
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ payload: action.payload ?? {}, context }),
+    }).then(async (response) => {
+      const result = await response.json().catch(() => undefined) as ServerActionResult | undefined;
+      if (response.ok && result?.refresh) {
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
     });
   }
 }

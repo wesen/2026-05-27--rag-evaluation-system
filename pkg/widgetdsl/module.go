@@ -244,6 +244,11 @@ func (r *runtime) cellObject() *goja.Object {
 		mergeOptions(out, exportOptions(options))
 		return out
 	})
+	setExport(cell, "actionButton", func(label goja.Value, action goja.Value, options ...goja.Value) map[string]any {
+		out := map[string]any{"kind": "actionButton", "label": r.exportRenderable(label), "action": exportObject(action)}
+		mergeOptions(out, exportOptions(options))
+		return out
+	})
 	setExport(cell, "constant", func(value goja.Value) any {
 		return map[string]any{"kind": "constant", "value": r.exportRenderable(value)}
 	})

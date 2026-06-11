@@ -395,6 +395,7 @@ export type CellSpec =
   | CaptionCellSpec
   | TemplateCellSpec
   | LinkCellSpec
+  | ActionButtonCellSpec
   | ConstantCellSpec;
 
 export interface FieldCellSpec {
@@ -436,6 +437,15 @@ export interface LinkCellSpec {
   labelField: string;
   target?: '_blank' | '_self' | '_parent' | '_top';
   fallbackLabel?: string;
+}
+
+export interface ActionButtonCellSpec {
+  kind: 'actionButton';
+  label: RenderableValue;
+  action: ActionSpec;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  disabled?: boolean;
 }
 
 export interface ConstantCellSpec {
