@@ -54,7 +54,9 @@ import { contextUploadDropAreaWidget } from '../components/organisms/ContextUplo
 import { courseLessonPanelWidget } from '../components/organisms/CourseLessonPanel/CourseLessonPanel.widget';
 import { courseSlidePanelWidget } from '../components/organisms/CourseSlidePanel/CourseSlidePanel.widget';
 import { courseStudioShellWidget } from '../components/organisms/CourseStudioShell/CourseStudioShell.widget';
+import { formPanelWidget } from '../components/organisms/FormPanel/FormPanel.widget';
 import { handoutDocumentShellWidget } from '../components/organisms/HandoutDocumentShell/HandoutDocumentShell.widget';
+import { richArticleWidget } from '../components/organisms/RichArticle/RichArticle.widget';
 import { transcriptReaderPanelWidget } from '../components/organisms/TranscriptReaderPanel/TranscriptReaderPanel.widget';
 import { transcriptWorkspacePanelWidget } from '../components/organisms/TranscriptWorkspacePanel/TranscriptWorkspacePanel.widget';
 import { createWidgetRegistry, mergeWidgetRegistries } from './registry';
@@ -69,6 +71,7 @@ export const uiWidgetRegistry = createWidgetRegistry([
   dashboardGridWidget,
   dividerWidget,
   figureBlockWidget,
+  formPanelWidget,
   formRowWidget,
   inlineWidget,
   keyPointListWidget,
@@ -127,6 +130,7 @@ export const courseWidgetRegistry = createWidgetRegistry([
   documentPreviewToolbarWidget,
   handoutDocumentShellWidget,
   markdownArticleWidget,
+  richArticleWidget,
   slideShellWidget,
 ]);
 

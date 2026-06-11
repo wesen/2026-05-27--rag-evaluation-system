@@ -33,6 +33,19 @@ export function dispatchWidgetAction(action: ActionSpec, context: WidgetActionCo
   }
 
   if (action.kind === 'event') {
+    if (action.event === 'print') {
+      window.print();
+      return;
+    }
+    if (action.event === 'fullscreen') {
+      const target = document.documentElement;
+      if (!document.fullscreenElement) {
+        void target.requestFullscreen?.();
+      } else {
+        void document.exitFullscreen?.();
+      }
+      return;
+    }
     window.dispatchEvent(new CustomEvent(action.event, { detail: { ...(action.detail ?? {}), context } }));
     return;
   }

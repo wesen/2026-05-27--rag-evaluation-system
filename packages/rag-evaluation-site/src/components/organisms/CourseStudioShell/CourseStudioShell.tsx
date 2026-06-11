@@ -4,6 +4,8 @@ import { SidebarShell } from '../../layout';
 import { SidebarNav, type SidebarNavSection } from '../../molecules';
 import styles from './CourseStudioShell.module.css';
 
+export type CourseStudioContentPadding = 'default' | 'none';
+
 export interface CourseStudioShellProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   sections: SidebarNavSection[];
   activeItemId?: string;
@@ -11,6 +13,7 @@ export interface CourseStudioShellProps extends Omit<HTMLAttributes<HTMLDivEleme
   title?: ReactNode;
   subtitle?: ReactNode;
   sidebarFooter?: ReactNode;
+  contentPadding?: CourseStudioContentPadding;
   children?: ReactNode;
 }
 
@@ -21,6 +24,7 @@ export function CourseStudioShell({
   title = 'Context Window Engineering',
   subtitle = 'Course studio',
   sidebarFooter,
+  contentPadding = 'default',
   className,
   children,
   ...rest
@@ -42,7 +46,7 @@ export function CourseStudioShell({
       data-rag-organism="CourseStudioShell"
       {...rest}
     >
-      <div className={styles.content}>{children}</div>
+      <div className={[styles.content, contentPadding === 'none' ? styles.contentPaddingNone : ''].filter(Boolean).join(' ')}>{children}</div>
     </SidebarShell>
   );
 }

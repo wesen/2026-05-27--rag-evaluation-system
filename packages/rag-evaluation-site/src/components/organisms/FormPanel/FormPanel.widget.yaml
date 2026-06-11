@@ -1,0 +1,19 @@
+schemaVersion: widget-manifest/v1
+type: FormPanel
+module: ui.dsl
+helper: formPanel
+props: FormPanelWidgetProps
+adapter:
+  path: ./FormPanel.widget.tsx
+  export: formPanelWidget
+reactComponent: FormPanel
+children: true
+slots:
+  - title
+  - subtitle
+  - actions
+  - statusMessage
+  - footer
+actions: []
+status: experimental
+docs: Generic form panel organism that renders native form semantics, status, footer actions, and child form rows from Widget IR. Use formAction for the native form action URL to avoid conflicting with BaseWidgetProps action dispatch.

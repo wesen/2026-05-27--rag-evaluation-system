@@ -1,7 +1,7 @@
 import type { CaptionTone, CaptionTransform, RagStatus, TextAlign, TextAs, TextSize, TextTone, TextWeight } from '../components/foundation';
 import type { ButtonSize, ButtonVariant, ContextStudioNavIconId } from '../components/atoms';
 import type { DashboardGridRecipe, InlineGap, InlineJustify, StackAlign, StackGap } from '../components/layout';
-import type { AnchoredComment, ContextCourse, ContextCourseAgendaItem, ContextDiagramView, ContextHandoutDocument, ContextLegendItemSpec, ContextSlide, ContextStyleSet, ContextVisualStyle, ContextWindowSnapshot, TranscriptAnnotation, TranscriptMessage, TranscriptRole } from '../context';
+import type { AnchoredComment, ArticleBlock, ContextCourse, ContextCourseAgendaItem, ContextDiagramView, ContextHandoutDocument, ContextLegendItemSpec, ContextSlide, ContextStyleSet, ContextVisualStyle, ContextWindowSnapshot, TranscriptAnnotation, TranscriptMessage, TranscriptRole } from '../context';
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
@@ -40,6 +40,7 @@ export type RagWidgetType =
   | 'DashboardGrid'
   | 'DataTable'
   | 'Divider'
+  | 'FormPanel'
   | 'FormRow'
   | 'Inline'
   | 'MetadataGrid'
@@ -73,6 +74,7 @@ export type RagWidgetType =
   | 'SidebarNav'
   | 'CourseStepNav'
   | 'MarkdownArticle'
+  | 'RichArticle'
   | 'DocumentListPanel'
   | 'DocumentPreviewToolbar'
   | 'CourseLessonPanel'
@@ -247,6 +249,7 @@ export interface ContextDiagramPanelWidgetProps extends BaseWidgetProps {
   views?: ContextDiagramView[];
   showLegend?: boolean;
   showPartDetails?: boolean;
+  chrome?: 'panel' | 'inline';
 }
 
 export interface ContextTurnPagerPanelWidgetProps extends BaseWidgetProps {
@@ -346,13 +349,14 @@ export interface SidebarNavWidgetProps extends BaseWidgetProps { sections: Sideb
 
 export interface CourseStepNavWidgetProps extends BaseWidgetProps { items: ContextCourseAgendaItem[]; activeItemId?: string; onItemSelectAction?: ActionSpec; }
 export interface MarkdownArticleWidgetProps extends BaseWidgetProps { source: string; }
+export interface RichArticleWidgetProps extends BaseWidgetProps { blocks: ArticleBlock[]; styleSet?: ContextStyleSet; }
 export interface DocumentListItemWidgetSpec { id: string; title: RenderableValue; format?: RenderableValue; size?: RenderableValue; description?: RenderableValue; icon?: RenderableValue; disabled?: boolean; }
 export interface DocumentListPanelWidgetProps extends BaseWidgetProps { title: RenderableValue; description?: RenderableValue; items: DocumentListItemWidgetSpec[]; selectedItemId?: string; onItemSelectAction?: ActionSpec; onDownloadAllAction?: ActionSpec; downloadAllLabel?: RenderableValue; emptyMessage?: RenderableValue; showItemDescriptions?: boolean; }
-export interface DocumentPreviewToolbarWidgetProps extends BaseWidgetProps { file: RenderableValue; format?: RenderableValue; size?: RenderableValue; onDownloadAction?: ActionSpec; downloadLabel?: RenderableValue; rightSlot?: WidgetNode; }
+export interface DocumentPreviewToolbarWidgetProps extends BaseWidgetProps { file: RenderableValue; format?: RenderableValue; size?: RenderableValue; onDownloadAction?: ActionSpec; downloadLabel?: RenderableValue; onPrintAction?: ActionSpec; printLabel?: RenderableValue; rightSlot?: WidgetNode; }
 export interface CourseLessonPanelWidgetProps extends BaseWidgetProps { course: ContextCourse; activeAgendaItemId?: string; onAgendaItemSelectAction?: ActionSpec; }
-export interface CourseSlidePanelWidgetProps extends BaseWidgetProps { slide: ContextSlide; snapshot: ContextWindowSnapshot; index?: number; total?: number; visualSide?: 'left' | 'right'; onPreviousAction?: ActionSpec; onNextAction?: ActionSpec; }
-export interface CourseStudioShellWidgetProps extends BaseWidgetProps { sections: SidebarNavSectionWidgetSpec[]; activeItemId?: string; onNavigateAction?: ActionSpec; title?: RenderableValue; subtitle?: RenderableValue; sidebarFooter?: WidgetNode; }
-export interface HandoutDocumentShellWidgetProps extends BaseWidgetProps { intro: RenderableValue; documents: ContextHandoutDocument[]; selectedDocumentId?: string; onDocumentSelectAction?: ActionSpec; onDownloadAction?: ActionSpec; onDownloadAllAction?: ActionSpec; title?: RenderableValue; emptyMessage?: RenderableValue; }
+export interface CourseSlidePanelWidgetProps extends BaseWidgetProps { slide: ContextSlide; snapshot: ContextWindowSnapshot; index?: number; total?: number; visualSide?: 'left' | 'right'; mode?: 'default' | 'present'; onPreviousAction?: ActionSpec; onNextAction?: ActionSpec; onPresentAction?: ActionSpec; onFullscreenAction?: ActionSpec; }
+export interface CourseStudioShellWidgetProps extends BaseWidgetProps { sections: SidebarNavSectionWidgetSpec[]; activeItemId?: string; onNavigateAction?: ActionSpec; title?: RenderableValue; subtitle?: RenderableValue; sidebarFooter?: WidgetNode; contentPadding?: 'default' | 'none'; }
+export interface HandoutDocumentShellWidgetProps extends BaseWidgetProps { intro: RenderableValue; documents: ContextHandoutDocument[]; selectedDocumentId?: string; onDocumentSelectAction?: ActionSpec; onDownloadAction?: ActionSpec; onDownloadAllAction?: ActionSpec; onPrintAction?: ActionSpec; styleSet?: ContextStyleSet; title?: RenderableValue; emptyMessage?: RenderableValue; }
 export interface ContextUploadDropAreaWidgetProps extends BaseWidgetProps { title?: RenderableValue; description?: RenderableValue; accept?: string; disabled?: boolean; active?: boolean; onFilesSelectedAction?: ActionSpec; }
 
 export interface CaptionWidgetProps extends BaseWidgetProps {
@@ -439,10 +443,30 @@ export interface ConstantCellSpec {
   value: RenderableValue;
 }
 
+export interface FormPanelWidgetProps extends BaseWidgetProps {
+  title: RenderableValue;
+  subtitle?: RenderableValue;
+  actions?: RenderableValue;
+  formAction?: string;
+  method?: 'get' | 'post';
+  status?: 'idle' | 'saving' | 'success' | 'error';
+  statusMessage?: RenderableValue;
+  submitLabel?: RenderableValue;
+  resetLabel?: RenderableValue;
+  footer?: RenderableValue;
+  disabled?: boolean;
+}
+
 export interface FormRowWidgetProps extends BaseWidgetProps {
   label: RenderableValue;
   control: WidgetNode;
+  description?: RenderableValue;
   hint?: RenderableValue;
+  error?: RenderableValue;
+  success?: RenderableValue;
+  counter?: RenderableValue;
+  required?: boolean;
+  orientation?: 'inline' | 'stacked';
 }
 
 export interface InlineWidgetProps extends BaseWidgetProps {
@@ -514,7 +538,10 @@ export interface SlideShellWidgetProps extends BaseWidgetProps {
 export interface SelectInputWidgetProps extends BaseWidgetProps {
   name?: string;
   value?: string | number;
+  defaultValue?: string | number;
   disabled?: boolean;
+  required?: boolean;
+  ariaInvalid?: boolean;
   options?: SelectOptionSpec[];
 }
 
@@ -550,11 +577,18 @@ export interface TabListItemSpec {
 export interface TextInputWidgetProps extends BaseWidgetProps {
   name?: string;
   value?: string | number;
+  defaultValue?: string | number;
   placeholder?: string;
   type?: string;
   disabled?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
   min?: number;
   max?: number;
+  minLength?: number;
+  maxLength?: number;
+  autoComplete?: string;
+  ariaInvalid?: boolean;
 }
 
 export type WidgetProps =
@@ -593,6 +627,7 @@ export type WidgetProps =
   | SidebarNavWidgetProps
   | CourseStepNavWidgetProps
   | MarkdownArticleWidgetProps
+  | RichArticleWidgetProps
   | DocumentListPanelWidgetProps
   | DocumentPreviewToolbarWidgetProps
   | CourseLessonPanelWidgetProps
@@ -603,6 +638,7 @@ export type WidgetProps =
   | CaptionWidgetProps
   | DashboardGridWidgetProps
   | DataTableWidgetProps
+  | FormPanelWidgetProps
   | FormRowWidgetProps
   | InlineWidgetProps
   | MetadataGridWidgetProps

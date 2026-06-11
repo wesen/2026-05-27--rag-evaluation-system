@@ -58,6 +58,25 @@
   margin: 16px;
 }
 
+.course-page-hero {
+  padding: 0 0 2px;
+}
+
+.course-page-hero-title {
+  margin: 0 0 10px;
+  max-width: 760px;
+  color: var(--mac-text);
+  font: 700 46px/1.02 var(--font-body);
+  letter-spacing: -.02em;
+}
+
+.course-page-hero-lead {
+  margin: 0;
+  max-width: 620px;
+  color: #333;
+  font: 400 16px/1.5 var(--font-body);
+}
+
 .rag-evaluation-site-route-pending {
   position: fixed;
   top: 0;

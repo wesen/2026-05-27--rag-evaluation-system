@@ -13,11 +13,18 @@ export const courseSlidePanelWidget = defineWidget<CourseSlidePanelWidgetProps>(
       index={props.index}
       total={props.total}
       visualSide={props.visualSide}
+      mode={props.mode}
       onPrevious={props.onPreviousAction
         ? () => ctx.dispatchAction(props.onPreviousAction!, { componentType: 'CourseSlidePanel', value: 'previous' })
         : undefined}
       onNext={props.onNextAction
         ? () => ctx.dispatchAction(props.onNextAction!, { componentType: 'CourseSlidePanel', value: 'next' })
+        : undefined}
+      onPresent={props.onPresentAction
+        ? () => ctx.dispatchAction(props.onPresentAction!, { componentType: 'CourseSlidePanel', value: 'present' })
+        : undefined}
+      onFullscreen={props.onFullscreenAction
+        ? () => ctx.dispatchAction(props.onFullscreenAction!, { componentType: 'CourseSlidePanel', value: 'fullscreen' })
         : undefined}
     />
   ),

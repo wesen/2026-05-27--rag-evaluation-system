@@ -218,3 +218,78 @@ export const InteractiveStyleSwitcher: Story = {
     );
   },
 };
+
+export const InlineEmbeddedHandoutNoTreemap: Story = {
+  render: ({ palette }) => (
+    <ContextDiagramPanel
+      snapshot={contentBlocks}
+      styleSet={paletteControlStyleSets[palette]}
+      initialView="budget"
+      views={['budget', 'strip', 'stack']}
+      chrome="inline"
+      showPartDetails={false}
+    />
+  ),
+};
+
+export const InlineEmbeddedHandoutWithDetails: Story = {
+  render: ({ palette }) => (
+    <ContextDiagramPanel
+      snapshot={contentBlocks}
+      styleSet={paletteControlStyleSets[palette]}
+      initialView="stack"
+      views={['stack', 'strip', 'budget']}
+      chrome="inline"
+      showPartDetails
+    />
+  ),
+};
+
+export const FilteredLegendBudgetOmitsHeadroom: Story = {
+  render: () => (
+    <ContextDiagramPanel
+      snapshot={threeLabelSnapshot}
+      styleSet={contextThreeLabelStyleSets[0]!}
+      initialView="budget"
+      views={['budget']}
+      chrome="inline"
+    />
+  ),
+};
+
+export const FilteredLegendOnlyVisibleStyleKeys: Story = {
+  render: ({ palette }) => (
+    <Stack gap="md">
+      <ContextDiagramPanel snapshot={contextWindowSnapshots[0]!} styleSet={paletteControlStyleSets[palette]} initialView="budget" views={['budget']} chrome="inline" />
+      <ContextDiagramPanel snapshot={deepBug!} styleSet={paletteControlStyleSets[palette]} initialView="strip" views={['strip']} chrome="inline" />
+      <ContextDiagramPanel snapshot={overBudget!} styleSet={paletteControlStyleSets[palette]} initialView="stack" views={['stack']} chrome="inline" />
+    </Stack>
+  ),
+};
+
+export const PanelChromeStillAvailable: Story = {
+  render: ({ palette }) => (
+    <ContextDiagramPanel
+      snapshot={deepBug!}
+      styleSet={paletteControlStyleSets[palette]}
+      initialView="strip"
+      views={['strip', 'stack', 'budget', 'treemap']}
+      chrome="panel"
+      showPartDetails
+    />
+  ),
+};
+
+export const InlineWithoutLegendForDensePrint: Story = {
+  render: ({ palette }) => (
+    <ContextDiagramPanel
+      snapshot={atLimit!}
+      styleSet={paletteControlStyleSets[palette]}
+      initialView="budget"
+      views={['budget', 'strip', 'stack']}
+      chrome="inline"
+      showLegend={false}
+      showPartDetails={false}
+    />
+  ),
+};

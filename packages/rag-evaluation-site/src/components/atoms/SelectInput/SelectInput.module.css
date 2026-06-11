@@ -12,3 +12,17 @@
   outline: 1px solid var(--mac-accent);
   outline-offset: -1px;
 }
+
+.root:disabled {
+  background: var(--mac-surface-2);
+  color: var(--mac-text-dim);
+  cursor: not-allowed;
+}
+
+.root[aria-invalid="true"] {
+  border-color: var(--mac-accent-2);
+}
+
+.root[aria-invalid="true"]:focus {
+  outline-color: var(--mac-accent-2);
+}

@@ -40,6 +40,7 @@ var uiHelpers = map[string]string{
 	"dashboardGrid": "DashboardGrid",
 	"divider":       "Divider",
 	"figureBlock":   "FigureBlock",
+	"formPanel":     "FormPanel",
 	"formRow":       "FormRow",
 	"inline":        "Inline",
 	"keyPointList":  "KeyPointList",
@@ -78,6 +79,7 @@ var contextWindowHelpers = map[string]string{
 	"contextStackDiagram":      "ContextStackDiagram",
 	"contextStripDiagram":      "ContextStripDiagram",
 	"contextTreemap":           "ContextTreemap",
+	"contextTurnPagerPanel":    "ContextTurnPagerPanel",
 	"contextUploadDropArea":    "ContextUploadDropArea",
 	"transcriptMessageCard":    "TranscriptMessageCard",
 	"transcriptReaderPanel":    "TranscriptReaderPanel",
@@ -96,6 +98,7 @@ var courseHelpers = map[string]string{
 	"documentPreviewToolbar": "DocumentPreviewToolbar",
 	"handoutDocumentShell":   "HandoutDocumentShell",
 	"markdownArticle":        "MarkdownArticle",
+	"richArticle":            "RichArticle",
 	"slideShell":             "SlideShell",
 }
 
@@ -655,6 +658,7 @@ func (r *runtime) courseStudioRecipe(call goja.FunctionCall) goja.Value {
 	}
 	copyIfPresent(props, options, "subtitle")
 	copyIfPresent(props, options, "activeItemId")
+	copyIfPresent(props, options, "contentPadding")
 	if act, ok := normalizeActionSpec(options["onNavigate"], nil, nil); ok {
 		props["onNavigateAction"] = act
 	}
@@ -674,11 +678,18 @@ func (r *runtime) courseSlideRecipe(call goja.FunctionCall) goja.Value {
 	copyIfPresent(props, options, "index")
 	copyIfPresent(props, options, "total")
 	copyIfPresent(props, options, "visualSide")
+	copyIfPresent(props, options, "mode")
 	if act, ok := normalizeActionSpec(options["onPrevious"], nil, nil); ok {
 		props["onPreviousAction"] = act
 	}
 	if act, ok := normalizeActionSpec(options["onNext"], nil, nil); ok {
 		props["onNextAction"] = act
+	}
+	if act, ok := normalizeActionSpec(options["onPresent"], nil, nil); ok {
+		props["onPresentAction"] = act
+	}
+	if act, ok := normalizeActionSpec(options["onFullscreen"], nil, nil); ok {
+		props["onFullscreenAction"] = act
 	}
 	return r.vm.ToValue(componentNode("CourseSlidePanel", props))
 }

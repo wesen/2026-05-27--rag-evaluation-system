@@ -174,6 +174,7 @@ function renderCourseStudioShellPage(node: ComponentNode, onAction: (action: Act
       title={renderRenderableValue(props.title, onAction)}
       subtitle={renderRenderableValue(props.subtitle, onAction)}
       sidebarFooter={props.sidebarFooter ? <WidgetRenderer node={props.sidebarFooter} registry={defaultWidgetRegistry} onAction={onAction} /> : undefined}
+      contentPadding={props.contentPadding}
     >
       {(node.children ?? []).map((child, index) => <WidgetRenderer key={widgetNodeKey(child, index)} node={child} registry={defaultWidgetRegistry} onAction={onAction} />)}
     </CourseStudioShell>
@@ -271,6 +272,16 @@ function navigateToPage(pageId: string): void {
 
 function readSearchFromLocation(_locationVersion: number): string {
   if (typeof window === 'undefined') return '';
+  const url = new URL(window.location.href);
+  const parts = url.pathname.split('/').filter(Boolean);
+  if (parts[0] === 'print' && parts[1] === 'handouts' && parts[2] && !url.searchParams.has('doc')) {
+    url.searchParams.set('doc', parts[2]);
+    return url.search;
+  }
+  if (parts[0] === 'present' && parts[1] === 'slides' && parts[2] && !url.searchParams.has('slide')) {
+    url.searchParams.set('slide', parts[2]);
+    return url.search;
+  }
   return window.location.search || '';
 }
 
@@ -281,5 +292,7 @@ function readPageIdFromLocation(defaultPageId: string): string {
   if (queryPage) return queryPage;
   const parts = url.pathname.split('/').filter(Boolean);
   if (parts[0] === 'pages' && parts[1]) return parts[1];
+  if (parts[0] === 'print' && parts[1] === 'handouts') return 'print-handout';
+  if (parts[0] === 'present' && parts[1] === 'slides') return 'present-slide';
   return defaultPageId;
 }

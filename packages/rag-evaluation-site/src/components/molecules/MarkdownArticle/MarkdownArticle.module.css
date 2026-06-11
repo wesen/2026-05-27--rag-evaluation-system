@@ -142,3 +142,32 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.figure {
+  margin: 14px 0;
+}
+
+.image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.figcaption {
+  margin-top: 7px;
+  color: var(--mac-text-dim);
+  font: var(--rag-font-role-caption);
+  text-align: center;
+}
+
+@media print {
+  .figure {
+    break-inside: avoid;
+  }
+
+  .image {
+    max-height: 45vh;
+    object-fit: contain;
+  }
+}

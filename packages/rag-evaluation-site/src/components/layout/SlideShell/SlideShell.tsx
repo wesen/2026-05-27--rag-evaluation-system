@@ -14,6 +14,7 @@ export interface SlideShellProps extends Omit<HTMLAttributes<HTMLElement>, 'titl
   ratio?: 'balanced' | 'primaryWide' | 'secondaryWide';
   divider?: boolean;
   footer?: ReactNode;
+  mode?: 'default' | 'present';
 }
 
 export function SlideShell({
@@ -28,14 +29,16 @@ export function SlideShell({
   ratio = 'primaryWide',
   divider = true,
   footer,
+  mode = 'default',
   className,
   ...rest
 }: SlideShellProps) {
   return (
     <Element
-      className={[styles.root, className ?? ''].filter(Boolean).join(' ')}
+      className={[styles.root, mode === 'present' ? styles.present : '', className ?? ''].filter(Boolean).join(' ')}
       data-rag-layout="SlideShell"
       data-primary-side={primarySide}
+      data-slide-mode={mode}
       {...rest}
     >
       <header className={styles.header}>

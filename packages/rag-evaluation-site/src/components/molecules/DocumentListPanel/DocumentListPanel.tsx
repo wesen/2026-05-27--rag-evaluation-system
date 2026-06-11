@@ -46,12 +46,16 @@ export function DocumentListPanel({
   className,
   ...rest
 }: DocumentListPanelProps) {
+  const hasHeader = Boolean(title || description);
+
   return (
     <div className={[styles.root, className ?? ''].filter(Boolean).join(' ')} data-rag-molecule="DocumentListPanel" {...rest}>
-      <header className={styles.header}>
-        <Text as="div" size="metric" weight="bold">{title}</Text>
-        {description && <Caption className={styles.description}>{description}</Caption>}
-      </header>
+      {hasHeader && (
+        <header className={styles.header}>
+          {title && <Text as="div" size="label" weight="bold" className={styles.title}>{title}</Text>}
+          {description && <Caption className={styles.description}>{description}</Caption>}
+        </header>
+      )}
       <div className={styles.list} role="listbox" aria-label="Documents">
         {items.length === 0 && <div className={styles.empty}><Caption>{emptyMessage}</Caption></div>}
         {items.map((item) => {

@@ -1,5 +1,17 @@
 .viewport { min-height: 96px; }
 
+.inlineRoot {
+  color: var(--mac-text);
+}
+
+.inlineHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
 .detail {
   border: 1px solid var(--mac-border);
   background: var(--mac-surface);
@@ -53,4 +65,18 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font: var(--rag-font-role-metadata);
+}
+
+@media print {
+  .inlineRoot,
+  .viewport,
+  .detail,
+  .preview {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .viewActions {
+    display: none;
+  }
 }

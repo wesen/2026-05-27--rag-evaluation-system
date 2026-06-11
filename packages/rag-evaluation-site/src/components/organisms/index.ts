@@ -8,4 +8,6 @@ export * from './CourseLessonPanel';
 export * from './CourseSlidePanel';
 export * from './CourseStudioShell';
 export * from './HandoutDocumentShell';
+export * from './RichArticle';
+export * from './FormPanel';
 export * from './ContextUploadDropArea';

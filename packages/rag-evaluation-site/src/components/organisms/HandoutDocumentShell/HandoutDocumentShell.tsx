@@ -1,7 +1,8 @@
 import type { HTMLAttributes, ReactNode } from 'react';
-import type { ContextHandoutDocument } from '../../../context';
+import type { ContextHandoutDocument, ContextStyleSet } from '../../../context';
 import { Caption } from '../../foundation';
 import { DocumentListPanel, DocumentPreviewToolbar, MarkdownArticle } from '../../molecules';
+import { RichArticle } from '../RichArticle';
 import styles from './HandoutDocumentShell.module.css';
 
 export interface HandoutDocumentShellProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect' | 'title'> {
@@ -11,6 +12,8 @@ export interface HandoutDocumentShellProps extends Omit<HTMLAttributes<HTMLDivEl
   onDocumentSelect?: (documentId: string) => void;
   onDownload?: (documentId: string) => void;
   onDownloadAll?: () => void;
+  onPrint?: (documentId: string) => void;
+  styleSet?: ContextStyleSet;
   title?: ReactNode;
   emptyMessage?: ReactNode;
 }
@@ -26,6 +29,8 @@ export function HandoutDocumentShell({
   onDocumentSelect,
   onDownload,
   onDownloadAll,
+  onPrint,
+  styleSet,
   title = 'Handout',
   emptyMessage = 'Select a document to preview it.',
   className,
@@ -58,9 +63,13 @@ export function HandoutDocumentShell({
               format={activeDocument.format}
               size={activeDocument.size}
               onDownload={onDownload ? () => onDownload(activeDocument.id) : undefined}
+              downloadLabel="Download Markdown"
+              onPrint={onPrint ? () => onPrint(activeDocument.id) : undefined}
             />
             <div className={styles.articleWrap}>
-              {activeDocument.format.toLowerCase().includes('markdown') ? (
+              {activeDocument.blocks && activeDocument.blocks.length > 0 ? (
+                <RichArticle blocks={activeDocument.blocks} styleSet={styleSet} />
+              ) : activeDocument.format.toLowerCase().includes('markdown') ? (
                 <MarkdownArticle source={activeDocument.body} />
               ) : (
                 <div className={styles.placeholder}>

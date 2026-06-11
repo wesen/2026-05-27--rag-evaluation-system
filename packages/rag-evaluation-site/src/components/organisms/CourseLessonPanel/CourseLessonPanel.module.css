@@ -1,7 +1,6 @@
 .root {
   background: var(--mac-surface);
   color: var(--mac-text);
-  border: 1px solid var(--mac-border);
   min-width: 0;
 }
 

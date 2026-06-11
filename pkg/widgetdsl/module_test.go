@@ -25,6 +25,7 @@ func TestSplitModulesExportExpectedHelpersAndOmitCrossDomainHelpers(t *testing.T
 		({
 			uiPage: typeof ui.page,
 			uiPanel: typeof ui.panel,
+			uiFormPanel: typeof ui.formPanel,
 			uiDataTable: typeof ui.dataTable,
 			dataTable: typeof data.dataTable,
 			dataCellField: typeof data.cell.field,
@@ -43,7 +44,7 @@ func TestSplitModulesExportExpectedHelpersAndOmitCrossDomainHelpers(t *testing.T
 		t.Fatalf("require split modules: %v", err)
 	}
 	got := value.Export().(map[string]any)
-	wantFunctions := []string{"uiPage", "uiPanel", "dataTable", "dataCellField", "contextDiagramPanel", "contextStyleSwatch", "contextVisualStyle", "contextStyleSet", "contextPart", "courseStudioNavIcon", "courseStudioShell"}
+	wantFunctions := []string{"uiPage", "uiPanel", "uiFormPanel", "dataTable", "dataCellField", "contextDiagramPanel", "contextStyleSwatch", "contextVisualStyle", "contextStyleSet", "contextPart", "courseStudioNavIcon", "courseStudioShell"}
 	for _, name := range wantFunctions {
 		if got[name] != "function" {
 			t.Fatalf("%s export = %#v, want function (all: %#v)", name, got[name], got)
@@ -96,6 +97,14 @@ func TestBuildsWidgetIRAcrossSplitModules(t *testing.T) {
 			id: "split",
 			title: "Split modules",
 			sections: [
+				ui.formPanel({ title: "Settings", method: "post", formAction: "/settings", submitLabel: "Save" },
+					ui.formRow({
+						label: "Display name",
+						required: true,
+						hint: "Shown on uploads",
+						control: ui.textInput({ name: "displayName", defaultValue: "Manuel", readOnly: false, maxLength: 40 })
+					})
+				),
 				ui.panel({ title: "Table" }, data.dataTable({
 					rows: [{ id: "a", title: "Alpha", status: "done" }],
 					getRowKey: "id",
@@ -124,9 +133,10 @@ func TestBuildsWidgetIRAcrossSplitModules(t *testing.T) {
 	assertString(t, decoded, "id", "split")
 	root := decoded["root"].(map[string]any)
 	children := root["children"].([]any)
-	assertString(t, children[0].(map[string]any), "type", "Panel")
-	assertString(t, children[1].(map[string]any), "type", "ContextDiagramPanel")
-	assertString(t, children[2].(map[string]any), "type", "CourseStudioShell")
+	assertString(t, children[0].(map[string]any), "type", "FormPanel")
+	assertString(t, children[1].(map[string]any), "type", "Panel")
+	assertString(t, children[2].(map[string]any), "type", "ContextDiagramPanel")
+	assertString(t, children[3].(map[string]any), "type", "CourseStudioShell")
 }
 
 func TestSplitModuleRecipesAreJSONSerializable(t *testing.T) {
