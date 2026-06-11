@@ -133,6 +133,17 @@ export interface ContextCourseAgendaItem {
   duration?: string;
 }
 
+export interface ContextCourseLabels {
+  outcomes?: string;
+  agenda?: string;
+  instructor?: string;
+  when?: string;
+  where?: string;
+  format?: string;
+  primaryCta?: string;
+  secondaryCta?: string;
+}
+
 export interface ContextCourse {
   id: string;
   kicker?: string;
@@ -144,6 +155,7 @@ export interface ContextCourse {
   price?: string;
   instructor?: ContextCourseInstructor;
   blurb?: string;
+  labels?: ContextCourseLabels;
   outcomes: string[];
   agenda: ContextCourseAgendaItem[];
 }
